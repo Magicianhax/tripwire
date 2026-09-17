@@ -101,7 +101,8 @@
 }
 
 .tw-chip:focus-visible {
-  outline: 2px solid var(--tw-yellow);
+  /* Focus rings never use yellow (reserved for danger). Ink surfaces get #EDEDED. */
+  outline: 2px solid var(--tw-text);
   outline-offset: 2px;
 }
 
@@ -266,8 +267,22 @@
 .tw-panel-close:focus-visible,
 .tw-panel-close:hover {
   color: var(--tw-text);
-  outline: 2px solid var(--tw-yellow);
+  outline: 2px solid var(--tw-text);
   outline-offset: 2px;
+}
+
+.tw-person {
+  margin: 0;
+  padding: var(--tw-space-sm) var(--tw-space-md);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--tw-secondary);
+  border-bottom: 1px solid var(--tw-border-neutral);
+}
+
+.tw-person b {
+  color: var(--tw-text);
+  font-weight: 700;
 }
 
 .tw-hits {
@@ -706,7 +721,7 @@
 }
 
 .tw-strip-details:focus-visible {
-  outline: 2px solid var(--tw-yellow);
+  outline: 2px solid var(--tw-text);
   outline-offset: 2px;
 }
 
@@ -742,7 +757,7 @@
 }
 
 .tw-dock-collapse:focus-visible {
-  outline: 2px solid var(--tw-yellow);
+  outline: 2px solid var(--tw-text);
   outline-offset: 2px;
 }
 
@@ -764,7 +779,7 @@
 }
 
 .tw-dock-chip:focus-visible {
-  outline: 2px solid var(--tw-yellow);
+  outline: 2px solid var(--tw-text);
   outline-offset: 2px;
 }
 

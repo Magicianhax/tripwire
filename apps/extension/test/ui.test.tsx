@@ -117,6 +117,80 @@ describe("BlockScreen", () => {
   });
 });
 
+describe("BlockScreen focus management", () => {
+  it("focuses the override input on mount when nothing else is focused", () => {
+    document.body.focus();
+    expect(document.activeElement).toBe(document.body);
+
+    const { container, root } = mountNode(<BlockScreen hits={[]} phrase="X" onEvidence={() => {}} onOverride={() => {}} />);
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    expect(document.activeElement).toBe(input);
+
+    root.unmount();
+  });
+
+  it("does not steal focus from a host-page input that already has it", () => {
+    const hostInput = document.createElement("input");
+    document.body.appendChild(hostInput);
+    hostInput.focus();
+    expect(document.activeElement).toBe(hostInput);
+
+    const { root } = mountNode(<BlockScreen hits={[]} phrase="X" onEvidence={() => {}} onOverride={() => {}} />);
+
+    expect(document.activeElement).toBe(hostInput);
+
+    root.unmount();
+    hostInput.remove();
+  });
+
+  it("respects autoFocus={false}", () => {
+    document.body.focus();
+    const { root } = mountNode(<BlockScreen hits={[]} phrase="X" onEvidence={() => {}} onOverride={() => {}} autoFocus={false} />);
+
+    expect(document.activeElement).toBe(document.body);
+
+    root.unmount();
+  });
+
+  it("wraps Tab from the last focusable element back to the first", () => {
+    document.body.focus();
+    const { container, root } = mountNode(<BlockScreen hits={[]} phrase="MATCH" onEvidence={() => {}} onOverride={() => {}} />);
+    const input = container.querySelector("input") as HTMLInputElement;
+    const evidenceBtn = container.querySelector(".tw-block-evidence") as HTMLButtonElement;
+
+    // The Override button is disabled (input doesn't match "MATCH" yet), so Evidence is the
+    // last focusable element in the trap.
+    act(() => {
+      evidenceBtn.focus();
+    });
+    expect(document.activeElement).toBe(evidenceBtn);
+
+    act(() => {
+      evidenceBtn.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true }));
+    });
+    expect(document.activeElement).toBe(input);
+
+    root.unmount();
+  });
+
+  it("wraps Shift+Tab from the first focusable element back to the last", () => {
+    document.body.focus();
+    const { container, root } = mountNode(<BlockScreen hits={[]} phrase="MATCH" onEvidence={() => {}} onOverride={() => {}} />);
+    const input = container.querySelector("input") as HTMLInputElement;
+    const evidenceBtn = container.querySelector(".tw-block-evidence") as HTMLButtonElement;
+
+    expect(document.activeElement).toBe(input); // autofocus landed here
+
+    act(() => {
+      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", shiftKey: true, bubbles: true, cancelable: true }));
+    });
+    expect(document.activeElement).toBe(evidenceBtn);
+
+    root.unmount();
+  });
+});
+
 describe("Chip", () => {
   it("renders aria-expanded and the verdict word", () => {
     const { container, root } = mountNode(<Chip verdict="TRIPWIRE" symbol="LUMEN" headline="SM −$412K · 1H" expanded onClick={() => {}} />);
