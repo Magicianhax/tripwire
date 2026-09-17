@@ -1,4 +1,4 @@
-import { evaluate, GuardBodySchema, type Target } from "@tripwire/core";
+import { evaluate, GuardBodySchema, type Signal, type Target } from "@tripwire/core";
 import { preflight, route } from "@/lib/http";
 import { toHits } from "@/lib/hits";
 import { buildPerpIntel } from "@/lib/intel/perp";
@@ -10,7 +10,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const OPTIONS = preflight;
 
-function buildIntel(target: Target, mode: "chip" | "panel") {
+function buildIntel(target: Target, mode: "chip" | "panel"): Promise<{ signals: Signal[]; panel: unknown; headline?: string | null }> {
   if (target.kind === "spot") return buildSpotIntel(target, { mode });
   if (target.kind === "perp") return buildPerpIntel(target, mode);
   return buildPredictionIntel(target, mode);
@@ -18,9 +18,10 @@ function buildIntel(target: Target, mode: "chip" | "panel") {
 
 export const POST = route(GuardBodySchema, async (_req, body) => {
   const { target, venue, mode } = body;
-  const { signals, panel } = await buildIntel(target, mode);
+  const { signals, panel, headline } = await buildIntel(target, mode);
   const { preset, rules } = getRules();
   const { verdict, hits, unavailable } = evaluate(rules, signals, target.kind);
   recordCheck(venue, target, verdict, signals);
-  return { target, verdict, hits: toHits(hits), unavailable, signals, panel, rulesPreset: preset };
+  // Why an UNCHECKED target couldn't be checked ("Pick a market", …), for the chip/strip.
+  return { target, verdict, headline: verdict === "UNCHECKED" ? (headline ?? null) : null, hits: toHits(hits), unavailable, signals, panel, rulesPreset: preset };
 });

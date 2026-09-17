@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { FlowRow, IndicatorsResp, PerpPosition, PerpScreenerRow, PmHolder } from "../src/nansen-types";
 import { spotSignals } from "../src/signals/spot";
 import { perpSignals } from "../src/signals/perp";
-import { predictionSignals } from "../src/signals/prediction";
+import { predictionSignals, provenWinnerSplit } from "../src/signals/prediction";
 
 const flow = (o: Partial<FlowRow>): FlowRow => ({
   smart_trader_net_flow_usd: 0,
@@ -148,5 +148,25 @@ describe("predictionSignals", () => {
     expect(get(predictionSignals({ holders: [holder("No", 1, 1, "a")], pnl: {} }), "smart_side_disagrees").value).toBeNull();
     expect(get(predictionSignals({ outcome: "no", holders: [], pnl: {} }), "smart_side_disagrees").value).toBeNull();
     expect(get(predictionSignals({ outcome: "no", holders: [holder("No", 1, 1, "a")], pnl: { a: -1 } }), "smart_side_disagrees").value).toBeNull();
+  });
+  it("only Yes/No holders count: other outcome sides are ignored", () => {
+    const s = predictionSignals({
+      outcome: "yes",
+      holders: [holder("No", 1000, 0.5, "a"), holder("Up", 100_000, 0.5, "b"), holder("YES", 1000, 0.5, "c")],
+      pnl: { a: 10_000, b: 10_000, c: 10_000 },
+    });
+    expect(get(s, "smart_side_disagrees").value).toBe(50);
+  });
+  it("null when the only proven winners hold a non Yes/No side", () => {
+    const s = predictionSignals({ outcome: "no", holders: [holder("Down", 1000, 0.5, "a")], pnl: { a: 10_000 } });
+    expect(get(s, "smart_side_disagrees").value).toBeNull();
+  });
+});
+
+describe("provenWinnerSplit", () => {
+  it("weights Yes/No stakes by positive PnL and skips losers and other sides", () => {
+    const holders = [holder("Yes", 100, 0.5, "a"), holder("no", 100, 0.5, "b"), holder("Up", 100, 0.5, "c"), holder("No", 100, 0.5, "d")];
+    const pnl: Record<string, number> = { a: 2, b: 1, c: 5, d: -3 };
+    expect(provenWinnerSplit(holders, (h) => pnl[h.address])).toEqual({ yes: 100, no: 50, proven: 2 });
   });
 });

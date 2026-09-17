@@ -88,6 +88,8 @@ export type PredictionPanel = {
 
 export type PostIntelResponse = {
   verdict: Verdict;
+  /** UNCHECKED only: the short reason ("Nansen credit cap reached"), else null. */
+  headline?: string | null;
   hits: HitDto[];
   unavailable: SignalId[];
   signals: Signal[];
@@ -98,6 +100,8 @@ export type PostIntelResponse = {
 export type GuardResponse = {
   target: Target;
   verdict: Verdict;
+  /** UNCHECKED only: the short reason ("Pick a market", "Nansen credit cap reached"), else null. */
+  headline?: string | null;
   hits: HitDto[];
   unavailable: SignalId[];
   signals: Signal[];

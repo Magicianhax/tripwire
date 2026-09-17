@@ -1,25 +1,10 @@
+import { provenWinnerSplit } from "@tripwire/core";
 import type { PredictionPanel } from "../api-types";
 import { shortAddr, timeAgo, usd } from "./format";
 
-/** Weighted stake per side from proven winners: pnl>0 ? pnl × position_size × current_price : 0,
- * summed by holder.side (yes/no). Mirrors @tripwire/core's smart_side_disagrees signal. */
-function weightedSplit(holders: PredictionPanel["holders"]): { yes: number; no: number } {
-  let yes = 0;
-  let no = 0;
-  for (const h of holders ?? []) {
-    if (h.pnl === null || h.pnl <= 0) continue;
-    const price = h.current_price ?? h.avg_entry_price ?? 0;
-    const weight = h.pnl * h.position_size * price;
-    if (weight <= 0) continue;
-    const side = h.side.toLowerCase();
-    if (side === "yes") yes += weight;
-    else if (side === "no") no += weight;
-  }
-  return { yes, no };
-}
-
 export function PredictionBody({ panel }: { panel: PredictionPanel }) {
-  const { yes, no } = weightedSplit(panel.holders);
+  // Same rule as the smart_side_disagrees signal: proven winners on Yes/No sides only.
+  const { yes, no } = provenWinnerSplit(panel.holders ?? [], (h) => h.pnl);
   const total = yes + no;
   const yesPct = total > 0 ? (yes / total) * 100 : 50;
   const noPct = 100 - yesPct;

@@ -5,25 +5,46 @@ import { OVERRIDE_PHRASES, type VenueAdapter } from "./types";
 const EVENT_PATH_RE = /^\/event\/([^/]+)(?:\/([^/]+))?/;
 const ANCHOR_RE = /^(buy|trade)/i;
 
-/** The selected Yes/No toggle, by aria-pressed/aria-checked/data-state, else the buy button's
- * own text ("Buy Yes" / "Buy No"). */
-function detectOutcome(doc: Document): "yes" | "no" | undefined {
-  let yesBtn: HTMLButtonElement | null = null;
-  let noBtn: HTMLButtonElement | null = null;
-  for (const btn of doc.querySelectorAll("button")) {
-    const text = (btn.textContent ?? "").trim();
-    if (!yesBtn && /^yes$/i.test(text)) yesBtn = btn;
-    if (!noBtn && /^no$/i.test(text)) noBtn = btn;
-  }
-  if (yesBtn && isSelected(yesBtn)) return "yes";
-  if (noBtn && isSelected(noBtn)) return "no";
+const YES_RE = /^yes\b/i;
+const NO_RE = /^no\b/i;
+const MAX_SCOPE_DEPTH = 4;
 
-  const buy = findButton(doc, ANCHOR_RE);
-  if (buy) {
-    const text = (buy.textContent ?? "").trim();
-    if (/\byes\b/i.test(text)) return "yes";
-    if (/\bno\b/i.test(text)) return "no";
+/** The trade form around the anchor: its `<form>`, else the nearest ancestor (a few levels up
+ * at most) that also holds a Yes/No control. Never the whole page. */
+function tradeScope(anchor: HTMLElement): Element | null {
+  const form = anchor.closest("form");
+  if (form) return form;
+  let el: Element | null = anchor.parentElement;
+  for (let depth = 0; el && el !== anchor.ownerDocument.body && depth < MAX_SCOPE_DEPTH; depth++, el = el.parentElement) {
+    for (const btn of el.querySelectorAll("button")) {
+      const text = (btn.textContent ?? "").trim();
+      if (btn !== anchor && (YES_RE.test(text) || NO_RE.test(text))) return el;
+    }
   }
+  return null;
+}
+
+/**
+ * The outcome being bought, read ONLY from controls scoped to the trade form that owns the
+ * trade button: a selected Yes/No toggle there, else the button's own text ("Buy Yes"). On an
+ * event page other markets' Yes/No buttons are ignored. Not found -> undefined, which the
+ * backend reports as UNCHECKED ("Pick YES or NO") -- never a guess.
+ */
+function detectOutcome(doc: Document): "yes" | "no" | undefined {
+  const anchor = findButton(doc, ANCHOR_RE);
+  if (!anchor) return undefined;
+  const scope = tradeScope(anchor);
+  if (scope) {
+    for (const btn of scope.querySelectorAll("button")) {
+      if (btn === anchor || !isSelected(btn)) continue;
+      const text = (btn.textContent ?? "").trim();
+      if (YES_RE.test(text)) return "yes";
+      if (NO_RE.test(text)) return "no";
+    }
+  }
+  const text = (anchor.textContent ?? "").trim();
+  if (/\byes\b/i.test(text)) return "yes";
+  if (/\bno\b/i.test(text)) return "no";
   return undefined;
 }
 

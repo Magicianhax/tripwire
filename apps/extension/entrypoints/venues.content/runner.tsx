@@ -6,7 +6,7 @@ import { guard, type ApiResult } from "../../lib/api";
 import type { GuardResponse } from "../../lib/api-types";
 import { decideDisplay, nextAction } from "./display-state";
 import { createBlockBinding, createStripBinding, closeEvidenceDock, showChecking, showPrimaryDock } from "./displays";
-import { errorHeadline, verdictHeadline } from "./format";
+import { errorHeadline, guardHeadline } from "./format";
 import { isUnlocked, type RunnerContext } from "./runner-state";
 
 export { keyFor } from "./format";
@@ -140,7 +140,7 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
       if (result.ok) {
         chipData = result.data;
         verdict = result.data.verdict;
-        headline = result.data.hits[0]?.text ?? verdictHeadline(verdict);
+        headline = guardHeadline(result.data);
       } else {
         headline = errorHeadline(result.status, result.error);
       }

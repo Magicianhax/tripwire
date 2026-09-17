@@ -16,6 +16,15 @@ export function overrideFailureText(status: number, error: string): string {
   return `Override not recorded: ${error || "request failed"}. Still blocked.`;
 }
 
+/** The one-line headline for a guard result: the top hit, else the backend's UNCHECKED reason,
+ * else a generic line for the verdict. */
+export function guardHeadline(data: { verdict: Verdict; hits: { text: string }[]; headline?: string | null }): string {
+  const hit = data.hits[0];
+  if (hit) return hit.text;
+  if (data.verdict === "UNCHECKED" && data.headline) return `Tripwire couldn't check this: ${data.headline}`;
+  return verdictHeadline(data.verdict);
+}
+
 export function verdictHeadline(verdict: Verdict): string {
   switch (verdict) {
     case "CLEAR":

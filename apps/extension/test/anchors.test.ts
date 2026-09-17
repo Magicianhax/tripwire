@@ -108,19 +108,41 @@ describe("hyperliquid side detection", () => {
 });
 
 describe("polymarket outcome detection", () => {
-  it("reads the selected Yes toggle via aria-pressed", () => {
+  const url = new URL("https://polymarket.com/event/some-event/some-market");
+
+  it("reads the selected Yes toggle inside the trade form", () => {
     const doc = docWithBody(`
-      <button aria-pressed="true">Yes</button>
-      <button aria-pressed="false">No</button>
+      <form>
+        <button type="button" aria-pressed="true">Yes 45¢</button>
+        <button type="button" aria-pressed="false">No 56¢</button>
+        <button type="submit">Trade</button>
+      </form>
     `);
-    const target = polymarketAdapter.readTarget(doc, new URL("https://polymarket.com/event/some-event"));
-    expect(target).toMatchObject({ kind: "prediction", slug: "some-event", outcome: "yes" });
+    expect(polymarketAdapter.readTarget(doc, url)).toMatchObject({ kind: "prediction", slug: "some-market", outcome: "yes" });
   });
 
   it("falls back to the buy button's own text: 'Buy No'", () => {
-    const doc = docWithBody(`<button>Buy No</button>`);
-    const target = polymarketAdapter.readTarget(doc, new URL("https://polymarket.com/event/some-event"));
-    expect(target).toMatchObject({ kind: "prediction", slug: "some-event", outcome: "no" });
+    const doc = docWithBody(`<div><button>Buy No</button></div>`);
+    expect(polymarketAdapter.readTarget(doc, url)).toMatchObject({ kind: "prediction", slug: "some-market", outcome: "no" });
+  });
+
+  it("ignores Yes/No controls outside the trade form (other markets on an event page)", () => {
+    const doc = docWithBody(`
+      <section>
+        <div class="row"><span>72k</span><button aria-pressed="true">Yes</button><button>No</button></div>
+        <div class="row"><span>74k</span><button>Yes</button><button aria-selected="true">No</button></div>
+      </section>
+      <aside><form><button type="button">Yes</button><button type="button">No</button><button type="submit">Trade</button></form></aside>
+    `);
+    const target = polymarketAdapter.readTarget(doc, url);
+    expect(target).toMatchObject({ kind: "prediction", slug: "some-market" });
+    expect(target && "outcome" in target ? target.outcome : undefined).toBeUndefined();
+  });
+
+  it("no trade button -> no outcome (never a page-wide guess)", () => {
+    const doc = docWithBody(`<div><button aria-pressed="true">Yes</button><button>No</button></div>`);
+    const target = polymarketAdapter.readTarget(doc, url);
+    expect(target && "outcome" in target ? target.outcome : undefined).toBeUndefined();
   });
 
   it("anchor matches /^(buy|trade)/i", () => {
