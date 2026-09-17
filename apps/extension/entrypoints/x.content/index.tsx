@@ -1,6 +1,6 @@
 import "../../lib/ui/theme.css";
 
-import type { Chain, ExtractedAddress, SpotTarget, Verdict } from "@tripwire/core";
+import type { SpotTarget, Verdict } from "@tripwire/core";
 import { defineContentScript } from "wxt/utils/define-content-script";
 import type { ApiResult } from "../../lib/api";
 import { health, personIntel, postIntel, resolve } from "../../lib/api";
@@ -13,6 +13,7 @@ import { Panel } from "../../lib/ui/Panel";
 import { X_MATCHES } from "../../lib/venues";
 import { createResultCache } from "../../lib/x/cache";
 import { createMountTracker } from "../../lib/x/mounts";
+import { chainForAddress, pickToken, type ChipToken } from "../../lib/x/pick";
 import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
 import { createQueue } from "../../lib/x/queue";
 
@@ -20,27 +21,6 @@ const TWEET_SELECTOR = 'article[data-testid="tweet"]';
 const CHIP_CONCURRENCY = 4;
 const VIEWPORT_MARGIN = "600px 0px";
 const SWEEP_DEBOUNCE_MS = 1000;
-
-type ChipToken = { kind: "cashtag"; symbol: string } | { kind: "address"; address: ExtractedAddress };
-
-/** Only the first token in a tweet gets a chip, cashtags taking priority over bare addresses
- * (mirrors the order `extractTokens`/`parseTweet` already return them in). */
-function pickToken(tokens: ParsedTweet["tokens"]): ChipToken | null {
-  const cashtag = tokens.cashtags[0];
-  if (cashtag) return { kind: "cashtag", symbol: cashtag };
-  const address = tokens.addresses[0];
-  if (address) return { kind: "address", address };
-  return null;
-}
-
-/** Heuristic for EVM addresses found in tweet text: `resolve` needs a symbol, and a bare 0x
- * address has none, so there's no way to ask the backend which chain it's on. Default to
- * ethereum; if the tweet text mentions "base" anywhere, assume base instead. Solana addresses
- * are unambiguous (base58 alphabet doesn't overlap with 0x hex). */
-function chainForAddress(address: ExtractedAddress, tweetText: string): Chain {
-  if (address.chain === "solana") return "solana";
-  return /base/i.test(tweetText) ? "base" : "ethereum";
-}
 
 function errorHeadline(status: number, error: string): string {
   if (status === 0) return "Tripwire backend offline";
