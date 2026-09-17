@@ -1,12 +1,29 @@
-import { PRESETS, type PresetName, type Rule, type Signal, type Target, type Verdict } from "@tripwire/core";
+import { z } from "zod";
+import { PRESETS, RuleSchema, type PresetName, type Rule, type Signal, type Target, type Verdict } from "@tripwire/core";
 import { getDb } from "./db";
 
 export type RulesState = { preset: PresetName | "custom"; rules: Rule[] };
 
+const StoredRulesSchema = z.object({
+  preset: z.enum(["degen", "balanced", "paranoid", "custom"]),
+  rules: z.array(RuleSchema),
+});
+
+const DEFAULT_RULES = (): RulesState => ({ preset: "balanced", rules: PRESETS.balanced });
+
+/** The saved rules, validated: a corrupt or hand-edited row falls back to the balanced preset
+ * rather than feeding malformed rules into evaluate(). */
 export function getRules(): RulesState {
   const row = getDb().prepare("SELECT value FROM settings WHERE key = 'rules'").get() as { value: string } | undefined;
-  if (!row) return { preset: "balanced", rules: PRESETS.balanced };
-  return JSON.parse(row.value) as RulesState;
+  if (!row) return DEFAULT_RULES();
+  let raw: unknown;
+  try {
+    raw = JSON.parse(row.value);
+  } catch {
+    return DEFAULT_RULES();
+  }
+  const parsed = StoredRulesSchema.safeParse(raw);
+  return parsed.success ? parsed.data : DEFAULT_RULES();
 }
 
 export function setRules(state: RulesState) {
