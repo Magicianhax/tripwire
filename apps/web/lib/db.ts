@@ -57,6 +57,14 @@ export function getDb(): DatabaseSync {
       to_preset TEXT NOT NULL,
       rule_ids TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS wallet_links (
+      handle TEXT NOT NULL,
+      venue TEXT NOT NULL CHECK (venue IN ('hyperliquid', 'polymarket')),
+      address TEXT NOT NULL,
+      source TEXT NOT NULL CHECK (source IN ('user', 'curated')),
+      created_at INTEGER NOT NULL,
+      PRIMARY KEY (handle, venue)
+    );
   `);
   return db;
 }

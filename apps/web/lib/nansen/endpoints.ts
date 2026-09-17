@@ -22,7 +22,46 @@ export const WHO_BOUGHT_SOLD_TTL = 5 * MIN;
 export const OHLCV_TTL = 5 * MIN;
 export const PERP_SCREENER_TTL = 2 * MIN;
 
+const DAY = 24 * HOUR;
+export const ENTITY_PNL_TTL = 30 * MIN;
+export const ENTITY_PNL_WINDOW_DAYS = 90;
+export const PERP_PNL_WINDOW_DAYS = 30;
+/** Polymarket and Nansen perp badge data. */
+export const BADGE_TTL = 10 * MIN;
+
 type Paged<T> = { data: T[]; pagination?: { is_last_page: boolean } };
+
+export type EntityPnlSummary = { realized_pnl_usd: number | null; win_rate: number | null; traded_times?: number | null };
+export type PerpPnlSummary = { realized_pnl_usd: number | null; win_rate: number | null; closed_trade_count?: number | null };
+export type PmAddressSummary = {
+  total_pnl_usd: number | null;
+  realized_pnl_usd: number | null;
+  unrealized_pnl_usd: number | null;
+  win_rate: number | null;
+  markets_won: number | null;
+  markets_traded: number | null;
+};
+export type PmAddressMarket = {
+  market_id: string;
+  question: string | null;
+  side_held: string | null;
+  net_buy_cost_usd: number | null;
+  net_sell_proceeds_usd: number | null;
+  unrealized_value_usd: number | null;
+  total_pnl_usd: number | null;
+  market_resolved: boolean | null;
+};
+export type PmAddressTrade = {
+  timestamp: string;
+  taker_action: string | null;
+  side: string | null;
+  size: number | null;
+  price: number | null;
+  usdc_value: number | null;
+  market_question: string | null;
+  seller?: string | null;
+  buyer?: string | null;
+};
 
 export const nansen = {
   flowIntel: (chain: string, token_address: string, timeframe: string) =>
@@ -135,6 +174,53 @@ export const nansen = {
       path: "prediction-market/pnl-by-address",
       body: { address, pagination: { page: 1, per_page: 1000 } },
       ttlMs: 24 * HOUR,
+    }),
+
+  /** Author badge (Nansen): realized PnL and win rate of a labeled entity over 90 days. */
+  entityPnlSummary: (entity_name: string) => {
+    const to = bucketNow(ENTITY_PNL_TTL);
+    const from = new Date(to.getTime() - ENTITY_PNL_WINDOW_DAYS * DAY);
+    return nansenPost<EntityPnlSummary>({
+      name: "entityPnlSummary",
+      path: "profiler/address/pnl-summary",
+      body: { entity_name, chain: "all", date: { from: isoNoMs(from), to: isoNoMs(to) } },
+      ttlMs: ENTITY_PNL_TTL,
+    });
+  },
+
+  /** Author badge (Hyperliquid): Nansen's realized perp PnL and win rate over 30 days (1 credit). */
+  perpPnlSummary: (address: string) => {
+    const to = bucketNow(BADGE_TTL);
+    const from = new Date(to.getTime() - PERP_PNL_WINDOW_DAYS * DAY);
+    return nansenPost<{ data: PerpPnlSummary | null }>({
+      name: "perpPnlSummary",
+      path: "profiler/perp-pnl-summary",
+      body: { address, date: { from: isoNoMs(from), to: isoNoMs(to) } },
+      ttlMs: BADGE_TTL,
+    });
+  },
+
+  /** Author badge (Polymarket): wallet-level PnL and win rate. */
+  pmAddressSummary: (address: string) =>
+    nansenPost<{ data: PmAddressSummary[] }>({ name: "pmAddressSummary", path: "prediction-market/address-summary", body: { address }, ttlMs: BADGE_TTL }),
+
+  /** Author badge (Polymarket): every market the wallet holds, open ones included. Ordered, so its
+   * cache entry stays apart from pmPnlByAddress's 24h one. Same replay fixture. */
+  pmMarketsByAddress: (address: string) =>
+    nansenPost<Paged<PmAddressMarket>>({
+      name: "pmPnlByAddress",
+      path: "prediction-market/pnl-by-address",
+      body: { address, pagination: { page: 1, per_page: 1000 }, order_by: [{ field: "total_pnl_usd", direction: "DESC" }] },
+      ttlMs: BADGE_TTL,
+    }),
+
+  /** Author badge (Polymarket): the wallet's last 5 trades. */
+  pmTradesByAddress: (address: string) =>
+    nansenPost<Paged<PmAddressTrade>>({
+      name: "pmTradesByAddress",
+      path: "prediction-market/trades-by-address",
+      body: { address, pagination: { page: 1, per_page: 5 }, order_by: [{ field: "timestamp", direction: "DESC" }] },
+      ttlMs: BADGE_TTL,
     }),
 
   pmTrades: (market_id: string) =>
