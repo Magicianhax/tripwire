@@ -331,8 +331,20 @@ test("@smoke Jumper: the strip fits its card at any width and never scrolls the 
 
   const strip = page.locator(".tw-strip");
   await expect(strip).toBeVisible({ timeout: 15_000 });
-  const anchor = page.locator('[data-testid="widget-transaction-button"]');
+  const anchor = page.locator(".actions");
+  const button = page.locator('[data-testid="widget-transaction-button"]');
   const card = page.locator(".card");
+
+  // The venue lays its action row out horizontally. The strip belongs above that whole row, not
+  // beside the button inside it, where it would be squeezed into a narrow column.
+  const stacked = await strip.evaluate((el) => {
+    const host = (el.getRootNode() as ShadowRoot).host;
+    const row = document.querySelector(".actions")!;
+    return { beforeTheRow: host.nextElementSibling === row, insideTheRow: row.contains(host) };
+  });
+  expect(stacked).toEqual({ beforeTheRow: true, insideTheRow: false });
+  const first = (await strip.boundingBox())!;
+  expect(first.y + first.height, "the strip sits above the button").toBeLessThanOrEqual((await button.boundingBox())!.y + 1);
 
   const overflows = () =>
     page.evaluate(() => {

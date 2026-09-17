@@ -5,7 +5,7 @@ import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, override } from "../../lib/api";
 import type { GuardResponse, SpotPanel } from "../../lib/api-types";
 import { EVIDENCE_TAB } from "../../lib/ui/BlockScreen";
-import { fitToAnchor } from "../../lib/ui/fit";
+import { fitToAnchor, liftOutOfRow } from "../../lib/ui/fit";
 import { Dock, SHEET_BELOW } from "../../lib/ui/Dock";
 import { mountIfCurrent, mountReact } from "../../lib/ui/mount";
 import { CardMessage } from "../../lib/ui/panel-parts";
@@ -104,7 +104,9 @@ export function closeEvidenceDock(rc: RunnerContext): void {
  * installs a blocker. Dropped (not stored) if the page moved on, or something else already
  * mounted, while the shadow root was being created. */
 export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key: string): Promise<void> {
-  const anchor = adapter.tier === 1 ? (adapter.anchor?.(document) ?? null) : null;
+  const found = adapter.tier === 1 ? (adapter.anchor?.(document) ?? null) : null;
+  // The strip goes above the whole action row, not beside the button inside it.
+  const anchor = found ? liftOutOfRow(found) : null;
   const mount = anchor
     ? await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, <Strip verdict="LOADING" text="Checking…" replay={rc.replay} venue={adapter.id} />)
     : await mountReact(
@@ -183,7 +185,10 @@ export function createStripBinding(
 ) {
   let unfit: (() => void) | null = null;
 
-  async function onBind(anchor: HTMLElement): Promise<void> {
+  async function onBind(button: HTMLElement): Promise<void> {
+    // The blocker binds to the trade button; the strip is inserted above the row that holds it,
+    // so a venue that lays that row out horizontally does not squeeze the strip beside it.
+    const anchor = liftOutOfRow(button);
     const text = unlocked ? `${headline}, unlocked for this session` : headline;
     const node = (
       <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} venue={adapter.id} onDetails={target ? (trigger) => void toggleEvidence(rc, adapter, target, trigger) : undefined} />

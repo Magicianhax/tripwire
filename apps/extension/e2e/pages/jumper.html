@@ -14,7 +14,11 @@
       .card { width: var(--card-width, 416px); padding: 16px; border-radius: 16px; background: #1b1b28; }
       .row { display: grid; gap: 8px; margin-bottom: 12px; color: #9a9ab0; }
       input { height: 40px; padding: 0 12px; border: 1px solid #2f2f42; border-radius: 10px; background: #12121c; color: inherit; }
-      .actions { display: inline-flex; flex-direction: column; width: max-content; }
+      /* The real widget puts its primary action in a horizontal row beside a wallet button.
+         A strip inserted before the button alone becomes another item in this row and is
+         squeezed into a narrow column beside it, which is the defect this page reproduces. */
+      .actions { display: flex; flex-direction: row; align-items: center; gap: 8px; width: max-content; }
+      .wallet { width: 48px; height: 48px; border: none; border-radius: 999px; background: #2b2b3d; color: #eceff5; }
       [data-testid="widget-transaction-button"] {
         height: 48px;
         min-width: 240px;
@@ -34,6 +38,7 @@
         <div class="row"><label>You pay <input id="amount" placeholder="0.00" /></label></div>
         <div class="actions">
           <button data-testid="widget-transaction-button" type="button">Review Bridge</button>
+          <button class="wallet" type="button" aria-label="Wallet"></button>
         </div>
       </div>
     </main>

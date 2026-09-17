@@ -34,6 +34,42 @@ export function availableWidth(anchor: Element): number {
   return width;
 }
 
+/** How far `liftOutOfRow` will walk before giving up and staying near the anchor. */
+const MAX_LIFT = 3;
+
+function laysChildrenInARow(style: CSSStyleDeclaration): boolean {
+  if (style.display === "flex" || style.display === "inline-flex") return !style.flexDirection.startsWith("column");
+  if (style.display === "grid" || style.display === "inline-grid") {
+    if (style.gridAutoFlow.startsWith("column")) return true;
+    return style.gridTemplateColumns.split(/\s+/).filter(Boolean).length > 1;
+  }
+  return false;
+}
+
+/**
+ * The element a strip should be inserted before, given the trade button it describes.
+ *
+ * A strip sits *above* the trade button. Inserting it before the button works only when the
+ * button's container stacks its children; when the venue lays that row out horizontally — a
+ * "Review Bridge" button beside a wallet icon, which is what jumper.xyz does — the strip becomes
+ * another item in that row and is squeezed into a column next to the button, pill clipped and
+ * the sentence broken over four lines.
+ *
+ * So walk up out of any row-laying container and mount before the whole row instead. When the
+ * button's parent already stacks (a column flex, a plain block), this returns the button itself
+ * and nothing changes.
+ */
+export function liftOutOfRow(anchor: HTMLElement): HTMLElement {
+  let el = anchor;
+  for (let i = 0; i < MAX_LIFT; i++) {
+    const parent = el.parentElement;
+    if (!parent || parent === document.body || parent === document.documentElement) break;
+    if (!laysChildrenInARow(getComputedStyle(parent))) break;
+    el = parent;
+  }
+  return el;
+}
+
 /**
  * Bounds a mounted surface to `box`, by publishing the width on its shadow host.
  *

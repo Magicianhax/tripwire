@@ -2,7 +2,7 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { applyAnchorBox, availableWidth, fitToAnchor, NARROW_WIDTH } from "../lib/ui/fit";
+import { applyAnchorBox, availableWidth, fitToAnchor, liftOutOfRow, NARROW_WIDTH } from "../lib/ui/fit";
 import { Chip } from "../lib/ui/Chip";
 import { Dock } from "../lib/ui/Dock";
 import { Strip } from "../lib/ui/Strip";
@@ -161,5 +161,63 @@ describe("long findings truncate instead of stretching their surface", () => {
       </Dock>,
     );
     expect(c.querySelector(".tw-dock-chip .tw-chip-value")?.getAttribute("title")).toBe(LONG);
+  });
+});
+
+describe("a strip goes above the action row, never beside the button in it", () => {
+  /** `display` is what liftOutOfRow reads, and happy-dom does not lay anything out. */
+  const box = (display: string, extra: Partial<CSSStyleDeclaration> = {}) => {
+    const el = document.createElement("div");
+    Object.assign(el.style, { display, ...extra });
+    return el;
+  };
+
+  it("lifts out of a horizontal flex row, so the strip spans the whole row", () => {
+    const card = box("block");
+    const row = box("flex", { flexDirection: "row" });
+    const button = document.createElement("button");
+    row.append(button);
+    card.append(row);
+    document.body.append(card);
+    expect(liftOutOfRow(button)).toBe(row);
+  });
+
+  it("stays on the button when its container already stacks", () => {
+    for (const display of ["block", "flow-root", "grid"]) {
+      const parent = box(display);
+      const button = document.createElement("button");
+      parent.append(button);
+      document.body.append(parent);
+      expect(liftOutOfRow(button), display).toBe(button);
+    }
+    const column = box("flex", { flexDirection: "column" });
+    const stacked = document.createElement("button");
+    column.append(stacked);
+    document.body.append(column);
+    expect(liftOutOfRow(stacked)).toBe(stacked);
+  });
+
+  it("lifts through nested rows but stops before the body, and never climbs forever", () => {
+    let el: HTMLElement = document.body;
+    const rows: HTMLElement[] = [];
+    for (let i = 0; i < 6; i++) {
+      const row = box("flex", { flexDirection: "row" });
+      el.append(row);
+      rows.push(row);
+      el = row;
+    }
+    const button = document.createElement("button");
+    el.append(button);
+    const lifted = liftOutOfRow(button);
+    expect(rows).toContain(lifted);
+    expect(lifted).not.toBe(document.body);
+  });
+
+  it("treats a multi-column grid as a row too", () => {
+    const grid = box("grid", { gridTemplateColumns: "1fr auto" });
+    const button = document.createElement("button");
+    grid.append(button);
+    document.body.append(grid);
+    expect(liftOutOfRow(button)).toBe(grid);
   });
 });
