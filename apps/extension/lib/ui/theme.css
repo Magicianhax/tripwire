@@ -469,6 +469,20 @@ input {
   align-items: center;
   gap: 6px;
   min-height: 16px;
+  /* The header row is tight once the verdict pill, Replay tag and close button take their
+     share. The identity line clips rather than wrapping the address across two lines. */
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tw-addr-text,
+.tw-card-age {
+  white-space: nowrap;
+}
+
+.tw-card-age {
+  flex-shrink: 0;
 }
 
 .tw-card-age {
@@ -1978,14 +1992,21 @@ div.tw-dock-chip {
   color: var(--tw-text-2);
 }
 
+/* The address is the only part of the identity line allowed to shrink: the chain mark, the copy
+   button and the age all keep their size, so a tight header truncates the base58 rather than
+   letting the age ride over it. */
 .tw-addr {
   display: inline-flex;
   align-items: center;
   gap: 2px;
   min-width: 0;
+  flex: 0 1 auto;
 }
 
 .tw-addr-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: var(--tw-font-mono);
   font-size: 0.6875rem;
   letter-spacing: 0.01em;
@@ -1994,6 +2015,7 @@ div.tw-dock-chip {
 
 .tw-addr-copy {
   appearance: none;
+  flex-shrink: 0;
   display: inline-grid;
   place-items: center;
   width: 24px;
@@ -2189,7 +2211,8 @@ div.tw-dock-chip {
 }
 
 .tw-chart-tip-time {
-  color: var(--tw-text-3);
+  /* text-3 is a 40% white, which lands under 4.5:1 on the raised tile at this size. */
+  color: var(--tw-text-2);
 }
 
 /* Per-section loading, so switching the window never blanks the card. */
@@ -2286,4 +2309,10 @@ div.tw-dock-chip {
 
 :host([data-narrow]) .tw-strip-rule {
   display: none;
+}
+
+/* The finding takes the second row; Details follows it, hard right. */
+:host([data-narrow]) .tw-strip-details {
+  order: 2;
+  margin-left: auto;
 }

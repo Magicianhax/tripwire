@@ -34,8 +34,8 @@ export const pct = (n: number | null | undefined) =>
 export function pctVol(n: number | null | undefined, withUnit = false): string {
   if (n === null || n === undefined || !Number.isFinite(n)) return "—";
   const abs = Math.abs(n);
-  // Trailing ".0" reads as false precision: "5%", but "14.5%" and "0.75%".
-  const body = (abs >= 1 ? abs.toFixed(1) : abs.toFixed(2)).replace(/\.0+$/, "");
+  // Trailing zeros read as false precision: "5%", "0.5%", but "14.5%" and "0.75%".
+  const body = (abs >= 1 ? abs.toFixed(1) : abs.toFixed(2)).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
   return `${n < 0 ? "−" : ""}${body}%${withUnit ? " of volume" : ""}`;
 }
 

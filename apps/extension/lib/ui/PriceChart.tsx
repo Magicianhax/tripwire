@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   AreaSeries,
   createChart,
@@ -16,6 +16,8 @@ import type { Candle } from "@tripwire/core";
 import type { ViewTimeframe } from "@tripwire/core";
 
 const HEIGHT = 132;
+/** Breathing room between the hover readout and the chart’s edges. */
+const EDGE = 4;
 
 export type ChartPoint = { time: UTCTimestamp; value: number };
 
@@ -95,10 +97,12 @@ export function PriceChart({
   symbol?: string | null;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
+  const tipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
   const markersRef = useRef<ISeriesMarkersPluginApi<Time> | null>(null);
   const [hover, setHover] = useState<Hover>(null);
+  const [tipLeft, setTipLeft] = useState(0);
 
   const points = useMemo(() => toChartPoints(candles), [candles]);
   const open = points[0]?.value ?? null;
@@ -205,6 +209,16 @@ export function PriceChart({
     };
   }, [open, timeframe]);
 
+  // Keep the readout inside the chart: it is centred on the crosshair, so near either edge it
+  // would otherwise hang over the card's border.
+  useLayoutEffect(() => {
+    const host = hostRef.current;
+    const tip = tipRef.current;
+    if (!hover || !host || !tip) return;
+    const half = tip.offsetWidth / 2;
+    setTipLeft(Math.min(Math.max(hover.x, half + EDGE), Math.max(half + EDGE, host.clientWidth - half - EDGE)));
+  }, [hover]);
+
   if (points.length < 2) return null;
 
   const summary = `${symbol ? `${symbol}: ` : ""}opened ${formatPrice(open!)}, closed ${formatPrice(close!)}, ${
@@ -215,7 +229,7 @@ export function PriceChart({
     <div className="tw-chart" onMouseLeave={() => setHover(null)}>
       <div className="tw-chart-canvas" ref={hostRef} style={{ height: HEIGHT }} aria-hidden="true" />
       {hover ? (
-        <div className="tw-chart-tip" style={{ left: `${hover.x}px` }} aria-hidden="true">
+        <div className="tw-chart-tip" ref={tipRef} style={{ left: `${tipLeft}px` }} aria-hidden="true">
           <span className="tw-fig tw-chart-tip-price">{formatPrice(hover.price)}</span>
           <span className="tw-fig" data-sign={hover.changePct < 0 ? "neg" : "pos"}>
             {SIGNED(hover.changePct)}

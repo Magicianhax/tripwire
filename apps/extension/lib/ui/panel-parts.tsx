@@ -145,7 +145,10 @@ export function AddressChip({ address }: { address: string }) {
   }, [copied]);
   return (
     <span className="tw-addr">
-      <span className="tw-addr-text">{shortAddr(address)}</span>
+      {/* The short form truncates further on a tight header, so the full address stays available. */}
+      <span className="tw-addr-text" title={address}>
+        {shortAddr(address)}
+      </span>
       <button
         type="button"
         className="tw-addr-copy"
