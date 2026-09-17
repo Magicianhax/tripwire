@@ -413,7 +413,7 @@
 
 .tw-bar-pos {
   left: 50%;
-  background: #f4f4f4;
+  background: var(--tw-text);
 }
 
 .tw-who-list {
@@ -484,11 +484,13 @@
 }
 
 .tw-longshort-long {
-  background: #ededed;
+  background: var(--tw-text);
 }
 
+/* Short / No: an outline, not a darker fill, so the split never relies on lightness alone. */
 .tw-longshort-short {
-  background: var(--tw-border-neutral);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--tw-secondary);
 }
 
 .tw-longshort-legend {
@@ -502,6 +504,30 @@
   width: 100%;
   height: 160px;
   display: block;
+}
+
+/* ±3% band: a dashed neutral outline (yellow stays reserved for danger). */
+.tw-ladder-band {
+  fill: none;
+  stroke: var(--tw-secondary);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.tw-ladder-mark {
+  stroke: var(--tw-text);
+  stroke-width: 1;
+}
+
+.tw-ladder-long {
+  fill: var(--tw-text);
+}
+
+/* Shorts are outlined in the danger stroke, never filled with it. */
+.tw-ladder-short {
+  fill: none;
+  stroke: var(--tw-danger);
+  stroke-width: 1;
 }
 
 .tw-trade-list {
@@ -768,7 +794,7 @@
 .tw-strip[data-verdict="CAUTION"] {
   background: var(--tw-ink);
   color: var(--tw-yellow);
-  border-left: 4px solid var(--tw-yellow);
+  border: 1.5px solid var(--tw-yellow);
 }
 
 .tw-strip[data-verdict="UNCHECKED"],
@@ -804,13 +830,16 @@
 
 .tw-strip-details {
   appearance: none;
+  flex-shrink: 0;
+  min-height: 24px;
   border: none;
   background: transparent;
   color: inherit;
   font: inherit;
   text-decoration: underline;
+  text-underline-offset: 2px;
   cursor: pointer;
-  padding: 0;
+  padding: 0 var(--tw-space-xs);
 }
 
 .tw-strip-details:focus-visible {

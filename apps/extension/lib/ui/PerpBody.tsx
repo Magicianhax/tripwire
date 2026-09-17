@@ -28,7 +28,8 @@ function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
 
 /** Vertical price axis centered on mark price ±15%. A tick per Smart Money position at its
  * liquidation_price, width scaled by position_value_usd. Positions with a null
- * liquidation_price are skipped (never crash). A yellow band marks ±3% around mark. */
+ * liquidation_price are skipped (never crash). A dashed neutral band marks ±3% around mark;
+ * longs are solid #EDEDED ticks, shorts outlined in the danger stroke. */
 function LiquidationLadder({ positions, markPrice }: { positions: PerpPosition[] | null; markPrice: number | null }) {
   if (!markPrice || !positions || positions.length === 0) return null;
   const lo = markPrice * 0.85;
@@ -50,13 +51,17 @@ function LiquidationLadder({ positions, markPrice }: { positions: PerpPosition[]
 
   return (
     <svg className="tw-ladder" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Liquidation ladder">
-      <rect x={0} y={bandTop} width={W} height={Math.max(0, bandBottom - bandTop)} fill="#FFD400" opacity={0.18} />
-      <line x1={0} x2={W} y1={yFor(markPrice)} y2={yFor(markPrice)} stroke="#EDEDED" strokeWidth={1} />
+      <rect className="tw-ladder-band" x={0.5} y={bandTop} width={W - 1} height={Math.max(0, bandBottom - bandTop)} />
+      <line className="tw-ladder-mark" x1={0} x2={W} y1={yFor(markPrice)} y2={yFor(markPrice)} />
       {ticks.map((p, i) => {
         const y = yFor(p.liquidation_price);
         const w = maxValue > 0 ? Math.max(8, (p.position_value_usd / maxValue) * (W / 2)) : 8;
         const x = p.side === "Long" ? W / 2 - w : W / 2;
-        return <rect key={i} x={x} y={Math.max(0, y - 1.5)} width={w} height={3} fill={p.side === "Long" ? "#EDEDED" : "#FF5A36"} />;
+        return p.side === "Long" ? (
+          <rect key={i} className="tw-ladder-long" x={x} y={Math.max(0, y - 1.5)} width={w} height={3} />
+        ) : (
+          <rect key={i} className="tw-ladder-short" x={x + 0.5} y={Math.max(0.5, y - 2)} width={Math.max(0, w - 1)} height={4} />
+        );
       })}
     </svg>
   );
