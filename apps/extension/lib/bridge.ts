@@ -70,3 +70,36 @@ export function createBridge({ fetchImpl, getBackendUrl }: BridgeDeps): { handle
 
   return { handle };
 }
+
+export function isBridgeMessage(message: unknown): message is BridgeMessage {
+  if (!message || typeof message !== "object") return false;
+  const type = (message as { type?: unknown }).type;
+  return type === "api" || type === "health";
+}
+
+export type MessageListenerDeps = {
+  handle: (message: BridgeMessage) => Promise<BridgeResponse>;
+  /** `browser.runtime.id`: only messages from this extension's own contexts are answered. */
+  runtimeId: string;
+  onResponse?: (response: BridgeResponse) => void;
+};
+
+/**
+ * The `runtime.onMessage` listener. Chrome's native API ignores a returned Promise (only the
+ * webextension polyfill honours it), so this answers through `sendResponse` and returns `true`
+ * to keep the channel open. Returns `false` (no answer) for anything that isn't a bridge
+ * message from this very extension.
+ */
+export function createMessageListener({ handle, runtimeId, onResponse }: MessageListenerDeps) {
+  return (message: unknown, sender: { id?: string }, sendResponse: (response: BridgeResponse) => void): boolean => {
+    if (!sender || sender.id !== runtimeId) return false;
+    if (!isBridgeMessage(message)) return false;
+    handle(message)
+      .catch((): BridgeResponse => ({ ok: false, status: 0, json: { error: "bridge_failed" } }))
+      .then((response) => {
+        onResponse?.(response);
+        sendResponse(response);
+      });
+    return true;
+  };
+}

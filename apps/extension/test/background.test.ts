@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { createBridge } from "../lib/bridge";
+import { toResult } from "../lib/api-result";
+import { createBridge, createMessageListener } from "../lib/bridge";
 
 function jsonResponse(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -72,5 +73,58 @@ describe("createBridge", () => {
       bridge.handle({ type: "api", method: "POST", path: "/api/guard", body: { x: 2 } }),
     ]);
     expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("createMessageListener", () => {
+  const ok = { ok: true, status: 200, json: { ok: true } };
+
+  it("answers via sendResponse and returns true (keeps the channel open) for our own extension", async () => {
+    const handle = vi.fn(() => Promise.resolve(ok));
+    const onResponse = vi.fn();
+    const listener = createMessageListener({ handle, runtimeId: "ourid", onResponse });
+    const sendResponse = vi.fn();
+
+    const keepOpen = listener({ type: "health" }, { id: "ourid" }, sendResponse);
+
+    expect(keepOpen).toBe(true);
+    await vi.waitFor(() => expect(sendResponse).toHaveBeenCalledWith(ok));
+    expect(onResponse).toHaveBeenCalledWith(ok);
+  });
+
+  it("ignores messages from another extension", () => {
+    const handle = vi.fn(() => Promise.resolve(ok));
+    const listener = createMessageListener({ handle, runtimeId: "ourid" });
+    const sendResponse = vi.fn();
+
+    expect(listener({ type: "health" }, { id: "otherextension" }, sendResponse)).toBe(false);
+    expect(listener({ type: "health" }, {}, sendResponse)).toBe(false);
+    expect(handle).not.toHaveBeenCalled();
+    expect(sendResponse).not.toHaveBeenCalled();
+  });
+
+  it("ignores non-bridge messages", () => {
+    const handle = vi.fn(() => Promise.resolve(ok));
+    const listener = createMessageListener({ handle, runtimeId: "ourid" });
+    expect(listener({ type: "other" }, { id: "ourid" }, vi.fn())).toBe(false);
+    expect(listener(null, { id: "ourid" }, vi.fn())).toBe(false);
+    expect(handle).not.toHaveBeenCalled();
+  });
+
+  it("still answers (status 0) if the handler rejects", async () => {
+    const listener = createMessageListener({ handle: () => Promise.reject(new Error("boom")), runtimeId: "ourid" });
+    const sendResponse = vi.fn();
+    listener({ type: "health" }, { id: "ourid" }, sendResponse);
+    await vi.waitFor(() => expect(sendResponse).toHaveBeenCalledWith({ ok: false, status: 0, json: { error: "bridge_failed" } }));
+  });
+});
+
+describe("toResult", () => {
+  it("maps an undefined response (no listener answered) to no_response", () => {
+    expect(toResult(undefined)).toEqual({ ok: false, status: 0, error: "no_response" });
+  });
+
+  it("passes a successful bridge response through", () => {
+    expect(toResult({ ok: true, status: 200, json: { a: 1 } })).toEqual({ ok: true, data: { a: 1 } });
   });
 });
