@@ -80,10 +80,84 @@ describe("spotSignals", () => {
     expect(get(s, "distribution_pct").value).toBeNull();
   });
 
-  it("is unavailable, not CLEAR, when the 24h volume denominator is missing", () => {
-    const s = spotSignals({ flow: flow({ whale_net_flow_usd: -500_000 }), vol24: null, netflow: netflow(-500_000, 20) });
-    for (const id of ["labeled_exit_pct", "distribution_pct", "sm_netflow_pct"]) expect(get(s, id).value, id).toBeNull();
-    expect(get(s, "labeled_exit_pct").label).toMatch(/volume unavailable/i);
+  describe("an endpoint that answered with nothing versus one that failed", () => {
+    it("a token Nansen reports no 24h volume for falls to the volume guard, not to UNCHECKED", () => {
+      const s = spotSignals({ flow: flow({ whale_net_flow_usd: -500_000 }), vol24: null, netflow: netflow(-500_000, 20), priceChange7dPct: -2, chain: "base" });
+      for (const id of ["labeled_exit_pct", "distribution_pct", "sm_netflow_pct"]) expect(get(s, id).value, id).toBe(0);
+      expect(get(s, "labeled_exit_pct").label).toMatch(/Not enough labeled trading to judge/);
+    });
+
+    it("a failed token-information call is UNCHECKED, and names the endpoint and the chain", () => {
+      const s = spotSignals({ flow: flow({ whale_net_flow_usd: -500_000 }), vol24: null, netflow: netflow(-500_000, 20), failed: { market: true }, chain: "base" });
+      for (const id of ["labeled_exit_pct", "distribution_pct", "sm_netflow_pct"]) expect(get(s, id).value, id).toBeNull();
+      expect(get(s, "labeled_exit_pct").label).toBe("Nansen 24h volume unavailable for this token on base, so flows can't be sized");
+    });
+
+    it("a failed flow call is UNCHECKED, and names the endpoint and the chain", () => {
+      const s = spotSignals({ flow: null, vol24: 10_000_000, failed: { flow: true }, chain: "base" });
+      expect(get(s, "labeled_exit_pct").value).toBeNull();
+      expect(get(s, "labeled_exit_pct").label).toBe("Nansen flow data unavailable for this token on base");
+      expect(get(s, "distribution_pct").label).toBe("Nansen flow data unavailable for this token on base");
+    });
+
+    it("a failed Smart Money netflow call names that endpoint, and leaves the flow signals alone", () => {
+      const s = spotSignals(liquid({ flow: flow({ whale_net_flow_usd: -500_000, whale_wallet_count: 5 }), failed: { netflow: true }, chain: "base" }));
+      expect(get(s, "sm_netflow_pct").value).toBeNull();
+      expect(get(s, "sm_netflow_pct").label).toBe("Nansen Smart Money netflow unavailable for this token on base");
+      expect(get(s, "labeled_exit_pct").value).not.toBeNull();
+    });
+
+    it("a token with no Nansen coverage at all says exactly that, on every signal it affects", () => {
+      // Every call answered; none of them had anything. This is the jumper/WBTC shape: a
+      // resolvable target that Nansen simply does not index on that chain.
+      const s = spotSignals({ flow: null, netflow: null, vol24: null, chain: "base" });
+      for (const id of ["labeled_exit_pct", "distribution_pct", "sm_netflow_pct", "drawdown_pct"]) {
+        expect(get(s, id).value, id).toBeNull();
+        expect(get(s, id).label, id).toBe("Nansen has no coverage for this token on base");
+      }
+    });
+
+    it("null volume with null flow segments degrades to the guards rather than reporting nothing", () => {
+      const s = spotSignals({
+        flow: flow({
+          smart_trader_net_flow_usd: null,
+          smart_trader_wallet_count: null,
+          whale_net_flow_usd: null,
+          whale_wallet_count: null,
+          public_figure_net_flow_usd: null,
+          public_figure_wallet_count: null,
+        }),
+        netflow: netflow(0, 0),
+        vol24: null,
+        priceChange24hPct: 0,
+        chain: "base",
+      });
+      // The flow row exists, so this is "no labeled wallet traded it", not "we could not look".
+      expect(get(s, "labeled_exit_pct").value).toBeNull();
+      expect(get(s, "labeled_exit_pct").label).not.toMatch(/no data/i);
+      expect(get(s, "drawdown_pct").value).toBe(0);
+    });
+
+    it("a token with no candles yet has not fallen, and says so", () => {
+      const s = spotSignals(liquid({ flow: flow({}), priceChange7dPct: null, priceChange24hPct: null, chain: "base" }));
+      expect(get(s, "drawdown_pct").value).toBe(0);
+      expect(get(s, "drawdown_pct").label).toBe("No price history for this token on base yet");
+    });
+
+    it("a failed ohlcv call leaves the drawdown unavailable", () => {
+      const s = spotSignals(liquid({ flow: flow({}), priceChange7dPct: null, priceChange24hPct: null, failed: { price: true }, chain: "base" }));
+      expect(get(s, "drawdown_pct").value).toBeNull();
+      expect(get(s, "drawdown_pct").label).toBe("Nansen price history unavailable for this token on base");
+    });
+
+    it("never reports a gap as a bare \"no data\"", () => {
+      const cases = [
+        spotSignals({ flow: null, netflow: null, vol24: null, chain: "base" }),
+        spotSignals({ flow: null, vol24: 1, failed: { flow: true }, chain: "solana" }),
+        spotSignals({ flow: flow({}), vol24: null, failed: { market: true }, chain: "ethereum" }),
+      ];
+      for (const signals of cases) for (const s of signals) expect(s.label, s.id).not.toMatch(/^no data$|: no data/i);
+    });
   });
 
   describe("activity guards yield 0 (CLEAR), not null (UNCHECKED)", () => {
@@ -155,7 +229,8 @@ describe("spotSignals", () => {
     const s = spotSignals(liquid({ flow: flow({ whale_net_flow_usd: -100_000 }), netflow: netflow(-400_000, 12) }));
     expect(get(s, "sm_netflow_pct").value).toBeCloseTo(-4, 6);
     expect(get(s, "sm_netflow_pct").label).toContain("Smart Money sold 4% of 24h volume ($400K of $10M), 12 traders");
-    expect(get(spotSignals(liquid({ flow: flow({}) })), "sm_netflow_pct").value).toBeNull();
+    // No netflow row at all: nobody traded it, which the trader-count guard reads as 0.
+    expect(get(spotSignals(liquid({ flow: flow({}) })), "sm_netflow_pct").value).toBe(0);
   });
 
   it("drawdown_pct prefers the 7d change and falls back to 24h", () => {

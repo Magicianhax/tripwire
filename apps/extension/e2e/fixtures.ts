@@ -10,6 +10,8 @@ const PAGES = path.join(here, "pages");
 export const BACKEND = `http://127.0.0.1:${E2E_PORT}`;
 export const WIF = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";
 export const BONK = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
+/** Base WBTC, the token from the jumper.xyz report. */
+export const WBTC_BASE = "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c";
 
 type Fixtures = {
   context: BrowserContext;
@@ -32,6 +34,9 @@ export const test = base.extend<Fixtures>({
     );
     await context.route("https://jup.ag/**", (route) =>
       route.fulfill({ path: path.join(PAGES, "jupiter.html"), contentType: "text/html; charset=utf-8" }),
+    );
+    await context.route("https://jumper.xyz/**", (route) =>
+      route.fulfill({ path: path.join(PAGES, "jumper.html"), contentType: "text/html; charset=utf-8" }),
     );
     // Point the extension at the e2e backend before any page can call it (the popup's
     // "Backend URL" setting, stored where the background bridge reads it).

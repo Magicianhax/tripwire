@@ -14,6 +14,17 @@ export type SpotSignalInput = {
   priceChange7dPct?: number | null;
   /** Price change over 24 hours, in percent: the fallback when a token has no 7d history. */
   priceChange24hPct?: number | null;
+  /**
+   * Which Nansen calls *failed* (network, HTTP, budget), as opposed to answering with nothing.
+   *
+   * The difference decides CLEAR versus UNCHECKED. A call that came back empty is an answer —
+   * "no labeled wallet traded this", "this token has no measurable DEX volume" — and feeds the
+   * activity guards, which yield 0. A call that failed is missing data, and missing data is
+   * never CLEAR.
+   */
+  failed?: { flow?: boolean; netflow?: boolean; market?: boolean; price?: boolean };
+  /** The chain the token is on, so a message can name where the data was missing. */
+  chain?: string | null;
 };
 
 const FLOW = "tgm/flow-intelligence";
@@ -107,16 +118,30 @@ export function spotDerived(input: SpotSignalInput): SpotDerived {
 /**
  * Spot signals, all four flow/price ones normalized against 24h volume (docs/CALIBRATION.md).
  *
- * Two things the guards deliberately do:
+ * Three things the guards deliberately do:
  * - a guard that *fails on real data* yields 0, not null: "labeled wallets barely traded" is an
  *   answer, and a quiet token is CLEAR rather than UNCHECKED;
- * - a guard that cannot be *evaluated* (no flow row, no volume denominator) yields null, which
- *   is UNCHECKED. Missing data is never CLEAR.
+ * - an endpoint that answered with nothing is also an answer. A token Nansen reports no 24h
+ *   volume for is a token with nothing to normalize against, which is the volume guard's own
+ *   case, not a data gap;
+ * - an endpoint that *failed* yields null, which is UNCHECKED, and the label names the endpoint
+ *   and the chain. Missing data is never CLEAR, and it is never reported as "no data" either.
  */
 export function spotSignals(input: SpotSignalInput): Signal[] {
   const out: Signal[] = [];
   const d = spotDerived(input);
-  const { vol24, labeledUsd, labeledWallets, labeledGrossUsd, freshUsd, absorption, minActivity } = d;
+  const { labeledUsd, labeledWallets, labeledGrossUsd, freshUsd, absorption, minActivity } = d;
+  const failed = input.failed ?? {};
+  const on = input.chain ? ` on ${input.chain}` : "";
+
+  // No flow row, no volume, no price, and nothing actually failed: Nansen simply does not
+  // cover this token. Say that, rather than reporting four separate gaps.
+  const noCoverage =
+    !failed.flow && !failed.market && !failed.price && !input.flow && d.vol24 === null && pickChange(input.priceChange7dPct, input.priceChange24hPct) === null;
+  const noCoverageLabel = `Nansen has no coverage for this token${on}`;
+
+  // An empty answer is a measured zero; only a failure leaves us without a denominator.
+  const vol24 = d.vol24 ?? (failed.market ? null : 0);
 
   const flowEvidence = [
     { endpoint: FLOW, field: "smart_trader_net_flow_usd", value: usd(input.flow?.smart_trader_net_flow_usd ?? null, true) },
@@ -126,9 +151,17 @@ export function spotSignals(input: SpotSignalInput): Signal[] {
   ];
 
   // --- labeled_exit_pct: labeled money's net flow as a share of the day's volume -----------
-  if (labeledUsd === null || vol24 === null) {
-    out.push(unavailable("labeled_exit_pct", labeledUsd === null ? "Labeled wallet flow unavailable" : "24h volume unavailable, so flows can't be sized"));
-    out.push(unavailable("distribution_pct", labeledUsd === null ? "Labeled wallet flow unavailable" : "24h volume unavailable, so flows can't be sized"));
+  const flowGap = failed.flow
+    ? `Nansen flow data unavailable for this token${on}`
+    : failed.market
+      ? `Nansen 24h volume unavailable for this token${on}, so flows can't be sized`
+      : noCoverage
+        ? noCoverageLabel
+        : null;
+  if (flowGap !== null || labeledUsd === null || vol24 === null) {
+    const reason = flowGap ?? `Nansen flow data unavailable for this token${on}`;
+    out.push(unavailable("labeled_exit_pct", reason));
+    out.push(unavailable("distribution_pct", reason));
   } else {
     const quiet = `Not enough labeled trading to judge (${plural(labeledWallets, "wallet")}, ${pctVol((labeledGrossUsd / vol24) * 100)} of 24h volume)`;
     const enoughWarn = minActivity && labeledWallets >= MIN_WALLETS_WARN;
@@ -168,10 +201,20 @@ export function spotSignals(input: SpotSignalInput): Signal[] {
   }
 
   // --- sm_netflow_pct: Smart Money's 24h netflow as a share of the day's volume ------------
-  const nf = input.netflow?.net_flow_24h_usd ?? null;
+  // A missing netflow row means no Smart Money traded it, which the trader-count guard reads.
+  const nf = input.netflow?.net_flow_24h_usd ?? (failed.netflow ? null : 0);
   const traders = wallets(input.netflow?.trader_count);
-  if (nf === null || vol24 === null) {
-    out.push(unavailable("sm_netflow_pct", nf === null ? "Smart Money netflow unavailable" : "24h volume unavailable, so flows can't be sized"));
+  if (failed.netflow || failed.market || noCoverage || nf === null || vol24 === null) {
+    out.push(
+      unavailable(
+        "sm_netflow_pct",
+        failed.netflow
+          ? `Nansen Smart Money netflow unavailable for this token${on}`
+          : failed.market
+            ? `Nansen 24h volume unavailable for this token${on}, so flows can't be sized`
+            : noCoverageLabel,
+      ),
+    );
   } else {
     const enough = minActivity && traders >= MIN_SM_TRADERS;
     const smPct = enough ? (nf / vol24) * 100 : 0;
@@ -191,9 +234,20 @@ export function spotSignals(input: SpotSignalInput): Signal[] {
   }
 
   // --- drawdown_pct: how far the price already fell -----------------------------------------
-  const drawdown = pickChange(input.priceChange7dPct, input.priceChange24hPct);
+  // No candles is not a fall: a token with no price history has not dropped, and the label says
+  // as much. Only a failed ohlcv call leaves the signal unavailable.
+  const drawdown = pickChange(input.priceChange7dPct, input.priceChange24hPct) ?? (failed.price || noCoverage ? null : 0);
   if (drawdown === null) {
-    out.push(unavailable("drawdown_pct", "Price history unavailable"));
+    out.push(unavailable("drawdown_pct", noCoverage ? noCoverageLabel : `Nansen price history unavailable for this token${on}`));
+  } else if (pickChange(input.priceChange7dPct, input.priceChange24hPct) === null) {
+    out.push({
+      id: "drawdown_pct",
+      kind: "spot",
+      value: 0,
+      severity: "info",
+      label: `No price history for this token${on} yet`,
+      evidence: [],
+    });
   } else {
     const window = typeof input.priceChange7dPct === "number" && Number.isFinite(input.priceChange7dPct) ? "7 days" : "24 hours";
     out.push({

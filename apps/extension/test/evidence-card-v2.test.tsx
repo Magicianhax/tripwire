@@ -129,7 +129,9 @@ describe("the card header names the token, not the contract", () => {
     expect(c.querySelector(".tw-card-name")?.textContent?.trim()).toBe("dogwifhat");
     // The heading reads as one accessible name, so a screen reader gets both.
     expect(c.querySelector("h2")?.textContent).toBe("$WIF dogwifhat");
-    expect(c.querySelector("img.tw-token-logo")?.getAttribute("src")).toBe(token.logoUrl);
+    // The mark is a monogram, never a request to Nansen's third-party logo CDN.
+    expect(c.querySelector("img.tw-token-logo")).toBeNull();
+    expect(c.querySelector(".tw-token-logo.tw-monogram")?.textContent).toBe("WI");
     expect(c.querySelector(".tw-addr-text")?.textContent).toBe("EKpQ…zcjm");
     // The raw address never takes the headline slot any more.
     expect(c.querySelector(".tw-card-symbol")?.textContent).not.toContain("98sM");

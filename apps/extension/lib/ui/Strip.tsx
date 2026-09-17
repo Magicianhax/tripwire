@@ -26,7 +26,9 @@ export function Strip({ verdict, text, rule, onDetails, replay, venue }: StripPr
       <VenueLogo venue={venue} size={16} />
       {verdict === "LOADING" ? <Icon icon={LoaderCircle} size={16} className="tw-spin tw-spinner" /> : <Plate verdict={verdict} className="tw-strip-plate" />}
       <span className="tw-strip-text">
-        <span className="tw-strip-finding">{text}</span>
+        <span className="tw-strip-finding" title={text}>
+          {text}
+        </span>
         {rule ? <RuleClause className="tw-strip-rule" text={rule} /> : null}
       </span>
       <ReplayBadge replay={replay} />

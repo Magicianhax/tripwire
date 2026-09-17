@@ -17,6 +17,13 @@
  */
 
 :host {
+  /*
+   * Every mounted surface is bounded by whatever box it was inserted into, and by the anchor
+   * width lib/ui/fit.ts pins on this host. A venue card is not ours to overflow, and a surface
+   * that overflows can push the host page into horizontal scroll.
+   */
+  box-sizing: border-box;
+
   /* Ground */
   --tw-ground: #06080b;
   --tw-panel: #0b1016;
@@ -2216,4 +2223,67 @@ div.tw-dock-chip {
   .tw-skeleton-row {
     animation: none;
   }
+}
+
+
+/* --- Fitting the host's box ---------------------------------------------------------------
+ *
+ * Inline surfaces (strip, chip, dock chip, badge row) are siblings of the venue's own elements,
+ * so their width is whatever the venue's container gives them -- which in a shrink-to-fit parent
+ * is their max-content width. These rules, plus the anchor width lib/ui/fit.ts pins on the host,
+ * keep every surface inside the box it describes.
+ */
+/* The bound goes on the surfaces, not on the shadow host: WXT resets every host with
+   `:host { all: initial !important }`, which no rule here and no ordinary inline style can beat.
+   A custom property survives `all`, so lib/ui/fit.ts publishes the anchor's available width as
+   one and the surfaces read it back. Capping them also caps the host's own intrinsic width, so
+   a shrink-to-fit venue container stops growing to our sentence. */
+.tw-strip,
+.tw-chip,
+.tw-dock-chip,
+.tw-badge-row,
+.tw-block {
+  max-width: var(--tw-fit-width, 100%);
+  box-sizing: border-box;
+}
+
+/* A flex item's default min-width is its content, which defeats every ellipsis below it. */
+.tw-strip > *,
+.tw-chip > *,
+.tw-dock-chip > *,
+.tw-strip-text > * {
+  min-width: 0;
+}
+
+.tw-strip-text,
+.tw-chip-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Under ~320px the strip stacks: the venue logo, verdict and Details stay on the first row and
+   the finding takes the second, rather than being squeezed to a few characters. fit.ts sets the
+   attribute from the anchor's own measured box.
+
+   Deliberately an attribute and not a container query: `container-type: inline-size` implies
+   `contain: layout`, which would make every mounted host a containing block for the evidence
+   card's `position: fixed` popover. */
+:host([data-narrow]) .tw-strip {
+  flex-wrap: wrap;
+  padding-bottom: var(--tw-space-1);
+}
+
+:host([data-narrow]) .tw-strip-text {
+  order: 1;
+  flex-basis: 100%;
+  white-space: normal;
+}
+
+:host([data-narrow]) .tw-strip-finding {
+  white-space: normal;
+}
+
+:host([data-narrow]) .tw-strip-rule {
+  display: none;
 }

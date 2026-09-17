@@ -1,6 +1,7 @@
 import type { APIRequestContext, Page } from "@playwright/test";
+import { PRESETS } from "../../../packages/core/src/rules/presets";
 import { TRIPWIRE_EXTENSION_ID } from "../../../packages/core/src/constants";
-import { BACKEND, BONK, expect, test, WIF } from "./fixtures";
+import { BACKEND, BONK, expect, test, WBTC_BASE, WIF } from "./fixtures";
 
 const EXTENSION_ORIGIN = `chrome-extension://${TRIPWIRE_EXTENSION_ID}`;
 
@@ -8,6 +9,19 @@ const EXTENSION_ORIGIN = `chrome-extension://${TRIPWIRE_EXTENSION_ID}`;
 async function setPreset(request: APIRequestContext, preset: "balanced" | "paranoid") {
   const res = await request.put(`${BACKEND}/api/rules`, { headers: { origin: EXTENSION_ORIGIN }, data: { preset } });
   expect(res.status(), `PUT /api/rules ${preset}`).toBe(200);
+}
+
+/**
+ * A rule set that blocks the recorded WIF data, for the tests that need a block screen.
+ *
+ * Since the recalibration the shipped presets no longer block it -- labeled wallets shedding
+ * 0.6% of a day's volume is ordinary rotation, which was the whole point -- so the block screen
+ * is exercised through an explicit user rule instead of through Paranoid.
+ */
+async function setBlockingRules(request: APIRequestContext) {
+  const rules = PRESETS.balanced.map((r) => (r.id === "spot-exit-deep" ? { ...r, threshold: -0.5 } : r));
+  const res = await request.put(`${BACKEND}/api/rules`, { headers: { origin: EXTENSION_ORIGIN }, data: { rules } });
+  expect(res.status(), "PUT /api/rules (blocking)").toBe(200);
 }
 
 async function guardVerdict(request: APIRequestContext, tokenAddress: string): Promise<string> {
@@ -20,8 +34,8 @@ async function guardVerdict(request: APIRequestContext, tokenAddress: string): P
 }
 
 async function openBlockedJupiter(page: Page, request: APIRequestContext) {
-  await setPreset(request, "paranoid");
-  // Precondition, straight from the backend: the recorded WIF data trips a paranoid block rule.
+  await setBlockingRules(request);
+  // Precondition, straight from the backend: the recorded WIF data trips the block rule.
   expect(await guardVerdict(request, WIF)).toBe("TRIPWIRE");
   await page.goto(`https://jup.ag/swap/SOL-${WIF}`);
   await expect(page.locator(".tw-block")).toBeVisible();
@@ -252,5 +266,96 @@ test("@smoke X: author badges appear next to the username and open the badge car
   for (const venue of ["hyperliquid", "polymarket"] as const) {
     await request.fetch(`${BACKEND}/api/links`, { method: "DELETE", headers: { origin: EXTENSION_ORIGIN }, data: { handle: "degenalpha", venue } });
   }
+  expect(consoleErrors).toEqual([]);
+});
+
+test("@smoke X: the evidence chart hovers, and the window control moves the flow gauges", async ({ context, request, consoleErrors }) => {
+  await setPreset(request, "balanced");
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("https://x.com/home");
+  const chip = page.locator(".tw-chip");
+  await expect(chip.locator(".tw-chip-key")).toHaveText(/^(TRIPWIRE|CAUTION|Clear|Unchecked)$/, { timeout: 10_000 });
+  await chip.click();
+  const card = page.locator('.tw-pop[role="dialog"]');
+  await expect(card).toBeVisible();
+
+  // The header names the token Nansen knows, not the contract the post pasted.
+  await expect(card.locator(".tw-card-symbol")).toHaveText("$WIF");
+  await expect(card.locator(".tw-card-name")).toHaveText("dogwifhat");
+  await expect(card.locator(".tw-addr-text")).toContainText("…");
+  await expect(card.locator(".tw-nansen-link")).toHaveAttribute("href", /app\.nansen\.ai\/token-god-mode\?chain=solana/);
+
+  // The chart is live: moving the pointer across it reads out a price and a change.
+  const canvas = card.locator(".tw-chart-canvas");
+  await expect(canvas).toBeVisible();
+  // The card scrolls internally, and the chart sits below its fold on a 900px viewport.
+  await canvas.scrollIntoViewIfNeeded();
+  const box = (await canvas.boundingBox())!;
+  await page.mouse.move(box.x + box.width * 0.35, box.y + box.height / 2);
+  await page.mouse.move(box.x + box.width * 0.55, box.y + box.height / 2);
+  const tip = card.locator(".tw-chart-tip");
+  await expect(tip).toBeVisible();
+  await expect(tip.locator(".tw-chart-tip-price")).toContainText("$");
+  await expect(tip).toContainText("%");
+
+  // The window control drives the gauges and says the verdict did not move with it.
+  const gauges = card.locator('section[aria-label="Net flow by wallet type"] .tw-section-aside');
+  await expect(gauges).toHaveText("1d, log scale");
+  await expect(card.locator(".tw-window-note")).toHaveText("Verdict uses 1d");
+  const verdictBefore = await card.locator(".tw-card-plate").textContent();
+
+  await card.getByRole("radio", { name: "7d" }).click();
+  await expect(gauges).toHaveText("7d, log scale");
+  await expect(card.locator(".tw-window-note")).toHaveText("Verdict uses 1d · viewing 7d");
+  expect(await card.locator(".tw-card-plate").textContent()).toBe(verdictBefore);
+
+  // The 24h netflow tile is a button onto the same control.
+  await card.locator(".tw-tile-button", { hasText: "24h" }).click();
+  await expect(gauges).toHaveText("1d, log scale");
+  await expect(card.getByRole("radio", { name: "1d" })).toHaveAttribute("aria-checked", "true");
+
+  // Keyboard: the segmented control is a radiogroup with arrow keys.
+  await card.getByRole("radio", { name: "1d" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(card.getByRole("radio", { name: "7d" })).toHaveAttribute("aria-checked", "true");
+
+  expect(consoleErrors).toEqual([]);
+});
+
+test("@smoke Jumper: the strip fits its card at any width and never scrolls the page sideways", async ({ context, request, consoleErrors }) => {
+  await setPreset(request, "balanced");
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`https://jumper.xyz/?fromChain=8453&toChain=8453&toToken=${WBTC_BASE}`);
+
+  const strip = page.locator(".tw-strip");
+  await expect(strip).toBeVisible({ timeout: 15_000 });
+  const anchor = page.locator('[data-testid="widget-transaction-button"]');
+  const card = page.locator(".card");
+
+  const overflows = () =>
+    page.evaluate(() => {
+      const doc = document.documentElement;
+      const cardEl = document.querySelector(".card")!;
+      return { page: doc.scrollWidth - doc.clientWidth, card: cardEl.scrollWidth - cardEl.clientWidth };
+    });
+
+  for (const width of [640, 280, 416]) {
+    await page.evaluate((w) => (window as unknown as { setCardWidth(w: number): void }).setCardWidth(w), width);
+    await page.waitForTimeout(200); // let the ResizeObserver refit the mounted host
+
+    const stripBox = (await strip.boundingBox())!;
+    const anchorBox = (await anchor.boundingBox())!;
+    const cardBox = (await card.boundingBox())!;
+    // Never wider than the element it describes, and never outside the venue's own card.
+    expect(Math.round(stripBox.width), `strip vs anchor at ${width}px`).toBeLessThanOrEqual(Math.round(anchorBox.width) + 1);
+    expect(Math.round(stripBox.x + stripBox.width), `strip right edge at ${width}px`).toBeLessThanOrEqual(Math.round(cardBox.x + cardBox.width) + 1);
+    expect(await overflows(), `no horizontal scroll at ${width}px`).toEqual({ page: 0, card: 0 });
+  }
+
+  // The full sentence stays reachable even when the pill truncates it.
+  const finding = strip.locator(".tw-strip-finding");
+  expect(await finding.getAttribute("title")).toBe(await finding.textContent());
   expect(consoleErrors).toEqual([]);
 });

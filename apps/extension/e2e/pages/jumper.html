@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Jumper (e2e stub)</title>
+    <style>
+      /* The LI.FI widget card, reproduced for the shape that broke: the action row is a
+         shrink-to-fit container (inline-flex, width: max-content), so a block-level sibling
+         inserted before the button takes its max-content width unless it is bounded. That is
+         how the strip came to hang past the card's edge on jumper.xyz. */
+      body { font-family: system-ui, sans-serif; margin: 0; background: #12121c; color: #eceff5; }
+      header { display: flex; gap: 12px; align-items: center; padding: 12px; border-bottom: 1px solid #262636; }
+      main { margin: 320px auto 0; display: flex; justify-content: center; }
+      .card { width: var(--card-width, 416px); padding: 16px; border-radius: 16px; background: #1b1b28; }
+      .row { display: grid; gap: 8px; margin-bottom: 12px; color: #9a9ab0; }
+      input { height: 40px; padding: 0 12px; border: 1px solid #2f2f42; border-radius: 10px; background: #12121c; color: inherit; }
+      .actions { display: inline-flex; flex-direction: column; width: max-content; }
+      [data-testid="widget-transaction-button"] {
+        height: 48px;
+        min-width: 240px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 12px;
+        background: #31d0aa;
+        color: #08131b;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <header><span>Jumper</span></header>
+    <main>
+      <div class="card">
+        <div class="row"><label>You pay <input id="amount" placeholder="0.00" /></label></div>
+        <div class="actions">
+          <button data-testid="widget-transaction-button" type="button">Review Bridge</button>
+        </div>
+      </div>
+    </main>
+    <script>
+      // The test narrows and widens the card to check the strip re-fits to its anchor.
+      window.setCardWidth = (px) => document.querySelector(".card").style.setProperty("--card-width", px + "px");
+    </script>
+  </body>
+</html>

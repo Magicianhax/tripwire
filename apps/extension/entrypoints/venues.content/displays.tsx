@@ -5,6 +5,7 @@ import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, override } from "../../lib/api";
 import type { GuardResponse, SpotPanel } from "../../lib/api-types";
 import { EVIDENCE_TAB } from "../../lib/ui/BlockScreen";
+import { fitToAnchor } from "../../lib/ui/fit";
 import { Dock, SHEET_BELOW } from "../../lib/ui/Dock";
 import { mountIfCurrent, mountReact } from "../../lib/ui/mount";
 import { CardMessage } from "../../lib/ui/panel-parts";
@@ -117,6 +118,7 @@ export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key
     mount.ui.remove();
     return;
   }
+  if (anchor) fitToAnchor(mount.ui.shadowHost, anchor);
   rc.mainMount = mount;
 }
 
@@ -179,6 +181,8 @@ export function createStripBinding(
   unlocked: boolean,
   rule: string | null = null,
 ) {
+  let unfit: (() => void) | null = null;
+
   async function onBind(anchor: HTMLElement): Promise<void> {
     const text = unlocked ? `${headline}, unlocked for this session` : headline;
     const node = (
@@ -192,10 +196,16 @@ export function createStripBinding(
     const key = rc.currentKey;
     if (key === null) return;
     const mount = await mountIfCurrent(() => rc.currentKey, key, () => mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, node));
-    if (mount) rc.mainMount = mount;
+    if (!mount) return;
+    rc.mainMount = mount;
+    // The strip describes this anchor, so it is never allowed to be wider than it.
+    unfit?.();
+    unfit = fitToAnchor(mount.ui.shadowHost, anchor);
   }
 
   function onUnbind(): void {
+    unfit?.();
+    unfit = null;
     if (rc.mainMount) {
       rc.mainMount.ui.remove();
       rc.mainMount = null;

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { browser } from "wxt/browser";
 import { chainLogo, venueLogo, type BrandLogo } from "@tripwire/core";
 
@@ -46,14 +45,17 @@ export function monogram(text: string): string {
   return (letters.slice(0, 2) || "?").toUpperCase();
 }
 
-/** The token's logo from Nansen token information, else a monogram tile. The one remote image
- * Tripwire renders, and only inside the evidence card: no referrer, and any load failure falls
- * back to the monogram. */
-export function TokenLogo({ url, symbol, size = 28 }: { url?: string | null; symbol: string; size?: 24 | 28 }) {
-  const [failed, setFailed] = useState(false);
-  if (url && /^https:\/\//.test(url) && !failed) {
-    return <img className="tw-token-logo" src={url} alt="" width={size} height={size} referrerPolicy="no-referrer" decoding="async" draggable={false} onError={() => setFailed(true)} />;
-  }
+/**
+ * The token's mark in the evidence card: a monogram tile built from the symbol.
+ *
+ * Nansen's `logo` is a third-party CDN URL (CoinGecko's, today). Rendering it would have the
+ * user's browser request an image keyed to the exact token they are looking at, from a host
+ * that is not ours — a browsing-behaviour leak to a third party, on every card. Tripwire fetches
+ * fonts and marks only from `chrome-extension://`, and the token mark is no exception, so the
+ * URL is carried in the payload and deliberately not requested. Serving it as bytes the local
+ * backend already fetched would keep the picture without the leak; that is the follow-up.
+ */
+export function TokenLogo({ symbol, size = 28 }: { url?: string | null; symbol: string; size?: 24 | 28 }) {
   return (
     <span className="tw-token-logo tw-monogram" aria-hidden="true" style={{ width: size, height: size }}>
       {monogram(symbol)}

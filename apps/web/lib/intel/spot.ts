@@ -102,7 +102,7 @@ export function candleChange(candles: Candle[] | null): { pct: number | null; sp
 /** Five days of history is enough to call a change a 7-day drawdown; less falls back to 24h. */
 const SEVEN_DAY_FLOOR_MS = 5 * 24 * 3_600_000;
 
-export type SpotIntel = { signals: Signal[]; panel: SpotPanel };
+export type SpotIntel = { signals: Signal[]; panel: SpotPanel; headline: string | null };
 
 export async function buildSpotIntel(
   t: SpotTarget,
@@ -135,6 +135,10 @@ export async function buildSpotIntel(
   const lastClose = history.value?.length ? history.value[history.value.length - 1]!.close : null;
   const token = toTokenInfo(info.value, num(lastClose));
 
+  // A call that threw is a gap; a call that answered with nothing is a measurement. The
+  // signals need the difference to tell UNCHECKED from CLEAR.
+  const failed = { flow: !!flow.error, netflow: !!netflow.error, market: !!info.error, price: !!history.error };
+
   const signals = spotSignals({
     flow: flow.value,
     netflow: netflow.value,
@@ -143,12 +147,17 @@ export async function buildSpotIntel(
     vol24: token?.volume24hUsd ?? null,
     priceChange7dPct: change.spanMs >= SEVEN_DAY_FLOOR_MS ? change.pct : null,
     priceChange24hPct: change.spanMs < SEVEN_DAY_FLOOR_MS ? change.pct : null,
+    failed,
+    chain,
   });
   const derived = spotDerived({ flow: flow.value, vol24: token?.volume24hUsd ?? null });
 
   // token-information and the drawdown history are now verdict inputs, so their failure is a
   // real evidence gap (it turns the spot signals UNCHECKED), not a cosmetic one.
   const errors = [flow.error, netflow.error, indicators.error, info.error, history.error].filter((e): e is string => !!e);
+  // The one-line reason an UNCHECKED spot target could not be checked: the label of the first
+  // signal that came back unavailable, which already names the endpoint and the chain.
+  const headline = signals.find((s) => s.value === null)?.label ?? null;
 
   const panel: SpotPanel = {
     token,
@@ -212,5 +221,5 @@ export async function buildSpotIntel(
     panel.errors.push(...[buyers.error, sellers.error, candles.error, viewFlow?.error].filter((e): e is string => !!e));
   }
 
-  return { signals, panel };
+  return { signals, panel, headline };
 }

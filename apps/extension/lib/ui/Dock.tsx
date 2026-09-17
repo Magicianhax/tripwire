@@ -58,7 +58,11 @@ export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", chi
       >
         <VenueLogo venue={venue} size={16} />
         {verdict ? <Plate verdict={verdict} className="tw-chip-key" /> : <span className="tw-chip-value">Tripwire</span>}
-        {headline ? <span className="tw-chip-value">{headline}</span> : null}
+        {headline ? (
+          <span className="tw-chip-value" title={headline}>
+            {headline}
+          </span>
+        ) : null}
         <ReplayBadge replay={replay} />
       </button>
       {!collapsed ? (

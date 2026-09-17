@@ -103,6 +103,26 @@ describe("/api/guard", () => {
       expect(body.verdict).toBe("UNCHECKED");
       expect(body.hits).toEqual([]);
       expect(body.panel.errors.length).toBeGreaterThan(0);
+      // The reason names the endpoint and the chain, never a bare "no data".
+      expect(body.headline).toBe("Nansen flow data unavailable for this token on solana");
+    } finally {
+      process.env.TRIPWIRE_FIXTURES = prev;
+    }
+  });
+
+  it("an UNCHECKED spot target always carries a reason that names what was missing", async () => {
+    const prev = process.env.TRIPWIRE_FIXTURES;
+    process.env.TRIPWIRE_FIXTURES = fs.mkdtempSync(path.join(os.tmpdir(), "tw-nofixtures2-"));
+    try {
+      const target = { kind: "spot", chain: "solana", tokenAddress: WIF };
+      for (const body of [
+        await (await guardPOST(req("/api/guard", { body: { target, venue: "jupiter" } }))).json(),
+        await (await postIntelPOST(req("/api/post-intel", { body: { target } }))).json(),
+      ]) {
+        expect(body.verdict).toBe("UNCHECKED");
+        expect(body.headline).toMatch(/^Nansen .+ for this token on solana/);
+        expect(body.headline).not.toMatch(/no data/i);
+      }
     } finally {
       process.env.TRIPWIRE_FIXTURES = prev;
     }

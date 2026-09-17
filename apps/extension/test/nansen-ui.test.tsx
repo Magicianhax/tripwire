@@ -87,25 +87,21 @@ describe("bundled logos", () => {
 });
 
 describe("TokenLogo", () => {
-  it("renders an https logo with no referrer, and falls back to a monogram on error", () => {
-    const { container, root } = mount(<TokenLogo url="https://cdn.example/wif.png" symbol="$WIF" />);
-    const img = container.querySelector("img")!;
-    expect(img.getAttribute("referrerpolicy")).toBe("no-referrer");
-    act(() => {
-      img.dispatchEvent(new Event("error"));
-    });
-    expect(container.querySelector("img")).toBeNull();
-    expect(container.textContent).toBe("WI");
-    root.unmount();
-  });
-
-  it("never loads a non-https or missing URL", () => {
-    for (const url of ["http://cdn.example/wif.png", "javascript:alert(1)", null, undefined]) {
-      const { container, root } = mount(<TokenLogo url={url} symbol="EKpQ…zcjm" />);
-      expect(container.querySelector("img")).toBeNull();
-      expect(container.textContent).toBe("EK");
+  // Nansen's `logo` is a third-party CDN URL. Requesting it would tell that host which token
+  // the user is looking at, on every card, so the mark is drawn from the symbol instead.
+  it("never requests a remote image, whatever URL it is handed", () => {
+    for (const url of ["https://cdn.example/wif.png", "http://cdn.example/wif.png", "javascript:alert(1)", null, undefined]) {
+      const { container, root } = mount(<TokenLogo url={url} symbol="$WIF" />);
+      expect(container.querySelector("img"), String(url)).toBeNull();
+      expect(container.textContent).toBe("WI");
       root.unmount();
     }
+  });
+
+  it("builds the monogram from letters and digits only", () => {
+    const { container, root } = mount(<TokenLogo symbol="EKpQ…zcjm" />);
+    expect(container.textContent).toBe("EK");
+    root.unmount();
     expect(monogram("")).toBe("?");
   });
 });
