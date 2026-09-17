@@ -4,12 +4,14 @@ import type { createAnchorBinding } from "../../lib/adapters/anchor-binding";
 import type { GuardResponse } from "../../lib/api-types";
 import type { VenueAdapter } from "../../lib/adapters/types";
 import type { mountReact } from "../../lib/ui/mount";
+import type { DisplayMode } from "./display-state";
 
 export type Mount = Awaited<ReturnType<typeof mountReact>>;
 export type AnchorBinding = ReturnType<typeof createAnchorBinding>;
 
-/** Everything needed to re-route a still-visible verdict (block/strip) once its anchor node is
- * gone entirely -- see `resyncAnchor()` in `runner.tsx`. */
+/** Everything needed to re-route a still-visible tier-1 session -- a block screen, a strip, OR
+ * the Dock fallback (no anchor found yet/anymore) -- on a later tick. See `resyncAnchor()` in
+ * `runner.tsx`. */
 export type ActiveSession = {
   adapter: VenueAdapter;
   target: Target | null;
@@ -36,6 +38,10 @@ export type RunnerContext = {
   repositionCleanup: (() => void) | null;
   anchorBinding: AnchorBinding | null;
   activeSession: ActiveSession | null;
+  /** What `activeSession` is currently showing ("dock" includes the tier-1 no-anchor
+   * fallback). `null` when there's no active tier-1 session (tier 2, or nothing rendered
+   * yet). Read by `resyncAnchor()` via `nextAction(currentDisplay, decideDisplay(...))`. */
+  currentDisplay: DisplayMode | null;
   currentKey: string | null;
   unlocks: Map<string, number>;
   unlockTimers: Map<string, ReturnType<typeof setTimeout>>;

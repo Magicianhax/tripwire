@@ -4,6 +4,7 @@ import { createAnchorBinding } from "../../lib/adapters/anchor-binding";
 import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, type ApiResult } from "../../lib/api";
 import type { GuardResponse } from "../../lib/api-types";
+import { decideDisplay, nextAction } from "./display-state";
 import { createBlockBinding, createStripBinding, closeEvidenceDock, showPrimaryDock } from "./displays";
 import { errorHeadline, verdictHeadline } from "./format";
 import { isUnlocked, type RunnerContext } from "./runner-state";
@@ -31,6 +32,7 @@ export function createGuardRunner(ctx: ContentScriptContext) {
     repositionCleanup: null,
     anchorBinding: null,
     activeSession: null,
+    currentDisplay: null,
     currentKey: null,
     unlocks: new Map(),
     unlockTimers: new Map(),
@@ -56,13 +58,16 @@ export function createGuardRunner(ctx: ContentScriptContext) {
     }
     closeEvidenceDock(rc);
     rc.activeSession = null;
+    rc.currentDisplay = null;
   }
 
-  /** Routes an already-resolved verdict/headline (no network call) to the right display. Used
-   * by `render()` below, by a successful override's immediate re-render (via
-   * `rc.renderResolved`), and by `resyncAnchor()` when an anchor is lost entirely (re-queries
-   * `adapter.anchor(document)` itself, which will come back null again and naturally fall
-   * through to the Dock branch). */
+  /** Routes an already-resolved verdict/headline (no network call) to the right display, via
+   * `decideDisplay` (`./display-state.ts`) -- the single source of truth `resyncAnchor()`
+   * below also uses, so the two can never disagree about what should be showing. Used by
+   * `render()` below, by a successful override's immediate re-render (via
+   * `rc.renderResolved`), and by `resyncAnchor()` on a "switch" action -- including the anchor
+   * appearing for a tier-1 session that fell back to the Dock (re-queries
+   * `adapter.anchor(document)` itself, which will find it and route to block/strip). */
   async function render_(
     adapter: VenueAdapter,
     target: Target | null,
@@ -74,22 +79,35 @@ export function createGuardRunner(ctx: ContentScriptContext) {
     await teardownMain();
     if (rc.currentKey !== key) return; // superseded while tearing down
 
-    const anchorEl = adapter.tier === 1 ? (adapter.anchor?.(document) ?? null) : null;
     const unlocked = target ? isUnlocked(rc, key) : false;
+    const anchorPresent = adapter.tier === 1 && (adapter.anchor?.(document) ?? null) != null;
+    const decision = decideDisplay({ tier: adapter.tier, verdict, anchorPresent, unlocked });
 
-    if (adapter.tier === 1 && anchorEl) {
-      rc.activeSession = { adapter, target, key, verdict, headline, chipData };
-      const find = () => adapter.anchor?.(document) ?? null;
-      const { onBind, onUnbind } =
-        verdict === "TRIPWIRE" && target && chipData && !unlocked
-          ? createBlockBinding(rc, adapter, target, chipData, headline, key)
-          : createStripBinding(rc, adapter, target, verdict, headline, unlocked);
-      rc.anchorBinding = createAnchorBinding({ find, onBind, onUnbind });
-      rc.anchorBinding.sync();
-    } else {
+    if (adapter.tier !== 1) {
+      // Tier 2 has no anchor concept at all -- decideDisplay always returns "dock" for it, and
+      // there's nothing for resyncAnchor to ever re-route, so it's left untracked.
       rc.activeSession = null;
+      rc.currentDisplay = null;
       await showPrimaryDock(rc, adapter, target, verdict, headline);
+      return;
     }
+
+    rc.activeSession = { adapter, target, key, verdict, headline, chipData };
+    rc.currentDisplay = decision;
+
+    if (decision === "dock") {
+      rc.anchorBinding = null; // nothing found (yet) -- resyncAnchor re-probes on later ticks
+      await showPrimaryDock(rc, adapter, target, verdict, headline);
+      return;
+    }
+
+    const find = () => adapter.anchor?.(document) ?? null;
+    const { onBind, onUnbind } =
+      decision === "block" && target && chipData
+        ? createBlockBinding(rc, adapter, target, chipData, headline, key)
+        : createStripBinding(rc, adapter, target, verdict, headline, unlocked);
+    rc.anchorBinding = createAnchorBinding({ find, onBind, onUnbind });
+    rc.anchorBinding.sync();
   }
 
   /**
@@ -120,20 +138,42 @@ export function createGuardRunner(ctx: ContentScriptContext) {
   }
 
   /**
-   * The runner's cheap per-tick entry point for an UNCHANGED target: re-queries
-   * `adapter.anchor(document)` and, if it differs from the currently-bound node (or that node
-   * is no longer connected), rebinds -- releases the old blocker/listeners, installs on the
-   * new node, re-points the overlay (or re-mounts the Strip at its new DOM position). No-ops
-   * when nothing is currently shown as a block screen or strip (`rc.anchorBinding`/
-   * `rc.activeSession` are only set by that branch of `render_()`). If no anchor is found at
-   * all, falls back to the Dock (verdict stays visible; nothing left to block).
+   * The runner's cheap per-tick entry point for an UNCHANGED target -- the single place that
+   * handles BOTH the "already bound" state (a block screen or strip whose anchor node the SPA
+   * might have replaced) and the "Dock fallback" state (a tier-1 session with no anchor found
+   * yet, or not anymore). No-ops entirely for tier 2 or when nothing has rendered yet
+   * (`rc.activeSession` is only set by `render_()`'s tier-1 branch).
+   *
+   * - Already bound (`rc.anchorBinding` set): `sync()`s it first, which handles a same-node or
+   *   a same-mode node-swap in place (releases the old blocker/listeners, installs on the new
+   *   node, re-points the overlay / re-mounts the Strip) without any further work here.
+   * - Dock fallback (`rc.anchorBinding` null): re-probes `adapter.anchor(document)` directly.
+   *
+   * Either way, the resulting `anchorPresent` feeds `decideDisplay` (`./display-state.ts`) --
+   * the same function `render_()` used -- and `nextAction` against what was last shown.
+   * "none"/"rebind" -> already handled (or nothing to do). "switch" -> the display MODE itself
+   * needs to change (anchor appeared: dock -> block/strip; anchor lost entirely: block/strip
+   * -> dock; or the verdict/unlock state flipped which anchored mode applies) -- re-routed
+   * through `render_()` with the session's already-known verdict/headline/chipData, no
+   * `guard()` refetch.
    */
   async function resyncAnchor(): Promise<void> {
-    if (!rc.anchorBinding || !rc.activeSession) return;
-    rc.anchorBinding.sync();
-    if (rc.anchorBinding.anchor) return; // unchanged, or successfully rebound to a new node
-
+    if (!rc.activeSession) return;
     const { adapter, target, key, verdict, headline, chipData } = rc.activeSession;
+    const unlocked = target ? isUnlocked(rc, key) : false;
+
+    let anchorPresent: boolean;
+    if (rc.anchorBinding) {
+      rc.anchorBinding.sync();
+      anchorPresent = rc.anchorBinding.anchor != null;
+    } else {
+      anchorPresent = (adapter.anchor?.(document) ?? null) != null;
+    }
+
+    const decision = decideDisplay({ tier: adapter.tier, verdict, anchorPresent, unlocked });
+    const action = nextAction(rc.currentDisplay, decision);
+    if (action === "none" || action === "rebind") return; // "rebind" already applied by sync() above
+
     rc.anchorBinding = null;
     await render_(adapter, target, key, verdict, headline, chipData);
   }
