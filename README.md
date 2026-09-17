@@ -309,3 +309,5 @@ before running it).
 ## License
 
 MIT. See `LICENSE`.
+
+> Taking over this project? Start with [docs/HANDOFF.md](docs/HANDOFF.md).
