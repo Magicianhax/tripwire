@@ -10,6 +10,9 @@ colors:
   surface-raised: "#161616"
   success: "#3FBF7F"
   danger: "#FF5A36"
+  text: "#EDEDED"
+  border-neutral: "#2A2A2A"
+  ink-muted-on-accent: "#4A3E00"
 typography:
   display:
     fontFamily: "Archivo"
@@ -30,6 +33,11 @@ typography:
   label:
     fontFamily: "Archivo"
     fontSize: 0.75rem
+    fontWeight: 600
+    lineHeight: 1.3
+  label-sm:
+    fontFamily: "Archivo"
+    fontSize: 0.6875rem
     fontWeight: 600
     lineHeight: 1.3
   data:
@@ -78,7 +86,10 @@ The reference is industrial hazard signage: a yellow-and-black barrier tape acro
 - **`primary`/`surface` #0B0B0B ink:** backs the panels. Body text #EDEDED on ink is 16:1, and ink on yellow is 14:1.
 - **`secondary` #8C8C8C:** for labels only, at 6.0:1 on ink.
 - **`success` #3FBF7F:** used only for the CLEAR state text.
-- **`danger` #FF5A36:** used only for negative flow numbers inside neutral panels, never as a fill.
+- **`danger` #FF5A36:** used only for negative flow numbers inside neutral panels and as the outline of short liquidation ticks, never as a fill.
+- **`text` #EDEDED:** body text on ink, and long/positive bar fills. Never pure #FFF.
+- **`border-neutral` #2A2A2A:** 1px borders and rules on neutral surfaces.
+- **`ink-muted-on-accent` #4A3E00:** secondary text on yellow (rule clauses, a disabled Override label), 7:1 on `accent`.
 - **UNCHECKED:** uses `secondary` on `surface-raised`. It must never look like CLEAR.
 
 ## Typography
@@ -88,12 +99,13 @@ The reference is industrial hazard signage: a yellow-and-black barrier tape acro
   - JetBrains Mono (OFL) for every number, always `tabular-nums slashed-zero`.
 - **Loading:** fonts are packaged inside the extension (`public/fonts`, woff2) and the web app, never fetched from Google at runtime on third-party pages.
 - **Fallbacks:** `system-ui` and `ui-monospace`.
+- **`label-sm` 0.6875rem (11px):** the smallest step, for meta lines, rule clauses, table headers and badges. Nothing goes below it.
 
 ## Layout
 
 - **Chip:** single line, 24px tall, sits under the post's text.
-- **Panel:** 360px wide slide-out inside the post column (X) or docked 360px on the right edge (tier 2).
-- **Block screen:** matches the anchor button's box, with a minimum height of 180px; it expands upward over the form.
+- **Panel:** 360px wide slide-out inside the post column (X) or docked 360px on the right edge (tier 2). Under 720px wide the dock becomes a bottom sheet capped at 50vh.
+- **Block screen:** matches the anchor button's box, with a minimum height of 180px, and grows to fit its content; it expands upward over the form. It always stacks above the dock.
 - **Web pages:** 1080px max width, a dense two-column grid on `/ledger`, and no card grids.
 
 ## Elevation & Depth
@@ -112,18 +124,23 @@ The reference is industrial hazard signage: a yellow-and-black barrier tape acro
 
 ## Components
 
-- **Verdict chip:**
+- **Verdict chip:** a key cell (verdict word) and an optional mono value cell (headline), shared by the X chip, the collapsed dock and the web tables.
   - TRIPWIRE: yellow key cell + ink value cell
-  - CAUTION: ink with yellow border
-  - CLEAR: ink with green text
-  - UNCHECKED: grey
-  - Loading: a 1s pulse on the key cell, disabled under `prefers-reduced-motion`
+  - CAUTION: ink with yellow border and yellow text
+  - Clear: ink with green text
+  - Unchecked: grey
+  - Loading: a 1s pulse on the key cell, disabled under `prefers-reduced-motion`; a status, not a button
+- **Hits:** the finding (the signal's own label) is the sentence; the rule that fired follows as a `label-sm` mono clause ("rule: > $100K").
 - **Panel:** header (display h2), flow split bars (center-zero), buyers/sellers lists, netflow row, risk list, sparkline. Empty and error states name the Nansen endpoint that failed.
 - **Block screen:**
-  - hazard stripe (14px), "TRIPWIRE" in display type, up to 3 hits (a square bullet, a sentence, a mono value)
-  - override input with a typed phrase, plus an "Evidence" button
+  - hazard stripe (14px), "TRIPWIRE" in display type, up to 3 hits (a square bullet, the finding, a mono rule clause)
+  - footer order: the evidence button, labelled by kind ("See who's selling", "See positions", "See holders"), then "Not trading is the safe move.", then the override input with the phrase shown as its own mono chip
+  - the phrase matches case-insensitively with whitespace normalized
+  - initial focus on the dialog itself (described by the hits), never on the override input
+  - disabled Override keeps its 1.5px ink border with `ink-muted-on-accent` text, no opacity
   - focus ring 2px ink with a 2px offset
-- **Strip:** 32px line above the anchor for CAUTION, UNCHECKED and CLEAR.
+- **Strip:** 32px line above the anchor for CAUTION, UNCHECKED and CLEAR. CAUTION gets a full 1.5px yellow border (no side stripes).
+- **Charts:** short/No sides are outlined, long/Yes sides filled, so the split never depends on lightness alone. The ±3% liquidation band is a 1px dashed `secondary` outline.
 - **Icons:** none. Text labels only.
 
 ## Do's and Don'ts
@@ -135,5 +152,6 @@ The reference is industrial hazard signage: a yellow-and-black barrier tape acro
 - **Don't:**
   - Use yellow for anything but danger.
   - Add gradients (other than the hazard stripe), glassmorphism, glow or numbered section markers.
-  - Use ALL-CAPS eyebrows (display words TRIPWIRE and CAUTION are the only caps).
+  - Use ALL-CAPS eyebrows or labels (display words TRIPWIRE and CAUTION are the only caps; Clear, Unchecked, Replay, Yes and No are sentence case).
+  - Make hit targets smaller than 24px.
   - Use pure #FFF text on ink; use #EDEDED.
