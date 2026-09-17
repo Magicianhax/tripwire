@@ -11,3 +11,5 @@ export * from "./rules/evaluate";
 export * from "./rules/weaken";
 export * from "./schemas";
 export * from "./constants";
+export * from "./labels";
+export * from "./brands";
