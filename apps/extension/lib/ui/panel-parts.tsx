@@ -39,12 +39,12 @@ function hitFinding(hit: HitDto): string {
 /** The rules that fired: square bullet, the finding (signal label) as the sentence, and the
  * rule's threshold as a secondary mono clause. Shared by Panel (all hits) and BlockScreen
  * (max 3 + "+N more"). */
-export function HitList({ hits, max, className = "tw-hits" }: { hits: HitDto[]; max?: number; className?: string }) {
+export function HitList({ hits, max, className = "tw-hits", id }: { hits: HitDto[]; max?: number; className?: string; id?: string }) {
   if (hits.length === 0) return null;
   const shown = typeof max === "number" ? hits.slice(0, max) : hits;
   const extra = hits.length - shown.length;
   return (
-    <ul className={className}>
+    <ul className={className} id={id}>
       {shown.map((h, i) => (
         <li key={`${h.ruleId}-${i}`} className="tw-hit">
           <em className="tw-hit-bullet" aria-hidden="true">

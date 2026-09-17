@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import type { TargetKind } from "@tripwire/core";
 import type { HitDto } from "../api-types";
 import { deepActiveElement, getFocusable, isEditableElement } from "./focus";
 import { HitList } from "./panel-parts";
@@ -9,7 +10,11 @@ export type BlockScreenProps = {
   phrase: string;
   onEvidence: () => void;
   onOverride: () => void;
-  /** Focus the override input on mount, unless a host-page field already has focus.
+  /** What's blocked: labels the Evidence button ("See who's selling" / "See positions" /
+   * "See holders"). Default "spot". */
+  kind?: TargetKind;
+  /** Focus the dialog itself on mount (so screen readers announce the hits via
+   * aria-describedby), unless a host-page field already has focus.
    * Default true; the runner can pass false to suppress (e.g. it manages focus itself). */
   autoFocus?: boolean;
   /** True while an `override()` call is in flight. Disables the Override button (in addition
@@ -25,29 +30,48 @@ export type BlockScreenProps = {
 
 const MAX_HITS = 3;
 
-/** Full-yellow block screen: hazard stripe, TRIPWIRE display word, up to 3 hits, and an
- * override input that only unlocks the Override button on an exact (case-sensitive,
- * trimmed) match of `phrase`.
+const EVIDENCE_LABEL: Record<TargetKind, string> = {
+  spot: "See who's selling",
+  perp: "See positions",
+  prediction: "See holders",
+};
+
+/** Case-insensitive, whitespace-normalized: mobile keyboards auto-capitalize, and the friction
+ * that matters is typing the words, not their case. */
+export function normalizePhrase(text: string): string {
+  return text.trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+export function phraseMatches(input: string, phrase: string): boolean {
+  return normalizePhrase(input) !== "" && normalizePhrase(input) === normalizePhrase(phrase);
+}
+
+/** Full-yellow block screen: hazard stripe, TRIPWIRE display word, up to 3 hits, the Evidence
+ * button, a reassurance line, and an override input that only unlocks the Override button when
+ * `phrase` is typed (case-insensitive, whitespace-normalized).
  *
- * Focus management: on mount, focus moves to the override input (the primary action) unless
+ * Focus management: on mount, focus moves to the dialog container (tabIndex -1, described by
+ * the hits list) rather than the override input, so the block is announced and nothing steers
+ * the user toward overriding; unless
  * the host page already has an editable field focused (the user is mid-typing elsewhere —
  * e.g. a swap amount field — in which case we leave focus alone and rely on the
  * `role="alertdialog"` announcement). While focus is inside the block screen, Tab/Shift+Tab
- * cycle only through its own focusable elements (input, Override, Evidence) — a lightweight
+ * cycle only through its own focusable elements (Evidence, input, Override) — a lightweight
  * trap, since this dialog isn't dismissible by clicking outside it either.
  *
  * Escape intentionally does NOT dismiss this dialog. This is a safety block, not a
  * convenience popover: closing it on Escape would defeat its purpose, so no keydown handler
  * here ever calls anything on "Escape" — that key is a deliberate no-op.
  */
-export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = true, pending = false, error = null, replay }: BlockScreenProps) {
+export function BlockScreen({ hits, phrase, onEvidence, onOverride, kind = "spot", autoFocus = true, pending = false, error = null, replay }: BlockScreenProps) {
   const [input, setInput] = useState("");
   const headingId = useId();
   const inputId = `${headingId}-override-input`;
-  const matches = input.trim() === phrase;
+  const hitsId = `${headingId}-hits`;
+  const safeId = `${headingId}-safe`;
+  const matches = phraseMatches(input, phrase);
   const overrideDisabled = !matches || pending;
   const rootRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!autoFocus) return;
@@ -61,7 +85,7 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
     // Don't steal focus from a host-page field (other than <body>, i.e. nothing focused) the
     // user is actively using, such as a swap amount input.
     if (isEditableElement(active) && active !== document.body) return;
-    inputRef.current?.focus();
+    root?.focus({ preventScroll: true });
     // Run once on mount only: re-running on every `autoFocus` toggle would fight the user.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -77,7 +101,7 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
   }, []);
 
   function tryOverride() {
-    if (input.trim() === phrase && !pending) onOverride();
+    if (phraseMatches(input, phrase) && !pending) onOverride();
   }
 
   /** Keystrokes inside the block screen (typing the override phrase) must never trigger the
@@ -114,7 +138,16 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
   }
 
   return (
-    <div className="tw-block" role="alertdialog" aria-labelledby={headingId} ref={rootRef} onKeyDown={handleRootKeyDown} onKeyUp={isolateKey}>
+    <div
+      className="tw-block"
+      role="alertdialog"
+      aria-labelledby={headingId}
+      aria-describedby={hits.length > 0 ? `${hitsId} ${safeId}` : safeId}
+      tabIndex={-1}
+      ref={rootRef}
+      onKeyDown={handleRootKeyDown}
+      onKeyUp={isolateKey}
+    >
       <div className="tw-block-stripe" aria-hidden="true" />
       <div className="tw-block-body">
         <h3 id={headingId} className="tw-block-heading">
@@ -122,18 +155,27 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
         </h3>
         <ReplayBadge replay={replay} />
 
-        <HitList hits={hits} max={MAX_HITS} className="tw-block-hits" />
+        <HitList hits={hits} max={MAX_HITS} className="tw-block-hits" id={hitsId} />
 
         <div className="tw-block-footer">
+          <button type="button" className="tw-block-evidence" onClick={onEvidence}>
+            {EVIDENCE_LABEL[kind]}
+          </button>
+          <p id={safeId} className="tw-block-safe">
+            Not trading is the safe move.
+          </p>
           <div className="tw-block-input-row">
             <div className="tw-block-input-wrap">
-              <label htmlFor={inputId}>{`Type ${phrase} to trade anyway`}</label>
+              <label htmlFor={inputId}>
+                Type <span className="tw-block-phrase">{phrase}</span> to trade anyway
+              </label>
               <input
                 id={inputId}
-                ref={inputRef}
                 type="text"
                 spellCheck={false}
                 autoComplete="off"
+                autoCapitalize="off"
+                autoCorrect="off"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -150,9 +192,6 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
               {error}
             </p>
           ) : null}
-          <button type="button" className="tw-block-evidence" onClick={onEvidence}>
-            Evidence →
-          </button>
         </div>
       </div>
     </div>

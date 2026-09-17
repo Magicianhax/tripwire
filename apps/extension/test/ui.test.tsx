@@ -3,7 +3,7 @@ import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { describe, expect, it, vi } from "vitest";
 import type { HitDto, PerpPanel, PostIntelResponse, SpotPanel } from "../lib/api-types";
-import { BlockScreen } from "../lib/ui/BlockScreen";
+import { BlockScreen, phraseMatches } from "../lib/ui/BlockScreen";
 import { Chip } from "../lib/ui/Chip";
 import { deepActiveElement } from "../lib/ui/focus";
 import { HitList } from "../lib/ui/panel-parts";
@@ -39,7 +39,7 @@ function makeHit(i: number): HitDto {
 }
 
 describe("BlockScreen", () => {
-  it("keeps Override disabled until the exact phrase matches, and calls onOverride once on click", () => {
+  it("keeps Override disabled until the phrase matches, and calls onOverride once on click", () => {
     const onOverride = vi.fn();
     const { container, root } = mountNode(<BlockScreen hits={[makeHit(1)]} phrase="I AM EXIT LIQUIDITY" onEvidence={() => {}} onOverride={onOverride} />);
     const input = container.querySelector("input") as HTMLInputElement;
@@ -47,9 +47,9 @@ describe("BlockScreen", () => {
 
     expect(button.disabled).toBe(true);
 
-    // Wrong case: never matches, button stays disabled, click (even if forced) never fires onOverride.
+    // Wrong words: never matches, button stays disabled, click (even if forced) never fires onOverride.
     act(() => {
-      setInputValue(input, "i am exit liquidity");
+      setInputValue(input, "i am exit");
     });
     expect(button.disabled).toBe(true);
     act(() => {
@@ -57,7 +57,7 @@ describe("BlockScreen", () => {
     });
     expect(onOverride).not.toHaveBeenCalled();
 
-    // Exact match enables the button; clicking calls onOverride exactly once.
+    // A match enables the button; clicking calls onOverride exactly once.
     act(() => {
       setInputValue(input, "I AM EXIT LIQUIDITY");
     });
@@ -90,13 +90,59 @@ describe("BlockScreen", () => {
     root.unmount();
   });
 
+  it("matches the phrase case-insensitively with whitespace normalized (mobile auto-capitalization)", () => {
+    const onOverride = vi.fn();
+    const { container, root } = mountNode(<BlockScreen hits={[]} phrase="I AM EXIT LIQUIDITY" onEvidence={() => {}} onOverride={onOverride} />);
+    const input = container.querySelector("input") as HTMLInputElement;
+    const button = container.querySelector(".tw-block-override-btn") as HTMLButtonElement;
+
+    act(() => {
+      setInputValue(input, "  I am   exit\tliquidity ");
+    });
+    expect(button.disabled).toBe(false);
+    act(() => {
+      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    });
+    expect(onOverride).toHaveBeenCalledTimes(1);
+    expect(phraseMatches("   ", "   ")).toBe(false);
+    expect(phraseMatches("i am exit liquidit", "I AM EXIT LIQUIDITY")).toBe(false);
+
+    root.unmount();
+  });
+
+  it("shows the phrase in its own chip, a reassurance line, and Evidence first, labelled by kind", () => {
+    const { container, root } = mountNode(<BlockScreen hits={[makeHit(1)]} kind="perp" phrase="I AM EXIT LIQUIDITY" onEvidence={() => {}} onOverride={() => {}} />);
+    expect(container.querySelector(".tw-block-phrase")?.textContent).toBe("I AM EXIT LIQUIDITY");
+    expect(container.textContent).toContain("Not trading is the safe move.");
+    const footerButtons = [...container.querySelectorAll(".tw-block-footer button")].map((b) => b.textContent);
+    expect(footerButtons).toEqual(["See positions", "Override"]);
+    root.unmount();
+
+    const spot = mountNode(<BlockScreen hits={[]} phrase="X" onEvidence={() => {}} onOverride={() => {}} />);
+    expect(spot.container.querySelector(".tw-block-evidence")?.textContent).toBe("See who's selling");
+    spot.root.unmount();
+    const pm = mountNode(<BlockScreen hits={[]} kind="prediction" phrase="X" onEvidence={() => {}} onOverride={() => {}} />);
+    expect(pm.container.querySelector(".tw-block-evidence")?.textContent).toBe("See holders");
+    pm.root.unmount();
+  });
+
+  it("describes the alertdialog with its hits list", () => {
+    const { container, root } = mountNode(<BlockScreen hits={[makeHit(1)]} phrase="X" onEvidence={() => {}} onOverride={() => {}} />);
+    const dialog = container.querySelector('[role="alertdialog"]') as HTMLElement;
+    const ids = (dialog.getAttribute("aria-describedby") ?? "").split(" ");
+    const hitsList = container.querySelector(".tw-block-hits") as HTMLElement;
+    expect(hitsList.id).not.toBe("");
+    expect(ids).toContain(hitsList.id);
+    root.unmount();
+  });
+
   it("never fires onOverride on Enter for a non-matching phrase", () => {
     const onOverride = vi.fn();
     const { container, root } = mountNode(<BlockScreen hits={[]} phrase="OK" onEvidence={() => {}} onOverride={onOverride} />);
     const input = container.querySelector("input") as HTMLInputElement;
 
     act(() => {
-      setInputValue(input, "ok");
+      setInputValue(input, "no");
     });
     act(() => {
       input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
@@ -120,14 +166,15 @@ describe("BlockScreen", () => {
 });
 
 describe("BlockScreen focus management", () => {
-  it("focuses the override input on mount when nothing else is focused", () => {
+  it("focuses the dialog container (not the override input) on mount when nothing else is focused", () => {
     document.body.focus();
     expect(document.activeElement).toBe(document.body);
 
     const { container, root } = mountNode(<BlockScreen hits={[]} phrase="X" onEvidence={() => {}} onOverride={() => {}} />);
-    const input = container.querySelector("input") as HTMLInputElement;
+    const dialog = container.querySelector('[role="alertdialog"]') as HTMLElement;
 
-    expect(document.activeElement).toBe(input);
+    expect(document.activeElement).toBe(dialog);
+    expect(dialog.tabIndex).toBe(-1);
 
     root.unmount();
   });
@@ -161,17 +208,15 @@ describe("BlockScreen focus management", () => {
     const input = container.querySelector("input") as HTMLInputElement;
     const evidenceBtn = container.querySelector(".tw-block-evidence") as HTMLButtonElement;
 
-    // The Override button is disabled (input doesn't match "MATCH" yet), so Evidence is the
-    // last focusable element in the trap.
+    // The Override button is disabled (input doesn't match "MATCH" yet), so the input is the
+    // last focusable element in the trap and Evidence the first.
     act(() => {
-      evidenceBtn.focus();
+      input.focus();
+    });
+    act(() => {
+      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true }));
     });
     expect(document.activeElement).toBe(evidenceBtn);
-
-    act(() => {
-      evidenceBtn.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true }));
-    });
-    expect(document.activeElement).toBe(input);
 
     root.unmount();
   });
@@ -182,12 +227,13 @@ describe("BlockScreen focus management", () => {
     const input = container.querySelector("input") as HTMLInputElement;
     const evidenceBtn = container.querySelector(".tw-block-evidence") as HTMLButtonElement;
 
-    expect(document.activeElement).toBe(input); // autofocus landed here
-
     act(() => {
-      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", shiftKey: true, bubbles: true, cancelable: true }));
+      evidenceBtn.focus();
     });
-    expect(document.activeElement).toBe(evidenceBtn);
+    act(() => {
+      evidenceBtn.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", shiftKey: true, bubbles: true, cancelable: true }));
+    });
+    expect(document.activeElement).toBe(input);
 
     root.unmount();
   });

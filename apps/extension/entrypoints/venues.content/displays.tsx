@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import type { Target, Verdict } from "@tripwire/core";
-import { computeBlockRect } from "../../lib/adapters/overlay";
 import { installBlocker } from "../../lib/adapters/blocker";
 import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, override } from "../../lib/api";
@@ -177,7 +176,8 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
     if (!boundAnchor) return;
     const node = (
       <BlockOverlay
-        rect={computeBlockRect(boundAnchor.getBoundingClientRect())}
+        anchorRect={boundAnchor.getBoundingClientRect()}
+        kind={target.kind}
         hits={data.hits}
         phrase={phrase}
         pending={overridePending}
