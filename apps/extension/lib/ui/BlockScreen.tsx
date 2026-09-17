@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { HitDto } from "../api-types";
+import { deepActiveElement, getFocusable, isEditableElement } from "./focus";
 import { HitList } from "./panel-parts";
 
 export type BlockScreenProps = {
@@ -13,19 +14,6 @@ export type BlockScreenProps = {
 };
 
 const MAX_HITS = 3;
-
-function isEditableElement(el: Element | null): el is HTMLElement {
-  if (!el) return false;
-  const tag = el.tagName;
-  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
-  return (el as HTMLElement).isContentEditable === true;
-}
-
-/** Focusable elements inside the block screen, in DOM/tab order, skipping disabled ones
- * (the Override button is disabled until the phrase matches). */
-function getFocusable(root: HTMLElement): HTMLElement[] {
-  return Array.from(root.querySelectorAll<HTMLElement>("input, button")).filter((el) => !el.hasAttribute("disabled") && el.tabIndex !== -1);
-}
 
 /** Full-yellow block screen: hazard stripe, TRIPWIRE display word, up to 3 hits, and an
  * override input that only unlocks the Override button on an exact (case-sensitive,
@@ -52,7 +40,13 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
 
   useEffect(() => {
     if (!autoFocus) return;
-    const active = document.activeElement;
+    // Walk through shadow roots too: document.activeElement alone only reports the shadow
+    // HOST when focus is inside a third-party widget's (RainbowKit/WalletConnect-style) own
+    // shadow root, which would otherwise look "not editable" and get its focus stolen.
+    const active = deepActiveElement();
+    const root = rootRef.current;
+    // Already focused somewhere inside our own block screen (e.g. a re-mount) — no-op.
+    if (root && active && root.contains(active)) return;
     // Don't steal focus from a host-page field (other than <body>, i.e. nothing focused) the
     // user is actively using, such as a swap amount input.
     if (isEditableElement(active) && active !== document.body) return;

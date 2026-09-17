@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { HitDto, PerpPanel, PostIntelResponse, SpotPanel } from "../lib/api-types";
 import { BlockScreen } from "../lib/ui/BlockScreen";
 import { Chip } from "../lib/ui/Chip";
+import { deepActiveElement } from "../lib/ui/focus";
 import { Panel } from "../lib/ui/Panel";
 import { PerpBody } from "../lib/ui/PerpBody";
 
@@ -188,6 +189,72 @@ describe("BlockScreen focus management", () => {
     expect(document.activeElement).toBe(evidenceBtn);
 
     root.unmount();
+  });
+});
+
+describe("deepActiveElement", () => {
+  it("walks nested shadow roots (two levels deep) to find the true focused element", () => {
+    const outerHost = document.createElement("div");
+    document.body.appendChild(outerHost);
+    const outerShadow = outerHost.attachShadow({ mode: "open" });
+
+    const innerHost = document.createElement("div");
+    outerShadow.appendChild(innerHost);
+    const innerShadow = innerHost.attachShadow({ mode: "open" });
+
+    const input = document.createElement("input");
+    innerShadow.appendChild(input);
+    input.focus();
+
+    // The top-level document only ever sees the outer shadow host as "active".
+    expect(document.activeElement).toBe(outerHost);
+    // deepActiveElement recurses through both shadow roots to the real focused element.
+    expect(deepActiveElement()).toBe(input);
+
+    outerHost.remove();
+  });
+
+  it("returns document.activeElement directly when nothing is inside a shadow root", () => {
+    document.body.focus();
+    expect(deepActiveElement()).toBe(document.body);
+  });
+});
+
+describe("BlockScreen focus management (shadow DOM / contenteditable hosts)", () => {
+  it("does not steal focus from an input focused inside a third-party widget's own shadow root", () => {
+    const widgetHost = document.createElement("div");
+    document.body.appendChild(widgetHost);
+    const widgetShadow = widgetHost.attachShadow({ mode: "open" });
+    const shadowInput = document.createElement("input");
+    widgetShadow.appendChild(shadowInput);
+    shadowInput.focus();
+
+    expect(widgetShadow.activeElement).toBe(shadowInput);
+
+    const { root } = mountNode(<BlockScreen hits={[]} phrase="X" onEvidence={() => {}} onOverride={() => {}} />);
+
+    // The shadow root's own focused element must be unchanged — BlockScreen must not have
+    // stolen focus just because document.activeElement (the shadow host) looked non-editable.
+    expect(widgetShadow.activeElement).toBe(shadowInput);
+
+    root.unmount();
+    widgetHost.remove();
+  });
+
+  it("does not steal focus from a contenteditable host element", () => {
+    const editable = document.createElement("div");
+    editable.setAttribute("contenteditable", "true");
+    editable.tabIndex = 0;
+    document.body.appendChild(editable);
+    editable.focus();
+    expect(document.activeElement).toBe(editable);
+
+    const { root } = mountNode(<BlockScreen hits={[]} phrase="X" onEvidence={() => {}} onOverride={() => {}} />);
+
+    expect(document.activeElement).toBe(editable);
+
+    root.unmount();
+    editable.remove();
   });
 });
 
