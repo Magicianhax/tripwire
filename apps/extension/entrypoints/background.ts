@@ -1,6 +1,7 @@
 import { browser } from "wxt/browser";
 import { defineBackground } from "wxt/utils/define-background";
 import { createBridge, createMessageListener } from "../lib/bridge";
+import { syncWalletScripts } from "../lib/permissions";
 
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
 
@@ -23,6 +24,16 @@ async function setBadge(status: number): Promise<void> {
 
 export default defineBackground(() => {
   const bridge = createBridge({ fetchImpl: fetch, getBackendUrl });
+
+  // Keep the wallet content script registered for exactly the sites the user has granted. This
+  // runs on install, on every browser start, and whenever a permission is added or revoked —
+  // including from Chrome's own extension settings, which never tells the extension directly.
+  const sync = () => void syncWalletScripts().catch(() => {});
+  sync();
+  browser.runtime.onInstalled.addListener(sync);
+  browser.runtime.onStartup.addListener(sync);
+  browser.permissions.onAdded.addListener(sync);
+  browser.permissions.onRemoved.addListener(sync);
 
   browser.runtime.onMessage.addListener(
     createMessageListener({

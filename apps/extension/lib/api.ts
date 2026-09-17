@@ -19,6 +19,8 @@ import type {
   PostIntelResponse,
   ResolveResponse,
   RulesResponse,
+  WalletLabelsResponse,
+  WalletLensResponse,
 } from "./api-types";
 
 export type { ApiResult };
@@ -84,4 +86,15 @@ export function linkWallet(handle: string, venue: WalletVenueId, address: string
 
 export function unlinkWallet(handle: string, venue: WalletVenueId): Promise<ApiResult<UnlinkResponse>> {
   return call("DELETE", "/api/links", { handle, venue });
+}
+
+/** The wallet lens: everything Tripwire knows about one wallet somebody shared. */
+export function walletLens(query: string, chainHint?: Chain): Promise<ApiResult<WalletLensResponse>> {
+  return call("POST", "/api/wallet", chainHint ? { query, chainHint } : { query });
+}
+
+/** The 100-credit Nansen label lookup. Only the card's own button, which states the price,
+ * calls this; the backend refuses unless NANSEN_ALLOW_PREMIUM=1. */
+export function walletLabels(address: string): Promise<ApiResult<WalletLabelsResponse>> {
+  return call("POST", "/api/wallet/labels", { address });
 }

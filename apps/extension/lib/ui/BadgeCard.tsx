@@ -7,7 +7,8 @@ import { pct, timeAgo, usd } from "./format";
 import { CloseIcon, Icon, LABEL_KIND_ICON } from "./icons";
 import { LinkStatus, LinkWallet } from "./LinkWallet";
 import { BrandMark, ChainLogo, monogram } from "./Logo";
-import { Empty, Section } from "./panel-parts";
+import { Empty, Problems, Readouts, Section, signOf as sign, Sources } from "./panel-parts";
+import { HyperliquidBody, PolymarketBody } from "./VenueBody";
 import { PopoverContext } from "./Popover";
 import { Tabs, type TabDef } from "./Tabs";
 
@@ -22,45 +23,7 @@ export type BadgeCardProps = {
   onUnlink: (venue: WalletVenue) => Promise<string | null>;
 };
 
-const sign = (v: number | null | undefined) => (v === null || v === undefined || v === 0 ? "zero" : v < 0 ? "neg" : "pos");
-/** A price, not a size: prices stay exact ($2,299.4), only totals are abbreviated. */
-const price = (v: number | null | undefined) =>
-  v === null || v === undefined || !Number.isFinite(v) ? "—" : `$${v.toLocaleString("en-US", { maximumFractionDigits: v >= 1 ? 2 : 4 })}`;
 const rate = (v: number | null | undefined) => (v === null || v === undefined ? "—" : pct(v * 100));
-
-/** Figure tiles: a label and its value, red or mint when the value is signed. */
-function Readouts({ items }: { items: { label: string; value: string; sign?: "pos" | "neg" | "zero" }[] }) {
-  return (
-    <dl className="tw-readouts">
-      {items.map((it) => (
-        <div key={it.label}>
-          <dt>{it.label}</dt>
-          <dd className="tw-fig" data-sign={it.sign}>
-            {it.value}
-          </dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
-function Sources({ children }: { children: string }) {
-  return <p className="tw-sources tw-meta">Data: {children}</p>;
-}
-
-function Problems({ errors }: { errors: string[] }) {
-  if (errors.length === 0) return null;
-  return (
-    <ul className="tw-errors">
-      {errors.map((e, i) => (
-        <li key={i}>
-          <Icon icon={CircleAlert} size={14} />
-          Unavailable: {e}
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 function NansenTab({ badge, handle }: { badge: NansenBadge | undefined; handle: string }) {
   if (!badge) return <Empty>No Nansen label for @{handle}.</Empty>;
@@ -118,153 +81,6 @@ function NansenTab({ badge, handle }: { badge: NansenBadge | undefined; handle: 
   );
 }
 
-function HyperliquidTab({ badge, onUnlink }: { badge: HyperliquidBadge; onUnlink: (venue: WalletVenue) => Promise<string | null> }) {
-  const positions = badge.positions ?? [];
-  const fills = badge.fills ?? [];
-  return (
-    <>
-      <LinkStatus venue="hyperliquid" link={badge.link} onUnlink={onUnlink} />
-      <Readouts
-        items={[
-          { label: "Account value", value: usd(badge.accountValueUsd) },
-          { label: "Margin used", value: usd(badge.marginUsedUsd) },
-          { label: `Realized PnL ${badge.nansenPerp?.windowDays ?? 30}d`, value: usd(badge.nansenPerp?.realizedPnlUsd, true), sign: sign(badge.nansenPerp?.realizedPnlUsd) },
-          { label: "Win rate", value: rate(badge.nansenPerp?.winRate) },
-        ]}
-      />
-      <Section title="Open positions">
-        {positions.length === 0 ? (
-          <Empty>No open positions on Hyperliquid.</Empty>
-        ) : (
-          <table className="tw-table">
-            <thead>
-              <tr>
-                <th scope="col">Coin</th>
-                <th scope="col">Side</th>
-                <th scope="col" className="tw-num">
-                  Entry / Mark
-                </th>
-                <th scope="col" className="tw-num">
-                  Liq.
-                </th>
-                <th scope="col" className="tw-num">
-                  uPnL
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {positions.slice(0, 5).map((p) => (
-                <tr key={p.coin}>
-                  <td>{p.coin}</td>
-                  <td>
-                    <span className="tw-side" data-side={p.side}>
-                      {p.side === "short" ? "Short" : "Long"}
-                      {p.leverage ? ` ${p.leverage}x` : ""}
-                    </span>
-                  </td>
-                  <td className="tw-fig tw-num">
-                    {price(p.entryPx)} / {price(p.markPx)}
-                  </td>
-                  <td className="tw-fig tw-num">{price(p.liquidationPx)}</td>
-                  <td className="tw-fig tw-num" data-sign={sign(p.unrealizedPnlUsd)}>
-                    {usd(p.unrealizedPnlUsd, true)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </Section>
-      <Section
-        title="Recent fills"
-        aside={badge.fillsWindow ? `${usd(badge.fillsRealizedPnlUsd, true)} over ${badge.fillsWindow.count} fills` : undefined}
-      >
-        {fills.length === 0 ? (
-          <Empty>No fills in Hyperliquid's recent window.</Empty>
-        ) : (
-          <ul className="tw-trade-list" data-cols="3">
-            {fills.map((f) => (
-              <li key={`${f.time}-${f.coin}-${f.px}`}>
-                <span>
-                  {f.dir} {f.coin}
-                </span>
-                <span className="tw-fig" data-sign={sign(f.closedPnlUsd)}>
-                  {usd(f.closedPnlUsd, true)}
-                </span>
-                <span className="tw-fig tw-meta">{timeAgo(new Date(f.time).toISOString())}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Section>
-      <Problems errors={badge.errors} />
-      <Sources>Hyperliquid API (public, backend only) · Nansen perp PnL</Sources>
-    </>
-  );
-}
-
-function PolymarketTab({ badge, onUnlink }: { badge: PolymarketBadge; onUnlink: (venue: WalletVenue) => Promise<string | null> }) {
-  const open = badge.openPositions ?? [];
-  const trades = badge.trades ?? [];
-  return (
-    <>
-      <LinkStatus venue="polymarket" link={badge.link} onUnlink={onUnlink} />
-      <Readouts
-        items={[
-          { label: "Total PnL", value: usd(badge.totalPnlUsd, true), sign: sign(badge.totalPnlUsd) },
-          { label: "Realized", value: usd(badge.realizedPnlUsd, true), sign: sign(badge.realizedPnlUsd) },
-          { label: "Unrealized", value: usd(badge.unrealizedPnlUsd, true), sign: sign(badge.unrealizedPnlUsd) },
-          { label: "Win rate", value: rate(badge.winRate) },
-        ]}
-      />
-      <Section
-        title="Open positions"
-        aside={badge.marketsTraded !== null ? `${badge.marketsWon ?? 0} won of ${badge.marketsTraded} markets` : undefined}
-      >
-        {open.length === 0 ? (
-          <Empty>No open positions on Polymarket.</Empty>
-        ) : (
-          <ul className="tw-market-rows">
-            {open.map((p) => (
-              <li key={p.marketId}>
-                <span className="tw-market-question">{p.question}</span>
-                <span className="tw-market-figures">
-                  <span className="tw-side" data-side={p.side.toLowerCase() === "yes" ? "long" : "short"}>
-                    {p.side}
-                  </span>
-                  <span className="tw-fig tw-market-value">{usd(p.valueUsd)}</span>
-                  <span className="tw-fig" data-sign={sign(p.pnlUsd)}>
-                    {usd(p.pnlUsd, true)}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Section>
-      <Section title="Recent trades">
-        {trades.length === 0 ? (
-          <Empty>No recent Polymarket trades.</Empty>
-        ) : (
-          <ul className="tw-trade-list" data-cols="3">
-            {trades.map((t, i) => (
-              <li key={`${t.timestamp}-${i}`}>
-                <span>
-                  {t.action ?? "Trade"} {t.side ?? ""} at {t.price === null ? "—" : `$${t.price.toFixed(2)}`}
-                </span>
-                <span className="tw-fig">{usd(t.usdcValue)}</span>
-                <span className="tw-fig tw-meta">{timeAgo(`${t.timestamp}${/[Zz]|[+-]\d\d:?\d\d$/.test(t.timestamp) ? "" : "Z"}`)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Section>
-      <Problems errors={badge.errors} />
-      <Sources>Nansen prediction market</Sources>
-    </>
-  );
-}
-
 /**
  * The author badge card: the same floating card as the post evidence, with one tab per badge the
  * author has (Nansen · Hyperliquid · Polymarket) and the wallet-link controls. Nothing here is
@@ -288,9 +104,9 @@ export function BadgeCard({ handle, displayName, badges, initial, onClose, onSav
       venue === "nansen" ? (
         <NansenTab badge={badges?.nansen} handle={handle} />
       ) : venue === "hyperliquid" ? (
-        <HyperliquidTab badge={badges!.hyperliquid!} onUnlink={onUnlink} />
+        <HyperliquidBody badge={badges!.hyperliquid!} head={<LinkStatus venue="hyperliquid" link={badges!.hyperliquid!.link} onUnlink={onUnlink} />} />
       ) : (
-        <PolymarketTab badge={badges!.polymarket!} onUnlink={onUnlink} />
+        <PolymarketBody badge={badges!.polymarket!} head={<LinkStatus venue="polymarket" link={badges!.polymarket!.link} onUnlink={onUnlink} />} />
       );
     return { id: venue, label, icon: <BrandMark logo={logo} size={14} />, content };
   };

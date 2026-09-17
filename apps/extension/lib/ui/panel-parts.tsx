@@ -263,7 +263,7 @@ export function CardHeader({
   const close = pop ? () => pop.close("close-button") : onClose;
   return (
     <header className="tw-card-header">
-      {showToken ? <TokenLogo url={logoUrl} symbol={title} /> : null}
+      {showToken ? <TokenLogo url={logoUrl} symbol={title} chain={chain} tokenAddress={address} /> : null}
       <div className="tw-card-heading">
         <h2 id={headingId} className="tw-card-title" tabIndex={-1}>
           <span className="tw-card-symbol">{title}</span>
@@ -318,3 +318,47 @@ export function CardMessage({
     </section>
   );
 }
+
+/** Figure tiles: a label and its value, red or mint when the value is signed. Shared by the
+ * author badge card and the wallet card. */
+export function Readouts({ items }: { items: { label: string; value: string; sign?: "pos" | "neg" | "zero" }[] }) {
+  return (
+    <dl className="tw-readouts">
+      {items.map((it) => (
+        <div key={it.label}>
+          <dt>{it.label}</dt>
+          <dd className="tw-fig" data-sign={it.sign}>
+            {it.value}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/** The line that names where a tab's numbers came from. */
+export function Sources({ children }: { children: ReactNode }) {
+  return <p className="tw-sources tw-meta">Data: {children}</p>;
+}
+
+/** "Unavailable: …" per failed call, so a gap always says which one. */
+export function Problems({ errors }: { errors: string[] }) {
+  if (errors.length === 0) return null;
+  return (
+    <ul className="tw-errors">
+      {errors.map((e, i) => (
+        <li key={i}>
+          <Icon icon={CircleAlert} size={14} />
+          Unavailable: {e}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Signed-figure tone: mint above zero, red below, neutral at zero or unknown. */
+export const signOf = (v: number | null | undefined): "pos" | "neg" | "zero" => (v === null || v === undefined || v === 0 ? "zero" : v < 0 ? "neg" : "pos");
+
+/** A price, not a size: prices stay exact ($2,299.4), only totals are abbreviated. */
+export const price = (v: number | null | undefined) =>
+  v === null || v === undefined || !Number.isFinite(v) ? "—" : `$${v.toLocaleString("en-US", { maximumFractionDigits: v >= 1 ? 2 : 4 })}`;

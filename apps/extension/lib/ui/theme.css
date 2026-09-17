@@ -2316,3 +2316,94 @@ div.tw-dock-chip {
   order: 2;
   margin-left: auto;
 }
+
+/* ---- Wallet lens ---- */
+
+/* The mark beside a wallet somebody shared. 14px so it sits inside a line of the host's own
+   text without changing its height; the 24px hit target comes from a pseudo-element, which
+   costs no layout. */
+.tw-wallet-marker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin: 0 0 0 4px;
+  padding: 2px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--tw-raised);
+  color: var(--tw-text);
+  vertical-align: text-bottom;
+  cursor: pointer;
+  transition:
+    background 140ms var(--tw-ease-out),
+    border-color 140ms var(--tw-ease-out);
+}
+
+.tw-wallet-marker::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+
+.tw-wallet-marker:hover,
+.tw-wallet-marker[data-open] {
+  border-color: var(--tw-mint-line);
+  background: var(--tw-mint-dim);
+}
+
+.tw-wallet-marker:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 2px;
+}
+
+/* The wallet card is the same floating card as the evidence and badge cards. */
+.tw-wallet-card .tw-card-header {
+  align-items: center;
+}
+
+.tw-wallet-card .tw-readouts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tw-wallet-card .tw-card-footer .tw-sources {
+  margin-top: var(--tw-space-1);
+}
+
+/* The 100-credit label lookup. It is an action inside a sentence, so it reads as a link with a
+   real target size rather than as another button competing with the tabs. */
+.tw-premium-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-1);
+  appearance: none;
+  min-height: 24px;
+  padding: 0 var(--tw-space-2);
+  border: 1px dashed var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  background: transparent;
+  color: var(--tw-mint);
+  font-family: var(--tw-font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tw-premium-button:hover {
+  border-color: var(--tw-mint-line);
+  background: var(--tw-mint-dim);
+}
+
+.tw-premium-button:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 2px;
+}
+
+/* The token's real picture, served by the local backend (see lib/ui/Logo.tsx). */
+.tw-token-image {
+  border-radius: 6px;
+  background: var(--tw-raised);
+}

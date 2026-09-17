@@ -4,6 +4,7 @@ import type { SpotTarget, Verdict } from "@tripwire/core";
 import { defineContentScript } from "wxt/utils/define-content-script";
 import type { ApiResult } from "../../lib/api";
 import { health, personIntel, postIntel, resolve } from "../../lib/api";
+import { claimToken } from "../../lib/claimed-tokens";
 import { createReplayFlag } from "../../lib/replay";
 import type { PersonIntelResponse, PostIntelResponse, ResolveResponse } from "../../lib/api-types";
 import { Chip } from "../../lib/ui/Chip";
@@ -110,6 +111,8 @@ export default defineContentScript({
         return;
       }
       const { target, symbol } = resolved;
+      // This address is a token, not a wallet: the wallet lens must not also mark it.
+      claimToken(target.tokenAddress);
 
       let expanded = false;
       let lastVerdict: Verdict | "LOADING" = "LOADING";

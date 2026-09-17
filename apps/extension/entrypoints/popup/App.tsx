@@ -7,6 +7,7 @@ import type { KeySource, RulesResponse } from "../../lib/api-types";
 import { Icon } from "../../lib/ui/icons";
 import { BrandMark } from "../../lib/ui/Logo";
 import { popupStatus } from "./status";
+import { WalletLensSection } from "./WalletLensSection";
 
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
 const BACKEND_URL_RE = /^http:\/\/(127\.0\.0\.1|localhost):\d{1,5}$/;
@@ -202,6 +203,8 @@ export default function App() {
           </div>
         ))}
       </section>
+
+      <WalletLensSection />
 
       <footer className="tw-popup-foot">
         Powered by <BrandMark logo={NANSEN_LOGO} size={14} /> <span className="tw-powered-name">Nansen</span>

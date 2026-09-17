@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { browser } from "wxt/browser";
 import { chainLogo, venueLogo, type BrandLogo } from "@tripwire/core";
+import { tokenLogoUrl } from "../backend-url";
 
 /** A file bundled under the extension's public/ dir, as a chrome-extension:// URL. Brand marks
  * are never fetched from their owners' sites at runtime. Outside an extension context (unit
@@ -46,19 +48,53 @@ export function monogram(text: string): string {
 }
 
 /**
- * The token's mark in the evidence card: a monogram tile built from the symbol.
+ * The token's mark: its real picture when the local backend can serve it, a monogram otherwise.
  *
- * Nansen's `logo` is a third-party CDN URL (CoinGecko's, today). Rendering it would have the
- * user's browser request an image keyed to the exact token they are looking at, from a host
- * that is not ours — a browsing-behaviour leak to a third party, on every card. Tripwire fetches
- * fonts and marks only from `chrome-extension://`, and the token mark is no exception, so the
- * URL is carried in the payload and deliberately not requested. Serving it as bytes the local
- * backend already fetched would keep the picture without the leak; that is the follow-up.
+ * Nansen's `logo` is a third-party CDN URL (CoinGecko's, today). Requesting it from the host
+ * page would tell that CDN which token this user is looking at, on every card — so Tripwire
+ * doesn't. `GET /api/token-logo` on the local backend fetches those bytes instead, from a URL
+ * Nansen already gave it, and serves them from 127.0.0.1. The only host this `<img>` ever names
+ * is the user's own machine.
+ *
+ * `chain`/`tokenAddress` name the token to the proxy. Anything that goes wrong — no logo known,
+ * a page CSP that refuses the localhost origin, the backend not running — falls back to the
+ * monogram through `onError`, so the header is never a broken image.
  */
-export function TokenLogo({ symbol, size = 28 }: { url?: string | null; symbol: string; size?: 24 | 28 }) {
+export function TokenLogo({
+  symbol,
+  size = 28,
+  chain,
+  tokenAddress,
+}: {
+  url?: string | null;
+  symbol: string;
+  size?: 20 | 24 | 28;
+  chain?: string | null;
+  tokenAddress?: string | null;
+}) {
+  const src = tokenLogoUrl(chain, tokenAddress);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [src]);
+
+  if (!src || failed) {
+    return (
+      <span className="tw-token-logo tw-monogram" aria-hidden="true" style={{ width: size, height: size }}>
+        {monogram(symbol)}
+      </span>
+    );
+  }
   return (
-    <span className="tw-token-logo tw-monogram" aria-hidden="true" style={{ width: size, height: size }}>
-      {monogram(symbol)}
-    </span>
+    <img
+      className="tw-token-logo tw-token-image"
+      src={src}
+      alt=""
+      width={size}
+      height={size}
+      decoding="async"
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      draggable={false}
+      onError={() => setFailed(true)}
+    />
   );
 }

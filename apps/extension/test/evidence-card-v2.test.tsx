@@ -129,20 +129,30 @@ describe("the card header names the token, not the contract", () => {
     expect(c.querySelector(".tw-card-name")?.textContent?.trim()).toBe("dogwifhat");
     // The heading reads as one accessible name, so a screen reader gets both.
     expect(c.querySelector("h2")?.textContent).toBe("$WIF dogwifhat");
-    // The mark is a monogram, never a request to Nansen's third-party logo CDN.
-    expect(c.querySelector("img.tw-token-logo")).toBeNull();
-    expect(c.querySelector(".tw-token-logo.tw-monogram")?.textContent).toBe("WI");
+    // The mark is served by the local backend, never fetched from Nansen's third-party logo CDN.
+    const logo = c.querySelector<HTMLImageElement>("img.tw-token-logo");
+    expect(logo?.getAttribute("src")).toBe(`http://127.0.0.1:3000/api/token-logo?chain=solana&address=${WIF}`);
+    expect(c.querySelector(".tw-token-logo.tw-monogram")).toBeNull();
     expect(c.querySelector(".tw-addr-text")?.textContent).toBe("EKpQ…zcjm");
     // The raw address never takes the headline slot any more.
     expect(c.querySelector(".tw-card-symbol")?.textContent).not.toContain("98sM");
   });
 
-  it("falls back to the title and a monogram when Nansen has no identity for the token", () => {
+  it("falls back to the title when Nansen has no identity for the token, and to a monogram when the logo does not load", () => {
     const c = render(<Panel data={response({ panel: panel({ token: null, logoUrl: null }) })} title="98sM…Mh5g" onClose={() => {}} chain="solana" address={WIF} />);
     expect(c.querySelector(".tw-card-symbol")?.textContent).toBe("98sM…Mh5g");
     expect(c.querySelector(".tw-card-name")).toBeNull();
-    expect(c.querySelector(".tw-monogram")?.textContent).toBe("98");
     expect(c.querySelector(".tw-addr-text")?.textContent).toBe("EKpQ…zcjm");
+    // A token the backend has no picture for answers 404, the host page's CSP may refuse the
+    // localhost origin outright, and the backend may not be running at all: every one of those
+    // arrives as the image's error event, and the header becomes a monogram instead.
+    const img = c.querySelector<HTMLImageElement>("img.tw-token-logo")!;
+    expect(img).not.toBeNull();
+    act(() => {
+      img.dispatchEvent(new Event("error"));
+    });
+    expect(c.querySelector("img.tw-token-logo")).toBeNull();
+    expect(c.querySelector(".tw-monogram")?.textContent).toBe("98");
   });
 
   it("copies the full address, not the shortened form", async () => {

@@ -10,6 +10,7 @@ import type {
   Evidence,
   FlowRow,
   IndicatorsResp,
+  LabelKind,
   NetflowRow,
   PerpPosition,
   PerpScreenerRow,
@@ -247,3 +248,52 @@ export type WalletLinkDto = { handle: string; venue: WalletVenueId; address: str
 export type LinksResponse = { links: WalletLinkDto[] };
 export type LinkResponse = { link: WalletLinkDto };
 export type UnlinkResponse = { deleted: boolean };
+
+// ---- Wallet lens (POST /api/wallet, POST /api/wallet/labels) ----
+
+export type WalletHolding = {
+  symbol: string;
+  name: string | null;
+  chain: string;
+  tokenAddress: string;
+  amount: number | null;
+  valueUsd: number;
+};
+
+export type WalletPortfolio = { totalUsd: number; holdings: WalletHolding[]; chains: string[]; tokenCount: number };
+
+export type WalletPnl = {
+  realizedPnlUsd: number | null;
+  realizedPnlPercent: number | null;
+  winRate: number | null;
+  tradeCount: number | null;
+  tokenCount: number | null;
+  windowDays: number;
+};
+
+export type WalletLabel = { text: string; kind: LabelKind; tags: string[] };
+
+/** The Hyperliquid and Polymarket blocks are the author badges' shapes without their `link`:
+ * the wallet lens knows the address because the user clicked it, not because anyone linked it. */
+export type WalletHyperliquid = Omit<HyperliquidBadge, "link">;
+export type WalletPolymarket = Omit<PolymarketBadge, "link">;
+
+export type WalletLensResponse = {
+  input: string;
+  resolved: boolean;
+  address: string | null;
+  chainGuess: Chain | null;
+  name: { value: string; source: string } | null;
+  label: WalletLabel | null;
+  portfolio: WalletPortfolio | null;
+  pnl: WalletPnl | null;
+  hyperliquid: WalletHyperliquid | null;
+  polymarket: WalletPolymarket | null;
+  nansenUrl: string | null;
+  sources: string[];
+  credits: number;
+  message: string | null;
+  errors: string[];
+};
+
+export type WalletLabelsResponse = { address: string; labels: string[]; credits: number; errors: string[] };

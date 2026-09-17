@@ -22,11 +22,22 @@ export default defineConfig({
     key: MANIFEST_PUBLIC_KEY,
     description:
       "Nansen onchain data at the moment of decision: verdicts on X posts, trade blocks on DEX, perp and prediction venues.",
-    permissions: ["storage"],
+    // `scripting` is what registers the wallet content script for a site the user enables from
+    // the popup. `optional_host_permissions` is asked for one origin at a time, at that moment,
+    // through Chrome's own prompt: Tripwire never requests <all_urls> at install.
+    permissions: ["storage", "scripting", "activeTab"],
+    optional_host_permissions: ["*://*/*"],
     host_permissions: ["http://127.0.0.1:3000/*", "http://localhost:3000/*"],
     // Packaged fonts (registered once per host page by lib/ui/fonts.ts) and bundled brand logos
     // (public/logos, rendered via <img src> in the shadow UI). Only on the pages content scripts run on.
-    web_accessible_resources: [{ resources: [`${FONT_DIR}/*.woff2`, "logos/*"], matches: [...X_MATCHES, ...TIER1_MATCHES, ...TIER2_MATCHES] }],
+    web_accessible_resources: [
+      { resources: [`${FONT_DIR}/*.woff2`, "logos/*"], matches: [...X_MATCHES, ...TIER1_MATCHES, ...TIER2_MATCHES] },
+      // The wallet lens can be enabled on any site the user grants, and its card needs the same
+      // fonts and brand marks there. `use_dynamic_url` keeps the extension's id out of reach of
+      // a page that was never granted anything: the URL is per-session, so an arbitrary site
+      // cannot probe for a fixed chrome-extension:// resource to detect Tripwire.
+      { resources: [`${FONT_DIR}/*.woff2`, "logos/*"], matches: ["*://*/*"], use_dynamic_url: true },
+    ],
   },
   hooks: {
     // Copy only the woff2 subsets fonts.ts declares, straight from the @fontsource packages.

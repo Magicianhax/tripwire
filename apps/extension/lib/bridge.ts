@@ -25,7 +25,8 @@ export type BridgeDeps = {
   getBackendUrl: () => string | Promise<string>;
 };
 
-const PATH_RE = /^\/api\/[a-z-]+$/;
+/** One optional sub-path, for `/api/wallet/labels`; still nothing but lowercase and hyphens. */
+const PATH_RE = /^\/api\/[a-z-]+(\/[a-z-]+)?$/;
 const TIMEOUT_MS = 25_000;
 
 export function createBridge({ fetchImpl, getBackendUrl }: BridgeDeps): { handle(message: BridgeMessage): Promise<BridgeResponse> } {
