@@ -27,12 +27,19 @@ export function spotSignals(input: SpotSignalInput): Signal[] {
 
   // exit_pressure: labeled money (smart traders, whales, public figures) net flow
   if (f) {
-    const st = seg(f.smart_trader_net_flow_usd, f.smart_trader_wallet_count) ?? 0;
-    const wh = seg(f.whale_net_flow_usd, f.whale_wallet_count) ?? 0;
-    const pf = seg(f.public_figure_net_flow_usd, f.public_figure_wallet_count) ?? 0;
+    const stSeg = seg(f.smart_trader_net_flow_usd, f.smart_trader_wallet_count);
+    const whSeg = seg(f.whale_net_flow_usd, f.whale_wallet_count);
+    const pfSeg = seg(f.public_figure_net_flow_usd, f.public_figure_wallet_count);
+    const st = stSeg ?? 0;
+    const wh = whSeg ?? 0;
+    const pf = pfSeg ?? 0;
     const fresh = seg(f.fresh_wallets_net_flow_usd, f.fresh_wallets_wallet_count);
     const labeled = st + wh + pf;
-    out.push({
+    if (stSeg === null && whSeg === null && pfSeg === null) {
+      // Every labeled segment is missing data: that's unknown, not a zero net flow (a false
+      // "no exit pressure" could read as CLEAR).
+      out.push(unavailable("exit_pressure", "Labeled wallet flow unavailable"));
+    } else out.push({
       id: "exit_pressure",
       kind: "spot",
       value: labeled,

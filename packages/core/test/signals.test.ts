@@ -37,6 +37,36 @@ describe("spotSignals", () => {
     expect(get(spotSignals({ flow: null }), "exit_pressure").value).toBeNull();
   });
 
+  it("exit_pressure is unavailable (null) when all three labeled segments are missing", () => {
+    const s = spotSignals({
+      flow: flow({
+        smart_trader_net_flow_usd: null,
+        smart_trader_wallet_count: null,
+        whale_net_flow_usd: null,
+        whale_wallet_count: null,
+        public_figure_net_flow_usd: null,
+        public_figure_wallet_count: null,
+      }),
+    });
+    const ep = get(s, "exit_pressure");
+    expect(ep.value).toBeNull();
+    expect(ep.severity).toBe("info");
+    expect(ep.evidence).toEqual([]);
+  });
+
+  it("exit_pressure keeps a value when at least one labeled segment is known", () => {
+    const s = spotSignals({
+      flow: flow({
+        smart_trader_net_flow_usd: -2000,
+        whale_net_flow_usd: null,
+        whale_wallet_count: null,
+        public_figure_net_flow_usd: null,
+        public_figure_wallet_count: 0,
+      }),
+    });
+    expect(get(s, "exit_pressure").value).toBe(-2000);
+  });
+
   it("fresh_buy_share is null when fresh data missing (sub-1d windows)", () => {
     const s = spotSignals({ flow: flow({ fresh_wallets_net_flow_usd: null, fresh_wallets_wallet_count: null, whale_net_flow_usd: 100 }) });
     expect(get(s, "fresh_buy_share").value).toBeNull();
