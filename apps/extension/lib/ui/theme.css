@@ -85,8 +85,10 @@
   box-sizing: border-box;
 }
 
-:host button,
-:host input {
+/* Element-level only (0,0,1): a :host-qualified selector here would outrank every component
+   class and hand buttons the host reset's black text. */
+button,
+input {
   font-family: inherit;
   color: inherit;
 }
