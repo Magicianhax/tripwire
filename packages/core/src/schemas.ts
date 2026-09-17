@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isEvmAddress, isSolanaAddress } from "./addresses";
 import { CHAINS } from "./types";
+import { HANDLE_RE, isVenueWalletAddress, normalizeHandle, WALLET_VENUES } from "./curated-wallets";
 
 export const ChainSchema = z.enum(CHAINS);
 
@@ -41,9 +42,27 @@ export const PostIntelRequestSchema = z.object({
 });
 
 export const PersonIntelRequestSchema = z.object({
-  handle: z.string().regex(/^[A-Za-z0-9_]{1,15}$/),
+  handle: z.string().regex(HANDLE_RE),
   displayName: z.string().min(1).max(60),
   target: SpotTargetSchema.optional(),
+});
+
+const linkHandle = z.string().regex(HANDLE_RE).transform(normalizeHandle);
+const walletVenue = z.enum(WALLET_VENUES);
+
+/** PUT /api/links: link an X handle to a Hyperliquid account or Polymarket proxy wallet. */
+export const WalletLinkSchema = z
+  .object({ handle: linkHandle, venue: walletVenue, address: z.string().max(42) })
+  .refine((l) => isVenueWalletAddress(l.venue, l.address), { message: "invalid address for venue", path: ["address"] })
+  .transform((l) => ({ ...l, address: l.address.toLowerCase() }));
+
+/** DELETE /api/links. */
+export const WalletLinkDeleteSchema = z.object({ handle: linkHandle, venue: walletVenue });
+
+/** POST /api/author-badges. */
+export const AuthorBadgesRequestSchema = z.object({
+  handle: z.string().regex(HANDLE_RE),
+  displayName: z.string().min(1).max(60),
 });
 
 export const RuleSchema = z.object({

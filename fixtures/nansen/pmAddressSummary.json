@@ -1,0 +1,22 @@
+{
+  "pagination": {
+    "page": 1,
+    "per_page": 10,
+    "is_last_page": true
+  },
+  "data": [
+    {
+      "address": "0x1963eabad7eb7499fb049ddebb96a8fd22179bfd",
+      "first_seen": "2026-06-05",
+      "wallet_age_days": 104,
+      "realized_pnl_usd": 34523.67925399999,
+      "unrealized_pnl_usd": -20735.522789423903,
+      "total_pnl_usd": 13788.156464576103,
+      "markets_won": 68,
+      "markets_traded": 558,
+      "win_rate": 0.12186379928315412,
+      "p2p_tokens_sent": 129774.815704,
+      "p2p_tokens_received": 0
+    }
+  ]
+}

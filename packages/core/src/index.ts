@@ -13,3 +13,4 @@ export * from "./schemas";
 export * from "./constants";
 export * from "./labels";
 export * from "./brands";
+export * from "./curated-wallets";

@@ -1,0 +1,89 @@
+{
+  "pagination": {
+    "page": 1,
+    "per_page": 5,
+    "is_last_page": false
+  },
+  "data": [
+    {
+      "timestamp": "2026-09-17T17:58:00",
+      "seller": "0x1963eabad7eb7499fb049ddebb96a8fd22179bfd",
+      "buyer": "0x7818687f1c2cda416877ab68d18d2c9c25f9d185",
+      "taker_action": "sell",
+      "side": "Yes",
+      "outcome_index": 1,
+      "size": 200,
+      "price": 0.2,
+      "usdc_value": 40,
+      "tx_hash": "0x3c2feca0ab48a4df2104a8328e626f0cdd0c8098c9d481f4d475e4261bd83b95",
+      "market_id": "2853074",
+      "market_question": "Bab el-Mandeb Strait effectively closed by December 31?",
+      "event_id": "276527",
+      "event_title": "Bab el-Mandeb Strait effectively closed by...?"
+    },
+    {
+      "timestamp": "2026-09-17T17:57:43",
+      "seller": "0x1963eabad7eb7499fb049ddebb96a8fd22179bfd",
+      "buyer": "0x2eb6921692bbefa0ee42d48c48141f6a81d33e31",
+      "taker_action": "sell",
+      "side": "No",
+      "outcome_index": 2,
+      "size": 19,
+      "price": 0.956,
+      "usdc_value": 18.164,
+      "tx_hash": "0x627c6259d689e9ca314cf7d1f6926c6b14fa5af349b2a556992e590ea940e0ce",
+      "market_id": "4558962",
+      "market_question": "Will Elon Musk post 90-114 tweets from September 17 to September 19, 2026?",
+      "event_id": "1023487",
+      "event_title": "Elon Musk # tweets September 17 - September 19, 2026?"
+    },
+    {
+      "timestamp": "2026-09-17T17:57:43",
+      "seller": "0x1963eabad7eb7499fb049ddebb96a8fd22179bfd",
+      "buyer": "0x3477459b5dbb9d0be95fd4b3d5738bf2059ee5a0",
+      "taker_action": "sell",
+      "side": "No",
+      "outcome_index": 2,
+      "size": 42,
+      "price": 0.955,
+      "usdc_value": 40.11,
+      "tx_hash": "0x627c6259d689e9ca314cf7d1f6926c6b14fa5af349b2a556992e590ea940e0ce",
+      "market_id": "4558962",
+      "market_question": "Will Elon Musk post 90-114 tweets from September 17 to September 19, 2026?",
+      "event_id": "1023487",
+      "event_title": "Elon Musk # tweets September 17 - September 19, 2026?"
+    },
+    {
+      "timestamp": "2026-09-17T17:57:43",
+      "seller": "0x1963eabad7eb7499fb049ddebb96a8fd22179bfd",
+      "buyer": "0x590ed3d1a14ba08cad23f5c513bad6301772e43d",
+      "taker_action": "sell",
+      "side": "No",
+      "outcome_index": 2,
+      "size": 100,
+      "price": 0.955,
+      "usdc_value": 95.5,
+      "tx_hash": "0x627c6259d689e9ca314cf7d1f6926c6b14fa5af349b2a556992e590ea940e0ce",
+      "market_id": "4558962",
+      "market_question": "Will Elon Musk post 90-114 tweets from September 17 to September 19, 2026?",
+      "event_id": "1023487",
+      "event_title": "Elon Musk # tweets September 17 - September 19, 2026?"
+    },
+    {
+      "timestamp": "2026-09-17T17:57:43",
+      "seller": "0x1963eabad7eb7499fb049ddebb96a8fd22179bfd",
+      "buyer": "0x590ed3d1a14ba08cad23f5c513bad6301772e43d",
+      "taker_action": "sell",
+      "side": "No",
+      "outcome_index": 2,
+      "size": 99,
+      "price": 0.955,
+      "usdc_value": 94.545,
+      "tx_hash": "0x627c6259d689e9ca314cf7d1f6926c6b14fa5af349b2a556992e590ea940e0ce",
+      "market_id": "4558962",
+      "market_question": "Will Elon Musk post 90-114 tweets from September 17 to September 19, 2026?",
+      "event_id": "1023487",
+      "event_title": "Elon Musk # tweets September 17 - September 19, 2026?"
+    }
+  ]
+}

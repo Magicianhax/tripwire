@@ -1,0 +1,49 @@
+{
+  "data": {
+    "top5_coins": [
+      {
+        "coin": "HYPE",
+        "realized_pnl_usd": 945199.454444,
+        "realized_roi": 0.0076395432201746645,
+        "closed_trade_count": 109993,
+        "fees_usd": -2612.995848
+      },
+      {
+        "coin": "FARTCOIN",
+        "realized_pnl_usd": 391809.117967,
+        "realized_roi": 0.05522885503470035,
+        "closed_trade_count": 20487,
+        "fees_usd": -144.230369
+      },
+      {
+        "coin": "ASTER",
+        "realized_pnl_usd": 223232.763939,
+        "realized_roi": 0.052437729882459316,
+        "closed_trade_count": 9653,
+        "fees_usd": -81.030441
+      },
+      {
+        "coin": "DOGE",
+        "realized_pnl_usd": 209299.760667,
+        "realized_roi": 0.046502339828433735,
+        "closed_trade_count": 20676,
+        "fees_usd": -109.56429
+      },
+      {
+        "coin": "PUMP",
+        "realized_pnl_usd": 176085.325698,
+        "realized_roi": 0.24457873680692674,
+        "closed_trade_count": 1065,
+        "fees_usd": -56.610676
+      }
+    ],
+    "traded_coin_count": 38,
+    "traded_times": 895999,
+    "closed_trade_count": 585166,
+    "winning_trade_count": 242452,
+    "realized_pnl_usd": -30386951.347669,
+    "realized_pnl_percent": -0.031181918248193413,
+    "win_rate": 0.4143302926007321,
+    "fees_usd": -14192.927663999999
+  }
+}

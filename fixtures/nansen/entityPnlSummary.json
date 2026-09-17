@@ -1,0 +1,42 @@
+{
+  "pagination": {
+    "page": 1,
+    "per_page": 1,
+    "is_last_page": true
+  },
+  "top5_tokens": [
+    {
+      "realized_pnl": 9594232.510037098,
+      "realized_roi": 6.171792202664163,
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "chain": "ethereum"
+    },
+    {
+      "realized_pnl": 0.13064250608843525,
+      "realized_roi": 0.027763958950132773,
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "chain": "robinhood"
+    },
+    {
+      "realized_pnl": -0.4973573760447921,
+      "realized_roi": -0.044460080805768895,
+      "token_address": "0xa27ec0006e59f245217ff08cd52a7e8b169e62d2",
+      "token_symbol": "AZTEC",
+      "chain": "ethereum"
+    },
+    {
+      "realized_pnl": -90.08747624230084,
+      "realized_roi": -0.2289636076839699,
+      "token_address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "token_symbol": "WETH",
+      "chain": "ethereum"
+    }
+  ],
+  "traded_token_count": 70,
+  "traded_times": 2763,
+  "realized_pnl_usd": 9594142.055845985,
+  "realized_pnl_percent": 6.170109258280206,
+  "win_rate": 0.5285714285714286
+}
