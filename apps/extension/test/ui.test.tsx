@@ -439,3 +439,26 @@ describe("BlockScreen override pending/error (fix round 1/5)", () => {
     root.unmount();
   });
 });
+
+describe("HitList values", () => {
+  it("formats each hit value in its signal's unit, not always USD", () => {
+    const hit = (signalId: HitDto["signalId"], value: number): HitDto => ({ ruleId: signalId, action: "warn", text: signalId, signalId, label: "", value, evidence: [] });
+    const { container, root } = mountNode(
+      <Panel
+        data={{
+          verdict: "CAUTION",
+          hits: [hit("fresh_buy_share", 82), hit("risk_high_count", 2), hit("exit_pressure", -150_000), hit("inside_liq_band", 1_500_000)],
+          unavailable: [],
+          signals: [],
+          panel: { flow: null, flowTimeframe: "1d", sincePost: null, netflow: null, indicators: null, marketCapUsd: null, topBuyers: null, topSellers: null, candles: null, postTimeIso: null, errors: [] },
+          rulesPreset: "balanced",
+        }}
+        title="$X"
+        onClose={() => {}}
+      />,
+    );
+    const values = [...container.querySelectorAll(".tw-hit b")].map((b) => b.textContent?.trim());
+    expect(values).toEqual(["82%", "2", "−$150K", "$1.5M"]);
+    root.unmount();
+  });
+});

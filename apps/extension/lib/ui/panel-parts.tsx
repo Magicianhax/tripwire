@@ -1,3 +1,4 @@
+import { formatSignalValue } from "@tripwire/core";
 import type { HitDto } from "../api-types";
 import { usd } from "./format";
 
@@ -38,7 +39,7 @@ export function HitList({ hits, max, className = "tw-hits" }: { hits: HitDto[]; 
           </em>
           <span>
             {h.text}
-            {h.value !== null ? <b className="tw-mono"> {usd(h.value, true)}</b> : null}
+            {h.value !== null ? <b className="tw-mono"> {formatSignalValue(h.signalId, h.value)}</b> : null}
           </span>
         </li>
       ))}
