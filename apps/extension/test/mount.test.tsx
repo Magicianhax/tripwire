@@ -1,8 +1,19 @@
 // @vitest-environment happy-dom
 import { act } from "react";
-import { afterEach, describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
-import { mountReact } from "../lib/ui/mount";
+
+// @wxt-dev/browser reads globalThis.chrome at import time (WXT's own dist imports it too, so a
+// vi.mock of "wxt/browser" wouldn't reach it): install a minimal runtime before importing.
+vi.hoisted(() => {
+  (globalThis as { chrome?: unknown }).chrome = {
+    runtime: { getURL: (p: string) => `chrome-extension://tripwiretest${p}` },
+  };
+});
+
+const { mountReact } = await import("../lib/ui/mount");
 
 /** Just enough of WXT's ContentScriptContext for createShadowRootUi: no CSS injection (the
  * entry stylesheet fetch needs a real extension runtime) and a no-op invalidation hook. */
@@ -12,7 +23,17 @@ function fakeCtx(): ContentScriptContext {
 
 afterEach(() => {
   document.body.replaceChildren();
+  document.head.replaceChildren();
+  vi.unstubAllGlobals();
 });
+
+/** A context with WXT's real cssInjectionMode "ui" path, serving the content scripts' actual
+ * entry stylesheet (theme.css) to createShadowRootUi's fetch. */
+function uiCssCtx(): ContentScriptContext {
+  const css = readFileSync(path.resolve(__dirname, "..", "lib", "ui", "theme.css"), "utf8");
+  vi.stubGlobal("fetch", vi.fn(async () => new Response(css)));
+  return { options: { cssInjectionMode: "ui" }, onInvalidated: () => () => {} } as unknown as ContentScriptContext;
+}
 
 describe("mountReact", () => {
   it("modal mounts never intercept pointer events outside their own interactive children", async () => {
@@ -34,5 +55,25 @@ describe("mountReact", () => {
     });
     expect(mount.ui.uiContainer.style.pointerEvents).toBe("");
     mount.ui.remove();
+  });
+
+  it("mounting many chips adds at most one font-face style to document.head", async () => {
+    const ctx = uiCssCtx();
+    const mounts: Awaited<ReturnType<typeof mountReact>>[] = [];
+    await act(async () => {
+      for (let i = 0; i < 12; i++) mounts.push(await mountReact(ctx, { position: "inline" }, <span>chip {i}</span>));
+    });
+    const headStyles = [...document.head.querySelectorAll("style")];
+    const fontStyles = headStyles.filter((s) => (s.textContent ?? "").includes("@font-face"));
+    expect(fontStyles.length).toBe(1);
+    expect(headStyles.length).toBe(1);
+    // Fonts come from packaged extension files, never inlined data: URIs.
+    expect(fontStyles[0]!.textContent).toContain("chrome-extension://tripwiretest/fonts/");
+    expect(fontStyles[0]!.textContent).not.toContain("data:");
+    // Each shadow root carries only the (small) theme, without @font-face.
+    const shadowCss = mounts[0]!.ui.shadow.querySelector("style")?.textContent ?? "";
+    expect(shadowCss).not.toContain("@font-face");
+    expect(shadowCss.length).toBeLessThan(40_000);
+    for (const m of mounts) m.ui.remove();
   });
 });

@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
+import { browser } from "wxt/browser";
 import { createShadowRootUi } from "wxt/utils/content-script-ui/shadow-root";
+import { ensureFontFaces } from "./fonts";
 
 type AnchorOption = string | Element | null | undefined | (() => string | Element | null | undefined);
 type AppendOption = "last" | "first" | "replace" | "before" | "after" | ((anchor: Element, ui: Element) => void);
@@ -21,6 +23,8 @@ export type MountReactOptions =
  */
 export async function mountReact(ctx: ContentScriptContext, opts: MountReactOptions, node: ReactNode) {
   let root: Root | undefined;
+  // Once per document, not per mount: see lib/ui/fonts.ts.
+  ensureFontFaces(document, (publicPath) => browser.runtime.getURL(publicPath as "/"));
 
   const ui = await createShadowRootUi(ctx, {
     name: "tripwire-ui",

@@ -9,6 +9,12 @@ import type { VenueAdapter } from "../lib/adapters/types";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
+// mountReact registers packaged fonts via browser.runtime.getURL; @wxt-dev/browser reads
+// globalThis.chrome at import time.
+vi.hoisted(() => {
+  (globalThis as { chrome?: unknown }).chrome = { runtime: { getURL: (p: string) => `chrome-extension://tripwiretest${p}` } };
+});
+
 const guardMock = vi.fn<(target: Target, venue: string, mode?: string) => Promise<ApiResult<GuardResponse>>>();
 
 vi.mock("../lib/api", () => ({

@@ -1,6 +1,3 @@
-import "@fontsource-variable/archivo/standard.css";
-import "@fontsource/jetbrains-mono/400.css";
-import "@fontsource/jetbrains-mono/700.css";
 import "../../lib/ui/theme.css";
 
 import { defineContentScript } from "wxt/utils/define-content-script";

@@ -1,4 +1,10 @@
+import { createRequire } from "node:module";
+import path from "node:path";
 import { defineConfig } from "wxt";
+import { FONT_DIR, FONT_FILES } from "./lib/ui/fonts";
+import { TIER1_MATCHES, TIER2_MATCHES, X_MATCHES } from "./lib/venues";
+
+const require = createRequire(import.meta.url);
 
 /**
  * Public key only (base64 SubjectPublicKeyInfo, RSA-2048). It pins the unpacked extension's ID
@@ -18,5 +24,16 @@ export default defineConfig({
       "Nansen onchain data at the moment of decision: verdicts on X posts, trade blocks on DEX, perp and prediction venues.",
     permissions: ["storage"],
     host_permissions: ["http://127.0.0.1:3000/*", "http://localhost:3000/*"],
+    // Packaged fonts, registered once per host page by lib/ui/fonts.ts.
+    web_accessible_resources: [{ resources: [`${FONT_DIR}/*.woff2`], matches: [...X_MATCHES, ...TIER1_MATCHES, ...TIER2_MATCHES] }],
+  },
+  hooks: {
+    // Copy only the woff2 subsets fonts.ts declares, straight from the @fontsource packages.
+    "build:publicAssets": (_wxt, files) => {
+      for (const font of FONT_FILES) {
+        const pkgDir = path.dirname(require.resolve(`${font.pkg}/package.json`));
+        files.push({ absoluteSrc: path.join(pkgDir, "files", font.file), relativeDest: `${FONT_DIR}/${font.file}` });
+      }
+    },
   },
 });

@@ -4,10 +4,11 @@
  * Tokens mirror DESIGN.md's front-matter exactly. WXT already adds `:host { all: initial }`
  * before this file loads, so we only add tokens + the base look on top of that reset.
  *
- * Fonts: @font-face is NOT declared here. Each content-script entry imports the bundled
- * @fontsource CSS directly (same packages/imports as apps/extension/entrypoints/popup/main.tsx),
- * and WXT's cssInjectionMode:"ui" carries those @font-face rules into the shadow root too.
- * DESIGN.md: fonts are packaged inside the extension, never fetched from Google at runtime.
+ * Fonts: no font-face rules in this file (and never write that at-rule's name in a comment
+ * here: WXT's splitShadowRootCss regex would match it and move CSS out of the shadow root).
+ * The packaged woff2 files are registered once per host document by lib/ui/fonts.ts under
+ * Tripwire-only family names. DESIGN.md: fonts ship inside the extension, never fetched from
+ * Google at runtime.
  */
 
 :host {
@@ -35,9 +36,9 @@
   --tw-space-xl: 32px;
 
   /* Type */
-  --tw-font-display: "Archivo Variable", "Archivo", system-ui, sans-serif;
-  --tw-font-body: "Archivo Variable", "Archivo", system-ui, sans-serif;
-  --tw-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --tw-font-display: "Tripwire Archivo", system-ui, sans-serif;
+  --tw-font-body: "Tripwire Archivo", system-ui, sans-serif;
+  --tw-font-mono: "Tripwire Mono", ui-monospace, monospace;
 
   --tw-shadow-float: 0 8px 24px rgba(0, 0, 0, 0.45);
 

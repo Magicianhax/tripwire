@@ -1,6 +1,3 @@
-import "@fontsource-variable/archivo/standard.css";
-import "@fontsource/jetbrains-mono/400.css";
-import "@fontsource/jetbrains-mono/700.css";
 import "../../lib/ui/theme.css";
 
 import type { Chain, ExtractedAddress, SpotTarget, Verdict } from "@tripwire/core";
@@ -14,12 +11,14 @@ import { mountReact } from "../../lib/ui/mount";
 import { Panel } from "../../lib/ui/Panel";
 import { X_MATCHES } from "../../lib/venues";
 import { createResultCache } from "../../lib/x/cache";
+import { createMountTracker } from "../../lib/x/mounts";
 import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
 import { createQueue } from "../../lib/x/queue";
 
 const TWEET_SELECTOR = 'article[data-testid="tweet"]';
 const CHIP_CONCURRENCY = 4;
 const VIEWPORT_MARGIN = "600px 0px";
+const SWEEP_DEBOUNCE_MS = 1000;
 
 type ChipToken = { kind: "cashtag"; symbol: string } | { kind: "address"; address: ExtractedAddress };
 
@@ -79,6 +78,8 @@ export default defineContentScript({
 
     const discovered = new WeakSet<Element>();
     const processed = new WeakSet<Element>();
+    // Chip/panel mounts per tweet article, unmounted once X drops the article from the DOM.
+    const mounts = createMountTracker();
 
     function getChipIntel(target: SpotTarget, timeIso: string | null): Promise<ApiResult<PostIntelResponse>> {
       const key = `${target.chain}:${target.tokenAddress}`;
@@ -123,6 +124,10 @@ export default defineContentScript({
 
       const resolved = await resolveTarget(token, tweet.text);
       if (!resolved) return;
+      if (!article.isConnected) {
+        processed.delete(article); // scrolled away while resolving; retry if X re-inserts it
+        return;
+      }
       const { target, symbol } = resolved;
 
       let expanded = false;
@@ -137,6 +142,7 @@ export default defineContentScript({
         <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} onClick={() => void togglePanel()} />,
       );
       stopHostClicks(chipMount.ui.shadowHost);
+      mounts.track(article, chipMount);
 
       function renderChip(): void {
         chipMount.update(
@@ -149,7 +155,10 @@ export default defineContentScript({
         renderChip();
 
         if (!expanded) {
-          panelMount?.ui.remove();
+          if (panelMount) {
+            panelMount.ui.remove();
+            mounts.untrack(article, panelMount);
+          }
           panelMount = null;
           return;
         }
@@ -184,6 +193,7 @@ export default defineContentScript({
         } else {
           panelMount = await mountReact(ctx, { position: "inline", anchor: chipMount.ui.shadowHost, append: "after" }, node);
           stopHostClicks(panelMount.ui.shadowHost);
+          mounts.track(article, panelMount);
         }
       }
 
@@ -222,16 +232,30 @@ export default defineContentScript({
 
     discoverIn(document);
 
+    let sweepTimer: ReturnType<typeof setTimeout> | null = null;
+    function sweepDetached(): void {
+      sweepTimer = null;
+      for (const article of mounts.sweep()) {
+        // Forget it entirely: if X re-inserts the same element later, it gets a fresh chip.
+        processed.delete(article);
+        discovered.delete(article);
+      }
+    }
+
     const mo = new MutationObserver((mutations) => {
+      let removed = false;
       for (const mutation of mutations) {
+        if (mutation.removedNodes.length > 0) removed = true;
         for (const node of mutation.addedNodes) {
           if (node instanceof Element) discoverIn(node);
         }
       }
+      if (removed && !sweepTimer) sweepTimer = setTimeout(sweepDetached, SWEEP_DEBOUNCE_MS);
     });
     mo.observe(document.body, { childList: true, subtree: true });
 
     ctx.onInvalidated(() => {
+      if (sweepTimer) clearTimeout(sweepTimer);
       mo.disconnect();
       io.disconnect();
     });
