@@ -150,45 +150,47 @@ export function RulesEditor({ initial }: { initial: RulesState }) {
         return (
           <section className="tw-section tw-rule-group" key={g.kind}>
             <h2 className="tw-h2">{g.label}</h2>
-            {groupRules.map((rule) => {
-              const { before, after, isUsd } = splitSentence(rule.text);
-              const shownValue = displayValue(rule);
-              const inputId = `rule-${rule.id}`;
-              const described = describeRule(rule, usd);
-              return (
-                <div className="tw-rule-row" key={rule.id} data-enabled={rule.enabled}>
-                  <label className="tw-rule-toggle" htmlFor={`${inputId}-enabled`}>
-                    <input
-                      id={`${inputId}-enabled`}
-                      type="checkbox"
-                      checked={rule.enabled}
-                      onChange={(e) => updateRule(rule.id, { enabled: e.target.checked })}
-                    />
-                    On
-                  </label>
-                  <span className="tw-rule-sentence">
-                    <select
-                      className="tw-rule-select"
-                      value={rule.action}
-                      onChange={(e) => updateRule(rule.id, { action: e.target.value as Rule["action"] })}
-                      aria-label={`Action for: ${described}`}
-                    >
-                      <option value="block">Block</option>
-                      <option value="warn">Warn</option>
-                    </select>{" "}
-                    when {before}
-                    {isUsd && "$"}
-                    <ThresholdInput
-                      id={inputId}
-                      value={shownValue}
-                      label={`Threshold for: ${described}`}
-                      onChange={(n) => updateRule(rule.id, { threshold: storedThreshold(rule.signal, n) })}
-                    />
-                    {after}
-                  </span>
-                </div>
-              );
-            })}
+            <div className="tw-rule-rows">
+              {groupRules.map((rule) => {
+                const { before, after, isUsd } = splitSentence(rule.text);
+                const shownValue = displayValue(rule);
+                const inputId = `rule-${rule.id}`;
+                const described = describeRule(rule, usd);
+                return (
+                  <div className="tw-rule-row" key={rule.id} data-enabled={rule.enabled}>
+                    <label className="tw-rule-toggle" htmlFor={`${inputId}-enabled`}>
+                      <input
+                        id={`${inputId}-enabled`}
+                        type="checkbox"
+                        checked={rule.enabled}
+                        onChange={(e) => updateRule(rule.id, { enabled: e.target.checked })}
+                      />
+                      On
+                    </label>
+                    <span className="tw-rule-sentence">
+                      <select
+                        className="tw-rule-select"
+                        value={rule.action}
+                        onChange={(e) => updateRule(rule.id, { action: e.target.value as Rule["action"] })}
+                        aria-label={`Action for: ${described}`}
+                      >
+                        <option value="block">Block</option>
+                        <option value="warn">Warn</option>
+                      </select>{" "}
+                      when {before}
+                      {isUsd && "$"}
+                      <ThresholdInput
+                        id={inputId}
+                        value={shownValue}
+                        label={`Threshold for: ${described}`}
+                        onChange={(n) => updateRule(rule.id, { threshold: storedThreshold(rule.signal, n) })}
+                      />
+                      {after}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </section>
         );
       })}

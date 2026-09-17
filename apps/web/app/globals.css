@@ -1,30 +1,46 @@
-/* Tripwire — Hazard design tokens. Every value here traces to DESIGN.md. */
+/* Tripwire local pages: the Glass Cockpit world. Deep instrument-blue glass, hairline bezels,
+   crew-alerting lamps (warning red, caution amber, advisory cyan, normal green). */
 :root {
-  /* colors */
-  --tw-ink: #0b0b0b;
-  --tw-surface: #0b0b0b;
-  --tw-surface-raised: #161616;
-  --tw-body: #ededed;
-  --tw-secondary: #8c8c8c;
-  --tw-yellow: #ffd400;
-  --tw-success: #3fbf7f;
-  --tw-danger: #ff5a36;
-  --tw-border: #2a2a2a;
+  /* glass */
+  --tw-ground: #0a1020;
+  --tw-panel: #111a2e;
+  --tw-raised: #1b2740;
+  --tw-bezel: rgba(143, 163, 191, 0.22);
+  --tw-bezel-strong: rgba(143, 163, 191, 0.4);
+  --tw-sheen: rgba(230, 237, 247, 0.22);
 
-  /* radius */
-  --tw-radius-sm: 3px;
-  --tw-radius-md: 6px;
-  --tw-radius-lg: 10px;
+  /* text */
+  --tw-text: #e6edf7;
+  --tw-text-2: #8fa3bf;
+  --tw-ink: #0a1020;
 
-  /* spacing */
-  --tw-space-xs: 4px;
-  --tw-space-sm: 8px;
-  --tw-space-md: 12px;
-  --tw-space-lg: 20px;
-  --tw-space-xl: 32px;
+  /* lamps */
+  --tw-warning: #ff4d4f;
+  --tw-warning-dim: rgba(255, 77, 79, 0.14);
+  --tw-caution: #ffb020;
+  --tw-caution-dim: rgba(255, 176, 32, 0.14);
+  --tw-advisory: #22d3ee;
+  --tw-advisory-dim: rgba(34, 211, 238, 0.12);
+  --tw-advisory-select: rgba(34, 211, 238, 0.32);
+  --tw-normal: #34d399;
+  --tw-normal-dim: rgba(52, 211, 153, 0.12);
 
-  /* fonts */
-  --tw-font-display: "Archivo Variable", system-ui, sans-serif;
+  /* shape */
+  --tw-radius-panel: 8px;
+  --tw-radius-plate: 4px;
+  --tw-radius-cell: 2px;
+
+  /* space */
+  --tw-space-1: 4px;
+  --tw-space-2: 8px;
+  --tw-space-3: 12px;
+  --tw-space-4: 16px;
+  --tw-space-5: 24px;
+  --tw-space-6: 40px;
+
+  /* type */
+  --tw-font-ui: "Barlow", system-ui, sans-serif;
+  --tw-font-plate: "Barlow Condensed", "Barlow", system-ui, sans-serif;
   --tw-font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
@@ -34,32 +50,35 @@
 
 html {
   color-scheme: dark;
+  background: var(--tw-ground);
+  scrollbar-color: var(--tw-bezel-strong) var(--tw-ground);
 }
 
 body {
   margin: 0;
-  background: var(--tw-surface);
-  color: var(--tw-body);
-  font-family: var(--tw-font-display);
-  font-size: 0.875rem;
-  font-weight: 450;
-  line-height: 1.45;
+  background: var(--tw-ground);
+  color: var(--tw-text);
+  font-family: var(--tw-font-ui);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-  color: inherit;
+  color: var(--tw-advisory);
+  text-underline-offset: 3px;
 }
 
-/* Focus rings never use yellow (reserved for danger, DESIGN.md): #EDEDED on the dark ink
-   surfaces. */
+/* Focus rings are advisory cyan on the dark glass. */
 :focus-visible {
-  outline: 2px solid var(--tw-body);
+  outline: 2px solid var(--tw-advisory);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: var(--tw-body);
-  color: var(--tw-ink);
+  background: var(--tw-advisory-select);
+  color: var(--tw-text);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -72,54 +91,69 @@ a {
 
 /* Typography */
 .tw-display {
-  font-family: var(--tw-font-display);
-  font-weight: 900;
-  font-stretch: 70%;
-  font-size: 3rem;
-  line-height: 0.88;
-  letter-spacing: -0.01em;
   margin: 0;
+  font-family: var(--tw-font-plate);
+  font-weight: 700;
+  font-size: 2.5rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
 }
 .tw-h2 {
-  font-family: var(--tw-font-display);
-  font-weight: 800;
+  display: flex;
+  align-items: baseline;
+  gap: var(--tw-space-3);
+  margin: 0 0 var(--tw-space-3);
+  font-family: var(--tw-font-plate);
+  font-weight: 600;
   font-size: 1.375rem;
   line-height: 1.1;
-  margin: 0 0 var(--tw-space-md);
+  letter-spacing: 0.01em;
 }
 .tw-label {
-  font-family: var(--tw-font-display);
+  font-family: var(--tw-font-plate);
   font-weight: 600;
-  font-size: 0.75rem;
-  line-height: 1.3;
-  color: var(--tw-secondary);
+  font-size: 0.875rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--tw-text-2);
 }
 .tw-data {
   font-family: var(--tw-font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-variant-numeric: tabular-nums slashed-zero;
 }
-/* Large numeric readout: composes the display size with the mono/data face — there is no
-   dedicated token for this in DESIGN.md's typography scale, so it reuses display's size. */
+/* Large numeric readout: the mono face at display size. */
 .tw-readout {
+  margin: 0;
   font-family: var(--tw-font-mono);
   font-variant-numeric: tabular-nums slashed-zero;
   font-weight: 700;
-  font-size: 3rem;
-  line-height: 0.88;
-  letter-spacing: 0;
-  margin: 0;
+  font-size: 2.25rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
 }
 
 /* Layout */
 .tw-container {
-  max-width: 1080px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 var(--tw-space-5);
+}
+@media (max-width: 600px) {
+  .tw-container {
+    padding: 0 var(--tw-space-4);
+  }
 }
 
+/* Nav: an instrument bar with a glass sheen on its bottom edge. */
 .tw-nav {
-  border-bottom: 1px solid var(--tw-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--tw-panel);
+  border-bottom: 1px solid var(--tw-bezel-strong);
+  box-shadow: inset 0 -1px 0 var(--tw-sheen);
 }
 /* padding-block only: the inline gutter comes from .tw-container, so the nav lines up with
    the page content. */
@@ -127,159 +161,217 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--tw-space-sm) var(--tw-space-lg);
-  padding-block: var(--tw-space-md);
   flex-wrap: wrap;
+  gap: 0 var(--tw-space-5);
+  min-height: 56px;
 }
 .tw-nav-brand {
   display: flex;
   align-items: center;
-  gap: var(--tw-space-sm);
+  gap: var(--tw-space-3);
 }
 .tw-wordmark {
-  font-family: var(--tw-font-display);
-  font-weight: 900;
-  font-stretch: 70%;
-  font-size: 1.375rem;
-  letter-spacing: -0.01em;
-  color: var(--tw-body);
+  font-family: var(--tw-font-plate);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  color: var(--tw-text);
   text-decoration: none;
 }
 .tw-nav-links {
   display: flex;
-  gap: var(--tw-space-lg);
+  gap: var(--tw-space-1);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 .tw-nav-link {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
-  font-family: var(--tw-font-display);
+  min-height: 56px;
+  padding: 0 var(--tw-space-3);
+  font-family: var(--tw-font-plate);
   font-weight: 600;
-  font-size: 0.75rem;
-  color: var(--tw-secondary);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  color: var(--tw-text-2);
   text-decoration: none;
-  border-bottom: 2px solid transparent;
 }
-.tw-nav-link:hover {
-  color: var(--tw-body);
+@media (hover: hover) {
+  .tw-nav-link:hover {
+    color: var(--tw-text);
+  }
 }
 .tw-nav-link[aria-current="page"] {
-  color: var(--tw-body);
-  border-bottom-color: var(--tw-body);
+  color: var(--tw-text);
+}
+.tw-nav-link[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: var(--tw-space-3);
+  right: var(--tw-space-3);
+  bottom: 0;
+  height: 2px;
+  background: var(--tw-advisory);
+}
+.tw-nav-link:focus-visible {
+  outline-offset: -6px;
+  border-radius: var(--tw-radius-plate);
+}
+@media (max-width: 600px) {
+  .tw-nav-row {
+    padding-top: var(--tw-space-3);
+  }
+  .tw-nav-links {
+    margin-left: calc(-1 * var(--tw-space-3));
+  }
+  .tw-nav-link {
+    min-height: 44px;
+  }
 }
 
 main.tw-main {
-  padding: var(--tw-space-xl) 0 var(--tw-space-xl);
+  padding: var(--tw-space-6) 0 64px;
 }
 
 .tw-section {
-  margin-bottom: var(--tw-space-xl);
+  margin-bottom: var(--tw-space-6);
 }
 
+/* Readout strip: labelled instrument cells divided by hairlines. */
 .tw-stat-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--tw-space-xl);
-  margin-bottom: var(--tw-space-lg);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: var(--tw-space-4);
+  background: var(--tw-panel);
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-panel);
+  box-shadow: inset 0 1px 0 var(--tw-sheen);
+  overflow: hidden;
 }
 .tw-stat {
-  min-width: 140px;
+  display: grid;
+  align-content: start;
+  gap: var(--tw-space-2);
+  min-width: 0;
+  padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
+  border-right: 1px solid var(--tw-bezel);
+  margin-right: -1px;
 }
 .tw-stat-label {
   display: block;
-  margin-bottom: var(--tw-space-xs);
 }
 .tw-stat-value {
   display: block;
+  font-size: 1.0625rem;
+  overflow-wrap: anywhere;
 }
 
-/* Replay watermark badge: sits in the nav row next to the wordmark, never over content. */
+/* Replay tag: advisory, never an alert. */
 .tw-replay-badge {
-  /* Not yellow: yellow is reserved for danger (DESIGN.md). */
-  background: var(--tw-secondary);
-  color: var(--tw-ink);
-  font-family: var(--tw-font-mono);
-  font-weight: 700;
-  font-size: 0.6875rem;
-  line-height: 1.3;
-  padding: 2px var(--tw-space-xs);
-  border-radius: var(--tw-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--tw-space-2);
+  border: 1px solid var(--tw-advisory);
+  border-radius: var(--tw-radius-cell);
+  background: var(--tw-advisory-dim);
+  color: var(--tw-advisory);
+  font-family: var(--tw-font-plate);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-/* Verdict chip: same anatomy as the extension's (DESIGN.md "Verdict chip"). */
+/* Verdict plate: the extension's annunciator. Tone and mark come from verdictPlate(). */
 .tw-chip {
+  --lamp: var(--tw-text-2);
+  --lamp-dim: var(--tw-raised);
   display: inline-flex;
-  align-items: stretch;
-  height: 24px;
-  border: 1px solid var(--tw-border);
-  border-radius: var(--tw-radius-sm);
-  background: var(--tw-surface);
-  overflow: hidden;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--tw-space-2);
+  border: 1px solid var(--lamp);
+  border-radius: var(--tw-radius-cell);
+  font-family: var(--tw-font-plate);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   white-space: nowrap;
   vertical-align: middle;
 }
-.tw-chip-key {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 var(--tw-space-sm);
-  font-family: var(--tw-font-display);
-  font-stretch: 75%;
-  font-weight: 900;
-  font-size: 0.75rem;
-  color: var(--tw-body);
+.tw-chip[data-tone="warning"] {
+  --lamp: var(--tw-warning);
+  --lamp-dim: var(--tw-warning-dim);
 }
-.tw-chip[data-verdict="TRIPWIRE"] {
-  border: 1.5px solid var(--tw-yellow);
+.tw-chip[data-tone="caution"] {
+  --lamp: var(--tw-caution);
+  --lamp-dim: var(--tw-caution-dim);
 }
-.tw-chip[data-verdict="TRIPWIRE"] .tw-chip-key {
-  background: var(--tw-yellow);
+.tw-chip[data-tone="normal"] {
+  --lamp: var(--tw-normal);
+  --lamp-dim: var(--tw-normal-dim);
+}
+.tw-chip[data-mark="filled"] {
+  background: var(--lamp);
   color: var(--tw-ink);
 }
-.tw-chip[data-verdict="CAUTION"] {
-  border: 1.5px solid var(--tw-yellow);
+.tw-chip[data-mark="outlined"] {
+  background: var(--lamp-dim);
+  color: var(--lamp);
 }
-.tw-chip[data-verdict="CAUTION"] .tw-chip-key {
-  color: var(--tw-yellow);
-}
-.tw-chip[data-verdict="CLEAR"] .tw-chip-key {
-  color: var(--tw-success);
-}
-.tw-chip[data-verdict="UNCHECKED"] {
-  background: var(--tw-surface-raised);
-}
-.tw-chip[data-verdict="UNCHECKED"] .tw-chip-key {
-  color: var(--tw-secondary);
+.tw-chip[data-mark="dashed"] {
+  border-style: dashed;
+  background: var(--tw-raised);
+  color: var(--tw-text-2);
 }
 .tw-chip-danger-text {
-  color: var(--tw-danger);
+  color: var(--tw-warning);
 }
 
-/* Tables — dense, no card grids */
+/* Tables sit in a glass panel: dense rows, hairline rules, mono numbers. */
+.tw-table-wrap {
+  overflow-x: auto;
+  background: var(--tw-panel);
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-panel);
+  box-shadow: inset 0 1px 0 var(--tw-sheen);
+  scrollbar-width: thin;
+}
 .tw-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.875rem;
 }
 .tw-table caption {
   text-align: left;
-  margin-bottom: var(--tw-space-sm);
+  margin-bottom: var(--tw-space-2);
 }
 .tw-table th {
+  padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-2);
   text-align: left;
-  font-family: var(--tw-font-display);
+  font-family: var(--tw-font-plate);
   font-weight: 600;
-  font-size: 0.75rem;
-  color: var(--tw-secondary);
-  padding: var(--tw-space-sm) var(--tw-space-md);
-  border-bottom: 1px solid var(--tw-border);
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  color: var(--tw-text-2);
+  border-bottom: 1px solid var(--tw-bezel-strong);
   white-space: nowrap;
 }
 .tw-table td {
-  padding: var(--tw-space-sm) var(--tw-space-md);
-  border-bottom: 1px solid var(--tw-border);
+  padding: var(--tw-space-2) var(--tw-space-4);
+  border-bottom: 1px solid var(--tw-bezel);
   vertical-align: middle;
+}
+@media (hover: hover) {
+  .tw-table tbody tr:hover td {
+    background: var(--tw-raised);
+  }
 }
 .tw-table td.tw-num,
 .tw-table th.tw-num {
@@ -287,11 +379,11 @@ main.tw-main {
   font-variant-numeric: tabular-nums slashed-zero;
   text-align: right;
 }
+.tw-table th.tw-num {
+  font-family: var(--tw-font-plate);
+}
 .tw-table tbody tr:last-child td {
   border-bottom: none;
-}
-.tw-table-wrap {
-  overflow-x: auto;
 }
 .tw-nowrap {
   white-space: nowrap;
@@ -305,85 +397,107 @@ main.tw-main {
   min-width: 28ch;
 }
 .tw-empty {
-  color: var(--tw-secondary);
-  padding: var(--tw-space-md) 0;
+  margin: 0;
+  padding: var(--tw-space-4);
+  color: var(--tw-text-2);
+  background: var(--tw-panel);
+  border: 1px dashed var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-panel);
 }
 
-/* Two-column dense grid, ledger only */
+/* Two-column grid, ledger only */
 .tw-ledger-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--tw-space-xl);
+  gap: 0 var(--tw-space-5);
 }
-@media (min-width: 800px) {
+@media (min-width: 960px) {
   .tw-ledger-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-/* Progress meter toward the buildathon goal */
+/* Progress toward the buildathon goal: an advisory bar in a ground-glass track. */
 .tw-meter-track {
   appearance: none;
   -webkit-appearance: none;
+  display: block;
   width: 100%;
-  height: 8px;
-  border: 1px solid var(--tw-border);
-  border-radius: var(--tw-radius-sm);
-  background: var(--tw-surface-raised);
+  height: 10px;
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-cell);
+  background: var(--tw-ground);
   overflow: hidden;
 }
 .tw-meter-track::-webkit-progress-bar {
-  background: var(--tw-surface-raised);
+  background: var(--tw-ground);
 }
 .tw-meter-track::-webkit-progress-value {
-  background: var(--tw-body);
-  border-radius: var(--tw-radius-sm);
+  background: var(--tw-advisory);
 }
 .tw-meter-track::-moz-progress-bar {
-  background: var(--tw-body);
-  border-radius: var(--tw-radius-sm);
+  background: var(--tw-advisory);
 }
 
-/* Segmented control — square ends, yellow never used as a selection fill */
+/* Segmented control: the selected preset gets a lit advisory bezel. */
 .tw-segmented {
   display: inline-flex;
-  border: 1px solid var(--tw-border);
-  border-radius: 0;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 2px;
+  background: var(--tw-panel);
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-plate);
 }
 .tw-segment {
-  min-height: 32px;
-  font-family: var(--tw-font-display);
+  min-height: 36px;
+  padding: 0 var(--tw-space-5);
+  font-family: var(--tw-font-plate);
   font-weight: 600;
-  font-size: 0.75rem;
-  color: var(--tw-secondary);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  color: var(--tw-text-2);
   background: transparent;
-  border: none;
-  border-right: 1px solid var(--tw-border);
-  padding: var(--tw-space-sm) var(--tw-space-md);
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-cell);
   cursor: pointer;
 }
-.tw-segment:last-child {
-  border-right: none;
+@media (hover: hover) {
+  .tw-segment:not(:disabled):not([aria-pressed="true"]):hover {
+    color: var(--tw-text);
+    background: var(--tw-raised);
+  }
 }
 .tw-segment[aria-pressed="true"] {
-  background: var(--tw-surface-raised);
-  color: var(--tw-body);
+  color: var(--tw-text);
+  background: var(--tw-raised);
+  border-color: var(--tw-advisory);
+  box-shadow: inset 0 1px 0 var(--tw-sheen);
 }
 .tw-segment:disabled {
   cursor: default;
 }
+.tw-segment:focus-visible {
+  outline-offset: 1px;
+}
 
-/* Rule rows */
+/* Rule groups: a glass panel of rows. */
 .tw-rule-group {
-  margin-bottom: var(--tw-space-lg);
+  margin-bottom: var(--tw-space-5);
+}
+.tw-rule-rows {
+  background: var(--tw-panel);
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-panel);
+  box-shadow: inset 0 1px 0 var(--tw-sheen);
 }
 .tw-rule-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--tw-space-md);
-  padding: var(--tw-space-md) 0;
-  border-bottom: 1px solid var(--tw-border);
+  gap: var(--tw-space-2) var(--tw-space-4);
+  padding: var(--tw-space-3) var(--tw-space-4);
+  border-bottom: 1px solid var(--tw-bezel);
 }
 .tw-rule-row:last-child {
   border-bottom: none;
@@ -391,129 +505,159 @@ main.tw-main {
 .tw-rule-toggle {
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
-  gap: var(--tw-space-xs);
-  cursor: pointer;
-  font-family: var(--tw-font-display);
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: var(--tw-secondary);
   flex-shrink: 0;
+  min-height: 32px;
+  gap: var(--tw-space-2);
+  cursor: pointer;
+  font-family: var(--tw-font-plate);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--tw-text-2);
 }
 .tw-rule-sentence {
   flex: 1 1 320px;
-  font-size: 0.875rem;
-  line-height: 2;
+  font-size: 0.9375rem;
+  line-height: 2.2;
 }
 .tw-rule-row[data-enabled="false"] .tw-rule-sentence {
-  color: var(--tw-secondary);
+  color: var(--tw-text-2);
 }
 .tw-rule-select {
-  min-height: 28px;
-  margin-right: var(--tw-space-xs);
+  margin-right: var(--tw-space-1);
 }
 
 /* Form controls */
 input[type="checkbox"] {
-  accent-color: var(--tw-body);
+  accent-color: var(--tw-advisory);
   width: 18px;
   height: 18px;
   margin: 3px;
 }
 .tw-input-number {
+  width: 12ch;
+  min-height: 32px;
+  margin: 0 var(--tw-space-1);
+  padding: 2px var(--tw-space-2);
   font-family: var(--tw-font-mono);
   font-variant-numeric: tabular-nums slashed-zero;
-  font-size: 0.8125rem;
-  background: var(--tw-surface-raised);
-  color: var(--tw-body);
-  border: 1px solid var(--tw-border);
-  border-radius: var(--tw-radius-sm);
-  min-height: 28px;
-  padding: 2px 6px;
-  width: 12ch;
+  font-size: 0.875rem;
   text-align: right;
-  margin: 0 var(--tw-space-xs);
+  color: var(--tw-text);
+  caret-color: var(--tw-advisory);
+  background: var(--tw-ground);
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-plate);
 }
 select {
-  font-family: var(--tw-font-display);
-  font-size: 0.75rem;
+  min-height: 32px;
+  padding: 0 var(--tw-space-2);
+  font-family: var(--tw-font-plate);
+  font-size: 0.9375rem;
   font-weight: 600;
-  background: var(--tw-surface-raised);
-  color: var(--tw-body);
-  border: 1px solid var(--tw-border);
-  border-radius: var(--tw-radius-sm);
-  min-height: 28px;
-  padding: var(--tw-space-xs) var(--tw-space-sm);
+  color: var(--tw-text);
+  background: var(--tw-ground);
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-plate);
+}
+.tw-input-number:focus-visible,
+select:focus-visible {
+  outline-offset: 1px;
+  border-color: var(--tw-advisory);
 }
 .tw-save-row {
   display: flex;
   align-items: center;
-  gap: var(--tw-space-md);
-  margin-top: var(--tw-space-lg);
+  gap: var(--tw-space-4);
+  margin-top: var(--tw-space-5);
 }
 .tw-button {
-  font-family: var(--tw-font-display);
-  font-weight: 600;
-  font-size: 0.75rem;
+  min-height: 40px;
+  padding: 0 var(--tw-space-5);
+  font-family: var(--tw-font-plate);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
   color: var(--tw-ink);
-  background: var(--tw-body);
-  border: 1px solid var(--tw-body);
-  border-radius: var(--tw-radius-sm);
-  padding: var(--tw-space-sm) var(--tw-space-lg);
+  background: var(--tw-advisory);
+  border: 1px solid var(--tw-advisory);
+  border-radius: var(--tw-radius-plate);
   cursor: pointer;
 }
+@media (hover: hover) {
+  .tw-button:not(:disabled):hover {
+    filter: brightness(1.1);
+  }
+}
 .tw-button:disabled {
-  opacity: 0.5;
+  color: var(--tw-text-2);
+  background: var(--tw-raised);
+  border: 1px dashed var(--tw-bezel-strong);
   cursor: default;
 }
 .tw-confirm-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--tw-space-sm) var(--tw-space-md);
-  margin-top: var(--tw-space-md);
-  padding: var(--tw-space-sm) var(--tw-space-md);
-  border: 1.5px solid var(--tw-yellow);
-  border-radius: var(--tw-radius-sm);
-  background: var(--tw-ink);
+  gap: var(--tw-space-2) var(--tw-space-3);
+  margin-top: var(--tw-space-3);
+  padding: var(--tw-space-3) var(--tw-space-4);
+  border: 1px solid var(--tw-caution);
+  border-radius: var(--tw-radius-plate);
+  background: var(--tw-caution-dim);
 }
 .tw-confirm-text {
   margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--tw-body);
+  margin-right: auto;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--tw-text);
 }
 .tw-button-danger {
+  min-height: 36px;
   color: var(--tw-ink);
-  background: var(--tw-yellow);
-  border-color: var(--tw-yellow);
+  background: var(--tw-caution);
+  border-color: var(--tw-caution);
 }
 .tw-button-quiet {
-  color: var(--tw-body);
+  min-height: 36px;
+  color: var(--tw-text);
   background: transparent;
-  border-color: var(--tw-border);
+  border-color: var(--tw-bezel-strong);
 }
 .tw-status-message {
-  font-family: var(--tw-font-display);
-  font-size: 0.75rem;
-  color: var(--tw-secondary);
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--tw-text-2);
 }
 .tw-status-message[data-kind="error"] {
-  color: var(--tw-danger);
+  color: var(--tw-warning);
 }
 .tw-status-message[data-kind="saved"] {
-  color: var(--tw-success);
+  color: var(--tw-normal);
 }
 
 .tw-install-steps {
-  font-size: 0.875rem;
+  display: grid;
+  gap: var(--tw-space-2);
+  margin: 0;
+  padding: var(--tw-space-4) var(--tw-space-4) var(--tw-space-4) 2.5em;
+  font-size: 0.9375rem;
   line-height: 1.6;
-  padding-left: 1.25em;
+  background: var(--tw-panel);
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-panel);
+  box-shadow: inset 0 1px 0 var(--tw-sheen);
+}
+.tw-install-steps li::marker {
+  font-family: var(--tw-font-mono);
+  color: var(--tw-text-2);
 }
 .tw-install-steps code {
   font-family: var(--tw-font-mono);
   font-size: 0.8125rem;
-  background: var(--tw-surface-raised);
-  border-radius: var(--tw-radius-sm);
-  padding: 1px 4px;
+  padding: 1px 6px;
+  background: var(--tw-ground);
+  border: 1px solid var(--tw-bezel);
+  border-radius: var(--tw-radius-cell);
 }
