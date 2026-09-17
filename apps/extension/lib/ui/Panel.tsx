@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import type { GuardResponse, PerpPanel, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
+import type { GuardResponse, PerpPanel, PersonIntelResponse, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
+import { usd } from "./format";
 import { HitList, PanelFooter } from "./panel-parts";
 import { PerpBody } from "./PerpBody";
 import { PredictionBody } from "./PredictionBody";
@@ -10,7 +11,30 @@ export type PanelProps = {
   title: string;
   onClose: () => void;
   replay?: boolean;
+  /** Optional Nansen person-intel match for the post's author, rendered as a small line at
+   * the top of the panel when an entity matched. */
+  person?: PersonIntelResponse | null;
 };
+
+/** "Nansen label: <entity> (tags) · holds $X of SYMBOL" — only rendered when an entity matched. */
+function PersonLine({ person }: { person: PersonIntelResponse }) {
+  if (!person.entity) return null;
+  return (
+    <p className="tw-person">
+      Nansen label: <b>{person.entity}</b>
+      {person.tags.length > 0 ? ` (${person.tags.join(", ")})` : ""}
+      {person.holding ? (
+        <>
+          {" "}
+          · holds{" "}
+          <b className="tw-mono">
+            {usd(person.holding.valueUsd, true)} of {person.holding.symbol ?? "—"}
+          </b>
+        </>
+      ) : null}
+    </p>
+  );
+}
 
 /** Unique Nansen endpoints backing the signals (falls back to hit evidence if signals are
  * empty), used for the footer's "Data: Nansen · N endpoints" line. */
@@ -25,7 +49,7 @@ function endpointCount(data: PanelProps["data"]): number {
 
 /** Header (verdict + display-type title + close), hits list, then a kind-specific body:
  * spot for PostIntelResponse always, spot/perp/prediction for GuardResponse per target.kind. */
-export function Panel({ data, title, onClose, replay }: PanelProps) {
+export function Panel({ data, title, onClose, replay, person }: PanelProps) {
   let body: ReactNode;
   if ("target" in data) {
     // GuardResponse: data.panel is a union, but target.kind tells us which member it actually is.
@@ -46,6 +70,8 @@ export function Panel({ data, title, onClose, replay }: PanelProps) {
           ×
         </button>
       </header>
+
+      {person ? <PersonLine person={person} /> : null}
 
       <HitList hits={data.hits} />
 
