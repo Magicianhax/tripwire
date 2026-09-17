@@ -46,6 +46,11 @@ export const EMPTY_DEPTH: DepthState = { data: null, loading: [], failed: {} };
 
 const has = (state: DepthState, section: DepthSection) => state.loading.includes(section);
 
+/** A percentage that always carries its sign, so a positive rate is never read as a negative
+ * one at a glance. A true minus sign, matching every other figure in the card. */
+const signedPct = (value: number | null, digits: number): string =>
+  value === null ? "—" : `${value >= 0 ? "+" : "−"}${Math.abs(value).toFixed(digits)}%`;
+
 /** Long share in mint, short share in red, each named with its value and wallet count in the
  * legend so the split never relies on colour alone. */
 function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
@@ -180,17 +185,13 @@ function PositioningTab({ panel, hits, depth }: { panel: PerpPanel; hits: HitDto
               items={[
                 { label: "Mark", value: price(market.market.markPrice) },
                 { label: "Oracle", value: price(market.market.oraclePrice) },
-                {
-                  label: "Premium",
-                  value: market.market.premiumPct === null ? "—" : `${market.market.premiumPct >= 0 ? "+" : "−"}${Math.abs(market.market.premiumPct).toFixed(3)}%`,
-                  sign: signOf(market.market.premiumPct),
-                },
-                { label: "24h change", value: market.market.dayChangePct === null ? "—" : `${market.market.dayChangePct.toFixed(2)}%`, sign: signOf(market.market.dayChangePct) },
+                { label: "Premium", value: signedPct(market.market.premiumPct, 3), sign: signOf(market.market.premiumPct) },
+                { label: "24h change", value: signedPct(market.market.dayChangePct, 2), sign: signOf(market.market.dayChangePct) },
                 { label: "Open interest", value: usd(market.market.openInterestUsd) },
                 { label: "24h volume", value: usd(market.market.dayVolumeUsd) },
                 {
                   label: "Funding 8h",
-                  value: market.market.fundingPer8h === null ? "—" : `${(market.market.fundingPer8h * 100).toFixed(4)}%`,
+                  value: signedPct(market.market.fundingPer8h === null ? null : market.market.fundingPer8h * 100, 4),
                   sign: signOf(market.market.fundingPer8h),
                 },
                 { label: "Max leverage", value: market.market.maxLeverage === null ? "—" : `${market.market.maxLeverage}x` },

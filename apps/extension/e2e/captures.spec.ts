@@ -156,3 +156,80 @@ test("wallet lens captures", async ({ context, extensionId }) => {
   await shot(popup.locator(".tw-lens"), "enable-site");
   await popup.close();
 });
+
+/**
+ * The expand view and the perp card's new depth. Desktop widths only: Tripwire is a PC product,
+ * so there are no narrow captures here.
+ */
+test("expand and perp depth captures", async ({ context }) => {
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1600, height: 1100 });
+  await putRules(page, { preset: "balanced" });
+  await page.goto("https://app.hyperliquid.xyz/trade/ETH");
+  await expect(page.locator(".tw-strip")).toBeVisible({ timeout: 20_000 });
+  await page.locator(".tw-strip-details").click();
+
+  const pop = page.locator('.tw-pop[role="dialog"]');
+  await expect(pop).toBeVisible();
+  // perp-funding-venues: the cross-venue table in the anchored card, at 440px.
+  await expect(pop.locator(".tw-venue-table tbody tr")).toHaveCount(5, { timeout: 20_000 });
+  await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await page.waitForTimeout(300);
+  await shot(pop, "perp-funding-venues");
+
+  // perp-expanded: the same card as the centred overlay, over the venue behind it.
+  await pop.getByRole("button", { name: "Expand card" }).click();
+  await expect(pop).toHaveAttribute("data-size", "expanded");
+  await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await page.waitForTimeout(400);
+  await shot(page, "perp-expanded");
+
+  // perp-traders: the tab that costs 11 credits, with its leaderboard from the fixtures.
+  await pop.getByRole("tab", { name: /Traders/ }).click();
+  await expect(pop.locator('[role="tabpanel"]:not([hidden]) table tbody tr').first()).toBeVisible({ timeout: 20_000 });
+  await page.waitForTimeout(400);
+  await shot(pop, "perp-traders");
+  await page.close();
+
+  // card-skeleton: the card mid-load, with the panel call held open.
+  const loading = await context.newPage();
+  await loading.setViewportSize({ width: 1440, height: 1000 });
+  await putRules(loading, { preset: "balanced" });
+  let release: (() => void) | null = null;
+  const held = new Promise<void>((resolve) => (release = resolve));
+  await context.route(`${BACKEND}/api/post-intel`, async (route) => {
+    const body = route.request().postDataJSON() as { mode?: string };
+    if (body?.mode === "panel") await held;
+    await route.continue();
+  });
+  await loading.goto("https://x.com/home");
+  const chip = loading.locator(".tw-chip");
+  await expect(chip.locator(".tw-chip-key")).toHaveText(/\w/, { timeout: 20_000 });
+  await chip.click();
+  const skeletonCard = loading.locator('.tw-pop[role="dialog"]');
+  await expect(skeletonCard.locator(".tw-card")).toHaveAttribute("aria-busy", "true");
+  await skeletonCard.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+  await loading.waitForTimeout(200);
+  await shot(skeletonCard, "card-skeleton");
+  release!();
+  await context.unroute(`${BACKEND}/api/post-intel`);
+  await loading.close();
+
+  // spot-expanded: the spot card at full size, with the wallet lists opened out.
+  const spot = await context.newPage();
+  await spot.setViewportSize({ width: 1600, height: 1100 });
+  await putRules(spot, { preset: "balanced" });
+  await spot.goto("https://x.com/home");
+  const spotChip = spot.locator(".tw-chip");
+  await expect(spotChip.locator(".tw-chip-key")).toHaveText(/\w/, { timeout: 20_000 });
+  await spotChip.click();
+  const spotCard = spot.locator('.tw-pop[role="dialog"]');
+  await expect(spotCard.locator(".tw-card-symbol")).toHaveText("$WIF", { timeout: 20_000 });
+  await spotCard.getByRole("button", { name: "Expand card" }).click();
+  await expect(spotCard).toHaveAttribute("data-size", "expanded");
+  await spotCard.locator("img.tw-token-logo").waitFor({ state: "visible", timeout: 15_000 }).catch(() => {});
+  await spotCard.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await spot.waitForTimeout(500);
+  await shot(spot, "spot-expanded");
+  await spot.close();
+});

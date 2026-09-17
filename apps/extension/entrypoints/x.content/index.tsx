@@ -206,7 +206,9 @@ export default defineContentScript({
                     const result = await postIntel(target, tweet.timeIso ?? undefined, "panel", timeframe);
                     return result.ok ? result.data.panel : null;
                   }}
-                  author={badges.authorSection(tweet, personResult?.ok === true && personResult.data.entity !== null, badgeResult?.ok ? badgeResult.data : null)}
+                  // Only once the lookup has answered: "No Nansen label for @x" is a claim, and
+                  // the card must not make it before it knows.
+                  author={personResult ? badges.authorSection(tweet, personResult.ok && personResult.data.entity !== null, badgeResult?.ok ? badgeResult.data : null) : null}
                 />
               </Popover>
             );

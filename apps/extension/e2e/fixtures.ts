@@ -44,6 +44,10 @@ export const test = base.extend<Fixtures>({
     await context.route("https://app.uniswap.org/**", (route) =>
       route.fulfill({ path: path.join(PAGES, "uniswap.html"), contentType: "text/html; charset=utf-8" }),
     );
+    // The perp venue: a trade page whose order form the adapter reads, for the perp card.
+    await context.route("https://app.hyperliquid.xyz/**", (route) =>
+      route.fulfill({ path: path.join(PAGES, "hyperliquid.html"), contentType: "text/html; charset=utf-8" }),
+    );
     // A page of wallet mentions, for the wallet lens. Served on a host the manifest already
     // covers, so the run exercises the content script without granting an optional permission.
     await context.route("https://dexscreener.com/**", (route) =>

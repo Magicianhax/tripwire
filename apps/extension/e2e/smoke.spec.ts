@@ -477,3 +477,106 @@ test("@smoke Strips say what is actually wrong, and wrap rather than clip", asyn
 
   expect(consoleErrors).toEqual([]);
 });
+
+test("@smoke the card is on screen before its data, with a skeleton per section", async ({ context, request, consoleErrors }) => {
+  await setPreset(request, "balanced");
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1440, height: 1000 });
+
+  // Hold the panel call open, so the frame between the click and the data is observable at all.
+  // The route goes on the *context*, not the page: the content script never fetches the backend
+  // itself — the background service worker does, on its behalf.
+  let release: (() => void) | null = null;
+  const held = new Promise<void>((resolve) => (release = resolve));
+  await context.route(`${BACKEND}/api/post-intel`, async (route) => {
+    const body = route.request().postDataJSON() as { mode?: string };
+    if (body?.mode === "panel") await held;
+    await route.continue();
+  });
+
+  await page.goto("https://x.com/home");
+  const chip = page.locator(".tw-chip");
+  await expect(chip.locator(".tw-chip-key")).toHaveText(/\w/, { timeout: 20_000 });
+
+  await chip.click();
+  const card = page.locator('.tw-pop[role="dialog"] .tw-card');
+  // The card is up while the panel request is still hanging: that is the whole point.
+  await expect(card).toBeVisible();
+  await expect(card).toHaveAttribute("aria-busy", "true");
+  // It already names the target the click knew about -- the post mentions a mint, so that is
+  // the short address -- and the pill is the spinner rather than a verdict word.
+  await expect(card.locator(".tw-card-symbol")).toHaveText("EKpQ…zcjm");
+  await expect(card.locator(".tw-card-plate")).toHaveText("Checking");
+  // Every section reserves the height its content will take.
+  const skeletons = card.locator(".tw-skeleton");
+  expect(await skeletons.count()).toBeGreaterThan(1);
+  const reserved = await card.locator(".tw-skeleton-row").first().evaluate((el) => el.getBoundingClientRect().height);
+  expect(reserved).toBeGreaterThan(10);
+
+  release!();
+  // Then the real card, in the same element, with no second mount -- and the header upgrades
+  // from the address to the name Nansen gave the token.
+  await expect(card.locator(".tw-card-finding")).toHaveText(/\w/, { timeout: 20_000 });
+  await expect(card.locator(".tw-card-symbol")).toHaveText("$WIF");
+  await expect(card).not.toHaveAttribute("aria-busy", "true");
+  await expect(card.locator(".tw-skeleton")).toHaveCount(0);
+  expect(consoleErrors).toEqual([]);
+});
+
+test("@smoke the perp card expands, and its Traders tab loads from fixtures", async ({ context, request, consoleErrors }) => {
+  await setPreset(request, "balanced");
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("https://app.hyperliquid.xyz/trade/ETH");
+
+  // Tier 1 with an anchor: the strip sits above the order form's action, with a Details link.
+  const strip = page.locator(".tw-strip");
+  await expect(strip).toBeVisible({ timeout: 20_000 });
+  await strip.locator(".tw-strip-details").click();
+
+  const pop = page.locator('.tw-pop[role="dialog"]');
+  await expect(pop).toBeVisible();
+  await expect(pop).toHaveAttribute("data-size", "compact");
+  await expect(pop).toHaveAttribute("aria-modal", "false");
+
+  // Positioning is the first tab, and its free sections fill in: the cross-venue table.
+  const venues = pop.locator(".tw-venue-table tbody tr");
+  await expect(venues).toHaveCount(5, { timeout: 20_000 });
+  // Every venue answered from its fixture, each under its own contract name. The rows are
+  // ordered by open interest, which is data, so only the set is asserted here.
+  expect((await pop.locator(".tw-venue-symbol").allTextContents()).sort()).toEqual(["ETH", "ETH-USD", "ETH-USDT-SWAP", "ETHUSDT", "ETHUSDT"]);
+  for (const row of await venues.all()) {
+    await expect(row.locator("td").first()).toHaveText(/%/);
+  }
+  // Hyperliquid and dYdX pay hourly; nothing may print their rate as if it were 8-hourly.
+  const intervals = await pop.locator(".tw-venue-interval").allTextContents();
+  expect(intervals.filter((t) => t === "1h").length).toBe(2);
+  expect(intervals.filter((t) => t === "8h").length).toBe(3);
+
+  // Expand: same card, centred, modal, on a backdrop.
+  await pop.getByRole("button", { name: "Expand card" }).click();
+  await expect(pop).toHaveAttribute("data-size", "expanded");
+  await expect(pop).toHaveAttribute("aria-modal", "true");
+  await expect(page.locator(".tw-pop-backdrop")).toBeVisible();
+  const box = (await pop.boundingBox())!;
+  expect(box.width).toBeGreaterThan(900);
+  expect(box.height).toBeGreaterThan(600);
+
+  // The Traders tab states its price before it is pressed, then loads its own rows.
+  const traders = pop.getByRole("tab", { name: /Traders/ });
+  await expect(traders.locator(".tw-tab-cost")).toHaveText("11 credits");
+  await traders.click();
+  const leaderboard = pop.locator('[role="tabpanel"]:not([hidden]) table').first();
+  await expect(leaderboard.locator("tbody tr").first()).toBeVisible({ timeout: 20_000 });
+  expect(await leaderboard.locator("tbody tr").count()).toBeGreaterThan(4);
+  // The footer says what the tab cost.
+  await expect(pop.locator(".tw-card-footer")).toContainText("11 credits this tab");
+
+  // Collapse returns the card to its anchor rather than closing it.
+  await pop.getByRole("button", { name: "Collapse card" }).click();
+  await expect(pop).toHaveAttribute("data-size", "compact");
+  await expect(page.locator(".tw-pop-backdrop")).toHaveCount(0);
+  await expect(pop).toBeVisible();
+
+  expect(consoleErrors).toEqual([]);
+});

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hyperliquid (e2e stub)</title>
+    <style>
+      /* The trade page's order form, reproduced only as far as the adapter reads it: a
+         "Buy / Long" | "Sell / Short" div toggle whose selected half carries the class token
+         `left` or `right`, and a primary action button beneath it. The chrome is dark like the
+         host page so the captures show the card against something realistic. */
+      body { font-family: system-ui, sans-serif; margin: 0; background: #071412; color: #f0fdf9; }
+      header { display: flex; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid #103a33; font-weight: 600; }
+      main { display: grid; grid-template-columns: 1fr 340px; gap: 16px; padding: 16px; min-height: 100vh; }
+      .chart { border: 1px solid #103a33; border-radius: 8px; background: #0a1c19; }
+      .form { display: grid; gap: 12px; align-content: start; padding: 16px; border: 1px solid #103a33; border-radius: 8px; background: #0a1c19; }
+      .side { display: flex; }
+      .side > div { flex: 1; padding: 10px 0; text-align: center; font-weight: 600; color: #6b8f88; cursor: pointer; }
+      .side > div.left { color: #07141b; background: #50d2c1; border-radius: 6px 0 0 6px; }
+      .side > div.right { color: #07141b; background: #ed7088; border-radius: 0 6px 6px 0; }
+      label { display: grid; gap: 4px; font-size: 13px; color: #6b8f88; }
+      input { height: 36px; padding: 0 10px; border: 1px solid #103a33; border-radius: 6px; background: #071412; color: inherit; }
+      button[type="submit"] {
+        height: 44px;
+        border: none;
+        border-radius: 6px;
+        background: #50d2c1;
+        color: #07141b;
+        font-weight: 700;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header><span>Hyperliquid</span><span>ETH-USD</span></header>
+    <main>
+      <div class="chart"></div>
+      <form class="form" onsubmit="return false">
+        <!-- The side toggle the adapter reads. `left` on the first half means Long is selected. -->
+        <div class="side">
+          <div class="left">Buy / Long</div>
+          <div>Sell / Short</div>
+        </div>
+        <label>Size <input id="size" placeholder="0.0" /></label>
+        <label>Price <input id="price" placeholder="Market" /></label>
+        <button type="submit">Buy / Long ETH</button>
+      </form>
+    </main>
+  </body>
+</html>

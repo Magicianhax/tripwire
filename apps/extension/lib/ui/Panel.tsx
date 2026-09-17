@@ -115,27 +115,28 @@ function defaultFinding(verdict: Verdict): string {
 function LoadingBody({ kind }: { kind: Target["kind"] | "spot" }) {
   if (kind === "perp") {
     return (
-      <>
+      <div className="tw-card-loading">
         <SkeletonSection title="Smart Money long vs short" shape="gauge" rows={1} />
-        <SkeletonSection title="The market right now" shape="tile" rows={2} />
+        {/* Eight figure tiles, four across, which is what "The market right now" renders. */}
+        <SkeletonSection title="The market right now" shape="tile" rows={8} />
         <SkeletonSection title="Funding &amp; OI across venues" shape="table" rows={5} />
-      </>
+      </div>
     );
   }
   if (kind === "prediction") {
     return (
-      <>
+      <div className="tw-card-loading">
         <SkeletonSection title="Proven winners by side" shape="gauge" rows={1} />
         <SkeletonSection title="Top holders" shape="table" rows={6} />
-      </>
+      </div>
     );
   }
   return (
-    <>
+    <div className="tw-card-loading">
       <SkeletonSection title="Net flow by wallet type" shape="gauge" rows={6} />
       <SkeletonSection title="Price" shape="chart" rows={1} />
-      <SkeletonSection title="Smart Money netflow" shape="tile" rows={1} />
-    </>
+      <SkeletonSection title="Smart Money netflow" shape="tile" rows={4} />
+    </div>
   );
 }
 
@@ -329,7 +330,8 @@ export function Panel({
           {body}
         </div>
         <PanelFooter
-          endpointCount={data === null ? 0 : endpointCount(data)}
+          // No count while there is nothing to count: "0 endpoints" is noise, not information.
+          endpointCount={data === null ? null : endpointCount(data)}
           errors={data?.panel.errors ?? []}
           nansenUrl={nansenUrl}
           depthCredits={depth.data?.credits ?? 0}

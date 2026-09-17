@@ -668,7 +668,13 @@ input {
   top: 0;
   z-index: 1;
   display: flex;
-  gap: var(--tw-space-5);
+  /* Four tabs and a price do not fit in 440px at the expanded gap, and a wrapped tab strip
+     reads as a bug. The gap tightens in the anchored card, the row never wraps, and if a
+     future tab still overflows it scrolls rather than clipping. */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: var(--tw-space-3);
   padding: 0 var(--tw-space-4);
   background: var(--tw-panel);
   border-bottom: 1px solid var(--tw-line);
@@ -677,6 +683,11 @@ input {
 .tw-tab {
   appearance: none;
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  white-space: nowrap;
   min-height: 36px;
   padding: 0;
   border: none;
@@ -2148,7 +2159,9 @@ div.tw-dock-chip {
 
 /* An explanatory line under a section's data (absorption, "not enough labeled trading"). */
 .tw-note {
-  margin: var(--tw-space-2) 0 0;
+  /* Space above it (it follows the thing it is about) and below it, so the next section's
+     heading does not read as part of the sentence. */
+  margin: var(--tw-space-2) 0 var(--tw-space-2);
   font-size: 0.75rem;
   line-height: 1.4;
   color: var(--tw-text-2);
@@ -2297,6 +2310,14 @@ div.tw-dock-chip {
   }
 }
 
+/* The first frame's sections, in the same gutter the tab panels use, so nothing shifts
+   sideways when the real card replaces them. */
+.tw-card-loading {
+  display: grid;
+  gap: var(--tw-space-4);
+  padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
+}
+
 /* The finding's line, held open while the sentence is still on its way. */
 .tw-card-finding-pending {
   height: 1.25em;
@@ -2333,7 +2354,10 @@ div.tw-dock-chip {
   left: 50%;
   right: auto;
   width: min(1280px, 80vw);
-  height: min(880px, 80vh);
+  /* The cap is the brief's 880px; the card takes less when its content needs less, because a
+     third of a card of empty space below the last section is worse than a shorter card. */
+  height: auto;
+  min-height: min(420px, 60vh);
   max-height: min(880px, 80vh);
   transform: translate(-50%, -50%);
   border-radius: var(--tw-radius-overlay);
@@ -2345,7 +2369,6 @@ div.tw-dock-chip {
 @media (max-width: 1100px) {
   .tw-pop[data-size="expanded"] {
     width: 92vw;
-    height: 88vh;
     max-height: 88vh;
   }
 }
@@ -2386,7 +2409,7 @@ div.tw-dock-chip {
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-errors,
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-question,
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-venue-table),
-.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-chart) {
+.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-book) {
   grid-column: 1 / -1;
 }
 
@@ -2461,6 +2484,15 @@ div.tw-dock-chip {
   font-size: 0.6875rem;
   color: var(--tw-text-2);
   white-space: nowrap;
+}
+
+/* The anchored card gives its width to the labels; the icons come back once expanded. */
+.tw-card[data-size="compact"] .tw-tab > svg {
+  display: none;
+}
+
+.tw-card[data-size="expanded"] .tw-tablist {
+  gap: var(--tw-space-5);
 }
 
 /* The venue's own funding schedule, next to the figure it was rebased from. */
@@ -2580,7 +2612,7 @@ div.tw-dock-chip {
  * Printed on the tab itself, so the price of the Traders tab is read before it is paid.
  */
 .tw-tab-cost {
-  margin-left: 6px;
+  white-space: nowrap;
   padding: 1px 5px;
   border: 1px solid var(--tw-line-strong);
   border-radius: var(--tw-radius-pill);
