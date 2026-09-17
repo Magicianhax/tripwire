@@ -36,3 +36,4 @@ tasks/*.local.md
 src/styles/tokens.css
 repomix.xml
 .data/
+*.tsbuildinfo

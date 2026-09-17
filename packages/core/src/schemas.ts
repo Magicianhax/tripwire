@@ -71,6 +71,12 @@ export const RulesPutSchema = z.union([
   z.object({ rules: z.array(RuleSchema).max(50) }),
 ]);
 
+export const GuardBodySchema = z.object({
+  target: TargetSchema,
+  venue: z.string().max(40),
+  mode: z.enum(["chip", "panel"]).default("chip"),
+});
+
 export const OverrideRequestSchema = z.object({
   target: TargetSchema,
   verdict: z.enum(["CLEAR", "CAUTION", "TRIPWIRE", "UNCHECKED"]),
