@@ -53,6 +53,28 @@ export function closeEvidenceDock(rc: RunnerContext): void {
   closeEvidence(rc);
 }
 
+/** The neutral "Checking…" state shown between a target change and its new verdict: a LOADING
+ * Strip above the anchor when one is present (tier 1), else a collapsed Dock chip. Never
+ * installs a blocker. Dropped (not stored) if the page moved on, or something else already
+ * mounted, while the shadow root was being created. */
+export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key: string): Promise<void> {
+  const anchor = adapter.tier === 1 ? (adapter.anchor?.(document) ?? null) : null;
+  const mount = anchor
+    ? await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, <Strip verdict="LOADING" text="Checking…" />)
+    : await mountReact(
+        rc.ctx,
+        { position: "inline" },
+        <Dock collapsed onToggleCollapsed={() => {}} collapsedLabel="Checking…">
+          {null}
+        </Dock>,
+      );
+  if (rc.currentKey !== key || rc.mainMount) {
+    mount.ui.remove();
+    return;
+  }
+  rc.mainMount = mount;
+}
+
 /** Primary Dock for tier 2 (or tier 1 with no anchor found): starts as a collapsed chip,
  * fetches "panel" mode data lazily on first expand. */
 export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, target: Target | null, verdict: Verdict, headline: string): Promise<void> {

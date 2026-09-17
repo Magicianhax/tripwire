@@ -5,7 +5,7 @@ import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, type ApiResult } from "../../lib/api";
 import type { GuardResponse } from "../../lib/api-types";
 import { decideDisplay, nextAction } from "./display-state";
-import { createBlockBinding, createStripBinding, closeEvidenceDock, showPrimaryDock } from "./displays";
+import { createBlockBinding, createStripBinding, closeEvidenceDock, showChecking, showPrimaryDock } from "./displays";
 import { errorHeadline, verdictHeadline } from "./format";
 import { isUnlocked, type RunnerContext } from "./runner-state";
 
@@ -39,7 +39,9 @@ export function createGuardRunner(ctx: ContentScriptContext) {
     renderResolved: (adapter, target, key, verdict, headline, chipData) => render_(adapter, target, key, verdict, headline, chipData),
   };
 
-  async function teardownMain(): Promise<void> {
+  /** Synchronous on purpose: `render()` calls it before its first `await`, so a stale block
+   * screen or blocker can never outlive a target change by even one tick. */
+  function teardownMain(): void {
     // Unbinds via the mode-specific onUnbind (releases the blocker/listeners for a block
     // screen, removes the mount for a strip) before the generic cleanup below.
     rc.anchorBinding?.unbind();
@@ -76,8 +78,8 @@ export function createGuardRunner(ctx: ContentScriptContext) {
     headline: string,
     chipData: GuardResponse | null,
   ): Promise<void> {
-    await teardownMain();
-    if (rc.currentKey !== key) return; // superseded while tearing down
+    teardownMain();
+    if (rc.currentKey !== key) return; // superseded
 
     const unlocked = target ? isUnlocked(rc, key) : false;
     const anchorPresent = adapter.tier === 1 && (adapter.anchor?.(document) ?? null) != null;
@@ -117,13 +119,20 @@ export function createGuardRunner(ctx: ContentScriptContext) {
    */
   async function render(adapter: VenueAdapter, target: Target | null, key: string): Promise<void> {
     rc.currentKey = key;
+    // Tear the previous target's display and blocker down BEFORE any await: the old verdict
+    // (a stale block, or a CLEAR for a token that's no longer selected) must never stay visible
+    // while the new check is in flight.
+    teardownMain();
 
     let verdict: Verdict = "UNCHECKED";
     let headline = "Tripwire couldn't check this: no target on this page";
     let chipData: GuardResponse | null = null;
 
     if (target) {
-      const result: ApiResult<GuardResponse> = await guard(target, adapter.id, "chip");
+      const pending: Promise<ApiResult<GuardResponse>> = guard(target, adapter.id, "chip");
+      // Neutral "Checking…" (verdict LOADING, never a blocker) until the new result lands.
+      await showChecking(rc, adapter, key);
+      const result = await pending;
       if (rc.currentKey !== key) return; // the page moved on while this was in flight
       if (result.ok) {
         chipData = result.data;
@@ -184,11 +193,12 @@ export function createGuardRunner(ctx: ContentScriptContext) {
    * within the 60s unlock window still remembers the override. */
   async function clear(): Promise<void> {
     rc.currentKey = null;
-    await teardownMain();
+    teardownMain();
   }
 
   function dispose(): void {
-    void teardownMain();
+    rc.currentKey = null;
+    teardownMain();
     for (const timer of rc.unlockTimers.values()) clearTimeout(timer);
     rc.unlockTimers.clear();
   }

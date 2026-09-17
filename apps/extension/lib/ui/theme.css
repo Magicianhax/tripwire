@@ -707,7 +707,8 @@
   border-left: 4px solid var(--tw-yellow);
 }
 
-.tw-strip[data-verdict="UNCHECKED"] {
+.tw-strip[data-verdict="UNCHECKED"],
+.tw-strip[data-verdict="LOADING"] {
   background: var(--tw-surface-raised);
   color: var(--tw-secondary);
 }
