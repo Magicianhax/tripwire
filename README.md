@@ -24,6 +24,15 @@ A short GIF walkthrough, if added, lives in `docs/media/`.
   fires, with the Nansen evidence that triggered it and a typed-phrase override. Tier-2
   venues get a docked verdict chip that opens the same evidence card (URL-derived target only,
   nothing to block).
+- **Author badges (X):** next to a post author's username, a Nansen badge when that account's
+  display name or handle is an exact match for a Nansen entity, plus a Hyperliquid or Polymarket
+  badge when a wallet is linked to that handle. Clicking one opens the same floating card with a
+  tab per venue: Nansen holdings, tags and realized PnL; Hyperliquid account value, open
+  positions and recent fills; Polymarket PnL, win rate, open positions and recent trades. A
+  wallet is only ever linked by you (the "Link wallet" form, stored locally) or by a curated,
+  source-verified entry in `packages/core/src/curated-wallets.ts` (shipped empty: no candidate
+  had a fetchable source where the account itself states the address). Nothing is ever inferred
+  from a similar name.
 - **User-owned rules:** three presets (Degen, Balanced, Paranoid) or a custom rule set,
   editable at `/rules`, evaluated locally against the signals below.
 
@@ -174,6 +183,18 @@ the whole window:
 | `prediction-market/top-holders` | 5 min |
 | `prediction-market/pnl-by-address` | 24 hours |
 | `prediction-market/trades-by-market` | 2 min |
+| `profiler/address/pnl-summary` (author badge) | 30 min |
+| `profiler/perp-pnl-summary` (author badge) | 10 min |
+| `prediction-market/address-summary` (author badge) | 10 min |
+| `prediction-market/pnl-by-address` (author badge) | 10 min |
+| `prediction-market/trades-by-address` (author badge) | 10 min |
+
+Author badges cost, per handle and cache window: **0 credits** for an account with no Nansen
+entity match (`search/general` is free), **2 credits** when one matches (current-balance +
+pnl-summary), **1 credit** for a linked Hyperliquid wallet (Nansen perp PnL summary; the
+positions and fills come from Hyperliquid's free public `info` API, called by the backend
+only — the extension never talks to `api.hyperliquid.xyz`), and **3 credits** for a linked
+Polymarket wallet. Hyperliquid answers are cached 60s.
 
 Polymarket slug lookups (Gamma API, no credits) cache a found market for 1 hour and a
 not-found or ambiguous event for 5 minutes; failed lookups are never cached.
@@ -184,6 +205,10 @@ call that would exceed it returns stale cache if there is one. Otherwise that da
 "Nansen credit cap reached" (never a block, never CLEAR), and the chip/strip show that
 headline. Routes with nothing to fall back on (`/api/resolve`, `/api/person-intel`) answer
 HTTP 429 `{ error: "budget" }`, which the extension also shows as "Nansen credit cap reached".
+
+`node scripts/record-badge-fixtures.mjs` re-records the author-badge fixtures
+(`fixtures/nansen/entityPnlSummary.json`, `pmAddressSummary.json`, `pmTradesByAddress.json`,
+`perpPnlSummary.json` and `fixtures/hyperliquid/*.json`) for 4 Nansen credits.
 
 `node scripts/record-fixtures.mjs` re-records the fixtures in `fixtures/nansen/` from live
 Nansen calls (needs a working key; costs credits — see the header comment in the script
@@ -247,6 +272,11 @@ before running it).
 - **No page HTML injection:** venue adapters and the X content script read only
   `textContent`/attributes from the host page, never `innerHTML`, and never write arbitrary
   HTML into it.
+- **Wallet links stay local:** a wallet you link to an X handle is stored only in the
+  `wallet_links` table of the local database and is used only to call Nansen and Hyperliquid
+  from your own machine. It is never uploaded, never shared with the account it names, and
+  `DELETE /api/links` removes it. Curated entries carry the public source URL where the owner
+  stated the address; no wallet is ever guessed from a name.
 - **Local data:** everything Tripwire stores (cache, ledger, rules, check history) lives in
   `apps/web/.data/tripwire.db` (SQLite via `node:sqlite`), gitignored, never uploaded.
 

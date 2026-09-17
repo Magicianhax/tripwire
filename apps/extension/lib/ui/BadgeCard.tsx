@@ -23,6 +23,9 @@ export type BadgeCardProps = {
 };
 
 const sign = (v: number | null | undefined) => (v === null || v === undefined || v === 0 ? "zero" : v < 0 ? "neg" : "pos");
+/** A price, not a size: prices stay exact ($2,299.4), only totals are abbreviated. */
+const price = (v: number | null | undefined) =>
+  v === null || v === undefined || !Number.isFinite(v) ? "—" : `$${v.toLocaleString("en-US", { maximumFractionDigits: v >= 1 ? 2 : 4 })}`;
 const rate = (v: number | null | undefined) => (v === null || v === undefined ? "—" : pct(v * 100));
 
 /** Figure tiles: a label and its value, red or mint when the value is signed. */
@@ -160,9 +163,9 @@ function HyperliquidTab({ badge, onUnlink }: { badge: HyperliquidBadge; onUnlink
                     </span>
                   </td>
                   <td className="tw-fig tw-num">
-                    {usd(p.entryPx)} / {usd(p.markPx)}
+                    {price(p.entryPx)} / {price(p.markPx)}
                   </td>
-                  <td className="tw-fig tw-num">{p.liquidationPx === null ? "—" : usd(p.liquidationPx)}</td>
+                  <td className="tw-fig tw-num">{price(p.liquidationPx)}</td>
                   <td className="tw-fig tw-num" data-sign={sign(p.unrealizedPnlUsd)}>
                     {usd(p.unrealizedPnlUsd, true)}
                   </td>
@@ -229,7 +232,7 @@ function PolymarketTab({ badge, onUnlink }: { badge: PolymarketBadge; onUnlink: 
                   <span className="tw-side" data-side={p.side.toLowerCase() === "yes" ? "long" : "short"}>
                     {p.side}
                   </span>
-                  <span className="tw-fig">{usd(p.valueUsd)}</span>
+                  <span className="tw-fig tw-market-value">{usd(p.valueUsd)}</span>
                   <span className="tw-fig" data-sign={sign(p.pnlUsd)}>
                     {usd(p.pnlUsd, true)}
                   </span>
@@ -247,7 +250,7 @@ function PolymarketTab({ badge, onUnlink }: { badge: PolymarketBadge; onUnlink: 
             {trades.map((t, i) => (
               <li key={`${t.timestamp}-${i}`}>
                 <span>
-                  {t.action ?? "Trade"} {t.side ?? ""} at {t.price === null ? "—" : `${Math.round(t.price * 100)}¢`}
+                  {t.action ?? "Trade"} {t.side ?? ""} at {t.price === null ? "—" : `$${t.price.toFixed(2)}`}
                 </span>
                 <span className="tw-fig">{usd(t.usdcValue)}</span>
                 <span className="tw-fig tw-meta">{timeAgo(`${t.timestamp}${/[Zz]|[+-]\d\d:?\d\d$/.test(t.timestamp) ? "" : "Z"}`)}</span>
