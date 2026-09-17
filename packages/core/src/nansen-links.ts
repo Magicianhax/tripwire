@@ -33,6 +33,22 @@ export function nansenTokenUrl(chain: string, tokenAddress: string): string | nu
 }
 
 /**
+ * A wallet's own page in Nansen's Profiler.
+ *
+ * The pattern was verified against live, search-indexed Nansen pages before shipping
+ * (`app.nansen.ai/profiler?address=0xf1cca6…`, and the same with `&chain=`), which is the same
+ * bar `nansenTokenUrl` had to clear: a deep link that 404s is worse than no button.
+ */
+export function nansenWalletUrl(address: string, chain?: string | null): string | null {
+  if (!address) return null;
+  const url = new URL("/profiler", NANSEN_APP_ORIGIN);
+  url.searchParams.set("address", address);
+  const slug = chain ? nansenChainSlug(chain) : null;
+  if (slug) url.searchParams.set("chain", slug);
+  return url.href;
+}
+
+/**
  * Where a target can be opened on Nansen, or null when it can't.
  *
  * Perp markets and prediction markets return null on purpose: Nansen ships Hyperliquid perp and

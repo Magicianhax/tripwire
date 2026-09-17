@@ -15,3 +15,4 @@ export * from "./labels";
 export * from "./brands";
 export * from "./nansen-links";
 export * from "./curated-wallets";
+export * from "./wallet-detect";

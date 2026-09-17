@@ -3,6 +3,7 @@ import { isEvmAddress, isSolanaAddress } from "./addresses";
 import { CHAINS, SIGNAL_IDS } from "./types";
 import { VIEW_TIMEFRAMES } from "./timeframe";
 import { HANDLE_RE, isVenueWalletAddress, normalizeHandle, WALLET_VENUES } from "./curated-wallets";
+import { classify } from "./wallet-detect";
 
 export const ChainSchema = z.enum(CHAINS);
 
@@ -70,6 +71,31 @@ export const WalletLinkDeleteSchema = z.object({ handle: linkHandle, venue: wall
 export const AuthorBadgesRequestSchema = z.object({
   handle: z.string().regex(HANDLE_RE),
   displayName: z.string().min(1).max(60),
+});
+
+/**
+ * POST /api/wallet. One field, because that is what the user has: whatever string they saw on
+ * the page. The detector's own `classify` decides what it is, so the route and the content
+ * script can never disagree about what counts as a wallet.
+ */
+export const WalletQuerySchema = z.object({
+  query: z
+    .string()
+    .trim()
+    .min(4)
+    .max(80)
+    .refine((s) => classify(s) !== null, "not an address or an ENS/SNS name"),
+  chainHint: ChainSchema.optional(),
+});
+
+/** POST /api/wallet/labels: the premium, 100-credit label lookup, always on a resolved address. */
+export const WalletLabelsRequestSchema = z.object({
+  address: z
+    .string()
+    .trim()
+    .min(32)
+    .max(64)
+    .refine((s) => isEvmAddress(s) || isSolanaAddress(s), "invalid address"),
 });
 
 export const RuleSchema = z.object({
