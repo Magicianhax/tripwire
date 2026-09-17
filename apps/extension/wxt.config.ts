@@ -24,8 +24,9 @@ export default defineConfig({
       "Nansen onchain data at the moment of decision: verdicts on X posts, trade blocks on DEX, perp and prediction venues.",
     permissions: ["storage"],
     host_permissions: ["http://127.0.0.1:3000/*", "http://localhost:3000/*"],
-    // Packaged fonts, registered once per host page by lib/ui/fonts.ts.
-    web_accessible_resources: [{ resources: [`${FONT_DIR}/*.woff2`], matches: [...X_MATCHES, ...TIER1_MATCHES, ...TIER2_MATCHES] }],
+    // Packaged fonts (registered once per host page by lib/ui/fonts.ts) and bundled brand logos
+    // (public/logos, rendered via <img src> in the shadow UI). Only on the pages content scripts run on.
+    web_accessible_resources: [{ resources: [`${FONT_DIR}/*.woff2`, "logos/*"], matches: [...X_MATCHES, ...TIER1_MATCHES, ...TIER2_MATCHES] }],
   },
   hooks: {
     // Copy only the woff2 subsets fonts.ts declares, straight from the @fontsource packages.
