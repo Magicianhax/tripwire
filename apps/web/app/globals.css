@@ -1,0 +1,448 @@
+/* Tripwire — Hazard design tokens. Every value here traces to DESIGN.md. */
+:root {
+  /* colors */
+  --tw-ink: #0b0b0b;
+  --tw-surface: #0b0b0b;
+  --tw-surface-raised: #161616;
+  --tw-body: #ededed;
+  --tw-secondary: #8c8c8c;
+  --tw-yellow: #ffd400;
+  --tw-success: #3fbf7f;
+  --tw-danger: #ff5a36;
+  --tw-border: #2a2a2a;
+
+  /* radius */
+  --tw-radius-sm: 3px;
+  --tw-radius-md: 6px;
+  --tw-radius-lg: 10px;
+
+  /* spacing */
+  --tw-space-xs: 4px;
+  --tw-space-sm: 8px;
+  --tw-space-md: 12px;
+  --tw-space-lg: 20px;
+  --tw-space-xl: 32px;
+
+  /* fonts */
+  --tw-font-display: "Archivo Variable", system-ui, sans-serif;
+  --tw-font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--tw-surface);
+  color: var(--tw-body);
+  font-family: var(--tw-font-display);
+  font-size: 0.875rem;
+  font-weight: 450;
+  line-height: 1.45;
+}
+
+a {
+  color: inherit;
+}
+
+/* Focus rings: 2px offset, ink/yellow per DESIGN.md. Default surface is dark, so the
+   visible ring is yellow; the one control that sits on a yellow fill (the TRIPWIRE chip)
+   flips to an ink ring so it still reads against its own background. */
+:focus-visible {
+  outline: 2px solid var(--tw-yellow);
+  outline-offset: 2px;
+}
+.tw-chip-tripwire:focus-visible {
+  outline-color: var(--tw-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Typography */
+.tw-display {
+  font-family: var(--tw-font-display);
+  font-weight: 900;
+  font-stretch: 70%;
+  font-size: 3rem;
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.tw-h2 {
+  font-family: var(--tw-font-display);
+  font-weight: 800;
+  font-size: 1.375rem;
+  line-height: 1.1;
+  margin: 0 0 var(--tw-space-md);
+}
+.tw-label {
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--tw-secondary);
+}
+.tw-data {
+  font-family: var(--tw-font-mono);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+/* Large numeric readout: composes the display size with the mono/data face — there is no
+   dedicated token for this in DESIGN.md's typography scale, so it reuses display's size. */
+.tw-readout {
+  font-family: var(--tw-font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-weight: 700;
+  font-size: 3rem;
+  line-height: 0.88;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+/* Layout */
+.tw-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.tw-nav {
+  border-bottom: 1px solid var(--tw-border);
+}
+.tw-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tw-space-lg);
+  padding: var(--tw-space-md) 0;
+  flex-wrap: wrap;
+}
+.tw-wordmark {
+  font-family: var(--tw-font-display);
+  font-weight: 900;
+  font-stretch: 70%;
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+  color: var(--tw-body);
+  text-decoration: none;
+}
+.tw-nav-links {
+  display: flex;
+  gap: var(--tw-space-lg);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tw-nav-link {
+  display: inline-block;
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--tw-secondary);
+  text-decoration: none;
+  padding-bottom: var(--tw-space-xs);
+  border-bottom: 2px solid transparent;
+}
+.tw-nav-link:hover {
+  color: var(--tw-body);
+}
+.tw-nav-link[aria-current="page"] {
+  color: var(--tw-body);
+  border-bottom-color: var(--tw-yellow);
+}
+
+main.tw-main {
+  padding: var(--tw-space-xl) 0 var(--tw-space-xl);
+}
+
+.tw-section {
+  margin-bottom: var(--tw-space-xl);
+}
+
+.tw-stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tw-space-xl);
+  margin-bottom: var(--tw-space-lg);
+}
+.tw-stat {
+  min-width: 140px;
+}
+.tw-stat-label {
+  display: block;
+  margin-bottom: var(--tw-space-xs);
+}
+.tw-stat-value {
+  display: block;
+}
+
+/* Replay watermark badge */
+.tw-replay-badge {
+  position: fixed;
+  top: var(--tw-space-md);
+  right: var(--tw-space-md);
+  z-index: 50;
+  background: var(--tw-yellow);
+  color: var(--tw-ink);
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: -0.01em;
+  padding: var(--tw-space-xs) var(--tw-space-sm);
+  border-radius: var(--tw-radius-sm);
+}
+
+/* Verdict chip */
+.tw-chip {
+  display: inline-block;
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  padding: var(--tw-space-xs) var(--tw-space-sm);
+  border-radius: var(--tw-radius-sm);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.tw-chip-tripwire {
+  background: var(--tw-yellow);
+  color: var(--tw-ink);
+}
+.tw-chip-caution {
+  background: var(--tw-ink);
+  color: var(--tw-body);
+  border: 1.5px solid var(--tw-yellow);
+}
+.tw-chip-clear {
+  background: var(--tw-surface-raised);
+  color: var(--tw-success);
+}
+.tw-chip-unchecked {
+  background: var(--tw-surface-raised);
+  color: var(--tw-secondary);
+}
+.tw-chip-danger-text {
+  color: var(--tw-danger);
+}
+
+/* Tables — dense, no card grids */
+.tw-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tw-table caption {
+  text-align: left;
+  margin-bottom: var(--tw-space-sm);
+}
+.tw-table th {
+  text-align: left;
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--tw-secondary);
+  padding: var(--tw-space-sm) var(--tw-space-md);
+  border-bottom: 1px solid var(--tw-border);
+  white-space: nowrap;
+}
+.tw-table td {
+  padding: var(--tw-space-sm) var(--tw-space-md);
+  border-bottom: 1px solid var(--tw-border);
+  vertical-align: middle;
+}
+.tw-table td.tw-num,
+.tw-table th.tw-num {
+  font-family: var(--tw-font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  text-align: right;
+}
+.tw-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.tw-table-wrap {
+  overflow-x: auto;
+}
+.tw-empty {
+  color: var(--tw-secondary);
+  padding: var(--tw-space-md) 0;
+}
+
+/* Two-column dense grid, ledger only */
+.tw-ledger-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tw-space-xl);
+}
+@media (min-width: 800px) {
+  .tw-ledger-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Progress meter toward the buildathon goal */
+.tw-meter-track {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border: 1px solid var(--tw-border);
+  border-radius: var(--tw-radius-sm);
+  background: var(--tw-surface-raised);
+  overflow: hidden;
+}
+.tw-meter-track::-webkit-progress-bar {
+  background: var(--tw-surface-raised);
+}
+.tw-meter-track::-webkit-progress-value {
+  background: var(--tw-body);
+  border-radius: var(--tw-radius-sm);
+}
+.tw-meter-track::-moz-progress-bar {
+  background: var(--tw-body);
+  border-radius: var(--tw-radius-sm);
+}
+
+/* Segmented control — square ends, yellow never used as a selection fill */
+.tw-segmented {
+  display: inline-flex;
+  border: 1px solid var(--tw-border);
+  border-radius: 0;
+}
+.tw-segment {
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--tw-secondary);
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--tw-border);
+  padding: var(--tw-space-sm) var(--tw-space-md);
+  cursor: pointer;
+}
+.tw-segment:last-child {
+  border-right: none;
+}
+.tw-segment[aria-pressed="true"] {
+  background: var(--tw-surface-raised);
+  color: var(--tw-body);
+}
+.tw-segment:disabled {
+  cursor: default;
+}
+
+/* Rule rows */
+.tw-rule-group {
+  margin-bottom: var(--tw-space-lg);
+}
+.tw-rule-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tw-space-md);
+  padding: var(--tw-space-md) 0;
+  border-bottom: 1px solid var(--tw-border);
+}
+.tw-rule-row:last-child {
+  border-bottom: none;
+}
+.tw-rule-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-xs);
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--tw-secondary);
+  flex-shrink: 0;
+}
+.tw-rule-sentence {
+  flex: 1 1 320px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+.tw-rule-select {
+  flex-shrink: 0;
+}
+
+/* Form controls */
+input[type="checkbox"] {
+  accent-color: var(--tw-body);
+  width: 16px;
+  height: 16px;
+}
+.tw-input-number {
+  font-family: var(--tw-font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: 0.8125rem;
+  background: var(--tw-surface-raised);
+  color: var(--tw-body);
+  border: 1px solid var(--tw-border);
+  border-radius: var(--tw-radius-sm);
+  padding: 2px 6px;
+  width: 9ch;
+}
+select {
+  font-family: var(--tw-font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--tw-surface-raised);
+  color: var(--tw-body);
+  border: 1px solid var(--tw-border);
+  border-radius: var(--tw-radius-sm);
+  padding: var(--tw-space-xs) var(--tw-space-sm);
+}
+.tw-save-row {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-md);
+  margin-top: var(--tw-space-lg);
+}
+.tw-button {
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--tw-ink);
+  background: var(--tw-body);
+  border: 1px solid var(--tw-body);
+  border-radius: var(--tw-radius-sm);
+  padding: var(--tw-space-sm) var(--tw-space-lg);
+  cursor: pointer;
+}
+.tw-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.tw-status-message {
+  font-family: var(--tw-font-display);
+  font-size: 0.75rem;
+  color: var(--tw-secondary);
+}
+.tw-status-message[data-kind="error"] {
+  color: var(--tw-danger);
+}
+.tw-status-message[data-kind="saved"] {
+  color: var(--tw-success);
+}
+
+.tw-install-steps {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  padding-left: 1.25em;
+}
+.tw-install-steps code {
+  font-family: var(--tw-font-mono);
+  font-size: 0.8125rem;
+  background: var(--tw-surface-raised);
+  border-radius: var(--tw-radius-sm);
+  padding: 1px 4px;
+}

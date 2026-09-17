@@ -37,3 +37,4 @@ src/styles/tokens.css
 repomix.xml
 .data/
 *.tsbuildinfo
+next-env.d.ts
