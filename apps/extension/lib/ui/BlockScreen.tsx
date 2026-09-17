@@ -66,11 +66,28 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    // React only synthesizes keypress for character keys it recognizes, so stop the native
+    // event directly (nothing in here listens for keypress; keydown/keyup go via React below).
+    const root = rootRef.current;
+    if (!root) return;
+    const stop = (e: Event) => e.stopPropagation();
+    root.addEventListener("keypress", stop);
+    return () => root.removeEventListener("keypress", stop);
+  }, []);
+
   function tryOverride() {
     if (input.trim() === phrase && !pending) onOverride();
   }
 
+  /** Keystrokes inside the block screen (typing the override phrase) must never trigger the
+   * venue's own document-level hotkeys (e.g. "b" = buy). */
+  function isolateKey(e: React.KeyboardEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
   function handleRootKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    isolateKey(e);
     if (e.key === "Escape") {
       // Safety block: Escape must never dismiss this dialog. Deliberate no-op.
       return;
@@ -97,7 +114,7 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
   }
 
   return (
-    <div className="tw-block" role="alertdialog" aria-labelledby={headingId} ref={rootRef} onKeyDown={handleRootKeyDown}>
+    <div className="tw-block" role="alertdialog" aria-labelledby={headingId} ref={rootRef} onKeyDown={handleRootKeyDown} onKeyUp={isolateKey}>
       <div className="tw-block-stripe" aria-hidden="true" />
       <div className="tw-block-body">
         <h3 id={headingId} className="tw-block-heading">
