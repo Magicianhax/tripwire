@@ -13,6 +13,7 @@ import { Panel } from "../../lib/ui/Panel";
 import { X_MATCHES } from "../../lib/venues";
 import { createResultCache } from "../../lib/x/cache";
 import { createMountTracker } from "../../lib/x/mounts";
+import { chipErrorHeadline, chipHeadline } from "../../lib/x/headline";
 import { chainForAddress, pickToken, type ChipToken } from "../../lib/x/pick";
 import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
 import { createQueue } from "../../lib/x/queue";
@@ -21,21 +22,6 @@ const TWEET_SELECTOR = 'article[data-testid="tweet"]';
 const CHIP_CONCURRENCY = 4;
 const VIEWPORT_MARGIN = "600px 0px";
 const SWEEP_DEBOUNCE_MS = 1000;
-
-function errorHeadline(status: number, error: string): string {
-  if (status === 0) return "Tripwire backend offline";
-  if (status === 429) return "Nansen credit cap reached";
-  return error || "Tripwire check failed";
-}
-
-/** The chip's headline: the first hit's label, or the exit_pressure signal's label when
- * nothing hit (there's always at least an exit_pressure signal computed, even for CLEAR). */
-function headlineFor(data: PostIntelResponse): string {
-  const firstHit = data.hits[0];
-  if (firstHit) return firstHit.label;
-  const exitPressure = data.signals.find((s) => s.id === "exit_pressure");
-  return exitPressure?.label ?? "No signal";
-}
 
 /** Clicks anywhere inside a mounted Tripwire shadow-root UI must never reach X's own
  * click-to-open-tweet handlers. */
@@ -159,7 +145,7 @@ export default defineContentScript({
         if (!panelResult.ok) {
           expanded = false;
           lastVerdict = "UNCHECKED";
-          lastHeadline = errorHeadline(panelResult.status, panelResult.error);
+          lastHeadline = chipErrorHeadline(panelResult.status, panelResult.error);
           renderChip();
           panelDataPromise = null; // allow a retry on the next open
           return;
@@ -186,10 +172,10 @@ export default defineContentScript({
       const chipResult = await getChipIntel(target, tweet.timeIso);
       if (chipResult.ok) {
         lastVerdict = chipResult.data.verdict;
-        lastHeadline = headlineFor(chipResult.data);
+        lastHeadline = chipHeadline(chipResult.data);
       } else {
         lastVerdict = "UNCHECKED";
-        lastHeadline = errorHeadline(chipResult.status, chipResult.error);
+        lastHeadline = chipErrorHeadline(chipResult.status, chipResult.error);
       }
       renderChip();
     }

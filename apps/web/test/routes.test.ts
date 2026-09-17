@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { resetDb } from "@/lib/db";
 import { _resetClientState } from "@/lib/nansen/client";
 import { recentOverrides } from "@/lib/store";
@@ -76,6 +76,53 @@ describe("/api/guard", () => {
     const body = await res.json();
     expect(ALLOWED_VERDICTS.has(body.verdict)).toBe(true);
     expect(body.target.kind).toBe("prediction");
+  });
+
+  it("balanced preset: the recorded WIF data is a CAUTION", async () => {
+    expect((await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "balanced" } }))).status).toBe(200);
+    const res = await guardPOST(req("/api/guard", { body: { target: { kind: "spot", chain: "solana", tokenAddress: WIF }, venue: "jupiter" } }));
+    const body = await res.json();
+    expect(body.verdict).toBe("CAUTION");
+    expect(body.hits.length).toBeGreaterThan(0);
+    expect(body.headline).toBeNull();
+  });
+
+  it("UNCHECKED (never CLEAR) when every Nansen lookup fails", async () => {
+    const prev = process.env.TRIPWIRE_FIXTURES;
+    process.env.TRIPWIRE_FIXTURES = fs.mkdtempSync(path.join(os.tmpdir(), "tw-nofixtures-"));
+    try {
+      const res = await guardPOST(req("/api/guard", { body: { target: { kind: "spot", chain: "solana", tokenAddress: WIF }, venue: "jupiter" } }));
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.verdict).toBe("UNCHECKED");
+      expect(body.hits).toEqual([]);
+      expect(body.panel.errors.length).toBeGreaterThan(0);
+    } finally {
+      process.env.TRIPWIRE_FIXTURES = prev;
+    }
+  });
+
+  it("Nansen credit cap reached: UNCHECKED with that headline, on guard and post-intel", async () => {
+    const prevCap = process.env.NANSEN_DAILY_CREDIT_CAP;
+    delete process.env.TRIPWIRE_REPLAY;
+    process.env.NANSEN_DAILY_CREDIT_CAP = "0";
+    const fetchSpy = vi.fn(() => Promise.reject(new Error("network must not be used")));
+    vi.stubGlobal("fetch", fetchSpy);
+    try {
+      const target = { kind: "spot", chain: "solana", tokenAddress: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263" };
+      const guardBody = await (await guardPOST(req("/api/guard", { body: { target, venue: "jupiter" } }))).json();
+      expect(guardBody.verdict).toBe("UNCHECKED");
+      expect(guardBody.headline).toBe("Nansen credit cap reached");
+      const postBody = await (await postIntelPOST(req("/api/post-intel", { body: { target } }))).json();
+      expect(postBody.verdict).toBe("UNCHECKED");
+      expect(postBody.headline).toBe("Nansen credit cap reached");
+      expect(fetchSpy).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+      process.env.TRIPWIRE_REPLAY = "1";
+      if (prevCap === undefined) delete process.env.NANSEN_DAILY_CREDIT_CAP;
+      else process.env.NANSEN_DAILY_CREDIT_CAP = prevCap;
+    }
   });
 
   it("400s on an invalid body", async () => {

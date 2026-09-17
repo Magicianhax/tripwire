@@ -1,5 +1,6 @@
 import { evaluate, PostIntelRequestSchema } from "@tripwire/core";
 import { preflight, route } from "@/lib/http";
+import { uncheckedHeadline } from "@/lib/headline";
 import { toHits } from "@/lib/hits";
 import { buildSpotIntel } from "@/lib/intel/spot";
 import { getRules, recordCheck } from "@/lib/store";
@@ -13,5 +14,5 @@ export const POST = route(PostIntelRequestSchema, async (_req, body) => {
   const { preset, rules } = getRules();
   const { verdict, hits, unavailable } = evaluate(rules, signals, "spot");
   recordCheck("x", body.target, verdict, signals);
-  return { verdict, hits: toHits(hits), unavailable, signals, panel, rulesPreset: preset };
+  return { verdict, headline: uncheckedHeadline(verdict, panel.errors), hits: toHits(hits), unavailable, signals, panel, rulesPreset: preset };
 });
