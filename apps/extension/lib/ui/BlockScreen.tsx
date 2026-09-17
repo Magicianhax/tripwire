@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { HitDto } from "../api-types";
 import { deepActiveElement, getFocusable, isEditableElement } from "./focus";
 import { HitList } from "./panel-parts";
+import { ReplayBadge } from "./ReplayBadge";
 
 export type BlockScreenProps = {
   hits: HitDto[];
@@ -19,6 +20,7 @@ export type BlockScreenProps = {
    * backend offline. Still blocked."). Rendered as a `role="status"` line so it's announced;
    * the trade stays blocked. Default null (nothing rendered). */
   error?: string | null;
+  replay?: boolean;
 };
 
 const MAX_HITS = 3;
@@ -38,7 +40,7 @@ const MAX_HITS = 3;
  * convenience popover: closing it on Escape would defeat its purpose, so no keydown handler
  * here ever calls anything on "Escape" — that key is a deliberate no-op.
  */
-export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = true, pending = false, error = null }: BlockScreenProps) {
+export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = true, pending = false, error = null, replay }: BlockScreenProps) {
   const [input, setInput] = useState("");
   const headingId = useId();
   const inputId = `${headingId}-override-input`;
@@ -101,6 +103,7 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
         <h3 id={headingId} className="tw-block-heading">
           TRIPWIRE
         </h3>
+        <ReplayBadge replay={replay} />
 
         <HitList hits={hits} max={MAX_HITS} className="tw-block-hits" />
 

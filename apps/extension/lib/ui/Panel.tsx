@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { GuardResponse, PerpPanel, PersonIntelResponse, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
 import { usd } from "./format";
 import { HitList, PanelFooter } from "./panel-parts";
+import { ReplayBadge } from "./ReplayBadge";
 import { PerpBody } from "./PerpBody";
 import { PredictionBody } from "./PredictionBody";
 import { SpotBody } from "./SpotBody";
@@ -65,7 +66,7 @@ export function Panel({ data, title, onClose, replay, person }: PanelProps) {
       <header className="tw-panel-header">
         <span className="tw-panel-verdict tw-mono">{data.verdict}</span>
         <h2 className="tw-panel-title">{title}</h2>
-        {replay ? <span className="tw-replay-badge">REPLAY</span> : null}
+        <ReplayBadge replay={replay} />
         <button type="button" className="tw-panel-close" aria-label="Close" onClick={onClose}>
           ×
         </button>

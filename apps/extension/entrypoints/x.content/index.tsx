@@ -3,7 +3,8 @@ import "../../lib/ui/theme.css";
 import type { Chain, ExtractedAddress, SpotTarget, Verdict } from "@tripwire/core";
 import { defineContentScript } from "wxt/utils/define-content-script";
 import type { ApiResult } from "../../lib/api";
-import { personIntel, postIntel, resolve } from "../../lib/api";
+import { health, personIntel, postIntel, resolve } from "../../lib/api";
+import { createReplayFlag } from "../../lib/replay";
 import type { PersonIntelResponse, PostIntelResponse, ResolveResponse } from "../../lib/api-types";
 import { Chip } from "../../lib/ui/Chip";
 import { shortAddr } from "../../lib/ui/format";
@@ -76,6 +77,9 @@ export default defineContentScript({
     // At most CHIP_CONCURRENCY postIntel("chip") calls in flight at once.
     const chipQueue = createQueue(CHIP_CONCURRENCY);
 
+    // Backend replay mode, asked once per page session: every chip and panel shows REPLAY.
+    const getReplay = createReplayFlag(health);
+
     const discovered = new WeakSet<Element>();
     const processed = new WeakSet<Element>();
     // Chip/panel mounts per tweet article, unmounted once X drops the article from the DOM.
@@ -124,6 +128,7 @@ export default defineContentScript({
 
       const resolved = await resolveTarget(token, tweet.text);
       if (!resolved) return;
+      const replay = await getReplay();
       if (!article.isConnected) {
         processed.delete(article); // scrolled away while resolving; retry if X re-inserts it
         return;
@@ -139,14 +144,14 @@ export default defineContentScript({
       const chipMount = await mountReact(
         ctx,
         { position: "inline", anchor: tweetTextEl, append: "after" },
-        <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} onClick={() => void togglePanel()} />,
+        <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void togglePanel()} />,
       );
       stopHostClicks(chipMount.ui.shadowHost);
       mounts.track(article, chipMount);
 
       function renderChip(): void {
         chipMount.update(
-          <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} onClick={() => void togglePanel()} />,
+          <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void togglePanel()} />,
         );
       }
 
@@ -185,6 +190,7 @@ export default defineContentScript({
             data={panelResult.data}
             title={`$${symbol}`}
             onClose={() => void togglePanel()}
+            replay={replay}
             person={personResult.ok ? personResult.data : null}
           />
         );

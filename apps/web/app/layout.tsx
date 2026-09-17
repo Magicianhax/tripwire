@@ -4,6 +4,7 @@ import "@fontsource-variable/archivo/standard.css";
 import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/700.css";
 import "./globals.css";
+import { isReplay } from "@/lib/nansen/client";
 import { NavBar } from "./_components/NavBar";
 
 export const metadata: Metadata = {
@@ -15,6 +16,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
+        {isReplay() && (
+          <div className="tw-replay-badge" role="status" title="Replay mode: recorded Nansen data, not live">
+            REPLAY
+          </div>
+        )}
         <NavBar />
         <main className="tw-main">
           <div className="tw-container">{children}</div>

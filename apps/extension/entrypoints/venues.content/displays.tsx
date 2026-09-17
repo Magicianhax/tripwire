@@ -38,11 +38,11 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
   const result = await guard(target, adapter.id, "panel");
   if (rc.currentKey !== openedForKey) return; // the page moved on while this was in flight
   const node = result.ok ? (
-    <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} collapsedLabel="">
+    <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} collapsedLabel="" replay={rc.replay}>
       <Panel data={result.data} title={targetTitle(target)} onClose={() => void toggleEvidence(rc, adapter, target)} />
     </Dock>
   ) : (
-    <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} collapsedLabel="">
+    <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} collapsedLabel="" replay={rc.replay}>
       <p className="tw-dock-error">{errorHeadline(result.status, result.error)}</p>
     </Dock>
   );
@@ -60,11 +60,11 @@ export function closeEvidenceDock(rc: RunnerContext): void {
 export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key: string): Promise<void> {
   const anchor = adapter.tier === 1 ? (adapter.anchor?.(document) ?? null) : null;
   const mount = anchor
-    ? await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, <Strip verdict="LOADING" text="Checking…" />)
+    ? await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, <Strip verdict="LOADING" text="Checking…" replay={rc.replay} />)
     : await mountReact(
         rc.ctx,
         { position: "inline" },
-        <Dock collapsed onToggleCollapsed={() => {}} collapsedLabel="Checking…">
+        <Dock collapsed onToggleCollapsed={() => {}} collapsedLabel="Checking…" replay={rc.replay}>
           {null}
         </Dock>,
       );
@@ -85,7 +85,7 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
 
   function node(): ReactNode {
     return (
-      <Dock collapsed={collapsed} onToggleCollapsed={() => void toggle()} collapsedLabel={`${verdict} · ${headline}`}>
+      <Dock collapsed={collapsed} onToggleCollapsed={() => void toggle()} collapsedLabel={`${verdict} · ${headline}`} replay={rc.replay}>
         {panelData ? (
           <Panel
             data={panelData}
@@ -132,7 +132,7 @@ export function createStripBinding(
   async function onBind(anchor: HTMLElement): Promise<void> {
     const text = unlocked ? `${headline} · unlocked for this session` : headline;
     const node = (
-      <Strip verdict={stripVerdict(verdict)} text={text} onDetails={target ? () => void toggleEvidence(rc, adapter, target) : undefined} />
+      <Strip verdict={stripVerdict(verdict)} text={text} replay={rc.replay} onDetails={target ? () => void toggleEvidence(rc, adapter, target) : undefined} />
     );
     if (rc.mainMount) rc.mainMount.ui.remove();
     rc.mainMount = await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, node);
@@ -168,6 +168,7 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
         phrase={phrase}
         pending={overridePending}
         error={overrideError}
+        replay={rc.replay}
         onEvidence={() => void toggleEvidence(rc, adapter, target)}
         onOverride={() => void doOverride()}
       />

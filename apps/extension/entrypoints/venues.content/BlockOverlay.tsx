@@ -14,6 +14,7 @@ export type BlockOverlayProps = {
   /** The last failed override attempt's message, or null. Rendered by BlockScreen; the trade
    * stays blocked regardless. */
   error?: string | null;
+  replay?: boolean;
 };
 
 /**
@@ -24,7 +25,7 @@ export type BlockOverlayProps = {
  * shadow-root container `position:fixed; inset:0`; `mountReact` sets that container to
  * `pointer-events:none` too, so only the block rectangle below is ever hit-testable.
  */
-export function BlockOverlay({ rect, hits, phrase, onEvidence, onOverride, pending = false, error = null }: BlockOverlayProps) {
+export function BlockOverlay({ rect, hits, phrase, onEvidence, onOverride, pending = false, error = null, replay }: BlockOverlayProps) {
   return (
     <div style={{ position: "fixed", inset: 0, pointerEvents: "none" }}>
       <div
@@ -37,7 +38,7 @@ export function BlockOverlay({ rect, hits, phrase, onEvidence, onOverride, pendi
           pointerEvents: "auto",
         }}
       >
-        <BlockScreen hits={hits} phrase={phrase} onEvidence={onEvidence} onOverride={onOverride} pending={pending} error={error} />
+        <BlockScreen hits={hits} phrase={phrase} onEvidence={onEvidence} onOverride={onOverride} pending={pending} error={error} replay={replay} />
       </div>
     </div>
   );

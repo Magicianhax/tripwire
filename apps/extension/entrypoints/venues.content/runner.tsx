@@ -22,7 +22,7 @@ export { keyFor } from "./format";
  * leave the blocker bound to a detached node or the overlay rendering at a stale/zero rect.
  * The caller (index.tsx's change-detection loop) owns WHEN each is called.
  */
-export function createGuardRunner(ctx: ContentScriptContext) {
+export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Promise<boolean> = async () => false) {
   const rc: RunnerContext = {
     ctx,
     mainMount: null,
@@ -34,6 +34,7 @@ export function createGuardRunner(ctx: ContentScriptContext) {
     activeSession: null,
     currentDisplay: null,
     currentKey: null,
+    replay: false,
     unlocks: new Map(),
     unlockTimers: new Map(),
     renderResolved: (adapter, target, key, verdict, headline, chipData) => render_(adapter, target, key, verdict, headline, chipData),
@@ -130,9 +131,11 @@ export function createGuardRunner(ctx: ContentScriptContext) {
 
     if (target) {
       const pending: Promise<ApiResult<GuardResponse>> = guard(target, adapter.id, "chip");
+      const replay = getReplay();
       // Neutral "Checking…" (verdict LOADING, never a blocker) until the new result lands.
       await showChecking(rc, adapter, key);
       const result = await pending;
+      rc.replay = await replay;
       if (rc.currentKey !== key) return; // the page moved on while this was in flight
       if (result.ok) {
         chipData = result.data;

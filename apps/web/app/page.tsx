@@ -29,12 +29,6 @@ export default function StatusPage() {
 
   return (
     <>
-      {replay && (
-        <div className="tw-replay-badge" role="status">
-          REPLAY
-        </div>
-      )}
-
       <section className="tw-section">
         <h1 className="tw-display">Status</h1>
       </section>

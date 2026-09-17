@@ -254,6 +254,25 @@
   padding: 2px 6px;
 }
 
+.tw-chip .tw-replay-badge,
+.tw-strip .tw-replay-badge,
+.tw-dock-chip .tw-replay-badge {
+  align-self: center;
+  margin-left: var(--tw-space-xs);
+  padding: 1px 4px;
+  line-height: 1.2;
+}
+
+.tw-chip .tw-replay-badge {
+  margin-right: var(--tw-space-xs);
+}
+
+.tw-block .tw-replay-badge,
+.tw-dock > .tw-replay-badge {
+  display: inline-block;
+  margin: var(--tw-space-xs) 0 var(--tw-space-xs) var(--tw-space-sm);
+}
+
 .tw-panel-close {
   appearance: none;
   border: none;

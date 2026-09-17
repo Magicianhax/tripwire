@@ -2,6 +2,8 @@ import "../../lib/ui/theme.css";
 
 import { defineContentScript } from "wxt/utils/define-content-script";
 import { findAdapter } from "../../lib/adapters/registry";
+import { health } from "../../lib/api";
+import { createReplayFlag } from "../../lib/replay";
 import { TIER1_MATCHES, TIER2_MATCHES } from "../../lib/venues";
 import { createGuardRunner, keyFor } from "./runner";
 
@@ -18,7 +20,7 @@ export default defineContentScript({
   matches: [...TIER1_MATCHES, ...TIER2_MATCHES],
   cssInjectionMode: "ui",
   async main(ctx) {
-    const runner = createGuardRunner(ctx);
+    const runner = createGuardRunner(ctx, createReplayFlag(health));
     let lastKey: string | null = null;
     let inFlight = false;
     let rerunPending = false;

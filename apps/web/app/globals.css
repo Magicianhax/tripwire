@@ -193,12 +193,13 @@ main.tw-main {
   top: var(--tw-space-md);
   right: var(--tw-space-md);
   z-index: 50;
-  background: var(--tw-yellow);
+  /* Not yellow: yellow is reserved for danger (DESIGN.md). */
+  background: var(--tw-secondary);
   color: var(--tw-ink);
-  font-family: var(--tw-font-display);
-  font-weight: 600;
+  font-family: var(--tw-font-mono);
+  font-weight: 700;
   font-size: 0.75rem;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.04em;
   padding: var(--tw-space-xs) var(--tw-space-sm);
   border-radius: var(--tw-radius-sm);
 }
