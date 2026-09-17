@@ -12,7 +12,7 @@ type Preset = (typeof PRESETS)[number];
 const PRESET_LABELS: Record<Preset, string> = { degen: "Degen", balanced: "Balanced", paranoid: "Paranoid" };
 
 export default function App() {
-  const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource } | { ok: false } | null>(null);
+  const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource; replay: boolean } | { ok: false } | null>(null);
   // The server-confirmed rules: what "weaker" is measured against. null until loaded.
   const [rules, setRulesState] = useState<RulesResponse | null>(null);
   const [preset, setPresetState] = useState<Preset | "custom" | null>(null);
@@ -42,7 +42,7 @@ export default function App() {
     (async () => {
       const result = await health();
       if (cancelled) return;
-      setHealthState(result.ok ? { ok: true, keySource: result.data.keySource } : { ok: false });
+      setHealthState(result.ok ? { ok: true, keySource: result.data.keySource, replay: result.data.replay } : { ok: false });
     })();
     (async () => {
       const result = await getRules();
