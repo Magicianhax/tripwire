@@ -19,6 +19,8 @@ export type BlockOverlayProps = {
    * stays blocked regardless. */
   error?: string | null;
   replay?: boolean;
+  /** Adapter id, for the venue logo in the block header. */
+  venue?: string;
 };
 
 /**
@@ -30,7 +32,7 @@ export type BlockOverlayProps = {
  * makes the shadow-root container `position:fixed; inset:0`; `mountReact` sets that container
  * to `pointer-events:none` too, so only the block rectangle below is ever hit-testable.
  */
-export function BlockOverlay({ anchorRect, kind, hits, phrase, onEvidence, onOverride, pending = false, error = null, replay }: BlockOverlayProps) {
+export function BlockOverlay({ anchorRect, kind, hits, phrase, onEvidence, onOverride, pending = false, error = null, replay, venue }: BlockOverlayProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState(0);
   const [, remeasure] = useReducer((n: number) => n + 1, 0);
@@ -79,7 +81,7 @@ export function BlockOverlay({ anchorRect, kind, hits, phrase, onEvidence, onOve
           pointerEvents: "auto",
         }}
       >
-        <BlockScreen hits={hits} kind={kind} phrase={phrase} onEvidence={onEvidence} onOverride={onOverride} pending={pending} error={error} replay={replay} />
+        <BlockScreen hits={hits} kind={kind} phrase={phrase} onEvidence={onEvidence} onOverride={onOverride} pending={pending} error={error} replay={replay} venue={venue} />
       </div>
     </div>
   );

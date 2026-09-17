@@ -1,53 +1,53 @@
 /**
- * Tripwire "Glass Cockpit" theme, injected into every content-script shadow root via
- * `cssInjectionMode: "ui"` (imported by the content-script entry, not by mount.ts). Overlays
- * speak crew-alerting: warning red, caution amber, advisory cyan, normal green, each lamp with
- * an unlit state, on deep instrument-blue glass. WXT already adds `:host { all: initial }`
- * before this file loads, so this only adds tokens and the look on top of that reset.
+ * Tripwire's Nansen-world theme, injected into every content-script shadow root via
+ * `cssInjectionMode: "ui"` (imported by the content-script entry, not by mount.ts). Nansen's
+ * near-black ground, mint signal, red and amber alerts, Inter for UI and figures, Sora for
+ * headings and verdict words, 16px pills, 12px cards, 8px tiles, Lucide icons at 1.5px.
+ * WXT already adds `:host { all: initial }` before this file loads, so this only adds tokens and
+ * the look on top of that reset.
+ *
+ * Colour rule: every element that shows text sets its own `color`. Nothing text-bearing relies
+ * on inheriting from :host, whose reset colour is the browser's black (the root cause of the
+ * unreadable chip text). test/chip-contrast.test.ts checks the rendered result in Chromium.
  *
  * Fonts: no font-registration at-rules in this file (and never write that at-rule's name in a
  * comment here: WXT's splitShadowRootCss regex would match it and move CSS out of the shadow
  * root). The packaged woff2 files are registered once per host document by lib/ui/fonts.ts
- * under Tripwire-only family names, never fetched from Google at runtime.
+ * under Tripwire-only family names, never fetched from a third-party origin at runtime.
  */
 
 :host {
-  /* Glass */
-  --tw-ground: #0a1020;
-  --tw-panel: #111a2e;
-  --tw-raised: #1b2740;
-  --tw-bezel: rgba(143, 163, 191, 0.22);
-  --tw-bezel-strong: rgba(143, 163, 191, 0.4);
-  --tw-sheen: rgba(230, 237, 247, 0.22);
-  --tw-sheen-strong: rgba(230, 237, 247, 0.5);
-  /* Plate depth: a lit top edge and a hard drop below, so plates sit proud of the glass. */
-  --tw-plate-edge: rgba(255, 255, 255, 0.3);
-  --tw-plate-drop: rgba(2, 6, 16, 0.7);
-  --tw-scroll-edge: rgba(2, 6, 16, 0.95);
+  /* Ground */
+  --tw-ground: #06080b;
+  --tw-panel: #0b1016;
+  --tw-raised: #111821;
+  --tw-line: rgba(255, 255, 255, 0.08);
+  --tw-line-strong: rgba(255, 255, 255, 0.16);
+  --tw-glow: #061a1f;
+  --tw-scroll-edge: rgba(6, 8, 11, 0.95);
 
   /* Text */
-  --tw-text: #e6edf7;
-  --tw-text-2: #8fa3bf;
-  /* Ink on a lit plate: the ground colour (5.8:1 on red, 10:1 on amber and green). */
-  --tw-ink: #0a1020;
+  --tw-text: #ffffff;
+  --tw-text-2: rgba(255, 255, 255, 0.6);
+  --tw-text-3: rgba(255, 255, 255, 0.4);
+  /* Ink on a mint, red or amber fill. */
+  --tw-ink: #03140d;
 
-  /* Lamps, lit and unlit */
-  --tw-warning: #ff4d4f;
-  --tw-warning-dim: rgba(255, 77, 79, 0.14);
-  --tw-caution: #ffb020;
-  --tw-caution-dim: rgba(255, 176, 32, 0.14);
-  --tw-advisory: #22d3ee;
-  --tw-advisory-dim: rgba(34, 211, 238, 0.12);
-  --tw-advisory-hover: rgba(34, 211, 238, 0.2);
-  --tw-advisory-select: rgba(34, 211, 238, 0.32);
-  --tw-advisory-line: rgba(34, 211, 238, 0.35);
-  --tw-normal: #34d399;
-  --tw-normal-dim: rgba(52, 211, 153, 0.12);
+  /* Signal */
+  --tw-mint: #00ffa7;
+  --tw-mint-dim: rgba(0, 255, 167, 0.12);
+  --tw-mint-line: rgba(0, 255, 167, 0.4);
+  --tw-red: #ff5a6e;
+  --tw-red-dim: rgba(255, 90, 110, 0.12);
+  --tw-red-line: rgba(255, 90, 110, 0.45);
+  --tw-amber: #f5b83d;
+  --tw-amber-dim: rgba(245, 184, 61, 0.12);
+  --tw-amber-line: rgba(245, 184, 61, 0.45);
 
   /* Shape */
-  --tw-radius-panel: 8px;
-  --tw-radius-plate: 4px;
-  --tw-radius-cell: 2px;
+  --tw-radius-pill: 16px;
+  --tw-radius-card: 12px;
+  --tw-radius-tile: 8px;
 
   /* Space */
   --tw-space-1: 4px;
@@ -57,11 +57,11 @@
   --tw-space-5: 24px;
 
   /* Type */
-  --tw-font-ui: "Tripwire Barlow", system-ui, sans-serif;
-  --tw-font-plate: "Tripwire Barlow Condensed", "Tripwire Barlow", system-ui, sans-serif;
+  --tw-font-ui: "Tripwire Inter", system-ui, sans-serif;
+  --tw-font-display: "Tripwire Sora", "Tripwire Inter", system-ui, sans-serif;
   --tw-font-mono: "Tripwire Mono", ui-monospace, monospace;
 
-  --tw-shadow-float: 0 16px 40px rgba(2, 6, 16, 0.55), 0 2px 8px rgba(2, 6, 16, 0.45);
+  --tw-shadow-float: 0 16px 40px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
   --tw-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   display: block;
@@ -78,6 +78,7 @@
   font-weight: 400;
   line-height: 1.45;
   color: var(--tw-text);
+  font-feature-settings: "tnum";
   -webkit-font-smoothing: antialiased;
 }
 
@@ -94,19 +95,32 @@ input {
 }
 
 :host ::selection {
-  background: var(--tw-advisory-select);
+  background: var(--tw-mint-dim);
   color: var(--tw-text);
 }
 
+/* Addresses and hashes only. */
 .tw-mono {
   font-family: var(--tw-font-mono);
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums slashed-zero;
-  font-feature-settings: "tnum", "zero";
 }
 
-.tw-neg {
-  color: var(--tw-warning);
+/* Figures: the UI face with tabular numerals. */
+.tw-fig {
+  font-family: var(--tw-font-ui);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+[data-sign="neg"] {
+  color: var(--tw-red);
+}
+[data-sign="pos"] {
+  color: var(--tw-mint);
+}
+[data-sign="zero"] {
+  color: var(--tw-text-2);
 }
 
 .tw-meta {
@@ -123,75 +137,93 @@ input {
   white-space: nowrap;
 }
 
-.tw-rule-word {
-  font-family: var(--tw-font-ui);
-}
-
-/* The comparison in a rule clause matches the clause's size. */
-.tw-hit-rule .tw-mono,
-.tw-strip-rule .tw-mono {
-  font-size: inherit;
-}
-
 .tw-icon {
   display: block;
-  width: 16px;
-  height: 16px;
+  flex-shrink: 0;
 }
 
-/* -------------------- Annunciator plate -------------------- */
+.tw-logo,
+.tw-token-logo {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.tw-logo-venue,
+.tw-logo-chain {
+  border-radius: 4px;
+}
+
+.tw-spin {
+  animation: tw-spin 900ms linear infinite;
+}
+
+.tw-spinner {
+  color: var(--tw-text-2);
+}
+
+@keyframes tw-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -------------------- Verdict pill -------------------- */
 
 .tw-plate {
-  --lamp: var(--tw-text-2);
-  --lamp-dim: var(--tw-raised);
+  --tone: var(--tw-text-2);
+  --tone-dim: var(--tw-raised);
+  --tone-line: var(--tw-line-strong);
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
   flex-shrink: 0;
-  height: 20px;
-  padding: 0 7px;
-  border: 1px solid var(--lamp);
-  border-radius: var(--tw-radius-cell);
-  font-family: var(--tw-font-plate);
-  font-size: 0.8125rem;
-  font-weight: 700;
+  height: 22px;
+  padding: 0 8px 0 6px;
+  border: 1px solid var(--tone-line);
+  border-radius: var(--tw-radius-pill);
+  font-family: var(--tw-font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: inset 0 1px 0 var(--tw-plate-edge), 0 1px 0 var(--tw-plate-drop);
 }
 
 .tw-plate[data-tone="warning"] {
-  --lamp: var(--tw-warning);
-  --lamp-dim: var(--tw-warning-dim);
+  --tone: var(--tw-red);
+  --tone-dim: var(--tw-red-dim);
+  --tone-line: var(--tw-red);
 }
 .tw-plate[data-tone="caution"] {
-  --lamp: var(--tw-caution);
-  --lamp-dim: var(--tw-caution-dim);
+  --tone: var(--tw-amber);
+  --tone-dim: var(--tw-amber-dim);
+  --tone-line: var(--tw-amber);
 }
 .tw-plate[data-tone="normal"] {
-  --lamp: var(--tw-normal);
-  --lamp-dim: var(--tw-normal-dim);
+  --tone: var(--tw-mint);
+  --tone-dim: var(--tw-mint-dim);
+  --tone-line: var(--tw-mint-line);
 }
 
-/* Filled: a lit alert lamp, ink lettering. */
+/* Filled: an alert, dark ink on the colour. */
 .tw-plate[data-mark="filled"] {
-  background: var(--lamp);
+  background: var(--tone);
   color: var(--tw-ink);
 }
 
-/* Outlined: a quiet, lit bezel with lamp-coloured lettering. */
+/* Outlined: CLEAR, mint lettering on a mint tint. */
 .tw-plate[data-mark="outlined"] {
-  background: var(--lamp-dim);
-  color: var(--lamp);
+  background: var(--tone-dim);
+  color: var(--tone);
 }
 
-/* Dashed: an unlit plate. Nothing was verified, so nothing is lit. */
+/* Dashed: nothing was verified, so nothing is coloured. */
 .tw-plate[data-mark="dashed"] {
   background: var(--tw-raised);
   border-style: dashed;
-  border-color: var(--tw-text-2);
+  border-color: var(--tw-line-strong);
   color: var(--tw-text-2);
 }
 
@@ -202,28 +234,24 @@ input {
   align-items: center;
   gap: var(--tw-space-2);
   max-width: 100%;
-  min-height: 28px;
+  min-height: 30px;
   margin: var(--tw-space-1) 0;
-  padding: 3px var(--tw-space-2) 3px 3px;
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-plate);
+  padding: 3px 12px 3px 6px;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
   background: var(--tw-panel);
-  box-shadow: inset 0 1px 0 var(--tw-sheen);
-  color: var(--tw-text-2);
+  color: var(--tw-text);
   cursor: pointer;
-  font-family: var(--tw-font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   line-height: 1;
   text-align: left;
 }
 
 .tw-chip[data-verdict="TRIPWIRE"] {
-  border-color: var(--tw-warning);
-  color: var(--tw-text);
+  border-color: var(--tw-red-line);
 }
 .tw-chip[data-verdict="CAUTION"] {
-  border-color: var(--tw-caution);
-  color: var(--tw-text);
+  border-color: var(--tw-amber-line);
 }
 
 @media (hover: hover) {
@@ -233,11 +261,11 @@ input {
 }
 
 .tw-chip:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 2px;
 }
 
-/* The headline is a sentence, so it is set in the UI face; its numbers keep tabular figures. */
+/* The finding. Its colour is set here, never inherited (see the header comment). */
 .tw-chip-value {
   min-width: 0;
   overflow: hidden;
@@ -247,7 +275,13 @@ input {
   font-size: 0.8125rem;
   font-weight: 500;
   line-height: 1.3;
+  color: var(--tw-text);
   font-variant-numeric: tabular-nums;
+}
+
+.tw-chip[data-verdict="UNCHECKED"] .tw-chip-value,
+.tw-chip[data-verdict="LOADING"] .tw-chip-value {
+  color: var(--tw-text-2);
 }
 
 /* -------------------- Tags -------------------- */
@@ -255,22 +289,21 @@ input {
 .tw-replay-badge {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   flex-shrink: 0;
-  height: 18px;
-  padding: 0 6px;
-  border: 1px solid var(--tw-advisory);
-  border-radius: var(--tw-radius-cell);
-  background: var(--tw-advisory-dim);
-  color: var(--tw-advisory);
-  font-family: var(--tw-font-plate);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  height: 20px;
+  padding: 0 8px 0 6px;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  background: transparent;
+  color: var(--tw-text-2);
+  font-family: var(--tw-font-ui);
+  font-size: 0.6875rem;
+  font-weight: 500;
   line-height: 1;
-  text-transform: uppercase;
 }
 
-/* -------------------- Popover (instrument card) -------------------- */
+/* -------------------- Popover (evidence card) -------------------- */
 
 /* top/left/width/max-height/transform-origin are set inline by Popover.tsx from its anchor;
    the top-right corner is only the unanchored default. */
@@ -286,32 +319,36 @@ input {
   overflow: hidden;
   background: var(--tw-panel);
   color: var(--tw-text);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-panel);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-card);
   box-shadow: var(--tw-shadow-float);
   pointer-events: auto;
   overscroll-behavior: contain;
-  animation: tw-pop-in 160ms var(--tw-ease-out) both;
+  animation: tw-pop-in 180ms var(--tw-ease-out) both;
 }
 
-/* The one gradient in the system: a thin glass sheen along the top edge. */
+/* The one gradient in the system: a faint dark-teal glow along the card's top edge. */
 .tw-pop::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 16px;
-  right: 16px;
-  height: 1px;
-  z-index: 2;
-  background: linear-gradient(90deg, transparent, var(--tw-sheen-strong) 25%, var(--tw-sheen-strong) 75%, transparent);
+  left: 0;
+  right: 0;
+  height: 96px;
+  z-index: 0;
+  background: linear-gradient(180deg, var(--tw-glow), transparent);
   pointer-events: none;
 }
 
+.tw-pop > * {
+  position: relative;
+}
+
 .tw-pop[data-verdict="TRIPWIRE"] {
-  border-color: var(--tw-warning);
+  border-color: var(--tw-red-line);
 }
 .tw-pop[data-verdict="CAUTION"] {
-  border-color: var(--tw-caution);
+  border-color: var(--tw-amber-line);
 }
 
 .tw-pop:focus {
@@ -324,7 +361,7 @@ input {
   bottom: 0;
   left: 0;
   width: auto;
-  border-radius: var(--tw-radius-panel) var(--tw-radius-panel) 0 0;
+  border-radius: var(--tw-radius-card) var(--tw-radius-card) 0 0;
   border-bottom: none;
   animation-name: tw-sheet-in;
 }
@@ -334,10 +371,11 @@ input {
   z-index: 2147482999;
 }
 
+/* Signature: the card rises 8px from its anchor and fades in, once. */
 @keyframes tw-pop-in {
   from {
     opacity: 0;
-    transform: scale(0.94);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -366,29 +404,43 @@ input {
 .tw-card-header {
   display: flex;
   align-items: center;
-  gap: var(--tw-space-2);
+  gap: 10px;
   flex-shrink: 0;
-  min-height: 50px;
-  padding: var(--tw-space-2) var(--tw-space-2) var(--tw-space-2) var(--tw-space-4);
-  border-bottom: 1px solid var(--tw-bezel-strong);
+  min-height: 56px;
+  padding: 10px var(--tw-space-2) 6px var(--tw-space-4);
+}
+
+.tw-token-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   background: var(--tw-raised);
 }
 
-.tw-card-plate {
-  height: 24px;
-  padding: 0 9px;
-  font-size: 0.9375rem;
+.tw-monogram {
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--tw-line-strong);
+  font-family: var(--tw-font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--tw-text);
+}
+
+.tw-card-heading {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
 }
 
 .tw-card-title {
-  flex: 1;
   min-width: 0;
   margin: 0;
-  font-family: var(--tw-font-plate);
-  font-size: 1.375rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.02em;
+  font-family: var(--tw-font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.2;
   color: var(--tw-text);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -400,13 +452,21 @@ input {
 }
 
 .tw-card-title:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.tw-card-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 16px;
 }
 
 .tw-card-age {
-  flex-shrink: 0;
   font-size: 0.75rem;
+  line-height: 1;
   color: var(--tw-text-2);
 }
 
@@ -418,8 +478,8 @@ input {
   width: 32px;
   height: 32px;
   padding: 0;
-  border: 1px solid transparent;
-  border-radius: var(--tw-radius-plate);
+  border: none;
+  border-radius: var(--tw-radius-pill);
   background: transparent;
   color: var(--tw-text-2);
   cursor: pointer;
@@ -428,15 +488,14 @@ input {
 @media (hover: hover) {
   .tw-card-close:hover {
     color: var(--tw-text);
-    border-color: var(--tw-bezel);
     background: var(--tw-raised);
   }
 }
 
 .tw-card-close:focus-visible {
   color: var(--tw-text);
-  outline: 2px solid var(--tw-advisory);
-  outline-offset: 1px;
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 0;
 }
 
 .tw-card-scroll {
@@ -445,17 +504,36 @@ input {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: var(--tw-bezel-strong) transparent;
+  scrollbar-color: var(--tw-line-strong) transparent;
 }
 
 .tw-card-finding {
   margin: 0;
-  padding: 10px var(--tw-space-4) 0;
+  padding: 4px var(--tw-space-4) 0;
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.4;
   color: var(--tw-text);
   text-wrap: pretty;
+}
+
+/* Count-in: the real figure stays in the DOM; the counting value is drawn over it. */
+.tw-count {
+  position: relative;
+  display: inline-block;
+}
+
+.tw-count[data-counting] {
+  color: transparent;
+}
+
+.tw-count[data-counting]::after {
+  content: attr(data-count);
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: var(--tw-text);
+  white-space: nowrap;
 }
 
 .tw-card-message {
@@ -474,14 +552,21 @@ input {
 }
 
 .tw-person {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tw-space-2);
   margin: var(--tw-space-2) var(--tw-space-4) 0;
-  padding: 6px var(--tw-space-2);
-  border: 1px solid var(--tw-advisory-line);
-  border-radius: var(--tw-radius-plate);
-  background: var(--tw-advisory-dim);
+  padding: var(--tw-space-2) 10px;
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-raised);
   font-size: 0.8125rem;
   line-height: 1.4;
-  color: var(--tw-advisory);
+  color: var(--tw-text-2);
+}
+
+.tw-person .tw-icon {
+  margin-top: 1px;
+  color: var(--tw-mint);
 }
 
 .tw-person b {
@@ -493,16 +578,23 @@ input {
   position: relative;
   flex-shrink: 0;
   display: grid;
-  gap: 2px;
-  padding: var(--tw-space-2) var(--tw-space-4) 10px;
-  border-top: 1px solid var(--tw-bezel);
-  background: var(--tw-ground);
+  gap: 4px;
+  padding: 10px var(--tw-space-4);
+  border-top: 1px solid var(--tw-line);
+  background: var(--tw-panel);
 }
 
 /* Scroll edge: content continues under the footer. */
 .tw-card[data-more] .tw-card-footer {
-  border-top-color: var(--tw-bezel-strong);
+  border-top-color: var(--tw-line-strong);
   box-shadow: 0 -12px 16px -8px var(--tw-scroll-edge);
+}
+
+.tw-card-credit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tw-space-3);
 }
 
 .tw-card-footer .tw-meta {
@@ -510,8 +602,16 @@ input {
   font-size: 0.75rem;
 }
 
-.tw-card-footer .tw-mono {
-  font-size: 0.75rem;
+.tw-powered {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tw-powered-name {
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  color: var(--tw-text);
 }
 
 .tw-errors {
@@ -520,14 +620,20 @@ input {
   padding: 0;
   display: grid;
   gap: 2px;
-  color: var(--tw-caution);
+  color: var(--tw-amber);
   font-size: 0.75rem;
+}
+
+.tw-errors li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* -------------------- Tabs -------------------- */
 
 .tw-tabs {
-  margin-top: var(--tw-space-2);
+  margin-top: 10px;
 }
 
 .tw-tablist {
@@ -535,57 +641,57 @@ input {
   top: 0;
   z-index: 1;
   display: flex;
-  gap: var(--tw-space-1);
-  padding: 0 var(--tw-space-3);
+  gap: var(--tw-space-5);
+  padding: 0 var(--tw-space-4);
   background: var(--tw-panel);
-  border-bottom: 1px solid var(--tw-bezel);
+  border-bottom: 1px solid var(--tw-line);
 }
 
 .tw-tab {
   appearance: none;
   position: relative;
-  min-height: 34px;
-  padding: 0 var(--tw-space-2);
+  min-height: 36px;
+  padding: 0;
   border: none;
   background: transparent;
   color: var(--tw-text-2);
-  font-family: var(--tw-font-plate);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-family: var(--tw-font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
 }
 
 .tw-tab[aria-selected="true"] {
-  color: var(--tw-text);
+  color: var(--tw-mint);
 }
 
 .tw-tab[aria-selected="true"]::after {
   content: "";
   position: absolute;
-  left: var(--tw-space-2);
-  right: var(--tw-space-2);
+  left: 0;
+  right: 0;
   bottom: -1px;
   height: 2px;
-  background: var(--tw-advisory);
+  border-radius: 2px;
+  background: var(--tw-mint);
 }
 
 @media (hover: hover) {
-  .tw-tab:hover {
+  .tw-tab:not([aria-selected="true"]):hover {
     color: var(--tw-text);
   }
 }
 
 .tw-tab:focus-visible {
-  outline: 2px solid var(--tw-advisory);
-  outline-offset: -4px;
-  border-radius: var(--tw-radius-plate);
+  outline: 2px solid var(--tw-mint);
+  outline-offset: -2px;
+  border-radius: 4px;
 }
 
 .tw-tabpanel {
   display: grid;
-  gap: var(--tw-space-3);
-  padding: 10px var(--tw-space-4) var(--tw-space-3);
+  gap: var(--tw-space-4);
+  padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
 }
 
 .tw-tabpanel[hidden] {
@@ -593,7 +699,7 @@ input {
 }
 
 .tw-tabpanel:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: -2px;
 }
 
@@ -610,24 +716,17 @@ input {
   align-items: baseline;
   gap: var(--tw-space-2);
   margin: 0;
-  font-family: var(--tw-font-plate);
-  font-size: 0.875rem;
+  font-family: var(--tw-font-ui);
+  font-size: 0.8125rem;
   font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0.02em;
-  color: var(--tw-text-2);
+  line-height: 1.3;
+  color: var(--tw-text);
 }
 
 .tw-section-aside {
-  font-family: var(--tw-font-ui);
   font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0;
+  font-weight: 400;
   color: var(--tw-text-2);
-}
-
-.tw-section-aside .tw-mono {
-  font-size: 0.75rem;
 }
 
 .tw-empty {
@@ -650,11 +749,13 @@ input {
 
 .tw-seg {
   display: grid;
-  grid-template-columns: 104px 1fr 76px;
+  grid-template-columns: 128px 1fr 64px;
   align-items: center;
   gap: var(--tw-space-3);
-  min-height: 26px;
-  border-bottom: 1px solid var(--tw-bezel);
+  min-height: 30px;
+  margin: 0 -8px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--tw-line);
 }
 
 .tw-seg:last-child {
@@ -663,68 +764,55 @@ input {
 
 /* The rule's own measured value leads the group, set off by a stronger rule line. */
 .tw-seg[data-rule] {
-  border-bottom-color: var(--tw-bezel-strong);
+  border-bottom-color: var(--tw-line-strong);
 }
 
 .tw-seg-label {
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
   font-size: 0.8125rem;
+  color: var(--tw-text);
+  white-space: nowrap;
+}
+
+.tw-seg-label .tw-icon {
   color: var(--tw-text-2);
 }
 
 .tw-seg-value {
   text-align: right;
-  color: var(--tw-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
 }
 
-/* A row that fed a fired rule is lit in that rule's lamp: mark, label, fill and value. */
+/* A row that fed a fired rule: tinted, with the rule's icon, and its label, bar and value in
+   the rule's colour (red for block rules, amber for warn). */
+.tw-seg[data-lit] {
+  --lit: var(--tw-red);
+  --lit-dim: var(--tw-red-dim);
+  border-radius: var(--tw-radius-tile);
+  border-bottom-color: transparent;
+  background: var(--lit-dim);
+}
+
 .tw-seg[data-lit="caution"],
 .tw-readouts > div[data-lit="caution"] {
-  --lit: var(--tw-caution);
+  --lit: var(--tw-amber);
+  --lit-dim: var(--tw-amber-dim);
 }
 
 .tw-seg[data-lit] .tw-seg-label,
+.tw-seg[data-lit] .tw-seg-label .tw-icon,
 .tw-seg[data-lit] .tw-seg-value {
-  color: var(--lit, var(--tw-warning));
+  color: var(--lit);
   font-weight: 600;
-}
-
-.tw-seg[data-lit] .tw-seg-label::before {
-  content: "";
-  flex-shrink: 0;
-  width: 6px;
-  height: 6px;
-  background: var(--lit, var(--tw-warning));
 }
 
 .tw-gauge {
   position: relative;
-  height: 12px;
-  background: var(--tw-ground);
-  border: 1px solid var(--tw-bezel);
-  border-radius: var(--tw-radius-cell);
-}
-
-.tw-gauge-fill {
-  position: absolute;
-  top: 2px;
-  bottom: 2px;
-}
-
-.tw-gauge-fill[data-sign="neg"] {
-  right: 50%;
-  background: var(--tw-text-2);
-}
-
-.tw-gauge-fill[data-sign="pos"] {
-  left: 50%;
-  background: var(--tw-text);
-}
-
-.tw-seg[data-lit] .tw-gauge-fill {
-  background: var(--lit, var(--tw-warning));
+  height: 14px;
 }
 
 .tw-gauge-scale {
@@ -733,22 +821,58 @@ input {
   width: 100%;
   height: 100%;
   overflow: visible;
-  stroke: var(--tw-text-2);
+  stroke: var(--tw-line-strong);
   stroke-width: 1;
 }
 
-.tw-gauge-scale .tw-gauge-zero {
-  stroke: var(--tw-text);
+.tw-gauge-track,
+.tw-gauge-fill {
+  position: absolute;
+  top: 5px;
+  height: 4px;
+  border-radius: 2px;
 }
 
-/* The fired rule's threshold: a caution tick standing proud of the track. */
+.tw-gauge-track {
+  left: 0;
+  right: 0;
+  background: var(--tw-line);
+}
+
+.tw-gauge-fill[data-sign="neg"] {
+  right: 50%;
+  background: var(--tw-red);
+  border-radius: 2px 0 0 2px;
+}
+
+.tw-gauge-fill[data-sign="pos"] {
+  left: 50%;
+  background: var(--tw-mint);
+  border-radius: 0 2px 2px 0;
+}
+
+.tw-seg[data-lit] .tw-gauge-fill {
+  background: var(--lit);
+}
+
+.tw-gauge-zero {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: 50%;
+  width: 1px;
+  background: var(--tw-text-3);
+}
+
+/* The fired rule's threshold: an amber tick standing proud of the bar. */
 .tw-gauge-threshold {
   position: absolute;
-  top: -4px;
-  bottom: -4px;
+  top: -1px;
+  bottom: -1px;
   width: 2px;
   margin-left: -1px;
-  background: var(--tw-caution);
+  border-radius: 1px;
+  background: var(--tw-amber);
 }
 
 .tw-legend {
@@ -770,29 +894,21 @@ input {
 .tw-key {
   display: inline-block;
   width: 12px;
-  height: 8px;
-  margin-right: 6px;
-}
-
-.tw-legend > span .tw-key {
-  margin-right: 0;
-}
-
-.tw-key-post {
-  width: 0;
-  height: 12px;
-  border-left: 1px dashed var(--tw-advisory);
+  height: 4px;
+  border-radius: 2px;
 }
 
 .tw-key-long {
-  background: var(--tw-text);
+  background: var(--tw-mint);
 }
 
 .tw-key-short {
-  border: 1px solid var(--tw-warning);
+  height: 6px;
+  border: 1px solid var(--tw-red);
 }
 
 .tw-key-band {
+  height: 8px;
   border: 1px dashed var(--tw-text-2);
 }
 
@@ -808,28 +924,28 @@ input {
   display: block;
   width: 100%;
   height: 48px;
-  border: 1px solid var(--tw-bezel);
-  border-radius: var(--tw-radius-cell);
-  background: var(--tw-ground);
 }
 
-/* The trace is information, not an alert: the secondary lamp tone. */
 .tw-spark-line {
   fill: none;
-  stroke: var(--tw-text-2);
+  stroke: var(--tw-mint);
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
 
+.tw-trace[data-trend="down"] .tw-spark-line {
+  stroke: var(--tw-red);
+}
+
 .tw-spark-base {
-  stroke: var(--tw-bezel-strong);
+  stroke: var(--tw-line-strong);
   stroke-width: 1;
 }
 
 .tw-spark-post {
-  stroke: var(--tw-advisory);
-  stroke-width: 1.5;
-  stroke-dasharray: 3 2;
+  stroke: var(--tw-text-2);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
 }
 
 /* The post label sits directly under its marker. */
@@ -839,7 +955,7 @@ input {
   transform: translateX(-50%);
   font-size: 0.75rem;
   line-height: 16px;
-  color: var(--tw-advisory);
+  color: var(--tw-text-2);
   white-space: nowrap;
 }
 
@@ -854,41 +970,42 @@ input {
 .tw-readouts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 6px;
   margin: 0;
-  border: 1px solid var(--tw-bezel);
-  border-radius: var(--tw-radius-cell);
-  background: var(--tw-ground);
 }
 
 .tw-readouts > div {
   display: grid;
-  gap: 1px;
-  padding: 5px var(--tw-space-2);
+  gap: 2px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-raised);
 }
 
 .tw-readouts > div[data-lit] {
-  box-shadow: inset 0 0 0 1px var(--lit, var(--tw-warning));
+  --lit: var(--tw-red);
+  --lit-dim: var(--tw-red-dim);
+  border-color: var(--lit);
+  background: var(--lit-dim);
+}
+
+.tw-readouts dt {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--tw-text-2);
 }
 
 .tw-readouts > div[data-lit] dt,
 .tw-readouts > div[data-lit] dd {
-  color: var(--lit, var(--tw-warning));
-}
-
-.tw-readouts > div + div {
-  border-left: 1px solid var(--tw-bezel);
-}
-
-.tw-readouts dt {
-  font-family: var(--tw-font-plate);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--tw-text-2);
+  color: var(--lit);
 }
 
 .tw-readouts dd {
   margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tw-text);
 }
 
 .tw-rows {
@@ -902,13 +1019,55 @@ input {
   justify-content: space-between;
   align-items: center;
   gap: var(--tw-space-3);
-  min-height: 30px;
-  border-bottom: 1px solid var(--tw-bezel);
+  min-height: 32px;
+  border-bottom: 1px solid var(--tw-line);
   font-size: 0.8125rem;
+  color: var(--tw-text);
 }
 
 .tw-rows li:last-child {
   border-bottom: none;
+}
+
+.tw-wallet-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px 64px;
+}
+
+.tw-row-bar {
+  position: relative;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--tw-line);
+}
+
+.tw-row-bar i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 2px;
+  background: var(--tw-mint);
+}
+
+.tw-wallet-rows[data-side="sell"] .tw-row-bar i {
+  background: var(--tw-red);
+}
+
+.tw-row-amount {
+  text-align: right;
+  font-weight: 500;
+}
+
+.tw-wallet {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tw-wallet .tw-icon {
+  color: var(--tw-text-2);
 }
 
 .tw-row-name {
@@ -916,24 +1075,26 @@ input {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--tw-text);
 }
 
 .tw-score {
   flex-shrink: 0;
-  padding: 1px 6px;
-  border: 1px solid var(--tw-caution);
-  border-radius: var(--tw-radius-cell);
-  color: var(--tw-caution);
-  font-family: var(--tw-font-plate);
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: var(--tw-radius-pill);
+  background: var(--tw-amber-dim);
+  color: var(--tw-amber);
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .tw-score[data-level="high"] {
-  border-color: var(--tw-warning);
-  color: var(--tw-warning);
+  background: var(--tw-red-dim);
+  color: var(--tw-red);
 }
 
 .tw-hits {
@@ -946,8 +1107,8 @@ input {
 
 .tw-hit {
   display: grid;
-  grid-template-columns: 8px 1fr;
-  gap: 10px;
+  grid-template-columns: 16px 1fr;
+  gap: var(--tw-space-2);
   align-items: start;
   font-size: 0.8125rem;
   line-height: 1.35;
@@ -955,19 +1116,21 @@ input {
 }
 
 .tw-hit-mark {
-  width: 8px;
-  height: 8px;
-  margin-top: 5px;
-  background: var(--tw-warning);
+  margin-top: 1px;
+  color: var(--tw-red);
 }
 
 .tw-hit[data-action="warn"] .tw-hit-mark {
-  background: var(--tw-caution);
+  color: var(--tw-amber);
 }
 
 .tw-hit-text {
   display: grid;
   gap: 2px;
+}
+
+.tw-hit-finding {
+  color: var(--tw-text);
 }
 
 .tw-hit-rule {
@@ -976,69 +1139,80 @@ input {
 }
 
 .tw-hit-more {
-  padding-left: 18px;
+  padding-left: 24px;
   font-size: 0.8125rem;
   color: var(--tw-text-2);
 }
 
 .tw-longshort {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .tw-longshort-bar {
   display: flex;
   gap: 2px;
-  height: 14px;
+  height: 6px;
 }
 
 .tw-longshort-long {
-  background: var(--tw-text);
-  border-radius: var(--tw-radius-cell) 0 0 var(--tw-radius-cell);
+  background: var(--tw-mint);
+  border-radius: 3px 0 0 3px;
 }
 
-/* Short / No: an outline, not a darker fill, so the split never relies on lightness alone. */
 .tw-longshort-short {
-  box-shadow: inset 0 0 0 1px var(--tw-text-2);
-  border-radius: 0 var(--tw-radius-cell) var(--tw-radius-cell) 0;
+  background: var(--tw-red);
+  border-radius: 0 3px 3px 0;
 }
 
 .tw-longshort-legend {
   display: flex;
   justify-content: space-between;
+  gap: var(--tw-space-3);
   font-size: 0.75rem;
   color: var(--tw-text-2);
+}
+
+.tw-longshort-legend b {
+  font-weight: 600;
+}
+
+.tw-longshort-legend [data-side="long"] b {
+  color: var(--tw-mint);
+}
+
+.tw-longshort-legend [data-side="short"] b {
+  color: var(--tw-red);
 }
 
 .tw-ladder {
   display: block;
   width: 100%;
   height: 180px;
-  border: 1px solid var(--tw-bezel);
-  border-radius: var(--tw-radius-cell);
-  background: var(--tw-ground);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-raised);
 }
 
 .tw-ladder-band {
   fill: none;
-  stroke: var(--tw-text-2);
+  stroke: var(--tw-text-3);
   stroke-width: 1;
   stroke-dasharray: 3 3;
 }
 
 .tw-ladder-mark {
-  stroke: var(--tw-advisory);
+  stroke: var(--tw-text);
   stroke-width: 1;
 }
 
 .tw-ladder-long {
-  fill: var(--tw-text);
+  fill: var(--tw-mint);
 }
 
-/* Shorts are outlined in warning red, never filled with it. */
+/* Shorts are outlined in red, never filled with it. */
 .tw-ladder-short {
   fill: none;
-  stroke: var(--tw-warning);
+  stroke: var(--tw-red);
   stroke-width: 1;
 }
 
@@ -1053,9 +1227,10 @@ input {
   grid-template-columns: minmax(0, 1fr) auto auto 56px;
   gap: var(--tw-space-3);
   align-items: center;
-  min-height: 30px;
-  border-bottom: 1px solid var(--tw-bezel);
+  min-height: 32px;
+  border-bottom: 1px solid var(--tw-line);
   font-size: 0.8125rem;
+  color: var(--tw-text);
 }
 
 .tw-trade-list[data-cols="3"] li {
@@ -1064,6 +1239,14 @@ input {
 
 .tw-trade-list li:last-child {
   border-bottom: none;
+}
+
+.tw-trade-list [data-side="long"] {
+  color: var(--tw-mint);
+}
+
+.tw-trade-list [data-side="short"] {
+  color: var(--tw-red);
 }
 
 .tw-trade-list .tw-meta {
@@ -1075,22 +1258,21 @@ input {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.8125rem;
+  color: var(--tw-text);
 }
 
 .tw-table th {
   padding: 0 0 6px;
   text-align: left;
-  font-family: var(--tw-font-plate);
   font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 500;
   color: var(--tw-text-2);
-  border-bottom: 1px solid var(--tw-bezel-strong);
+  border-bottom: 1px solid var(--tw-line);
 }
 
 .tw-table td {
   padding: 6px 0;
-  border-bottom: 1px solid var(--tw-bezel);
+  border-bottom: 1px solid var(--tw-line);
 }
 
 .tw-table .tw-num {
@@ -1098,10 +1280,10 @@ input {
 }
 
 .tw-table td.tw-mono {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
 }
 
-/* -------------------- Block screen (master warning) -------------------- */
+/* -------------------- Block screen -------------------- */
 
 .tw-block {
   position: relative;
@@ -1112,9 +1294,9 @@ input {
   overflow: hidden;
   background: var(--tw-panel);
   color: var(--tw-text);
-  border: 2px solid var(--tw-warning);
-  border-radius: var(--tw-radius-panel);
-  box-shadow: var(--tw-shadow-float);
+  border: 1px solid var(--tw-red);
+  border-radius: var(--tw-radius-card);
+  box-shadow: var(--tw-shadow-float), 0 0 0 1px var(--tw-red-dim);
 }
 
 /* The dialog container takes initial focus only to announce itself; it isn't a control. */
@@ -1125,54 +1307,39 @@ input {
 .tw-block-band {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 2px var(--tw-space-3);
+  gap: 10px;
   flex-shrink: 0;
-  padding: var(--tw-space-2) var(--tw-space-4);
-  background: var(--tw-warning);
-  color: var(--tw-ink);
-  animation: tw-master 520ms ease-out 1 both;
+  padding: var(--tw-space-3) var(--tw-space-4);
+  border-bottom: 1px solid var(--tw-red-line);
+  background: var(--tw-red-dim);
+}
+
+.tw-block-icon {
+  color: var(--tw-red);
+}
+
+.tw-block-titles {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
 }
 
 .tw-block-heading {
   margin: 0;
-  font-family: var(--tw-font-plate);
-  font-size: 1.75rem;
+  font-family: var(--tw-font-display);
+  font-size: 1.125rem;
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  color: var(--tw-red);
 }
 
 .tw-block-sub {
-  flex: 1;
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.2;
-}
-
-.tw-block-band .tw-replay-badge {
-  border-color: var(--tw-ink);
-  background: transparent;
-  color: var(--tw-ink);
-}
-
-/* Unlit to lit, then one brightness flash: the master-warning lamp coming on. */
-@keyframes tw-master {
-  0% {
-    background-color: var(--tw-warning-dim);
-    color: var(--tw-warning);
-  }
-  35% {
-    background-color: var(--tw-warning);
-    color: var(--tw-ink);
-    filter: brightness(1);
-  }
-  60% {
-    filter: brightness(1.3);
-  }
-  100% {
-    filter: brightness(1);
-  }
+  color: var(--tw-text);
 }
 
 .tw-block-body {
@@ -1188,17 +1355,18 @@ input {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 6px;
+  gap: var(--tw-space-2);
 }
 
 .tw-block-hits li {
   display: grid;
-  grid-template-columns: 8px 1fr;
-  gap: 10px;
+  grid-template-columns: 16px 1fr;
+  gap: var(--tw-space-2);
   align-items: start;
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.35;
+  color: var(--tw-text);
 }
 
 .tw-block-hits .tw-hit-rule {
@@ -1212,27 +1380,27 @@ input {
 .tw-block-footer {
   margin-top: auto;
   display: grid;
-  gap: var(--tw-space-2);
+  gap: 10px;
 }
 
 .tw-block-safe {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
   font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.3;
-  color: var(--tw-normal);
+  color: var(--tw-mint);
 }
 
-/* The phrase to type, set apart as its own mono cell inside the label. */
+/* The phrase to type, set apart as its own tile inside the label. */
 .tw-block-phrase {
   display: inline-block;
-  padding: 0 var(--tw-space-1);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-cell);
+  padding: 1px 6px;
+  border-radius: 6px;
   background: var(--tw-raised);
-  font-family: var(--tw-font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--tw-text);
 }
 
@@ -1249,7 +1417,7 @@ input {
 
 .tw-block-prompt {
   display: block;
-  margin-bottom: calc(var(--tw-space-1) - var(--tw-space-2));
+  margin-bottom: -6px;
   font-size: 0.8125rem;
   font-weight: 500;
   line-height: 1.6;
@@ -1258,53 +1426,54 @@ input {
 
 .tw-block-input-row input {
   width: 100%;
-  min-height: 32px;
-  padding: 0 var(--tw-space-2);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-plate);
+  min-height: 36px;
+  padding: 0 var(--tw-space-3);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-tile);
   background: var(--tw-ground);
   color: var(--tw-text);
-  caret-color: var(--tw-advisory);
-  font-family: var(--tw-font-mono);
-  font-size: 0.8125rem;
+  caret-color: var(--tw-mint);
+  font-size: 0.875rem;
 }
 
 .tw-block-input-row input:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 1px;
-  border-color: var(--tw-advisory);
+  border-color: transparent;
 }
 
 .tw-block-override-btn,
 .tw-block-evidence {
   appearance: none;
-  min-height: 32px;
-  padding: 0 var(--tw-space-3);
-  border-radius: var(--tw-radius-plate);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 var(--tw-space-4);
+  border-radius: var(--tw-radius-pill);
   background: transparent;
-  font-family: var(--tw-font-plate);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
   cursor: pointer;
 }
 
 .tw-block-evidence {
   justify-self: start;
-  border: 1px solid var(--tw-advisory);
-  background: var(--tw-advisory-dim);
-  color: var(--tw-advisory);
+  border: 1px solid var(--tw-line-strong);
+  background: var(--tw-raised);
+  color: var(--tw-text);
 }
 
 .tw-block-override-btn {
   flex-shrink: 0;
-  border: 1px solid var(--tw-warning);
-  color: var(--tw-warning);
+  border: 1px solid var(--tw-red);
+  color: var(--tw-red);
 }
 
-/* Disabled stays legible (#8FA3BF on the panel is 6.7:1), no opacity: an unlit control. */
+/* Disabled stays legible (60% white on the panel is about 7:1), no opacity: a locked control. */
 .tw-block-override-btn:disabled {
-  border-color: var(--tw-bezel-strong);
+  border-color: var(--tw-line-strong);
   border-style: dashed;
   color: var(--tw-text-2);
   cursor: not-allowed;
@@ -1312,24 +1481,23 @@ input {
 
 @media (hover: hover) {
   .tw-block-evidence:hover {
-    background: var(--tw-advisory-hover);
+    border-color: var(--tw-mint-line);
   }
   .tw-block-override-btn:not(:disabled):hover {
-    background: var(--tw-warning-dim);
+    background: var(--tw-red-dim);
   }
 }
 
 .tw-block-override-btn:focus-visible,
 .tw-block-evidence:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 2px;
 }
 
 .tw-block-error {
   margin: 0;
-  font-family: var(--tw-font-mono);
   font-size: 0.75rem;
-  color: var(--tw-caution);
+  color: var(--tw-amber);
 }
 
 /* -------------------- Strip -------------------- */
@@ -1339,23 +1507,17 @@ input {
   align-items: center;
   gap: var(--tw-space-2);
   min-height: 32px;
-  padding: 0 var(--tw-space-1) 0 5px;
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-plate);
+  padding: 0 var(--tw-space-1) 0 var(--tw-space-2);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
   background: var(--tw-panel);
-  box-shadow: inset 0 1px 0 var(--tw-sheen);
   color: var(--tw-text);
   font-size: 0.8125rem;
   font-weight: 500;
 }
 
 .tw-strip[data-verdict="CAUTION"] {
-  border-color: var(--tw-caution);
-}
-
-.tw-strip[data-verdict="UNCHECKED"],
-.tw-strip[data-verdict="LOADING"] {
-  color: var(--tw-text-2);
+  border-color: var(--tw-amber-line);
 }
 
 .tw-strip-text {
@@ -1370,6 +1532,12 @@ input {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--tw-text);
+}
+
+.tw-strip[data-verdict="UNCHECKED"] .tw-strip-finding,
+.tw-strip[data-verdict="LOADING"] .tw-strip-finding {
+  color: var(--tw-text-2);
 }
 
 .tw-strip-rule {
@@ -1378,35 +1546,31 @@ input {
   color: var(--tw-text-2);
 }
 
-.tw-lamp {
-  flex-shrink: 0;
-  width: 10px;
-  height: 10px;
-  margin: 0 5px;
-  border: 1px dashed var(--tw-text-2);
-  border-radius: var(--tw-radius-cell);
-  animation: tw-standby 1.2s ease-in-out infinite;
-}
-
 .tw-strip-details {
   appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
   flex-shrink: 0;
   min-height: 24px;
-  padding: 0 var(--tw-space-2);
+  padding: 0 6px 0 10px;
   border: none;
-  border-radius: var(--tw-radius-cell);
+  border-radius: var(--tw-radius-pill);
   background: transparent;
-  color: var(--tw-advisory);
+  color: var(--tw-mint);
   font: inherit;
   font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
   cursor: pointer;
 }
 
+@media (hover: hover) {
+  .tw-strip-details:hover {
+    background: var(--tw-mint-dim);
+  }
+}
+
 .tw-strip-details:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 1px;
 }
 
@@ -1418,10 +1582,10 @@ input {
   top: 96px;
   right: 16px;
   z-index: 2147482999;
-  min-height: 32px;
+  min-height: 34px;
   margin: 0;
   max-width: min(440px, calc(100vw - 32px));
-  box-shadow: var(--tw-shadow-float), inset 0 1px 0 var(--tw-sheen);
+  box-shadow: var(--tw-shadow-float);
 }
 
 div.tw-dock-chip {
@@ -1438,80 +1602,12 @@ div.tw-dock-chip {
 
 /* -------------------- Motion -------------------- */
 
-/* Signature: each annunciator lights once when its verdict arrives (unlit to lit, 180ms); a
-   TRIPWIRE plate adds a single brightness flash. A new verdict swaps the animation name, so
-   it replays exactly once per state change. */
-.tw-plate[data-mark="filled"] {
-  animation: tw-lamp-fill 180ms ease-out 1 both;
-}
-.tw-plate[data-tone="warning"][data-mark="filled"] {
-  animation: tw-lamp-warning 420ms ease-out 1 both;
-}
-.tw-plate[data-mark="outlined"] {
-  animation: tw-lamp-line 180ms ease-out 1 both;
-}
-.tw-chip[data-verdict="LOADING"] .tw-plate,
-div.tw-dock-chip .tw-plate {
-  animation: tw-standby 1.2s ease-in-out infinite;
-}
-
-@keyframes tw-lamp-fill {
-  from {
-    background-color: var(--lamp-dim);
-    color: var(--lamp);
-  }
-}
-
-@keyframes tw-lamp-line {
-  from {
-    background-color: transparent;
-    border-color: var(--tw-bezel-strong);
-    color: var(--tw-text-2);
-  }
-}
-
-@keyframes tw-lamp-warning {
-  0% {
-    background-color: var(--lamp-dim);
-    color: var(--lamp);
-  }
-  43% {
-    background-color: var(--lamp);
-    color: var(--tw-ink);
-    filter: brightness(1);
-  }
-  70% {
-    filter: brightness(1.35);
-  }
-  100% {
-    filter: brightness(1);
-  }
-}
-
-@keyframes tw-standby {
-  50% {
-    opacity: 0.5;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .tw-plate,
-  .tw-plate[data-mark],
-  .tw-plate[data-tone="warning"][data-mark="filled"],
-  .tw-block-band,
-  .tw-lamp,
-  .tw-chip[data-verdict="LOADING"] .tw-plate,
-  div.tw-dock-chip .tw-plate {
+  .tw-spin {
     animation: none;
   }
   .tw-pop,
   .tw-pop[data-sheet] {
-    animation: tw-fade 1ms linear both;
-  }
-}
-
-@keyframes tw-fade {
-  from {
-    opacity: 0;
+    animation: none;
   }
 }

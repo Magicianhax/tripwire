@@ -1,7 +1,10 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { TargetKind } from "@tripwire/core";
 import type { HitDto } from "../api-types";
+import { ArrowRight, Lock, OctagonX, ShieldCheck, Users } from "lucide-react";
 import { deepActiveElement, getFocusable, isEditableElement } from "./focus";
+import { Icon } from "./icons";
+import { VenueLogo } from "./Logo";
 import { HitList } from "./panel-parts";
 import { ReplayBadge } from "./ReplayBadge";
 
@@ -27,6 +30,8 @@ export type BlockScreenProps = {
    * the trade stays blocked. Default null (nothing rendered). */
   error?: string | null;
   replay?: boolean;
+  /** Adapter id: the venue's logo sits in the header. */
+  venue?: string;
 };
 
 const MAX_HITS = 3;
@@ -54,8 +59,8 @@ export function phraseMatches(input: string, phrase: string): boolean {
   return normalizePhrase(input) !== "" && normalizePhrase(input) === normalizePhrase(phrase);
 }
 
-/** Master-warning block screen: a lit red TRIPWIRE band, up to 3 hits, the Evidence
- * button, a reassurance line, and an override input that only unlocks the Override button when
+/** Block screen: a red-bordered card with a TRIPWIRE header (venue logo, "Trade blocked by
+ * your rules"), up to 3 hits, the Evidence button, a reassurance line, and an override input that only unlocks the Override button when
  * `phrase` is typed (case-insensitive, whitespace-normalized).
  *
  * Focus management: on mount, focus moves to the dialog container (tabIndex -1, described by
@@ -71,7 +76,7 @@ export function phraseMatches(input: string, phrase: string): boolean {
  * convenience popover: closing it on Escape would defeat its purpose, so no keydown handler
  * here ever calls anything on "Escape" — that key is a deliberate no-op.
  */
-export function BlockScreen({ hits, phrase, onEvidence, onOverride, kind = "spot", autoFocus = true, pending = false, error = null, replay }: BlockScreenProps) {
+export function BlockScreen({ hits, phrase, onEvidence, onOverride, kind = "spot", autoFocus = true, pending = false, error = null, replay, venue }: BlockScreenProps) {
   const [input, setInput] = useState("");
   const headingId = useId();
   const inputId = `${headingId}-override-input`;
@@ -157,20 +162,27 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, kind = "spot
       onKeyUp={isolateKey}
     >
       <div className="tw-block-band">
-        <h3 id={headingId} className="tw-block-heading">
-          TRIPWIRE
-        </h3>
-        <span className="tw-block-sub">Trade blocked by your rules</span>
+        <Icon icon={OctagonX} size={20} className="tw-block-icon" />
+        <div className="tw-block-titles">
+          <h3 id={headingId} className="tw-block-heading">
+            TRIPWIRE
+          </h3>
+          <span className="tw-block-sub">Trade blocked by your rules</span>
+        </div>
         <ReplayBadge replay={replay} />
+        <VenueLogo venue={venue} size={20} labelled />
       </div>
       <div className="tw-block-body">
         <HitList hits={hits} max={MAX_HITS} className="tw-block-hits" id={hitsId} />
 
         <div className="tw-block-footer">
           <button type="button" className="tw-block-evidence" aria-haspopup="dialog" onClick={(e) => onEvidence(e.currentTarget)}>
+            <Icon icon={Users} size={16} />
             {EVIDENCE_LABEL[kind]}
+            <Icon icon={ArrowRight} size={14} />
           </button>
           <p id={safeId} className="tw-block-safe">
+            <Icon icon={ShieldCheck} size={16} />
             Not trading is the safe move.
           </p>
           <label className="tw-block-prompt" htmlFor={inputId}>
@@ -193,6 +205,7 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, kind = "spot
               />
             </div>
             <button type="button" className="tw-block-override-btn" disabled={overrideDisabled} onClick={tryOverride}>
+              {overrideDisabled && !pending ? <Icon icon={Lock} size={14} /> : null}
               {pending ? "Overriding…" : "Override"}
             </button>
           </div>

@@ -125,12 +125,12 @@ describe("Flow gauges light the rule-tripping rows", () => {
 });
 
 describe("rule clause faces", () => {
-  it("sets the word in the UI face and the comparison in mono, text unchanged", () => {
+  it("sets the comparison as tabular figures in the UI face (mono is for addresses only), text unchanged", () => {
     const c = render(<HitList hits={[{ ruleId: "r", action: "block", text: "t", signalId: "fresh_buy_share", op: ">", threshold: 70, label: "Fresh wallets are 82% of buying", value: 82, evidence: [] }]} />);
     const clause = c.querySelector(".tw-hit-rule") as HTMLElement;
     expect(clause.textContent).toBe("rule: > 70%");
-    expect(clause.classList.contains("tw-mono")).toBe(false);
-    expect(clause.querySelector(".tw-mono")?.textContent).toBe("> 70%");
+    expect(clause.querySelector(".tw-mono")).toBeNull();
+    expect(clause.querySelector(".tw-fig")?.textContent).toBe("> 70%");
   });
 });
 

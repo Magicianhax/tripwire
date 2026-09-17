@@ -1,10 +1,12 @@
 import type { PerpPosition } from "@tripwire/core";
 import type { HitDto, PerpPanel } from "../api-types";
-import { shortAddr, timeAgo, usd } from "./format";
+import { timeAgo, usd } from "./format";
 import { Empty, HitList, Section } from "./panel-parts";
 import { Tabs, type TabDef } from "./Tabs";
+import { WalletLabel } from "./WalletLabel";
 
-/** Long share filled, short share outlined: the split never relies on colour or lightness. */
+/** Long share in mint, short share in red, each named with its value and wallet count in the
+ * legend so the split never relies on colour alone. */
 function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
   const longUsd = screener?.current_smart_money_position_longs_usd ?? 0;
   const shortUsd = Math.abs(screener?.current_smart_money_position_shorts_usd ?? 0);
@@ -17,12 +19,12 @@ function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
         <i className="tw-longshort-long" style={{ width: `${longPct}%` }} />
         <i className="tw-longshort-short" style={{ width: `${shortPct}%` }} />
       </div>
-      <div className="tw-longshort-legend tw-mono">
-        <span>
-          Long {usd(longUsd)} · {screener?.smart_money_longs_count ?? 0}
+      <div className="tw-longshort-legend">
+        <span data-side="long">
+          Long <b className="tw-fig">{usd(longUsd)}</b> <span className="tw-fig">{screener?.smart_money_longs_count ?? 0}</span> wallets
         </span>
-        <span>
-          Short {usd(shortUsd)} · {screener?.smart_money_shorts_count ?? 0}
+        <span data-side="short">
+          Short <b className="tw-fig">{usd(shortUsd)}</b> <span className="tw-fig">{screener?.smart_money_shorts_count ?? 0}</span> wallets
         </span>
       </div>
     </div>
@@ -32,7 +34,7 @@ function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
 /** Vertical price axis centered on mark price ±15%. A tick per Smart Money position at its
  * liquidation_price, width scaled by position_value_usd. Positions with a null
  * liquidation_price are skipped (never crash). A dashed band marks ±3% around mark; longs are
- * filled ticks, shorts outlined in warning red; mark price is an advisory rule. */
+ * mint ticks, shorts outlined in red; mark price is a white rule. */
 function LiquidationLadder({ positions, markPrice }: { positions: PerpPosition[] | null; markPrice: number | null }) {
   if (!markPrice || !positions || positions.length === 0) return null;
   const lo = markPrice * 0.85;
@@ -88,13 +90,13 @@ function PositioningTab({ panel, hits }: { panel: PerpPanel; hits: HitDto[] }) {
           {markPrice !== null ? (
             <div>
               <dt>Mark</dt>
-              <dd className="tw-mono">{markPrice.toLocaleString("en-US", { maximumFractionDigits: 4 })}</dd>
+              <dd className="tw-fig">{markPrice.toLocaleString("en-US", { maximumFractionDigits: 4 })}</dd>
             </div>
           ) : null}
           {funding !== null ? (
             <div>
               <dt>Funding</dt>
-              <dd className="tw-mono">{(funding * 100).toFixed(4)}%</dd>
+              <dd className="tw-fig">{(funding * 100).toFixed(4)}%</dd>
             </div>
           ) : null}
         </dl>
@@ -142,12 +144,12 @@ function TradesTab({ panel }: { panel: PerpPanel }) {
       <ul className="tw-trade-list">
         {trades.map((t, i) => (
           <li key={i}>
-            <span className="tw-row-name">{t.trader_address_label ?? shortAddr(t.trader_address)}</span>
-            <span>
+            <WalletLabel label={t.trader_address_label} address={t.trader_address} />
+            <span data-side={/short/i.test(t.side) ? "short" : "long"}>
               {t.action} {t.side}
             </span>
-            <span className="tw-mono">{usd(t.value_usd)}</span>
-            <span className="tw-mono tw-meta">{timeAgo(t.block_timestamp)}</span>
+            <span className="tw-fig">{usd(t.value_usd)}</span>
+            <span className="tw-fig tw-meta">{timeAgo(t.block_timestamp)}</span>
           </li>
         ))}
       </ul>

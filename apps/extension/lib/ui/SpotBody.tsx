@@ -1,15 +1,17 @@
 import type { Candle, FlowRow, Signal } from "@tripwire/core";
 import type { HitDto, SpotPanel } from "../api-types";
-import { shortAddr, usd } from "./format";
+import { Brain, Fish, LogOut, Megaphone, Sprout, Trophy } from "lucide-react";
+import { usd } from "./format";
 import { Empty, HitList, Section, SegmentRow } from "./panel-parts";
 import { postIndex } from "./scales";
 import { Tabs, type TabDef } from "./Tabs";
+import { WalletLabel } from "./WalletLabel";
 
 const W = 400;
 const H = 48;
 
-/** Close price over the window in the secondary tone, with the post's candle marked by an
- * advisory (cyan) rule and its label set right under it. */
+/** Close price over the window, mint when it rose and red when it fell, with the post's
+ * candle marked by a dashed rule and its label set right under it. */
 function PriceTrace({ candles, postTimeIso }: { candles: Candle[] | null; postTimeIso: string | null }) {
   if (!candles || candles.length < 2) return null;
   const sorted = [...candles].sort((a, b) => new Date(a.interval_start).getTime() - new Date(b.interval_start).getTime());
@@ -28,8 +30,8 @@ function PriceTrace({ candles, postTimeIso }: { candles: Candle[] | null; postTi
   const change = first.close !== 0 ? ((last.close - first.close) / first.close) * 100 : null;
 
   return (
-    <Section title="Price" aside={change !== null ? <span className="tw-mono">{`${change >= 0 ? "+" : "−"}${Math.abs(change).toFixed(1)}%`}</span> : null}>
-      <div className="tw-trace" data-marked={markerPct !== null ? "" : undefined}>
+    <Section title="Price" aside={change !== null ? <span className="tw-fig" data-sign={change >= 0 ? "pos" : "neg"}>{`${change >= 0 ? "+" : "−"}${Math.abs(change).toFixed(1)}%`}</span> : null}>
+      <div className="tw-trace" data-marked={markerPct !== null ? "" : undefined} data-trend={change !== null && change < 0 ? "down" : "up"}>
         <svg className="tw-sparkline" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={markerPct !== null ? "Price over the window, post time marked" : "Price over the window"}>
           <line className="tw-spark-base" x1={0} x2={W} y1={H - 0.5} y2={H - 0.5} vectorEffect="non-scaling-stroke" />
           <polyline className="tw-spark-line" points={points} vectorEffect="non-scaling-stroke" />
@@ -64,11 +66,11 @@ function FlowTab({ panel, hits, signals }: { panel: SpotPanel; hits: HitDto[]; s
 
   const rows = flow
     ? [
-        { label: "Smart Traders", value: flow.smart_trader_net_flow_usd, lit: exitLit(flow.smart_trader_net_flow_usd) },
-        { label: "Whales", value: flow.whale_net_flow_usd, lit: exitLit(flow.whale_net_flow_usd) },
-        { label: "Public Figures", value: flow.public_figure_net_flow_usd, lit: exitLit(flow.public_figure_net_flow_usd) },
-        { label: "Top PnL", value: flow.top_pnl_net_flow_usd, lit: null },
-        { label: "Fresh wallets", value: flow.fresh_wallets_net_flow_usd, lit: lamp(freshHit) },
+        { label: "Smart Traders", icon: Brain, value: flow.smart_trader_net_flow_usd, lit: exitLit(flow.smart_trader_net_flow_usd) },
+        { label: "Whales", icon: Fish, value: flow.whale_net_flow_usd, lit: exitLit(flow.whale_net_flow_usd) },
+        { label: "Public Figures", icon: Megaphone, value: flow.public_figure_net_flow_usd, lit: exitLit(flow.public_figure_net_flow_usd) },
+        { label: "Top PnL", icon: Trophy, value: flow.top_pnl_net_flow_usd, lit: null },
+        { label: "Fresh wallets", icon: Sprout, value: flow.fresh_wallets_net_flow_usd, lit: lamp(freshHit) },
       ]
     : [];
   const max = Math.max(1, ...rows.map((r) => Math.abs(r.value ?? 0)), Math.abs(exit?.value ?? 0), Math.abs(exitThreshold ?? 0));
@@ -76,11 +78,11 @@ function FlowTab({ panel, hits, signals }: { panel: SpotPanel; hits: HitDto[]; s
   return (
     <>
       {flow ? (
-        <Section title="Net flow by wallet type" aside={<span className="tw-mono">{`${flowWindow} · log scale`}</span>}>
+        <Section title="Net flow by wallet type" aside={`${flowWindow}, log scale`}>
           <div className="tw-gauges">
-            {exit ? <SegmentRow label="Exit pressure" value={exit.value} max={max} lit={lamp(exitHit)} rule threshold={exitThreshold} /> : null}
+            {exit ? <SegmentRow label="Exit pressure" icon={LogOut} value={exit.value} max={max} lit={lamp(exitHit)} rule threshold={exitThreshold} /> : null}
             {rows.map((r) => (
-              <SegmentRow key={r.label} label={r.label} value={r.value} max={max} lit={r.lit} />
+              <SegmentRow key={r.label} label={r.label} icon={r.icon} value={r.value} max={max} lit={r.lit} />
             ))}
           </div>
         </Section>
@@ -99,7 +101,9 @@ function FlowTab({ panel, hits, signals }: { panel: SpotPanel; hits: HitDto[]; s
             ).map(([label, value, lit]) => (
               <div key={label} data-lit={lit ?? undefined}>
                 <dt>{label}</dt>
-                <dd className="tw-mono">{usd(value, true)}</dd>
+                <dd className="tw-fig" data-sign={value === null || value === 0 ? "zero" : value < 0 ? "neg" : "pos"}>
+                  {usd(value, true)}
+                </dd>
               </div>
             ))}
           </dl>
@@ -109,13 +113,17 @@ function FlowTab({ panel, hits, signals }: { panel: SpotPanel; hits: HitDto[]; s
   );
 }
 
-function WalletList({ rows }: { rows: { name: string | null; address: string; amount: number | null }[] }) {
+function WalletList({ rows, side }: { rows: { name: string | null; address: string; amount: number | null }[]; side: "sell" | "buy" }) {
+  const max = Math.max(1, ...rows.map((r) => r.amount ?? 0));
   return (
-    <ul className="tw-rows">
+    <ul className="tw-rows tw-wallet-rows" data-side={side}>
       {rows.map((r, i) => (
         <li key={i}>
-          {r.name ? <span className="tw-row-name">{r.name}</span> : <span className="tw-row-name tw-mono tw-meta">{shortAddr(r.address)}</span>}
-          <span className="tw-mono">{usd(r.amount)}</span>
+          <WalletLabel label={r.name} address={r.address} />
+          <span className="tw-row-bar" aria-hidden="true">
+            <i style={{ width: `${((r.amount ?? 0) / max) * 100}%` }} />
+          </span>
+          <span className="tw-fig tw-row-amount">{usd(r.amount)}</span>
         </li>
       ))}
     </ul>
@@ -130,12 +138,12 @@ function WalletsTab({ panel }: { panel: SpotPanel }) {
     <>
       {sellers.length > 0 ? (
         <Section title="Top sellers" aside="Sold">
-          <WalletList rows={sellers.map((w) => ({ name: w.address_label, address: w.address, amount: w.sold_volume_usd }))} />
+          <WalletList side="sell" rows={sellers.map((w) => ({ name: w.address_label, address: w.address, amount: w.sold_volume_usd }))} />
         </Section>
       ) : null}
       {buyers.length > 0 ? (
         <Section title="Top buyers" aside="Bought">
-          <WalletList rows={buyers.map((w) => ({ name: w.address_label, address: w.address, amount: w.bought_volume_usd }))} />
+          <WalletList side="buy" rows={buyers.map((w) => ({ name: w.address_label, address: w.address, amount: w.bought_volume_usd }))} />
         </Section>
       ) : null}
     </>

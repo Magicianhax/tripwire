@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { presetChangeNeedsConfirm } from "@tripwire/core";
+import { CircleCheck, CircleX, History, LoaderCircle, ScrollText, SlidersHorizontal, TriangleAlert } from "lucide-react";
+import { NANSEN_LOGO, presetChangeNeedsConfirm, VENUE_LOGOS, type VenueId } from "@tripwire/core";
 import { browser } from "wxt/browser";
 import { getRules, health, setPreset } from "../../lib/api";
 import type { KeySource, RulesResponse } from "../../lib/api-types";
+import { Icon } from "../../lib/ui/icons";
+import { BrandMark } from "../../lib/ui/Logo";
 import { popupStatus } from "./status";
 
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
@@ -10,6 +13,14 @@ const BACKEND_URL_RE = /^http:\/\/(127\.0\.0\.1|localhost):\d{1,5}$/;
 const PRESETS = ["degen", "balanced", "paranoid"] as const;
 type Preset = (typeof PRESETS)[number];
 const PRESET_LABELS: Record<Preset, string> = { degen: "Degen", balanced: "Balanced", paranoid: "Paranoid" };
+
+/** Where Tripwire runs: tier 1 venues get a block screen on the trade button, tier 2 a dock. */
+const VENUES: { tier: string; ids: VenueId[] }[] = [
+  { tier: "Blocks trades", ids: ["jupiter", "pumpfun", "uniswap", "jumper", "hyperliquid", "polymarket"] },
+  { tier: "Evidence dock", ids: ["raydium", "aerodrome", "pancakeswap", "1inch", "matcha", "cow", "axiom", "photon", "gmgn", "bullx", "dexscreener", "birdeye"] },
+];
+
+const STATUS_ICON = { connected: CircleCheck, offline: CircleX, "not-ready": TriangleAlert } as const;
 
 export default function App() {
   const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource; replay: boolean } | { ok: false } | null>(null);
@@ -103,8 +114,9 @@ export default function App() {
   return (
     <div className="tw-popup">
       <header className="tw-popup-head">
-        <h1 className="tw-wordmark">TRIPWIRE</h1>
+        <h1 className="tw-wordmark">Tripwire</h1>
         <p className="tw-status" data-state={statusState} role="status" aria-live="polite">
+          <Icon icon={statusState ? STATUS_ICON[statusState] : LoaderCircle} size={16} className={statusState ? undefined : "tw-spin"} />
           {statusText}
         </p>
       </header>
@@ -141,16 +153,19 @@ export default function App() {
       <ul className="tw-links">
         <li>
           <a href={`${backendUrl}/rules`} target="_blank" rel="noopener noreferrer">
+            <Icon icon={SlidersHorizontal} size={16} />
             Rules
           </a>
         </li>
         <li>
           <a href={`${backendUrl}/ledger`} target="_blank" rel="noopener noreferrer">
+            <Icon icon={ScrollText} size={16} />
             Ledger
           </a>
         </li>
         <li>
           <a href={`${backendUrl}/history`} target="_blank" rel="noopener noreferrer">
+            <Icon icon={History} size={16} />
             History
           </a>
         </li>
@@ -168,6 +183,29 @@ export default function App() {
         />
         <p className="tw-field-hint">{backendUrlError}</p>
       </div>
+
+      <section className="tw-venues" aria-labelledby="tw-venues-label">
+        <h2 className="tw-field-label" id="tw-venues-label">
+          Works on
+        </h2>
+        {VENUES.map((group) => (
+          <div key={group.tier} className="tw-venue-group">
+            <p className="tw-venue-tier">{group.tier}</p>
+            <ul className="tw-venue-list">
+              {group.ids.map((id) => (
+                <li key={id}>
+                  <BrandMark logo={VENUE_LOGOS[id]} size={16} />
+                  {VENUE_LOGOS[id].name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+
+      <footer className="tw-popup-foot">
+        Powered by <BrandMark logo={NANSEN_LOGO} size={14} /> <span className="tw-powered-name">Nansen</span>
+      </footer>
     </div>
   );
 }

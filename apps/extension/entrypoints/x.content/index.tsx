@@ -113,14 +113,14 @@ export default defineContentScript({
       const chipMount = await mountReact(
         ctx,
         { position: "inline", anchor: tweetTextEl, append: "after" },
-        <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void panel.toggle()} />,
+        <Chip verdict={lastVerdict} symbol={symbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void panel.toggle()} />,
       );
       stopHostClicks(chipMount.ui.shadowHost);
       mounts.track(article, chipMount);
 
       function renderChip(): void {
         chipMount.update(
-          <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void panel.toggle()} />,
+          <Chip verdict={lastVerdict} symbol={symbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void panel.toggle()} />,
         );
       }
 
@@ -166,6 +166,7 @@ export default defineContentScript({
                 person={personResult.ok ? personResult.data : null}
                 headline={chipHeadline(panelResult.data)}
                 postTimeIso={tweet.timeIso}
+                chain={target.chain}
               />
             </Popover>
           );

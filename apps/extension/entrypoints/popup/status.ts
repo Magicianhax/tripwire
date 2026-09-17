@@ -10,13 +10,13 @@ export function popupStatus(health: { ok: true; keySource: KeySource; replay: bo
   if (!health) return { text: "Checking backend…", state: undefined };
   if (!health.ok) return { text: "Backend offline: run pnpm dev", state: "offline" };
   if (health.replay && health.keySource === "none") {
-    return { text: "Replay mode · recorded data, no key needed", state: "connected" };
+    return { text: "Replay mode: recorded data, no key needed", state: "connected" };
   }
   switch (health.keySource) {
     case "nansen-cli":
-      return { text: "Backend connected · key via Nansen CLI", state: "connected" };
+      return { text: "Backend connected, key via Nansen CLI", state: "connected" };
     case "env":
-      return { text: "Backend connected · key via NANSEN_API_KEY", state: "connected" };
+      return { text: "Backend connected, key via NANSEN_API_KEY", state: "connected" };
     default:
       return { text: "No Nansen key: set NANSEN_API_KEY or run nansen login", state: "not-ready" };
   }

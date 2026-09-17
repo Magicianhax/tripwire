@@ -25,9 +25,13 @@ function WinnersTab({ panel, hits }: { panel: PredictionPanel; hits: HitDto[] })
               <i className="tw-longshort-long" style={{ width: `${yesPct}%` }} />
               <i className="tw-longshort-short" style={{ width: `${noPct}%` }} />
             </div>
-            <div className="tw-longshort-legend tw-mono">
-              <span>Yes {yesPct.toFixed(0)}%</span>
-              <span>No {noPct.toFixed(0)}%</span>
+            <div className="tw-longshort-legend">
+              <span data-side="long">
+                Yes <b className="tw-fig">{yesPct.toFixed(0)}%</b>
+              </span>
+              <span data-side="short">
+                No <b className="tw-fig">{noPct.toFixed(0)}%</b>
+              </span>
             </div>
           </div>
         ) : (
@@ -61,8 +65,10 @@ function HoldersTab({ panel }: { panel: PredictionPanel }) {
             <tr key={h.key}>
               <td className="tw-mono">{shortAddr(h.address)}</td>
               <td>{h.side}</td>
-              <td className="tw-mono tw-num">{h.position_size.toLocaleString()}</td>
-              <td className={`tw-mono tw-num${h.pnl !== null && h.pnl < 0 ? " tw-neg" : ""}`}>{usd(h.pnl, true)}</td>
+              <td className="tw-fig tw-num">{h.position_size.toLocaleString()}</td>
+              <td className="tw-fig tw-num" data-sign={h.pnl === null || h.pnl === 0 ? "zero" : h.pnl < 0 ? "neg" : "pos"}>
+                {usd(h.pnl, true)}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -82,8 +88,8 @@ function TradesTab({ panel }: { panel: PredictionPanel }) {
             <span>
               {t.taker_action} {t.side}
             </span>
-            <span className="tw-mono">{usd(t.usdc_value)}</span>
-            <span className="tw-mono tw-meta">{timeAgo(t.timestamp)}</span>
+            <span className="tw-fig">{usd(t.usdc_value)}</span>
+            <span className="tw-fig tw-meta">{timeAgo(t.timestamp)}</span>
           </li>
         ))}
       </ul>

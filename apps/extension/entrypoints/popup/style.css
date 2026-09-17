@@ -1,29 +1,28 @@
-/* Tripwire popup: the Glass Cockpit world at toolbar-popup size. */
+/* Tripwire popup: the Nansen world at toolbar-popup size. Tokens match lib/ui/theme.css. */
 :root {
-  --tw-ground: #0a1020;
-  --tw-panel: #111a2e;
-  --tw-raised: #1b2740;
-  --tw-bezel: rgba(143, 163, 191, 0.22);
-  --tw-bezel-strong: rgba(143, 163, 191, 0.4);
-  --tw-sheen: rgba(230, 237, 247, 0.22);
-  --tw-text: #e6edf7;
-  --tw-text-2: #8fa3bf;
-  --tw-ink: #0a1020;
-  --tw-warning: #ff4d4f;
-  --tw-caution: #ffb020;
-  --tw-caution-dim: rgba(255, 176, 32, 0.14);
-  --tw-advisory: #22d3ee;
-  --tw-advisory-select: rgba(34, 211, 238, 0.32);
-  --tw-normal: #34d399;
-  --tw-radius-panel: 8px;
-  --tw-radius-plate: 4px;
-  --tw-radius-cell: 2px;
+  --tw-ground: #06080b;
+  --tw-panel: #0b1016;
+  --tw-raised: #111821;
+  --tw-line: rgba(255, 255, 255, 0.08);
+  --tw-line-strong: rgba(255, 255, 255, 0.16);
+  --tw-text: #ffffff;
+  --tw-text-2: rgba(255, 255, 255, 0.6);
+  --tw-ink: #03140d;
+  --tw-mint: #00ffa7;
+  --tw-mint-dim: rgba(0, 255, 167, 0.12);
+  --tw-mint-line: rgba(0, 255, 167, 0.4);
+  --tw-red: #ff5a6e;
+  --tw-amber: #f5b83d;
+  --tw-amber-dim: rgba(245, 184, 61, 0.12);
+  --tw-radius-pill: 16px;
+  --tw-radius-card: 12px;
+  --tw-radius-tile: 8px;
   --tw-space-1: 4px;
   --tw-space-2: 8px;
   --tw-space-3: 12px;
   --tw-space-4: 16px;
-  --tw-font-ui: "Barlow", system-ui, sans-serif;
-  --tw-font-plate: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+  --tw-font-ui: "Inter", system-ui, sans-serif;
+  --tw-font-display: "Sora", "Inter", system-ui, sans-serif;
   --tw-font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
@@ -40,16 +39,39 @@ body {
 
 body {
   width: 360px;
-  background: var(--tw-ground);
+  background: var(--tw-panel);
   color: var(--tw-text);
   font-family: var(--tw-font-ui);
   font-size: 0.875rem;
   line-height: 1.45;
+  font-feature-settings: "tnum";
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--tw-advisory-select);
+  background: var(--tw-mint-dim);
+}
+
+.tw-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.tw-logo {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+.tw-spin {
+  animation: tw-spin 900ms linear infinite;
+}
+
+@keyframes tw-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .tw-popup {
@@ -63,19 +85,19 @@ body {
   display: grid;
   gap: var(--tw-space-2);
   padding-bottom: var(--tw-space-3);
-  border-bottom: 1px solid var(--tw-bezel);
+  border-bottom: 1px solid var(--tw-line);
 }
 
 .tw-wordmark {
   margin: 0;
-  font-family: var(--tw-font-plate);
+  font-family: var(--tw-font-display);
   font-weight: 700;
-  font-size: 1.5rem;
-  line-height: 1;
-  letter-spacing: 0.1em;
+  font-size: 1.375rem;
+  line-height: 1.1;
+  color: var(--tw-text);
 }
 
-/* Status: a lamp plus the line. The lamp shape carries the state without colour too. */
+/* Status: an icon plus the line; the icon's shape carries the state without colour too. */
 .tw-status {
   display: flex;
   align-items: center;
@@ -87,46 +109,25 @@ body {
   color: var(--tw-text-2);
 }
 
-.tw-status::before {
-  content: "";
-  flex-shrink: 0;
-  width: 10px;
-  height: 10px;
-  border: 1px dashed var(--tw-text-2);
-  border-radius: var(--tw-radius-cell);
-}
-
 .tw-status[data-state="connected"] {
   color: var(--tw-text);
 }
-.tw-status[data-state="connected"]::before {
-  border: 1px solid var(--tw-normal);
-  background: var(--tw-normal);
+.tw-status[data-state="connected"] .tw-icon {
+  color: var(--tw-mint);
 }
-
 .tw-status[data-state="offline"] {
-  color: var(--tw-warning);
+  color: var(--tw-red);
 }
-.tw-status[data-state="offline"]::before {
-  border: 1px solid var(--tw-warning);
-  background: var(--tw-warning);
-}
-
 .tw-status[data-state="not-ready"] {
-  color: var(--tw-caution);
-}
-.tw-status[data-state="not-ready"]::before {
-  border: 1px solid var(--tw-caution);
+  color: var(--tw-amber);
 }
 
 .tw-field-label,
 .tw-field label {
   margin: 0;
-  font-family: var(--tw-font-plate);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--tw-text-2);
+  color: var(--tw-text);
 }
 
 .tw-field-label {
@@ -136,24 +137,23 @@ body {
 .tw-segmented {
   display: flex;
   gap: 2px;
-  padding: 2px;
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-plate);
-  background: var(--tw-panel);
+  padding: 3px;
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-pill);
+  background: var(--tw-ground);
 }
 
 .tw-segmented button {
   flex: 1;
   appearance: none;
-  min-height: 32px;
+  min-height: 30px;
   border: 1px solid transparent;
-  border-radius: var(--tw-radius-cell);
+  border-radius: 13px;
   background: transparent;
   color: var(--tw-text-2);
-  font-family: var(--tw-font-plate);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-family: var(--tw-font-ui);
+  font-size: 0.8125rem;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -168,27 +168,27 @@ body {
   cursor: default;
 }
 
-/* Selected preset: a lit advisory bezel, not just a lighter fill. */
+/* Selected preset: a mint tint and mint label, not just a lighter fill. */
 .tw-segmented button[aria-pressed="true"] {
-  border-color: var(--tw-advisory);
-  background: var(--tw-raised);
-  color: var(--tw-text);
-  box-shadow: inset 0 1px 0 var(--tw-sheen);
+  border-color: var(--tw-mint-line);
+  background: var(--tw-mint-dim);
+  color: var(--tw-mint);
+  font-weight: 600;
 }
 
 .tw-segmented button:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 1px;
 }
 
-/* Weaken confirm: a caution panel with a full 1px bezel. */
+/* Weaken confirm: an amber tile. */
 .tw-confirm-row {
   display: grid;
   gap: var(--tw-space-2);
   padding: var(--tw-space-3);
-  border: 1px solid var(--tw-caution);
-  border-radius: var(--tw-radius-plate);
-  background: var(--tw-caution-dim);
+  border: 1px solid var(--tw-amber);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-amber-dim);
 }
 
 .tw-confirm-text {
@@ -208,29 +208,29 @@ body {
 .tw-button-quiet {
   appearance: none;
   min-height: 32px;
-  padding: 0 var(--tw-space-3);
-  border-radius: var(--tw-radius-plate);
-  font-family: var(--tw-font-plate);
-  font-size: 0.9375rem;
+  padding: 0 var(--tw-space-4);
+  border-radius: var(--tw-radius-pill);
+  font-family: var(--tw-font-ui);
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
 }
 
 .tw-button-danger {
-  border: 1px solid var(--tw-caution);
-  background: var(--tw-caution);
+  border: 1px solid var(--tw-amber);
+  background: var(--tw-amber);
   color: var(--tw-ink);
 }
 
 .tw-button-quiet {
-  border: 1px solid var(--tw-bezel-strong);
+  border: 1px solid var(--tw-line-strong);
   background: transparent;
   color: var(--tw-text);
 }
 
 .tw-button-danger:focus-visible,
 .tw-button-quiet:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 2px;
 }
 
@@ -247,25 +247,29 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 32px;
-  border: 1px solid var(--tw-bezel);
-  border-radius: var(--tw-radius-plate);
-  background: var(--tw-panel);
-  color: var(--tw-advisory);
-  font-family: var(--tw-font-plate);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  gap: 6px;
+  min-height: 34px;
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-pill);
+  background: var(--tw-raised);
+  color: var(--tw-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
   text-decoration: none;
+}
+
+.tw-links a .tw-icon {
+  color: var(--tw-text-2);
 }
 
 @media (hover: hover) {
   .tw-links a:hover {
-    border-color: var(--tw-advisory);
+    border-color: var(--tw-mint-line);
   }
 }
 
 .tw-links a:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 2px;
 }
 
@@ -273,34 +277,86 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--tw-space-1);
-  padding-top: var(--tw-space-3);
-  border-top: 1px solid var(--tw-bezel);
 }
 
 .tw-field input {
-  min-height: 32px;
-  padding: 0 var(--tw-space-2);
-  background: var(--tw-panel);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-plate);
+  min-height: 34px;
+  padding: 0 var(--tw-space-3);
+  background: var(--tw-ground);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-tile);
   color: var(--tw-text);
-  caret-color: var(--tw-advisory);
+  caret-color: var(--tw-mint);
   font-family: var(--tw-font-mono);
   font-size: 0.8125rem;
-  font-variant-numeric: tabular-nums slashed-zero;
 }
 
 .tw-field input:focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 1px;
-  border-color: var(--tw-advisory);
+  border-color: transparent;
 }
 
 .tw-field-hint {
   margin: 0;
   min-height: 1em;
   font-size: 0.75rem;
-  color: var(--tw-caution);
+  color: var(--tw-amber);
+}
+
+.tw-venues {
+  display: grid;
+  gap: var(--tw-space-2);
+  padding-top: var(--tw-space-3);
+  border-top: 1px solid var(--tw-line);
+}
+
+.tw-venues .tw-field-label {
+  margin: 0;
+}
+
+.tw-venue-group {
+  display: grid;
+  gap: 6px;
+}
+
+.tw-venue-tier {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--tw-text-2);
+}
+
+.tw-venue-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px var(--tw-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tw-venue-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  font-size: 0.8125rem;
+  color: var(--tw-text);
+}
+
+.tw-popup-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: var(--tw-space-3);
+  border-top: 1px solid var(--tw-line);
+  font-size: 0.75rem;
+  color: var(--tw-text-2);
+}
+
+.tw-powered-name {
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  color: var(--tw-text);
 }
 
 @media (prefers-reduced-motion: reduce) {

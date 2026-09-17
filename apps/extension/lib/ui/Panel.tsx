@@ -1,7 +1,10 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import type { Verdict } from "@tripwire/core";
 import type { GuardResponse, PerpPanel, PersonIntelResponse, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
+import { BadgeCheck } from "lucide-react";
+import { CountInText } from "./CountIn";
 import { usd } from "./format";
+import { Icon } from "./icons";
 import { CardHeader, hitFinding, PanelFooter } from "./panel-parts";
 import { PerpBody } from "./PerpBody";
 import { PredictionBody } from "./PredictionBody";
@@ -24,30 +27,34 @@ export type PanelProps = {
   checkedAtIso?: string | null;
   /** Which evidence tab opens first (e.g. "wallets" from the block screen's "See who's selling"). */
   initialTab?: string;
+  /** The spot token's chain when `data` carries no target (X post intel). */
+  chain?: string | null;
 };
 
-/** "Nansen label: <entity> (tags) · holds $X of SYMBOL", only rendered when an entity matched. */
+/** "Nansen label: <entity> (tags), holds $X of SYMBOL", only rendered when an entity matched. */
 function PersonLine({ person }: { person: PersonIntelResponse }) {
   if (!person.entity) return null;
   return (
     <p className="tw-person">
-      Nansen label: <b>{person.entity}</b>
-      {person.tags.length > 0 ? ` (${person.tags.join(", ")})` : ""}
-      {person.holding ? (
-        <>
-          {" "}
-          · holds{" "}
-          <b className="tw-mono">
-            {usd(person.holding.valueUsd, true)} of {person.holding.symbol ?? "—"}
-          </b>
-        </>
-      ) : null}
+      <Icon icon={BadgeCheck} size={16} />
+      <span>
+        Nansen label: <b>{person.entity}</b>
+        {person.tags.length > 0 ? ` (${person.tags.join(", ")})` : ""}
+        {person.holding ? (
+          <>
+            , holds{" "}
+            <b className="tw-fig">
+              {usd(person.holding.valueUsd, true)} of {person.holding.symbol ?? "—"}
+            </b>
+          </>
+        ) : null}
+      </span>
     </p>
   );
 }
 
 /** Unique Nansen endpoints backing the signals (falls back to hit evidence if signals are
- * empty), used for the footer's "Data: Nansen · N endpoints" line. */
+ * empty), used for the footer's endpoint count. */
 function endpointCount(data: PanelProps["data"]): number {
   const set = new Set<string>();
   for (const s of data.signals) for (const e of s.evidence) set.add(e.endpoint);
@@ -68,9 +75,9 @@ function defaultFinding(verdict: Verdict): string {
   }
 }
 
-/** The instrument card: header row (annunciator plate, title, age, close), the one-line
+/** The evidence card: header row (token logo, title, chain, age, verdict pill, close), the one-line
  * finding, the author's Nansen label, evidence tabs by target kind, and the source line. */
-export function Panel({ data, title, onClose, replay, person, headline, postTimeIso, checkedAtIso, initialTab }: PanelProps) {
+export function Panel({ data, title, onClose, replay, person, headline, postTimeIso, checkedAtIso, initialTab, chain }: PanelProps) {
   const cardRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -108,13 +115,18 @@ export function Panel({ data, title, onClose, replay, person, headline, postTime
 
   const top = data.hits[0];
   const finding = top ? hitFinding(top) : headline || defaultFinding(data.verdict);
+  const spot = !("target" in data) || data.target.kind === "spot";
+  const cardChain = "target" in data ? (data.target.kind === "spot" ? data.target.chain : null) : (chain ?? null);
+  const logoUrl = spot ? ((data.panel as SpotPanel).logoUrl ?? null) : null;
   const since = postTimeIso ? { iso: postTimeIso } : checkedAtIso ? { iso: checkedAtIso, prefix: "checked" } : null;
 
   return (
     <section className="tw-card" data-verdict={data.verdict} ref={cardRef}>
-      <CardHeader verdict={data.verdict} title={title} since={since} replay={replay} onClose={onClose} />
+      <CardHeader verdict={data.verdict} title={title} since={since} replay={replay} onClose={onClose} chain={cardChain} logoUrl={logoUrl} showToken={spot} />
       <div className="tw-card-scroll" ref={scrollRef}>
-        <p className="tw-card-finding">{finding}</p>
+        <p className="tw-card-finding">
+          <CountInText text={finding} />
+        </p>
         {person ? <PersonLine person={person} /> : null}
         {body}
       </div>

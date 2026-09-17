@@ -10,9 +10,9 @@
  */
 
 export type FontFile = {
-  family: "Tripwire Barlow" | "Tripwire Barlow Condensed" | "Tripwire Mono";
+  family: "Tripwire Inter" | "Tripwire Sora" | "Tripwire Mono";
   /** npm package that ships the file, and the file name inside its `files/` dir. */
-  pkg: "@fontsource/barlow" | "@fontsource/barlow-condensed" | "@fontsource/jetbrains-mono";
+  pkg: "@fontsource/inter" | "@fontsource/sora" | "@fontsource/jetbrains-mono";
   file: string;
   weight: string;
   format: "woff2";
@@ -26,8 +26,8 @@ const LATIN_EXT =
 
 type Pkg = FontFile["pkg"];
 const FAMILY: Record<Pkg, { family: FontFile["family"]; prefix: string }> = {
-  "@fontsource/barlow": { family: "Tripwire Barlow", prefix: "barlow" },
-  "@fontsource/barlow-condensed": { family: "Tripwire Barlow Condensed", prefix: "barlow-condensed" },
+  "@fontsource/inter": { family: "Tripwire Inter", prefix: "inter" },
+  "@fontsource/sora": { family: "Tripwire Sora", prefix: "sora" },
   "@fontsource/jetbrains-mono": { family: "Tripwire Mono", prefix: "jetbrains-mono" },
 };
 
@@ -45,11 +45,12 @@ function weights(pkg: Pkg, list: string[]): FontFile[] {
   );
 }
 
-/** Barlow for UI text, Barlow Condensed for annunciator words, JetBrains Mono for numbers. */
+/** Inter for UI text and figures (tabular numerals), Sora for headings and verdict words,
+ * JetBrains Mono only for addresses and hashes. */
 export const FONT_FILES: FontFile[] = [
-  ...weights("@fontsource/barlow", ["400", "500", "600", "700"]),
-  ...weights("@fontsource/barlow-condensed", ["600", "700"]),
-  ...weights("@fontsource/jetbrains-mono", ["400", "700"]),
+  ...weights("@fontsource/inter", ["400", "500", "600"]),
+  ...weights("@fontsource/sora", ["600", "700"]),
+  ...weights("@fontsource/jetbrains-mono", ["400"]),
 ];
 
 /** Published path of a font inside the extension (and its web_accessible_resources pattern). */

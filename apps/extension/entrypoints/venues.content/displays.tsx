@@ -66,7 +66,7 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
       {result.ok ? (
         <Panel data={result.data} title={targetTitle(target)} onClose={() => closeEvidence(rc)} replay={rc.replay} initialTab={initialTab} checkedAtIso={checkedAtIso} />
       ) : (
-        <CardMessage title={targetTitle(target)} kind="error" message={errorHeadline(result.status, result.error)} replay={rc.replay} checkedAtIso={checkedAtIso} />
+        <CardMessage title={targetTitle(target)} chain={target?.kind === "spot" ? target.chain : null} kind="error" message={errorHeadline(result.status, result.error)} replay={rc.replay} checkedAtIso={checkedAtIso} />
       )}
     </Popover>
   );
@@ -90,11 +90,11 @@ export function closeEvidenceDock(rc: RunnerContext): void {
 export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key: string): Promise<void> {
   const anchor = adapter.tier === 1 ? (adapter.anchor?.(document) ?? null) : null;
   const mount = anchor
-    ? await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, <Strip verdict="LOADING" text="Checking…" replay={rc.replay} />)
+    ? await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, <Strip verdict="LOADING" text="Checking…" replay={rc.replay} venue={adapter.id} />)
     : await mountReact(
         rc.ctx,
         { position: "inline" },
-        <Dock collapsed verdict="LOADING" onToggleCollapsed={() => {}} replay={rc.replay}>
+        <Dock collapsed verdict="LOADING" onToggleCollapsed={() => {}} replay={rc.replay} venue={adapter.id}>
           {null}
         </Dock>,
       );
@@ -116,7 +116,7 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
 
   function node(): ReactNode {
     return (
-      <Dock collapsed={collapsed} verdict={verdict} headline={headline} onToggleCollapsed={() => void toggle()} replay={rc.replay}>
+      <Dock collapsed={collapsed} verdict={verdict} headline={headline} onToggleCollapsed={() => void toggle()} replay={rc.replay} venue={adapter.id}>
         {panelData ? (
           <Panel
             data={panelData}
@@ -128,9 +128,9 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
             }}
           />
         ) : panelError ? (
-          <CardMessage title={targetTitle(target)} kind="error" message={panelError} checkedAtIso={checkedAtIso} />
+          <CardMessage title={targetTitle(target)} chain={target?.kind === "spot" ? target.chain : null} kind="error" message={panelError} checkedAtIso={checkedAtIso} />
         ) : (
-          <CardMessage title={targetTitle(target)} message="Loading evidence…" />
+          <CardMessage title={targetTitle(target)} chain={target?.kind === "spot" ? target.chain : null} message="Loading evidence…" />
         )}
       </Dock>
     );
@@ -164,9 +164,9 @@ export function createStripBinding(
   rule: string | null = null,
 ) {
   async function onBind(anchor: HTMLElement): Promise<void> {
-    const text = unlocked ? `${headline} · unlocked for this session` : headline;
+    const text = unlocked ? `${headline}, unlocked for this session` : headline;
     const node = (
-      <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} onDetails={target ? (trigger) => void toggleEvidence(rc, adapter, target, trigger) : undefined} />
+      <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} venue={adapter.id} onDetails={target ? (trigger) => void toggleEvidence(rc, adapter, target, trigger) : undefined} />
     );
     if (rc.mainMount) rc.mainMount.ui.remove();
     // Guards the residual A2 race: `sync()` (runner.tsx) calls this without awaiting it, so a
@@ -211,6 +211,7 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
         pending={overridePending}
         error={overrideError}
         replay={rc.replay}
+        venue={adapter.id}
         onEvidence={(trigger) => void toggleEvidence(rc, adapter, target, trigger, EVIDENCE_TAB[target.kind])}
         onOverride={() => void doOverride()}
       />
