@@ -1,0 +1,685 @@
+{
+ "note": "Structural snapshot of visible <button>/[role=button] elements (text, state attrs, ancestor chain, rect), logged out, no wallet. No page HTML or scripts. Captured with Playwright MCP. Filtered to site header + trade form region (+ list quick-buys): 25 of 706 visible buttons.",
+ "viewport": "1920x945 approx",
+ "capturedAt": "2026-09-17T14:50:21.030Z",
+ "url": "https://pump.fun/coin/HVWaFa5HTbX3hSju8rGkjVrVcYT1dPUUHBCug45zpump",
+ "title": "JAX $68.7K | Pump",
+ "buttons": [
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-pressed": "false"
+   },
+   "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_32 button-module-SQH47MGK-module__-d3wmW__button__variant_ghost button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__icon_only button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+   "visible": true,
+   "rect": [
+    55,
+    20,
+    32,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.min-h-10.flex-row.items-center",
+    "div .flex.flex-col.gap-2.p-2",
+    "div .relative.flex.h-full.w-full",
+    "div .fixed.top-0.bottom-0.z-40",
+    "div data-state=collapsed .text-sidebar-foreground.group.peer.hidden",
+    "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Toggle Sidebar"
+   },
+   "cls": "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4",
+   "visible": true,
+   "rect": [
+    63,
+    0,
+    16,
+    945
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .relative.flex.h-full.w-full",
+    "div .fixed.top-0.bottom-0.z-40",
+    "div data-state=collapsed .text-sidebar-foreground.group.peer.hidden",
+    "div .group/sidebar-wrapper.flex.min-h-svh.w-full",
+    "div"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-pressed": "false"
+   },
+   "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_32 button-module-SQH47MGK-module__-d3wmW__button__variant_ghost button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__icon_only button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+   "visible": true,
+   "rect": [
+    1857,
+    4,
+    32,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "section .flex.items-center.justify-center.h-10",
+    "div .max-md:hidden",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full",
+    "main .relative.flex.flex-1.flex-col",
+    "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Go back"
+   },
+   "cls": "flex h-10 w-10 shrink-0 items-center justify-center",
+   "visible": true,
+   "rect": [
+    96,
+    54,
+    40,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-center.w-full.max-w-[500px]",
+    "div .flex.items-center.justify-start.h-full",
+    "div .flex.items-center.justify-between.w-full",
+    "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Search for coins and users...⌘K",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Search for coins and users"
+   },
+   "cls": "flex h-full w-full min-w-0 items-center gap-2",
+   "visible": true,
+   "rect": [
+    144,
+    54,
+    404,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=search .relative.flex.h-10.w-full",
+    "div .contents",
+    "div .flex.items-center.w-full.max-w-[500px]",
+    "div .flex.items-center.justify-start.h-full",
+    "div .flex.items-center.justify-between.w-full",
+    "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-pressed": "false",
+    "aria-label": "Preview a copied coin or wallet address"
+   },
+   "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_40 button-module-SQH47MGK-module__-d3wmW__button__variant_secondary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__icon_only button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+   "visible": true,
+   "rect": [
+    556,
+    54,
+    40,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-center.w-full.max-w-[500px]",
+    "div .flex.items-center.justify-start.h-full",
+    "div .flex.items-center.justify-between.w-full",
+    "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    1755,
+    54,
+    40,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .max-[480px]:hidden",
+    "div .flex.items-center.justify-end.h-full",
+    "div .flex.items-center.justify-between.w-full",
+    "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-pressed": "false",
+    "aria-label": "Create"
+   },
+   "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_40 button-module-SQH47MGK-module__-d3wmW__button__variant_secondary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__icon_only button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+   "visible": true,
+   "rect": [
+    1755,
+    54,
+    40,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=button id=base-ui-_R_dd8lald3mknlpjb_",
+    "div .max-[480px]:hidden",
+    "div .flex.items-center.justify-end.h-full",
+    "div .flex.items-center.justify-between.w-full",
+    "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+    "header .flex.flex-col.sticky.top-0"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Sign in",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-pressed": "false",
+    "data-testid": "sign-in-button"
+   },
+   "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_40 button-module-SQH47MGK-module__-d3wmW__button__variant_primary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+   "visible": true,
+   "rect": [
+    1807,
+    54,
+    74,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "span .inline-flex",
+    "div .flex.items-center.justify-end.h-full",
+    "div .flex.items-center.justify-between.w-full",
+    "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-state": "closed",
+    "aria-label": "Info bar settings"
+   },
+   "cls": "flex size-6 shrink-0 items-center justify-center rounded-md",
+   "visible": true,
+   "rect": [
+    84,
+    115,
+    24,
+    24
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full",
+    "main .relative.flex.flex-1.flex-col",
+    "div .group/sidebar-wrapper.flex.min-h-svh.w-full",
+    "div"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-checked": "true",
+    "role": "radio",
+    "aria-label": "Top traders"
+   },
+   "cls": "flex size-6 items-center justify-center rounded-md transition-colors",
+   "visible": true,
+   "rect": [
+    125,
+    115,
+    24,
+    24
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=radiogroup aria-label=Info bar content .flex.shrink-0.items-center.gap-0.5",
+    "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full",
+    "main .relative.flex.flex-1.flex-col",
+    "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-checked": "false",
+    "role": "radio",
+    "aria-label": "Positions"
+   },
+   "cls": "flex size-6 items-center justify-center rounded-md transition-colors",
+   "visible": true,
+   "rect": [
+    151,
+    115,
+    24,
+    24
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=radiogroup aria-label=Info bar content .flex.shrink-0.items-center.gap-0.5",
+    "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full",
+    "main .relative.flex.flex-1.flex-col",
+    "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-checked": "false",
+    "role": "radio",
+    "aria-label": "Following"
+   },
+   "cls": "flex size-6 items-center justify-center rounded-md transition-colors",
+   "visible": true,
+   "rect": [
+    177,
+    115,
+    24,
+    24
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=radiogroup aria-label=Info bar content .flex.shrink-0.items-center.gap-0.5",
+    "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full",
+    "main .relative.flex.flex-1.flex-col",
+    "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-checked": "false",
+    "role": "radio",
+    "aria-label": "Recently viewed"
+   },
+   "cls": "flex size-6 items-center justify-center rounded-md transition-colors",
+   "visible": true,
+   "rect": [
+    203,
+    115,
+    24,
+    24
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=radiogroup aria-label=Info bar content .flex.shrink-0.items-center.gap-0.5",
+    "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+    "header .flex.flex-col.sticky.top-0",
+    "div .pump-main-shell.flex.flex-col.w-full",
+    "main .relative.flex.flex-1.flex-col",
+    "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Buy",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-selected": "false",
+    "data-state": "inactive",
+    "role": "tab"
+   },
+   "cls": "inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5",
+   "visible": true,
+   "rect": [
+    1576,
+    178,
+    154,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=tablist .h-10.items-center.justify-center.text-gray-400",
+    "div .flex-1",
+    "div .flex.items-center.gap-2",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Sell",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-selected": "true",
+    "data-state": "active",
+    "role": "tab"
+   },
+   "cls": "inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5",
+   "visible": true,
+   "rect": [
+    1730,
+    178,
+    154,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=tablist .h-10.items-center.justify-center.text-gray-400",
+    "div .flex-1",
+    "div .flex.items-center.gap-2",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "USD⇅",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Switch denomination (currently USD)"
+   },
+   "cls": "flex shrink-0 items-center gap-1 rounded-full bg-bg-secondary/70",
+   "visible": true,
+   "rect": [
+    1737,
+    260,
+    61,
+    24
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.min-w-0.items-center.justify-center",
+    "div .relative.flex.w-full.min-w-0",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-state": "closed",
+    "aria-label": "Trade settings"
+   },
+   "cls": "ml-auto flex shrink-0 items-center justify-center rounded-full",
+   "visible": true,
+   "rect": [
+    1860,
+    354,
+    24,
+    24
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-center.gap-2.px-1",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3",
+    "div .w-coin-right-col.lg:flex-shrink-0"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Connect wallet to trade",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-pressed": "false"
+   },
+   "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_40 button-module-SQH47MGK-module__-d3wmW__button__variant_primary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__rounded_base w-full",
+   "visible": true,
+   "rect": [
+    1572,
+    390,
+    316,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3",
+    "div .w-coin-right-col.lg:flex-shrink-0",
+    "div .flex.w-full.flex-col.gap-3"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "$25",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Quick buy $25"
+   },
+   "cls": "flex-1 select-none rounded-full border px-2 py-1",
+   "visible": true,
+   "rect": [
+    1572,
+    442,
+    101,
+    25
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=group aria-label=Quick buy .flex.items-stretch.gap-1.5",
+    "div .flex.flex-col.gap-1.5",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "$100",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Quick buy $100"
+   },
+   "cls": "flex-1 select-none rounded-full border px-2 py-1",
+   "visible": true,
+   "rect": [
+    1679,
+    442,
+    101,
+    25
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=group aria-label=Quick buy .flex.items-stretch.gap-1.5",
+    "div .flex.flex-col.gap-1.5",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "$250",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Quick buy $250"
+   },
+   "cls": "flex-1 select-none rounded-full border px-2 py-1",
+   "visible": true,
+   "rect": [
+    1787,
+    442,
+    101,
+    25
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=group aria-label=Quick buy .flex.items-stretch.gap-1.5",
+    "div .flex.flex-col.gap-1.5",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "25%",
+   "type": "button",
+   "disabled": true,
+   "attrs": {
+    "aria-label": "Quick sell 25%"
+   },
+   "cls": "flex-1 select-none rounded-full border px-2 py-1",
+   "visible": true,
+   "rect": [
+    1572,
+    473,
+    101,
+    25
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=group aria-label=Quick sell .flex.items-stretch.gap-1.5",
+    "div .flex.flex-col.gap-1.5",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "50%",
+   "type": "button",
+   "disabled": true,
+   "attrs": {
+    "aria-label": "Quick sell 50%"
+   },
+   "cls": "flex-1 select-none rounded-full border px-2 py-1",
+   "visible": true,
+   "rect": [
+    1679,
+    473,
+    101,
+    25
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=group aria-label=Quick sell .flex.items-stretch.gap-1.5",
+    "div .flex.flex-col.gap-1.5",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "100%",
+   "type": "button",
+   "disabled": true,
+   "attrs": {
+    "aria-label": "Quick sell 100%"
+   },
+   "cls": "flex-1 select-none rounded-full border px-2 py-1",
+   "visible": true,
+   "rect": [
+    1787,
+    473,
+    101,
+    25
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=group aria-label=Quick sell .flex.items-stretch.gap-1.5",
+    "div .flex.flex-col.gap-1.5",
+    "section .flex.flex-col.rounded-[12px].border",
+    "div .relative",
+    "div .hidden.lg:block",
+    "div .flex.flex-col.gap-3"
+   ]
+  }
+ ],
+ "hiddenButtonCount": 26,
+ "inputs": [
+  {
+   "type": "text",
+   "placeholder": "",
+   "aria": "Amount in USD",
+   "testid": null,
+   "inForm": false
+  }
+ ]
+}

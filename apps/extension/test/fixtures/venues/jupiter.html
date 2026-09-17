@@ -1,0 +1,53 @@
+<!-- Reconstructed from jupiter-logged-out.json (jup.ag/swap?sell=SOL&buy=WIF, 2026-09-17, no wallet). Button
+     structure, text and attributes only; class lists trimmed to a few tokens. Not the site's HTML. -->
+<div id="app-root">
+  <div class="flex min-h-screen min-w-full flex-col">
+    <header class="relative z-50 flex w-full">
+      <div class="relative flex h-[50px] w-full">
+        <div class="flex flex-1 gap-1 lg:gap-1.5">
+          <div class="flex h-full min-w-0 flex-1"><button class="group flex h-8 items-center">Search anything<kbd>/</kbd></button></div>
+          <div class="flex h-full shrink-0 items-center">
+            <button aria-label="Open settings"></button>
+            <button data-fixture="header-connect">Connect</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="flex w-full flex-1 flex-col">
+      <div class="relative flex w-full flex-col"><div class="w-full flex-1 flex-col pt-2"><div class="flex w-full flex-1"><div class="flex w-full flex-col items-center"><div class="h-10 w-40">
+        <button type="button" class="group size-full rounded-xl" data-fixture="positions-connect">Connect</button>
+      </div></div></div></div></div>
+      <div class="flex h-fit w-full flex-1"><div class="w-full p-4"><div class="space-y-3">
+        <div class="flex h-9 w-full items-center">
+          <div role="group" class="flex items-center gap-1 h-8">
+            <button type="button" aria-pressed="true" data-state="on">Market</button>
+            <button type="button" aria-pressed="false" data-state="off" role="combobox" aria-label="Limit">Limit - Take Profit</button>
+            <button type="button" aria-pressed="false" data-state="off">DCA</button>
+          </div>
+          <button type="button" aria-label="Open swap settings"></button>
+        </div>
+        <div class="space-y-4">
+          <form class="flex min-w-0 flex-col gap-0">
+            <div class="relative flex min-w-0 flex-col">
+              <div class="flex min-w-0 flex-col gap-4">
+                <div class="flex min-w-0 flex-1 items-center">
+                  <input type="text" aria-label="Sell amount" placeholder="0.0" />
+                  <div class="flex min-h-11 shrink-0 flex-col"><button type="button" aria-label="Select token">SOL</button></div>
+                </div>
+              </div>
+              <div class="relative z-10 -my-5 flex"><button type="button" aria-label="Switch sell and buy assets"></button></div>
+              <div class="flex min-w-0 flex-col gap-4">
+                <div class="flex min-h-4 min-w-0 items-center"><div class="flex items-center gap-x-2"><button type="button">Paste CA</button></div></div>
+                <div class="flex min-w-0 flex-1 items-center">
+                  <div class="flex min-h-11 shrink-0 flex-col"><button type="button" aria-label="Select token">$WIF</button></div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4"><button type="button" class="flex items-center justify-center gap-1.5 disabled:opacity-50" data-fixture="primary">Connect</button></div>
+          </form>
+        </div>
+        <div class="mb-2 flex space-x-2"><button>Show Chart</button><button>Show History</button></div>
+      </div></div></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,605 @@
+{
+ "note": "Structural snapshot of visible <button>/[role=button] elements (text, state attrs, ancestor chain, rect), logged out, no wallet. No page HTML or scripts. Captured with Playwright MCP. Filtered to site header + trade form region (+ list quick-buys): 23 of 90 visible buttons.",
+ "viewport": "1920x945 approx",
+ "capturedAt": "2026-09-17T14:54:08.199Z",
+ "url": "https://polymarket.com/event/friedrich-merz-out-as-chancellor-of-germany-before-2027/friedrich-merz-out-as-chancellor-of-germany-before-2027",
+ "title": "Friedrich Merz out as Chancellor of Germany by...? Trading Odds & Predictions 2026 | Polymarket",
+ "buttons": [
+  {
+   "tag": "button",
+   "text": "How it works",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "items-center justify-center shrink-0 cursor-pointer select-none outline-none",
+   "visible": true,
+   "rect": [
+    1276,
+    20,
+    131,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-center.gap-x-2.shrink",
+    "div .max-w-[var(--page-max-width,1350px)].w-full.pt-3.pb-1",
+    "nav aria-label=Main .flex.flex-col.inset-x-0.w-full",
+    "div .bg-pk-surface.transition-[--navbar-height].duration-200.ease-out",
+    "div .min-h-dvh.bg-pk-surface.text-pk-content-primary"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Log in",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "items-center justify-center cursor-pointer select-none outline-none focus-visible:ring-2",
+   "visible": true,
+   "rect": [
+    1415,
+    20,
+    66,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-center.gap-x-2.min-w-0",
+    "div .flex.items-center.gap-x-1.md:gap-x-2",
+    "div .flex.items-center.gap-x-1.md:gap-x-2",
+    "div .flex.items-center.gap-x-2.shrink",
+    "div .max-w-[var(--page-max-width,1350px)].w-full.pt-3.pb-1",
+    "nav aria-label=Main .flex.flex-col.inset-x-0.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Sign up",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center justify-center cursor-pointer select-none outline-none",
+   "visible": true,
+   "rect": [
+    1489,
+    20,
+    74,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-center.gap-x-2.min-w-0",
+    "div .flex.items-center.gap-x-1.md:gap-x-2",
+    "div .flex.items-center.gap-x-1.md:gap-x-2",
+    "div .flex.items-center.gap-x-2.shrink",
+    "div .max-w-[var(--page-max-width,1350px)].w-full.pt-3.pb-1",
+    "nav aria-label=Main .flex.flex-col.inset-x-0.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-state": "closed",
+    "aria-label": "Open user menu"
+   },
+   "cls": "items-center justify-center shrink-0 cursor-pointer select-none outline-none",
+   "visible": true,
+   "rect": [
+    1572,
+    20,
+    32,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-center.gap-x-2",
+    "div .flex.items-center.gap-x-1.md:gap-x-2",
+    "div .flex.items-center.gap-x-2.shrink",
+    "div .max-w-[var(--page-max-width,1350px)].w-full.pt-3.pb-1",
+    "nav aria-label=Main .flex.flex-col.inset-x-0.w-full",
+    "div .bg-pk-surface.transition-[--navbar-height].duration-200.ease-out"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "More",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-state": "closed",
+    "aria-label": "Open more navigation links"
+   },
+   "cls": "group hover:text-pk-content-tertiary my-auto hidden lg:flex gap-1.5",
+   "visible": true,
+   "rect": [
+    1712,
+    72,
+    76,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .relative.flex.items-center.h-full",
+    "div .pk-scroll-fade-x-stateful.pk-scroll-fade-x-controls.flex.overflow-x-auto",
+    "div .relative.w-full",
+    "div .max-w-[var(--page-max-width,1350px)].w-full.flex.px-4",
+    "div .min-h-0.overflow-hidden",
+    "div .grid.transition-[grid-template-rows].duration-200.ease-out"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Scroll right"
+   },
+   "cls": "items-center justify-center shrink-0 cursor-pointer select-none outline-none",
+   "visible": true,
+   "rect": [
+    1568,
+    76,
+    32,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .relative.w-full",
+    "div .max-w-[var(--page-max-width,1350px)].w-full.flex.px-4",
+    "div .min-h-0.overflow-hidden",
+    "div .grid.transition-[grid-template-rows].duration-200.ease-out",
+    "nav aria-label=Main .flex.flex-col.inset-x-0.w-full",
+    "div .bg-pk-surface.transition-[--navbar-height].duration-200.ease-out"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Buy Yes6¢",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center duration-150 justify-center whitespace-nowrap text-body-base",
+   "visible": true,
+   "rect": [
+    944,
+    325,
+    136,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.justify-end.items-center.gap-2",
+    "div .w-full.flex.flex-row.justify-between",
+    "div id=radix-_R_1b6m6ncinliv5uqa9brjabaivb_ type=button data-state=closed .w-full.flex.flex-col.transition",
+    "div data-state=closed .flex.items-center.justify-between.flex-1",
+    "div data-state=closed .[&+&]:border-t.[&+&]:border-pk-border",
+    "div .border-t.border-pk-border"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Buy No95¢",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center duration-150 justify-center whitespace-nowrap text-body-base",
+   "visible": true,
+   "rect": [
+    1088,
+    325,
+    136,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.justify-end.items-center.gap-2",
+    "div .w-full.flex.flex-row.justify-between",
+    "div id=radix-_R_1b6m6ncinliv5uqa9brjabaivb_ type=button data-state=closed .w-full.flex.flex-col.transition",
+    "div data-state=closed .flex.items-center.justify-between.flex-1",
+    "div data-state=closed .[&+&]:border-t.[&+&]:border-pk-border",
+    "div .border-t.border-pk-border"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Buy Yes14¢",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center duration-150 justify-center whitespace-nowrap text-body-base",
+   "visible": true,
+   "rect": [
+    944,
+    398,
+    136,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.justify-end.items-center.gap-2",
+    "div .w-full.flex.flex-row.justify-between",
+    "div id=radix-_R_1j6m6ncinliv5uqa9brjabaivb_ type=button data-state=closed .w-full.flex.flex-col.transition",
+    "div data-state=closed .flex.items-center.justify-between.flex-1",
+    "div data-state=closed .[&+&]:border-t.[&+&]:border-pk-border",
+    "div .border-t.border-pk-border"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Buy No87¢",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center duration-150 justify-center whitespace-nowrap text-body-base",
+   "visible": true,
+   "rect": [
+    1088,
+    398,
+    136,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.justify-end.items-center.gap-2",
+    "div .w-full.flex.flex-row.justify-between",
+    "div id=radix-_R_1j6m6ncinliv5uqa9brjabaivb_ type=button data-state=closed .w-full.flex.flex-col.transition",
+    "div data-state=closed .flex.items-center.justify-between.flex-1",
+    "div data-state=closed .[&+&]:border-t.[&+&]:border-pk-border",
+    "div .border-t.border-pk-border"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Buy Yes21¢",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center transition duration-150 justify-center whitespace-nowrap",
+   "visible": true,
+   "rect": [
+    944,
+    471,
+    136,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.justify-end.items-center.gap-2",
+    "div .w-full.flex.flex-row.justify-between",
+    "div id=radix-_R_1r6m6ncinliv5uqa9brjabaivb_ type=button data-state=closed .w-full.flex.flex-col.transition",
+    "div data-state=closed .flex.items-center.justify-between.flex-1",
+    "div data-state=closed .[&+&]:border-t.[&+&]:border-pk-border",
+    "div .border-t.border-pk-border"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Buy No80¢",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center duration-150 justify-center whitespace-nowrap text-body-base",
+   "visible": true,
+   "rect": [
+    1088,
+    471,
+    136,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.justify-end.items-center.gap-2",
+    "div .w-full.flex.flex-row.justify-between",
+    "div id=radix-_R_1r6m6ncinliv5uqa9brjabaivb_ type=button data-state=closed .w-full.flex.flex-col.transition",
+    "div data-state=closed .flex.items-center.justify-between.flex-1",
+    "div data-state=closed .[&+&]:border-t.[&+&]:border-pk-border",
+    "div .border-t.border-pk-border"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Buy",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-checked": "true",
+    "data-state": "checked",
+    "role": "radio"
+   },
+   "cls": "relative bg-transparent text-pk-content-primary font-semibold text-heading-lg cursor-pointer",
+   "visible": true,
+   "rect": [
+    1272,
+    232,
+    29,
+    20
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=radiogroup .flex.gap-3",
+    "div .flex.w-[calc(100%+32px)].px-4.-ml-4",
+    "div .flex.w-full.flex-col.gap-5",
+    "div .flex.flex-col.gap-5",
+    "div .flex.h-full.relative.flex-col",
+    "div .flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Sell",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-checked": "false",
+    "data-state": "unchecked",
+    "role": "radio"
+   },
+   "cls": "relative bg-transparent text-pk-content-primary font-semibold text-heading-lg cursor-pointer",
+   "visible": true,
+   "rect": [
+    1313,
+    232,
+    27,
+    20
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=radiogroup .flex.gap-3",
+    "div .flex.w-[calc(100%+32px)].px-4.-ml-4",
+    "div .flex.w-full.flex-col.gap-5",
+    "div .flex.flex-col.gap-5",
+    "div .flex.h-full.relative.flex-col",
+    "div .flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Market",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-state": "closed"
+   },
+   "cls": "outline-none cursor-pointer flex cursor-pointer items-center justify-end",
+   "visible": true,
+   "rect": [
+    1490,
+    232,
+    90,
+    20
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.w-[calc(100%+32px)].px-4.-ml-4",
+    "div .flex.w-full.flex-col.gap-5",
+    "div .flex.flex-col.gap-5",
+    "div .flex.h-full.relative.flex-col",
+    "div .flex.flex-col.w-full",
+    "div id=trade-widget .sticky.top-(--navbar-height).h-fit.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Yes21¢",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-checked": "true",
+    "data-state": "checked",
+    "role": "radio"
+   },
+   "cls": "trading-button",
+   "visible": true,
+   "rect": [
+    1272,
+    281,
+    148,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "span",
+    "div role=radiogroup id=outcome-buttons .flex.w-full.gap-3",
+    "div .flex.flex-col.w-full",
+    "div .flex.flex-col.w-full",
+    "div .flex.flex-col.gap-5",
+    "div .flex.h-full.relative.flex-col"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "No80¢",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-checked": "false",
+    "data-state": "unchecked",
+    "role": "radio"
+   },
+   "cls": "trading-button",
+   "visible": true,
+   "rect": [
+    1432,
+    281,
+    148,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "span",
+    "div role=radiogroup id=outcome-buttons .flex.w-full.gap-3",
+    "div .flex.flex-col.w-full",
+    "div .flex.flex-col.w-full",
+    "div .flex.flex-col.gap-5",
+    "div .flex.h-full.relative.flex-col"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "+$1",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center cursor-pointer active:scale-[97%] transition duration-150",
+   "visible": true,
+   "rect": [
+    1371,
+    427,
+    43,
+    30
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.gap-1",
+    "div .fade-enter",
+    "div .flex.flex-1.justify-end.mt-2",
+    "div .flex.flex-col.w-full.gap-2",
+    "div .size-full",
+    "div .flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "+$5",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center cursor-pointer active:scale-[97%] transition duration-150",
+   "visible": true,
+   "rect": [
+    1418,
+    427,
+    45,
+    30
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.gap-1",
+    "div .fade-enter",
+    "div .flex.flex-1.justify-end.mt-2",
+    "div .flex.flex-col.w-full.gap-2",
+    "div .size-full",
+    "div .flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "+$10",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center cursor-pointer active:scale-[97%] transition duration-150",
+   "visible": true,
+   "rect": [
+    1467,
+    427,
+    50,
+    30
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.gap-1",
+    "div .fade-enter",
+    "div .flex.flex-1.justify-end.mt-2",
+    "div .flex.flex-col.w-full.gap-2",
+    "div .size-full",
+    "div .flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "+$100",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "inline-flex items-center cursor-pointer active:scale-[97%] transition duration-150",
+   "visible": true,
+   "rect": [
+    1521,
+    427,
+    58,
+    30
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.gap-1",
+    "div .fade-enter",
+    "div .flex.flex-1.justify-end.mt-2",
+    "div .flex.flex-col.w-full.gap-2",
+    "div .size-full",
+    "div .flex.flex-col.w-full"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "TradeTrade",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "trading-button",
+   "visible": true,
+   "rect": [
+    1272,
+    473,
+    308,
+    43
+   ],
+   "inForm": false,
+   "ancestors": [
+    "span",
+    "div .flex.overflow-hidden.h-full.flex-1",
+    "div .flex.flex-col.gap-2.w-full",
+    "div .flex.flex-col.gap-4",
+    "div .w-full",
+    "div"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "By trading, you agree to the Terms of Use.",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "data-state": "closed"
+   },
+   "cls": "bg-transparent text-body-sm text-pk-content-tertiary outline-none focus:outline-none active:outline-none",
+   "visible": true,
+   "rect": [
+    1256,
+    553,
+    340,
+    16
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.w-full.mt-4",
+    "div .flex.flex-col.w-full",
+    "div id=trade-widget .sticky.top-(--navbar-height).h-fit.w-full",
+    "div",
+    "div .sticky.top-[var(--navbar-height)].flex.flex-col",
+    "div .w-[372px].not-lg:hidden"
+   ]
+  }
+ ],
+ "hiddenButtonCount": 12,
+ "inputs": [
+  {
+   "type": "text",
+   "placeholder": "Search polymarkets...",
+   "aria": "Search",
+   "testid": null,
+   "inForm": true
+  },
+  {
+   "type": "text",
+   "placeholder": "$0",
+   "aria": null,
+   "testid": null,
+   "inForm": false
+  }
+ ]
+}

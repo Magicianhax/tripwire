@@ -1,0 +1,59 @@
+<!-- Reconstructed from polymarket-market-yes.json / polymarket-market-no.json / polymarket-event.json
+     (polymarket.com/event/friedrich-merz-out-as-chancellor-of-germany-before-2027[/<market>], 2026-09-17, logged
+     out). Event-page market rows carry their own "Buy Yes"/"Buy No" buttons; the trade form on the right has a
+     Buy/Sell radiogroup, a Yes/No radiogroup (#outcome-buttons) and a .trading-button primary action whose text
+     is rendered twice for a roll animation ("TradeTrade"). Tests flip aria-checked/data-state for the No state. -->
+<nav aria-label="Main" class="flex flex-col inset-x-0 w-full">
+  <div class="flex items-center gap-x-2 shrink">
+    <button type="button">How it works</button>
+    <div class="flex items-center gap-x-2 min-w-0"><button type="button">Log in</button><button type="button">Sign up</button></div>
+    <button type="button" data-state="closed" aria-label="Open user menu"></button>
+  </div>
+</nav>
+<div class="flex w-full px-4 pt-4">
+  <div id="event-detail-container">
+    <div class="border-t border-pk-border">
+      <div data-state="closed"><div data-state="closed"><div id="radix-row-1" type="button" data-state="closed" class="w-full flex flex-col">
+        <div class="w-full flex flex-row justify-between"><span>September 30, 2026</span>
+          <div class="flex justify-end items-center gap-2"><button class="inline-flex items-center" data-fixture="row-buy-yes">Buy Yes<span>6¢</span></button><button class="inline-flex items-center">Buy No<span>95¢</span></button></div>
+        </div>
+      </div></div></div>
+      <div data-state="closed"><div data-state="closed"><div id="radix-row-3" type="button" data-state="closed" class="w-full flex flex-col">
+        <div class="w-full flex flex-row justify-between"><span>2026</span>
+          <div class="flex justify-end items-center gap-2"><button class="inline-flex items-center">Buy Yes<span>21¢</span></button><button class="inline-flex items-center">Buy No<span>80¢</span></button></div>
+        </div>
+      </div></div></div>
+    </div>
+    <div class="mt-8 w-full mb-6"><div role="tablist" aria-label="Market information"><h2 class="contents"><button type="button">Rules</button></h2></div></div>
+  </div>
+  <div class="flex flex-col w-full">
+    <div class="flex h-full relative flex-col">
+      <div class="flex flex-col gap-5" data-fixture="trade-form">
+        <div class="flex w-full flex-col gap-5">
+          <div class="flex w-[calc(100%+32px)] px-4 -ml-4">
+            <div role="radiogroup" class="flex gap-3">
+              <button type="button" role="radio" aria-checked="true" data-state="checked">Buy</button>
+              <button type="button" role="radio" aria-checked="false" data-state="unchecked">Sell</button>
+            </div>
+            <button type="button" data-state="closed">Market</button>
+          </div>
+        </div>
+        <div class="flex flex-col w-full"><div class="flex flex-col w-full">
+          <div role="radiogroup" id="outcome-buttons" class="flex w-full gap-3">
+            <span><button type="button" role="radio" aria-checked="true" data-state="checked" class="trading-button" data-fixture="yes"><span><span>Yes</span></span><span><span>21¢</span></span></button></span>
+            <span><button type="button" role="radio" aria-checked="false" data-state="unchecked" class="trading-button" data-fixture="no"><span><span>No</span></span><span><span>80¢</span></span></button></span>
+          </div>
+        </div></div>
+        <div class="w-full"><div><div class="w-full">
+          <div class="size-full"><div class="flex flex-col w-full gap-2"><input type="text" placeholder="$0" />
+            <div class="flex flex-1 justify-end mt-2"><div class="fade-enter"><div class="flex gap-1"><button class="inline-flex">+$1</button><button class="inline-flex">+$5</button><button class="inline-flex">+$10</button><button class="inline-flex">+$100</button></div></div></div>
+          </div></div>
+          <div class="flex flex-col gap-4"><div class="flex flex-col gap-2 w-full"><div class="flex overflow-hidden h-full flex-1"><span>
+            <button type="button" class="trading-button" data-fixture="primary"><span class="trading-button-text"><span class="relative inline-grid overflow-hidden"><span class="inline-flex">Trade</span><span class="inline-flex">Trade</span></span></span></button>
+          </span></div></div></div>
+        </div></div></div>
+        <div class="flex flex-col w-full mt-4"><span data-state="closed">By trading, you agree to the Terms of Use.</span></div>
+      </div>
+    </div>
+  </div>
+</div>

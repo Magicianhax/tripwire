@@ -1,0 +1,887 @@
+{
+ "note": "Structural snapshot of visible <button>/[role=button] elements (text, state attrs, ancestor chain, rect), logged out, no wallet. No page HTML or scripts. Captured with Playwright MCP.",
+ "viewport": "1920x945 approx",
+ "capturedAt": "2026-09-17T14:50:52.698Z",
+ "url": "https://app.uniswap.org/swap?chain=base&outputCurrency=0x4ed4e862860bed51a9570b96d89af5e1b0efefed",
+ "title": "Buy, sell & trade Ethereum and other top tokens on Uniswap",
+ "buttons": [
+  {
+   "tag": "div",
+   "text": "Uniswap",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "nav-company-menu"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    12,
+    16,
+    125,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-dNFkOE.cUaWO"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Trade",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "Trade-tab"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    149,
+    16,
+    60,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-dNFkOE.cUaWO"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Explore",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "Explore-tab"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    221,
+    16,
+    76,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-dNFkOE.cUaWO"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Pool",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "Pool-tab"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    452,
+    16,
+    51,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-dNFkOE.cUaWO"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Portfolio",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "Portfolio-tab"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    515,
+    16,
+    83,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-dNFkOE.cUaWO"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Search Uniswap/",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "nav-search-input"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    800,
+    16,
+    320,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.basis-auto.box-border",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-dNFkOE.cUaWO"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    1758,
+    16,
+    40,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-dNFkOE.cUaWO"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "aria-label": "Navigation button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    1758,
+    16,
+    40,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=button id=base-ui-_r_p_",
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Get started",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    1810,
+    19,
+    98,
+    34
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div id=AppHeader .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-dNFkOE.cUaWO"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Get started",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "navbar-connect-wallet"
+   },
+   "cls": "group/sbtn relative box-border flex min-h-0 min-w-0",
+   "visible": true,
+   "rect": [
+    1810,
+    19,
+    98,
+    34
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div",
+    "div role=button id=base-ui-_r_r_",
+    "div .flex.basis-auto.box-border.min-h-[0px]",
+    "div .flex-col.basis-auto.box-border.min-h-[0px]",
+    "nav .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    20,
+    905,
+    20,
+    20
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-fszimp.hzhlES",
+    "div .sc-dNFkOE.cUaWO",
+    "div id=root"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    20,
+    905,
+    20,
+    20
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=button id=base-ui-_r_2k_",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .sc-fszimp.hzhlES",
+    "div .sc-dNFkOE.cUaWO",
+    "div id=root"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "aria-label": "Copy"
+   },
+   "cls": "[container-name:true] flex basis-auto box-border min-h-[0px] min-w-[0px]",
+   "visible": true,
+   "rect": [
+    1129,
+    194,
+    16,
+    16
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.basis-auto.box-border",
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    1155,
+    188,
+    28,
+    28
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "1H",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    734,
+    416,
+    30,
+    18
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "1D",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    764,
+    416,
+    29,
+    18
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "1W",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    793,
+    416,
+    32,
+    18
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "1M",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    825,
+    416,
+    31,
+    18
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "1Y",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    857,
+    416,
+    28,
+    18
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col basis-auto box-border relative",
+   "visible": true,
+   "rect": [
+    1132,
+    140,
+    32,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "",
+   "visible": true,
+   "rect": [
+    1172,
+    140,
+    28,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.basis-auto.box-border.relative"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "swap-settings"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    1172,
+    140,
+    28,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=button id=base-ui-_r_1j_",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Sell0Select token$0",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    721,
+    180,
+    478,
+    130
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "0",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    737,
+    228,
+    22,
+    36
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div role=button .[container-name:true].flex.flex-col.items-stretch",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Select token",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "choose-input-token"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    1040,
+    227,
+    143,
+    38
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div role=button .[container-name:true].flex.flex-col.items-stretch",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "$0",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:var(--c-cn)] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    737,
+    276,
+    17,
+    18
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div role=button .[container-name:true].flex.flex-col.items-stretch",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "switch-currencies-button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    936,
+    291,
+    48,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.basis-auto.box-border",
+    "div .flex.flex-col.basis-auto.box-border",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Buy0DEGEN$0",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    721,
+    316,
+    478,
+    130
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "DEGEN",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "choose-output-token"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    1051,
+    363,
+    132,
+    38
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div role=button .[container-name:true].flex.flex-col.items-stretch",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "$0",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button"
+   },
+   "cls": "[container-name:var(--c-cn)] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    737,
+    412,
+    17,
+    18
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.basis-auto.box-border.relative",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div role=button .[container-name:true].flex.flex-col.items-stretch",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Get started",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "review-swap"
+   },
+   "cls": "group/sbtn relative box-border flex min-h-0 min-w-0",
+   "visible": true,
+   "rect": [
+    720,
+    451,
+    480,
+    55
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.flex-col.basis-auto.box-border",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div data-state=closed .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.items-stretch.basis-auto.box-border"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Create account",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "create-account"
+   },
+   "cls": "group/sbtn relative box-border flex min-h-0 min-w-0",
+   "visible": true,
+   "rect": [
+    1556,
+    775,
+    116,
+    47
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.items-stretch.basis-auto.box-border",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div data-testid=wallet-modal .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.w-full.grow.flex-col",
+    "div .flex.flex-col.items-stretch.basis-auto"
+   ]
+  },
+  {
+   "tag": "div",
+   "text": "Log in",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "role": "button",
+    "data-testid": "log-in"
+   },
+   "cls": "[container-name:true] flex flex-col items-stretch basis-auto box-border",
+   "visible": true,
+   "rect": [
+    1580,
+    834,
+    67,
+    20
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div data-testid=wallet-modal .flex.flex-col.items-stretch.basis-auto",
+    "div .flex.w-full.grow.flex-col",
+    "div .flex.flex-col.items-stretch.basis-auto",
+    "div .items-stretch.basis-auto.box-border.relative"
+   ]
+  }
+ ],
+ "hiddenButtonCount": 0,
+ "inputs": [
+  {
+   "type": "text",
+   "placeholder": "0",
+   "aria": null,
+   "testid": "amount-input-out",
+   "inForm": false
+  }
+ ]
+}

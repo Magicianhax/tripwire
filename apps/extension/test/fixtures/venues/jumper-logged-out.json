@@ -1,0 +1,491 @@
+{
+ "note": "Structural snapshot of visible <button>/[role=button] elements (text, state attrs, ancestor chain, rect), logged out, no wallet. No page HTML or scripts. Captured with Playwright MCP.",
+ "viewport": "1920x945 approx",
+ "capturedAt": "2026-09-17T14:51:30.966Z",
+ "url": "https://jumper.xyz/?toChain=8453&toToken=0x4ed4e862860bed51a9570b96d89af5e1b0efefed",
+ "title": "Jumper | Smart App for the Universal Market",
+ "buttons": [
+  {
+   "tag": "button",
+   "text": "Jumper.jumper-logo { height: 32px; }",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Products"
+   },
+   "cls": "mui-220eag",
+   "visible": true,
+   "rect": [
+    24,
+    24,
+    174,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .mui-gvoll6",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation4.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Trade",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "navbar-exchange-button"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeLarge MuiButton-colorPrimary mui-1d73lcl",
+   "visible": true,
+   "rect": [
+    230,
+    20,
+    101,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "a .MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways",
+    "div .mui-1ic85w9",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation4.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Earn",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "navbar-earn-button"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeLarge MuiButton-colorPrimary mui-1d73lcl",
+   "visible": true,
+   "rect": [
+    331,
+    20,
+    92,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "a .MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways",
+    "div .mui-1ic85w9",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation4.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Portfolio",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "navbar-portfolio-button"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeLarge MuiButton-colorPrimary mui-1d73lcl",
+   "visible": true,
+   "rect": [
+    423,
+    20,
+    123,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "a .MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways",
+    "div .mui-1ic85w9",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation4.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Missions",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "navbar-missions-button"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeLarge MuiButton-colorPrimary mui-1d73lcl",
+   "visible": true,
+   "rect": [
+    545,
+    20,
+    126,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "a .MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways",
+    "div .mui-1ic85w9",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation4.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Connect",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeLarge MuiButton-colorPrimary mui-n5hmx8",
+   "visible": true,
+   "rect": [
+    1750,
+    16,
+    98,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-1e18zq2",
+    "div .mui-fv06a6",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation4.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Main Menu"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeLarge MuiButton-colorPrimary mui-1bl9vuj",
+   "visible": true,
+   "rect": [
+    1856,
+    20,
+    40,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .mui-fv06a6",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation4.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Get started",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "get-started-button",
+    "aria-label": "Open welcome screen"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeLarge MuiButton-colorPrimary mui-1jjlmdo",
+   "visible": true,
+   "rect": [
+    837,
+    779,
+    247,
+    56
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-r5i760",
+    "div .MuiBox-root.mui-1nfxcxv",
+    "div data-testid=welcome-screen .welcome-screen-container.MuiBox-root.mui-0",
+    "div .MuiBox-root.mui-1827f1e",
+    "main"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Swap & Bridge",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-selected": "true",
+    "role": "tab",
+    "data-testid": "widget-tab-default"
+   },
+   "cls": "MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary Mui-selected mui-1ap175w",
+   "visible": true,
+   "rect": [
+    788,
+    271,
+    123,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=tablist aria-label=tabs .MuiTabs-list.mui-hwczhd",
+    "div .MuiTabs-scroller.MuiTabs-hideScrollbar.MuiTabs-scrollableX.mui-b8szdl",
+    "div .MuiTabs-root.mui-k48gs4",
+    "div",
+    "div .MuiBox-root.mui-12igd9x",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Private",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-selected": "false",
+    "role": "tab",
+    "data-testid": "widget-tab-private"
+   },
+   "cls": "MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary mui-1ap175w",
+   "visible": true,
+   "rect": [
+    911,
+    271,
+    72,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=tablist aria-label=tabs .MuiTabs-list.mui-hwczhd",
+    "div .MuiTabs-scroller.MuiTabs-hideScrollbar.MuiTabs-scrollableX.mui-b8szdl",
+    "div .MuiTabs-root.mui-k48gs4",
+    "div",
+    "div .MuiBox-root.mui-12igd9x",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Gas",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-selected": "false",
+    "role": "tab",
+    "data-testid": "widget-tab-refuel"
+   },
+   "cls": "MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary mui-1ap175w",
+   "visible": true,
+   "rect": [
+    983,
+    271,
+    50,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div role=tablist aria-label=tabs .MuiTabs-list.mui-hwczhd",
+    "div .MuiTabs-scroller.MuiTabs-hideScrollbar.MuiTabs-scrollableX.mui-b8szdl",
+    "div .MuiTabs-root.mui-k48gs4",
+    "div",
+    "div .MuiBox-root.mui-12igd9x",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiAppBar-root"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Settings"
+   },
+   "cls": "MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium mui-1o8hsht",
+   "visible": true,
+   "rect": [
+    1126,
+    271,
+    40,
+    40
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-9tmrze",
+    "header .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiAppBar-root",
+    "div id=widget-header-_r_p_ .MuiBox-root.mui-p5mele",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.MuiContainer-disableGutters.mui-1g8bthb",
+    "div id=widget-scrollable-container-_r_p_ .MuiScopedCssBaseline-root.mui-45kr5k",
+    "div id=widget-relative-container-_r_p_ .MuiBox-root.mui-7mn2pa"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Select",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "widget-from-token-button"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-disableElevation",
+   "visible": true,
+   "rect": [
+    1041,
+    371,
+    99,
+    36
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-whtn2p",
+    "div .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1",
+    "div .MuiBox-root.mui-15zxl60",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.mui-6dktuw",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.MuiContainer-disableGutters.mui-1g8bthb",
+    "div id=widget-scrollable-container-_r_p_ .MuiScopedCssBaseline-root.mui-45kr5k"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "$0.00",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "MuiButtonBase-root mui-2hr7e5",
+   "visible": true,
+   "rect": [
+    798,
+    419,
+    44,
+    16
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-18p54d3",
+    "div .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1",
+    "div .MuiBox-root.mui-15zxl60",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.mui-6dktuw",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.MuiContainer-disableGutters.mui-1g8bthb",
+    "div id=widget-scrollable-container-_r_p_ .MuiScopedCssBaseline-root.mui-45kr5k"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": null,
+   "disabled": false,
+   "attrs": {
+    "data-testid": "widget-swap-tokens-button",
+    "aria-label": "Swap"
+   },
+   "cls": "MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root mui-s6iosd",
+   "visible": true,
+   "rect": [
+    956,
+    439,
+    32,
+    32
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-1v8nqtx",
+    "div .MuiBox-root.mui-15zxl60",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.mui-6dktuw",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.MuiContainer-disableGutters.mui-1g8bthb",
+    "div id=widget-scrollable-container-_r_p_ .MuiScopedCssBaseline-root.mui-45kr5k",
+    "div id=widget-relative-container-_r_p_ .MuiBox-root.mui-7mn2pa"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "DDEGEN",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "widget-to-token-button"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-disableElevation",
+   "visible": true,
+   "rect": [
+    1042,
+    503,
+    98,
+    36
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-whtn2p",
+    "div .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1",
+    "div .MuiBox-root.mui-15zxl60",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.mui-6dktuw",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.MuiContainer-disableGutters.mui-1g8bthb",
+    "div id=widget-scrollable-container-_r_p_ .MuiScopedCssBaseline-root.mui-45kr5k"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "$0.00",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "MuiButtonBase-root mui-2hr7e5",
+   "visible": true,
+   "rect": [
+    798,
+    551,
+    44,
+    16
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-18p54d3",
+    "div .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1",
+    "div .MuiBox-root.mui-15zxl60",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.mui-6dktuw",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.MuiContainer-disableGutters.mui-1g8bthb",
+    "div id=widget-scrollable-container-_r_p_ .MuiScopedCssBaseline-root.mui-45kr5k"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "Connect wallet",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "data-testid": "widget-transaction-button"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-disableElevation",
+   "visible": true,
+   "rect": [
+    788,
+    599,
+    308,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiBox-root.mui-xqpro1",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.mui-6dktuw",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.MuiContainer-disableGutters.mui-1g8bthb",
+    "div id=widget-scrollable-container-_r_p_ .MuiScopedCssBaseline-root.mui-45kr5k",
+    "div id=widget-relative-container-_r_p_ .MuiBox-root.mui-7mn2pa",
+    "div id=widget-app-expanded-container-_r_p_ .MuiBox-root.mui-a04zos"
+   ]
+  },
+  {
+   "tag": "button",
+   "text": "",
+   "type": "button",
+   "disabled": false,
+   "attrs": {
+    "aria-label": "Send to a different wallet"
+   },
+   "cls": "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-disableElevation",
+   "visible": true,
+   "rect": [
+    1108,
+    599,
+    48,
+    48
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .MuiCollapse-wrapperInner.MuiCollapse-horizontal.mui-10uzxfh",
+    "div .MuiCollapse-wrapper.MuiCollapse-horizontal.mui-x6qbe8",
+    "div .MuiCollapse-root.MuiCollapse-horizontal.MuiCollapse-entered.mui-1akz55z",
+    "div .MuiBox-root.mui-xqpro1",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.mui-6dktuw",
+    "div .MuiContainer-root.MuiContainer-maxWidthLg.MuiContainer-disableGutters.mui-1g8bthb"
+   ]
+  }
+ ],
+ "hiddenButtonCount": 2,
+ "inputs": [
+  {
+   "type": "text",
+   "placeholder": "0",
+   "aria": null,
+   "testid": null,
+   "inForm": false
+  }
+ ]
+}

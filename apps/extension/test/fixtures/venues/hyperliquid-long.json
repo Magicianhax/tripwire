@@ -1,0 +1,287 @@
+{
+ "note": "Structural snapshot of visible <button>/[role=button] elements (text, state attrs, ancestor chain, rect), logged out, no wallet. No page HTML or scripts. Captured with Playwright MCP.",
+ "viewport": "1920x945 approx",
+ "capturedAt": "2026-09-17T14:52:10.600Z",
+ "url": "https://app.hyperliquid.xyz/trade/ETH",
+ "title": "2,462.4 | ETH | Hyperliquid",
+ "buttons": [
+  {
+   "tag": "button",
+   "text": "Connect",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-ftTHYK dfFRVV",
+   "visible": true,
+   "rect": [
+    1746,
+    12,
+    82,
+    33
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div",
+    "div",
+    "div .sc-iBYQkv.bCwfQS",
+    "div",
+    "div .sc-bjfHbI.jFothj",
+    "div id=root"
+   ],
+   "bg": "rgb(80, 210, 193)",
+   "cursor": "pointer"
+  },
+  {
+   "tag": "button",
+   "text": "Cross",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-ftTHYK ihUCJn",
+   "visible": true,
+   "rect": [
+    1571,
+    71,
+    105,
+    33
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .sc-bjfHbI.jFothj",
+    "div .sc-bTTELM.cvPUuJ",
+    "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+    "div",
+    "div",
+    "div .react-grid-item.draggable.cssTransforms.react-resizable-hide"
+   ],
+   "bg": "rgb(39, 48, 53)",
+   "cursor": "pointer"
+  },
+  {
+   "tag": "button",
+   "text": "20x",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-ftTHYK ihUCJn",
+   "visible": true,
+   "rect": [
+    1686,
+    71,
+    105,
+    33
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .sc-bjfHbI.jFothj",
+    "div .sc-bTTELM.cvPUuJ",
+    "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+    "div",
+    "div",
+    "div .react-grid-item.draggable.cssTransforms.react-resizable-hide"
+   ],
+   "bg": "rgb(39, 48, 53)",
+   "cursor": "pointer"
+  },
+  {
+   "tag": "button",
+   "text": "Unified",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-ftTHYK ihUCJn",
+   "visible": true,
+   "rect": [
+    1802,
+    71,
+    105,
+    33
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .sc-bjfHbI.jFothj",
+    "div .sc-bTTELM.cvPUuJ",
+    "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+    "div",
+    "div",
+    "div .react-grid-item.draggable.cssTransforms.react-resizable-hide"
+   ],
+   "bg": "rgb(39, 48, 53)",
+   "cursor": "pointer"
+  },
+  {
+   "tag": "button",
+   "text": "Connect",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-ftTHYK hIwQDy",
+   "visible": true,
+   "rect": [
+    1571,
+    547,
+    336,
+    33
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div",
+    "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+    "div",
+    "div",
+    "div .react-grid-item.draggable.cssTransforms.react-resizable-hide",
+    "div .react-grid-layout.layout"
+   ],
+   "bg": "rgb(80, 210, 193)",
+   "cursor": "pointer"
+  },
+  {
+   "tag": "button",
+   "text": "Deposit",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-ftTHYK hIwQDy disabled",
+   "visible": true,
+   "rect": [
+    1571,
+    744,
+    164,
+    33
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .sc-bjfHbI.jFothj",
+    "div",
+    "div .sc-bjfHbI.jFothj",
+    "div",
+    "div",
+    "div"
+   ],
+   "bg": "rgb(23, 69, 63)",
+   "cursor": "default"
+  },
+  {
+   "tag": "button",
+   "text": "Withdraw",
+   "type": "button",
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-ftTHYK bntFwW disabled",
+   "visible": true,
+   "rect": [
+    1743,
+    744,
+    164,
+    33
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .sc-bjfHbI.jFothj",
+    "div",
+    "div .sc-bjfHbI.jFothj",
+    "div",
+    "div",
+    "div"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "cursor": "default"
+  }
+ ],
+ "hiddenButtonCount": 0,
+ "nonButtonSideLike": [
+  {
+   "tag": "div",
+   "text": "Connect",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "",
+   "visible": true,
+   "rect": [
+    1333,
+    12,
+    577,
+    33
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div",
+    "div .sc-iBYQkv.bCwfQS",
+    "div",
+    "div .sc-bjfHbI.jFothj",
+    "div id=root"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "cursor": "auto"
+  },
+  {
+   "tag": "div",
+   "text": "Buy / Long",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-UpCWa iEmiSs left",
+   "visible": true,
+   "rect": [
+    1575,
+    165,
+    164,
+    29
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .sc-fXqpFg.dwViCB",
+    "div",
+    "div .sc-bTTELM.cvPUuJ",
+    "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+    "div",
+    "div"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "cursor": "pointer"
+  },
+  {
+   "tag": "div",
+   "text": "Sell / Short",
+   "type": null,
+   "disabled": false,
+   "attrs": {},
+   "cls": "sc-UpCWa iEmiSs",
+   "visible": true,
+   "rect": [
+    1739,
+    165,
+    164,
+    29
+   ],
+   "inForm": false,
+   "ancestors": [
+    "div .sc-fXqpFg.dwViCB",
+    "div",
+    "div .sc-bTTELM.cvPUuJ",
+    "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+    "div",
+    "div"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "cursor": "pointer"
+  }
+ ],
+ "inputs": [
+  {
+   "type": "text",
+   "placeholder": "",
+   "aria": null,
+   "testid": null,
+   "inForm": false
+  },
+  {
+   "type": "text",
+   "placeholder": "",
+   "aria": null,
+   "testid": null,
+   "inForm": false
+  }
+ ]
+}
