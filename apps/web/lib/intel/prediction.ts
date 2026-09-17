@@ -112,7 +112,7 @@ export async function buildPredictionIntel(
     };
   }
   const marketId = market.id;
-  const headline = t.outcome ? null : "Pick YES or NO";
+  const headline = t.outcome ? null : "Pick Yes or No";
   // Without a picked outcome the signal can't be computed: don't spend credits on the chip.
   if (!t.outcome && mode === "chip") {
     return { signals: predictionSignals({}), panel: { ...marketPanel(market), holders: null, trades: null, errors }, headline };

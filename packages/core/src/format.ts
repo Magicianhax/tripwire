@@ -1,4 +1,4 @@
-import type { SignalId } from "./types";
+import type { SignalId, Verdict } from "./types";
 
 export type RuleOp = ">" | "<" | ">=" | "<=";
 
@@ -51,4 +51,19 @@ export function formatSignalValue(signalId: SignalId, value: number | null | und
  * The finding itself (the signal's label) is the primary sentence. */
 export function ruleClause(hit: { signalId: SignalId; op: RuleOp; threshold: number }): string {
   return `rule: ${hit.op} ${formatSignalValue(hit.signalId, hit.threshold)}`;
+}
+
+/** The word shown for a verdict. DESIGN.md allows caps only for the two danger display words;
+ * the quiet states are sentence case. */
+export function verdictLabel(verdict: Verdict): string {
+  switch (verdict) {
+    case "TRIPWIRE":
+      return "TRIPWIRE";
+    case "CAUTION":
+      return "CAUTION";
+    case "CLEAR":
+      return "Clear";
+    case "UNCHECKED":
+      return "Unchecked";
+  }
 }

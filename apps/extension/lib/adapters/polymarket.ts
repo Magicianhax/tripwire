@@ -28,7 +28,7 @@ function tradeScope(anchor: HTMLElement): Element | null {
  * The outcome being bought, read ONLY from controls scoped to the trade form that owns the
  * trade button: a selected Yes/No toggle there, else the button's own text ("Buy Yes"). On an
  * event page other markets' Yes/No buttons are ignored. Not found -> undefined, which the
- * backend reports as UNCHECKED ("Pick YES or NO") -- never a guess.
+ * backend reports as UNCHECKED ("Pick Yes or No") -- never a guess.
  */
 function detectOutcome(doc: Document): "yes" | "no" | undefined {
   const anchor = findButton(doc, ANCHOR_RE);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatSignalValue, ruleClause, usd } from "../src/format";
+import { formatSignalValue, ruleClause, usd, verdictLabel } from "../src/format";
 
 describe("usd", () => {
   it("keeps the zeros of whole hundreds (150K is not 15K)", () => {
@@ -46,5 +46,11 @@ describe("ruleClause", () => {
     expect(ruleClause({ signalId: "exit_pressure", op: "<", threshold: -100_000 })).toBe("rule: < −$100K");
     expect(ruleClause({ signalId: "risk_high_count", op: ">=", threshold: 2 })).toBe("rule: >= 2");
     expect(ruleClause({ signalId: "inside_liq_band", op: ">", threshold: 1_000_000 })).toBe("rule: > $1M");
+  });
+});
+
+describe("verdictLabel", () => {
+  it("keeps caps only for the danger words", () => {
+    expect(["TRIPWIRE", "CAUTION", "CLEAR", "UNCHECKED"].map((v) => verdictLabel(v as "CLEAR"))).toEqual(["TRIPWIRE", "CAUTION", "Clear", "Unchecked"]);
   });
 });

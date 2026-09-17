@@ -57,7 +57,7 @@ export function predictionSignals(input: PredictionSignalInput): Signal[] {
     const opp = outcome === "yes" ? split.no : split.yes;
     value = all > 0 ? (opp / all) * 100 : null;
   }
-  const other = outcome === "yes" ? "NO" : "YES";
+  const other = outcome === "yes" ? "No" : "Yes";
   return [
     {
       id: "smart_side_disagrees",
@@ -68,7 +68,7 @@ export function predictionSignals(input: PredictionSignalInput): Signal[] {
         value === null
           ? outcome
             ? "No proven winners among top holders"
-            : "Pick YES or NO to compare with proven winners"
+            : "Pick Yes or No to compare with proven winners"
           : `${pct(value)} of proven-winner money is on ${other}`,
       evidence:
         value === null

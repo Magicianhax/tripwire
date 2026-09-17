@@ -65,10 +65,10 @@ describe("Polymarket market resolution", () => {
     expect(fn.mock.calls.some(([u]) => String(u).includes("api.nansen.ai"))).toBe(false);
   });
 
-  it("no outcome picked -> 'Pick YES or NO' headline", async () => {
+  it("no outcome picked -> 'Pick Yes or No' headline", async () => {
     stub({ markets: [yesNo("1")] });
     const r = await buildPredictionIntel({ kind: "prediction", slug: "m-1" }, "chip");
-    expect(r.headline).toBe("Pick YES or NO");
+    expect(r.headline).toBe("Pick Yes or No");
   });
 });
 

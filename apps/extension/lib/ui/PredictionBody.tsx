@@ -24,8 +24,8 @@ export function PredictionBody({ panel }: { panel: PredictionPanel }) {
               <i className="tw-longshort-short" style={{ width: `${noPct}%` }} />
             </div>
             <div className="tw-longshort-legend tw-mono">
-              <span>YES {yesPct.toFixed(0)}%</span>
-              <span>NO {noPct.toFixed(0)}%</span>
+              <span>Yes {yesPct.toFixed(0)}%</span>
+              <span>No {noPct.toFixed(0)}%</span>
             </div>
           </div>
         </section>

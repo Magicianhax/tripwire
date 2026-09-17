@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { HitDto, PerpPanel, PostIntelResponse, SpotPanel } from "../lib/api-types";
 import { BlockScreen, phraseMatches } from "../lib/ui/BlockScreen";
 import { Chip } from "../lib/ui/Chip";
+import { Dock } from "../lib/ui/Dock";
 import { deepActiveElement } from "../lib/ui/focus";
 import { HitList } from "../lib/ui/panel-parts";
 import { Panel } from "../lib/ui/Panel";
@@ -322,8 +323,8 @@ describe("Chip", () => {
     const button = container.querySelector("button") as HTMLButtonElement;
 
     expect(button.getAttribute("aria-expanded")).toBe("false");
-    expect(container.textContent).toContain("UNCHECKED");
-    expect(container.textContent).not.toContain("CLEAR");
+    expect(container.textContent).toContain("Unchecked");
+    expect(container.textContent).not.toMatch(/clear/i);
 
     root.unmount();
   });
@@ -529,6 +530,56 @@ describe("HitList findings", () => {
     );
     const values = [...container.querySelectorAll(".tw-hit-finding")].map((b) => b.textContent?.trim());
     expect(values).toEqual(["fresh_buy_share 82%", "risk_high_count 2", "exit_pressure −$150K", "inside_liq_band $1.5M"]);
+    root.unmount();
+  });
+});
+
+describe("Dock collapsed chip", () => {
+  it("reflects the verdict with the chip key/value anatomy", () => {
+    const { container, root } = mountNode(
+      <Dock collapsed verdict="TRIPWIRE" headline="Smart money net −$412K" onToggleCollapsed={() => {}}>
+        {null}
+      </Dock>,
+    );
+    const chip = container.querySelector(".tw-dock-chip") as HTMLButtonElement;
+    expect(chip.tagName).toBe("BUTTON");
+    expect(chip.dataset.verdict).toBe("TRIPWIRE");
+    expect(chip.querySelector(".tw-chip-key")?.textContent).toBe("TRIPWIRE");
+    expect(chip.querySelector(".tw-chip-value")?.textContent).toBe("Smart money net −$412K");
+    root.unmount();
+  });
+
+  it("uses sentence case for quiet verdicts", () => {
+    const { container, root } = mountNode(
+      <Dock collapsed verdict="UNCHECKED" headline="Pick a market" onToggleCollapsed={() => {}}>
+        {null}
+      </Dock>,
+    );
+    expect(container.querySelector(".tw-chip-key")?.textContent).toBe("Unchecked");
+    root.unmount();
+  });
+
+  it("renders Checking… as a non-interactive status, not a button", () => {
+    const { container, root } = mountNode(
+      <Dock collapsed verdict="LOADING" onToggleCollapsed={() => {}}>
+        {null}
+      </Dock>,
+    );
+    const chip = container.querySelector(".tw-dock-chip") as HTMLElement;
+    expect(chip.tagName).toBe("DIV");
+    expect(chip.getAttribute("role")).toBe("status");
+    expect(container.querySelector("button")).toBeNull();
+    expect(chip.textContent).toContain("Checking…");
+    root.unmount();
+  });
+
+  it("marks the expanded frame with the verdict", () => {
+    const { container, root } = mountNode(
+      <Dock collapsed={false} verdict="CAUTION" onToggleCollapsed={() => {}}>
+        <p>panel</p>
+      </Dock>,
+    );
+    expect((container.querySelector(".tw-dock") as HTMLElement).dataset.verdict).toBe("CAUTION");
     root.unmount();
   });
 });

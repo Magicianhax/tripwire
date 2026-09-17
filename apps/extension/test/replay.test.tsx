@@ -45,19 +45,19 @@ const data: PostIntelResponse = {
   rulesPreset: "balanced",
 };
 
-describe("REPLAY watermark", () => {
+describe("Replay watermark", () => {
   const cases: [string, (replay: boolean) => ReactNode][] = [
     ["Chip", (replay) => <Chip verdict="CLEAR" symbol="WIF" headline="ok" onClick={() => {}} expanded={false} replay={replay} />],
     ["Strip", (replay) => <Strip verdict="CLEAR" text="ok" replay={replay} />],
     ["BlockScreen", (replay) => <BlockScreen hits={[]} phrase="X" onEvidence={() => {}} onOverride={() => {}} autoFocus={false} replay={replay} />],
-    ["Dock (collapsed)", (replay) => <Dock collapsed onToggleCollapsed={() => {}} collapsedLabel="CLEAR" replay={replay}>{null}</Dock>],
-    ["Dock (expanded)", (replay) => <Dock collapsed={false} onToggleCollapsed={() => {}} collapsedLabel="" replay={replay}>{null}</Dock>],
+    ["Dock (collapsed)", (replay) => <Dock collapsed verdict="CLEAR" headline="No flags" onToggleCollapsed={() => {}} replay={replay}>{null}</Dock>],
+    ["Dock (expanded)", (replay) => <Dock collapsed={false} onToggleCollapsed={() => {}} replay={replay}>{null}</Dock>],
     ["Panel", (replay) => <Panel data={data} title="$WIF" onClose={() => {}} replay={replay} />],
   ];
 
   for (const [name, render] of cases) {
-    it(`${name} shows REPLAY only in replay mode`, () => {
-      expect(badgeText(render(true))).toBe("REPLAY");
+    it(`${name} shows Replay only in replay mode`, () => {
+      expect(badgeText(render(true))).toBe("Replay");
       expect(badgeText(render(false))).toBeNull();
     });
   }

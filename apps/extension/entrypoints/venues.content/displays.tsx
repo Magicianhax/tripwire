@@ -44,12 +44,12 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
   const result = await guard(target, adapter.id, "panel");
   if (!stillWanted()) return; // closed, or the page moved on, while this was in flight
   const node = result.ok ? (
-    <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} collapsedLabel="" replay={rc.replay}>
+    <Dock collapsed={false} verdict={result.data.verdict} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} replay={rc.replay}>
       <Panel data={result.data} title={targetTitle(target)} onClose={() => void toggleEvidence(rc, adapter, target)} />
     </Dock>
   ) : (
-    <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} collapsedLabel="" replay={rc.replay}>
-      <p className="tw-dock-error">{errorHeadline(result.status, result.error)}</p>
+    <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} replay={rc.replay}>
+      <p className="tw-dock-error" role="status">{errorHeadline(result.status, result.error)}</p>
     </Dock>
   );
   const mount = await mountReact(rc.ctx, { position: "inline" }, node);
@@ -76,7 +76,7 @@ export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key
     : await mountReact(
         rc.ctx,
         { position: "inline" },
-        <Dock collapsed onToggleCollapsed={() => {}} collapsedLabel="Checking…" replay={rc.replay}>
+        <Dock collapsed verdict="LOADING" onToggleCollapsed={() => {}} replay={rc.replay}>
           {null}
         </Dock>,
       );
@@ -97,7 +97,7 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
 
   function node(): ReactNode {
     return (
-      <Dock collapsed={collapsed} onToggleCollapsed={() => void toggle()} collapsedLabel={`${verdict} · ${headline}`} replay={rc.replay}>
+      <Dock collapsed={collapsed} verdict={verdict} headline={headline} onToggleCollapsed={() => void toggle()} replay={rc.replay}>
         {panelData ? (
           <Panel
             data={panelData}
@@ -108,9 +108,13 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
             }}
           />
         ) : panelError ? (
-          <p className="tw-dock-error">{panelError}</p>
+          <p className="tw-dock-error" role="status">
+            {panelError}
+          </p>
         ) : (
-          <p className="tw-dock-loading">Loading…</p>
+          <p className="tw-dock-loading" role="status">
+            Loading evidence…
+          </p>
         )}
       </Dock>
     );

@@ -86,7 +86,7 @@ presets ship in `packages/core/src/rules/presets.ts`:
 which outranks `UNCHECKED` (a rule's signal was unavailable, or no rule applies to this
 target kind), which outranks `CLEAR` (every applicable rule ran and none fired). A target
 Tripwire couldn't fully check is never reported as `CLEAR`. An `UNCHECKED` result carries a short
-reason when there is one ("Nansen credit cap reached", "Pick a market", "Pick YES or NO"), shown
+reason when there is one ("Nansen credit cap reached", "Pick a market", "Pick Yes or No"), shown
 on the chip and strip.
 
 ## Venues
@@ -98,7 +98,7 @@ on the chip and strip.
 | Uniswap | 1 | `app.uniswap.org?outputCurrency=&chain=` | spot (EVM); no `chain` param -> null target, UNCHECKED dock (no chain to guess) |
 | Jumper | 1 | `jumper.exchange?toChain=&toToken=` | spot (EVM or Solana, by chain id); anchor: a whole-label Exchange/Swap/Bridge/Review button, never nav or tab items |
 | Hyperliquid | 1 | `app.hyperliquid.xyz/trade/<COIN>` | perp, coin + long/short side read from the selected side toggle; anchor: the order form's submit, never the side toggles; HIP-3 non-crypto markets (e.g. `/trade/xyz:TSLA`) -> null target, UNCHECKED dock |
-| Polymarket | 1 | `polymarket.com/event/<event>[/<market>]` | prediction; checked only when the URL names a market or the event has exactly one open market ("Pick a market" otherwise), the market's outcomes are exactly Yes/No, and the outcome is read from the trade form that owns the button ("Pick YES or NO" otherwise) |
+| Polymarket | 1 | `polymarket.com/event/<event>[/<market>]` | prediction; checked only when the URL names a market or the event has exactly one open market ("Pick a market" otherwise), the market's outcomes are exactly Yes/No, and the outcome is read from the trade form that owns the button ("Pick Yes or No" otherwise) |
 | Raydium | 2 | `raydium.io?outputMint=` | spot (Solana), dock only |
 | Aerodrome | 2 | `aerodrome.finance?to=` | spot (Base), dock only |
 | PancakeSwap | 2 | `pancakeswap.finance?outputCurrency=&chain=` | spot (EVM), dock only; no `chain` param -> null target, UNCHECKED dock |

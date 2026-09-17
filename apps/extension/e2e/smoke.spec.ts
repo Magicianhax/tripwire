@@ -45,9 +45,9 @@ test("@smoke X: the contract-address tweet gets a verdict chip, and clicking it 
   const page = await context.newPage();
   await page.goto("https://x.com/home");
   const chip = page.locator(".tw-chip");
-  await expect(chip.locator(".tw-chip-key")).toHaveText(/^(TRIPWIRE|CAUTION|CLEAR|UNCHECKED)$/, { timeout: 10_000 });
+  await expect(chip.locator(".tw-chip-key")).toHaveText(/^(TRIPWIRE|CAUTION|Clear|Unchecked)$/, { timeout: 10_000 });
   await expect(chip).toHaveCount(1); // the plain-text tweet gets no chip
-  await expect(chip.locator(".tw-replay-badge")).toHaveText("REPLAY");
+  await expect(chip.locator(".tw-replay-badge")).toHaveText("Replay");
 
   await chip.click();
   await expect(page.locator(".tw-panel")).toBeVisible();

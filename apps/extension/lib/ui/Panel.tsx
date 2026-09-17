@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { verdictLabel } from "@tripwire/core";
 import type { GuardResponse, PerpPanel, PersonIntelResponse, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
 import { usd } from "./format";
 import { HitList, PanelFooter } from "./panel-parts";
@@ -64,7 +65,7 @@ export function Panel({ data, title, onClose, replay, person }: PanelProps) {
   return (
     <section className="tw-panel" data-verdict={data.verdict} role="region" aria-label={title}>
       <header className="tw-panel-header">
-        <span className="tw-panel-verdict tw-mono">{data.verdict}</span>
+        <span className="tw-panel-verdict">{verdictLabel(data.verdict)}</span>
         <h2 className="tw-panel-title">{title}</h2>
         <ReplayBadge replay={replay} />
         <button type="button" className="tw-panel-close" aria-label="Close" onClick={onClose}>
