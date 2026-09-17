@@ -43,6 +43,15 @@ export const nansen = {
       ttlMs: WHO_BOUGHT_SOLD_TTL,
     }),
 
+  /** Token metadata; only its `logo` URL is used (the card header). Logos rarely change: 24h. */
+  tokenInformation: (chain: string, token_address: string) =>
+    nansenPost<{ data: { logo?: string | null } | null }>({
+      name: "tokenInformation",
+      path: "tgm/token-information",
+      body: { chain, token_address, timeframe: "1d" },
+      ttlMs: 24 * HOUR,
+    }),
+
   indicators: (chain: string, token_address: string) =>
     nansenPost<IndicatorsResp>({ name: "indicators", path: "tgm/indicators", body: { chain, token_address }, ttlMs: 6 * HOUR }),
 

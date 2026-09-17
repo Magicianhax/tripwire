@@ -13,8 +13,21 @@ export type SpotPanel = {
   topSellers: WhoRow[] | null;
   candles: Candle[] | null;
   postTimeIso: string | null;
+  /** The token logo from Nansen token information (panel mode only), https only, else null. */
+  logoUrl: string | null;
   errors: string[];
 };
+
+/** A remote token logo the extension may render as an <img>: an https URL of sane length. */
+export function safeLogoUrl(value: unknown): string | null {
+  if (typeof value !== "string" || value.length === 0 || value.length > 2048) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
 
 export type SpotIntel = { signals: Signal[]; panel: SpotPanel };
 
@@ -59,6 +72,7 @@ export async function buildSpotIntel(
     topSellers: null,
     candles: null,
     postTimeIso: opts.postTimeIso ?? null,
+    logoUrl: null,
     errors,
   };
 
@@ -73,17 +87,20 @@ export async function buildSpotIntel(
     const chartFrom = new Date(Math.min(from.getTime(), now.getTime() - 6 * 3_600_000) - 3_600_000);
     const chartTf = now.getTime() - chartFrom.getTime() > 4 * 24 * 3_600_000 ? "4h" : "1h";
 
-    const [buyers, sellers, candles, since] = await Promise.all([
+    const [buyers, sellers, candles, since, info] = await Promise.all([
       settle(nansen.whoBoughtSold(chain, tokenAddress, "BUY", isoNoMs(from), isoNoMs(now)), (d) => d.data),
       settle(nansen.whoBoughtSold(chain, tokenAddress, "SELL", isoNoMs(from), isoNoMs(now)), (d) => d.data),
       settle(nansen.ohlcv(chain, tokenAddress, chartTf, isoNoMs(chartFrom), isoNoMs(now)), (d) => d.data),
       postTime && sinceTf !== "1d"
         ? settle(nansen.flowIntel(chain, tokenAddress, sinceTf), (d) => d.data?.[0])
         : Promise.resolve(null),
+      settle(nansen.tokenInformation(chain, tokenAddress), (d) => d.data?.logo),
     ]);
     panel.topBuyers = buyers.value;
     panel.topSellers = sellers.value;
     panel.candles = candles.value;
+    // Cosmetic: a missing logo falls back to a monogram, so its failure is not an evidence gap.
+    panel.logoUrl = safeLogoUrl(info.value);
     if (postTime) panel.sincePost = { timeframe: sinceTf, flow: sinceTf === "1d" ? flow.value : (since?.value ?? null) };
     panel.errors.push(...[buyers.error, sellers.error, candles.error, since?.error].filter((e): e is string => !!e));
   }

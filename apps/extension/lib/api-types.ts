@@ -72,6 +72,9 @@ export type SpotPanel = {
   topSellers: WhoRow[] | null;
   candles: Candle[] | null;
   postTimeIso: string | null;
+  /** Token logo (https) from Nansen token information, panel mode only. Optional: an older
+   * backend doesn't send it, and the header shows a monogram. */
+  logoUrl?: string | null;
   errors: string[];
 };
 

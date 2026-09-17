@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { resetDb } from "@/lib/db";
 import { _resetClientState } from "@/lib/nansen/client";
-import { buildSpotIntel } from "@/lib/intel/spot";
+import { buildSpotIntel, safeLogoUrl } from "@/lib/intel/spot";
 import { buildPerpIntel } from "@/lib/intel/perp";
 import { buildPredictionIntel } from "@/lib/intel/prediction";
 import { resolveCashtag } from "@/lib/intel/resolve";
@@ -43,6 +43,25 @@ describe("intel builders (replay of live-recorded responses)", () => {
     expect(r.panel.topSellers?.length).toBeGreaterThan(0);
     expect(r.panel.candles?.length).toBeGreaterThan(0);
     expect(r.panel.sincePost?.timeframe).toBe("6h");
+  });
+
+  it("spot panel: no token-information fixture means no logo, and no error line for a cosmetic field", async () => {
+    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "panel" });
+    expect(r.panel.logoUrl).toBeNull();
+    expect(r.panel.errors.join(" ")).not.toMatch(/tokenInformation/);
+    const chip = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
+    expect(chip.panel.logoUrl).toBeNull();
+  });
+
+  it("only passes https image URLs through as a token logo", () => {
+    expect(safeLogoUrl("https://cdn.nansen.ai/token/wif.png")).toBe("https://cdn.nansen.ai/token/wif.png");
+    expect(safeLogoUrl("http://example.com/a.png")).toBeNull();
+    expect(safeLogoUrl("javascript:alert(1)")).toBeNull();
+    expect(safeLogoUrl("data:image/svg+xml,<svg/>")).toBeNull();
+    expect(safeLogoUrl("")).toBeNull();
+    expect(safeLogoUrl(null)).toBeNull();
+    expect(safeLogoUrl(42)).toBeNull();
+    expect(safeLogoUrl("https://" + "a".repeat(2100))).toBeNull();
   });
 
   it("perp intel returns screener, positions and a side-aware signal", async () => {
