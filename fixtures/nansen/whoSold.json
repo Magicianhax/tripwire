@@ -1,0 +1,89 @@
+{
+  "data": [
+    {
+      "address": "MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa",
+      "address_label": "Wintermute Market Making [MfDuWeqS]",
+      "bought_token_volume": 1023800.9163850012,
+      "sold_token_volume": 1038961.0864149998,
+      "token_trade_volume": 15160.17002999864,
+      "bought_volume_usd": 186646.1193703088,
+      "sold_volume_usd": 188707.54657694572,
+      "trade_volume_usd": 2061.4272066369304
+    },
+    {
+      "address": "8ZgAmj7fSo2eTcwidgg4uUYLZRXi8vyeFuywmA8FBQAv",
+      "address_label": "Whale [8ZgAmj7f]",
+      "bought_token_volume": 265405.2952029999,
+      "sold_token_volume": 492301.9974239994,
+      "token_trade_volume": 226896.70222099952,
+      "bought_volume_usd": 48222.34547320188,
+      "sold_volume_usd": 89782.63492344004,
+      "trade_volume_usd": 41560.28945023816
+    },
+    {
+      "address": "FkaLnX17cXZGyeu3kZGdHCNdFMJJzBrPPYVvd18B3MZp",
+      "address_label": "​​Wintermute: SOL Millionaire [FkaLnX17]",
+      "bought_token_volume": 269605.80802299984,
+      "sold_token_volume": 370881.505875,
+      "token_trade_volume": 101275.69785200013,
+      "bought_volume_usd": 49083.260798810305,
+      "sold_volume_usd": 67762.82068098904,
+      "trade_volume_usd": 18679.559882178735
+    },
+    {
+      "address": "CreQJ2t94QK5dsxUZGXfPJ8Nx7wA9LHr5chxjSMkbNft",
+      "address_label": "\"finance\" on FOMO [CreQJ2t9]",
+      "bought_token_volume": 163553.127046,
+      "sold_token_volume": 206969.001776,
+      "token_trade_volume": 43415.87472999998,
+      "bought_volume_usd": 29985.64926682115,
+      "sold_volume_usd": 37774.6294219365,
+      "trade_volume_usd": 7788.9801551153505
+    },
+    {
+      "address": "5CEbueQnq1Ym2uSSx2xXds3jQAqT1BDnkA59RZobSPAG",
+      "address_label": "\"zendolphin98429\" on pump.fun [5CEbueQn]",
+      "bought_token_volume": 0,
+      "sold_token_volume": 103644.695556,
+      "token_trade_volume": 103644.695556,
+      "bought_volume_usd": 0,
+      "sold_volume_usd": 18976.166302303485,
+      "trade_volume_usd": 18976.166302303485
+    },
+    {
+      "address": "458aGtmE9UzRhA94hz743NyRv8p7zxNbjcgxV1m8Ukre",
+      "address_label": "[458aGtmE]",
+      "bought_token_volume": 0,
+      "sold_token_volume": 71138.84911400001,
+      "token_trade_volume": 71138.84911400001,
+      "bought_volume_usd": 0,
+      "sold_volume_usd": 13013.782105635762,
+      "trade_volume_usd": 13013.782105635762
+    },
+    {
+      "address": "9nXDunV8eNvYSVys7JSBkm2hz9Q79Q3EYeko19srVeMC",
+      "address_label": "CASHCAT Whale [9nXDunV8]",
+      "bought_token_volume": 29958.570737000002,
+      "sold_token_volume": 65363.40870799999,
+      "token_trade_volume": 35404.837970999986,
+      "bought_volume_usd": 5466.961979438914,
+      "sold_volume_usd": 11733.441342180748,
+      "trade_volume_usd": 6266.479362741834
+    },
+    {
+      "address": "GJvewfRjqTUPtx6WsBSUnaFbdgXwgXnWfpDyLm65T4YA",
+      "address_label": "High Balance [GJvewfRj]",
+      "bought_token_volume": 21827.674957,
+      "sold_token_volume": 56395.400000000016,
+      "token_trade_volume": 34567.72504300001,
+      "bought_volume_usd": 3996.505455430854,
+      "sold_volume_usd": 10300.682004977638,
+      "trade_volume_usd": 6304.176549546784
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 8,
+    "is_last_page": false
+  }
+}

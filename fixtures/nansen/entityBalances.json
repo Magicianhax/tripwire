@@ -1,0 +1,2009 @@
+{
+  "pagination": {
+    "page": 1,
+    "per_page": 200,
+    "is_last_page": false
+  },
+  "data": [
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum",
+      "token_amount": 244584.61998465977,
+      "price_usd": 2434.10725090827,
+      "value_usd": 595345196.9653041
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x1a88df1cfe15af22b3c4c783d4e6f7f9e0c1885d",
+      "token_symbol": "STKGHO",
+      "token_name": "stk GHO",
+      "token_amount": 12676125.751478028,
+      "price_usd": 0.93952218492534,
+      "value_usd": 11909501.362417003
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 1140663.152846,
+      "price_usd": 0.999314635314909,
+      "value_usd": 1139881.3826034549
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xb58e61c3098d85632df34eecfb899a1ed80921cb",
+      "token_symbol": "ZCHF",
+      "token_name": "Frankencoin",
+      "token_amount": 398720.15562265867,
+      "price_usd": 1.20706607147014,
+      "value_usd": 481281.57186340546
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x9cdf242ef7975d8c68d5c1f5b6905801699b1940",
+      "token_symbol": "WHITE",
+      "token_name": "WhiteRock",
+      "token_amount": 10000000000,
+      "price_usd": 0.0000376712869344931,
+      "value_usd": 376712.869344931
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "token_symbol": "UNI",
+      "token_name": "Uniswap",
+      "token_amount": 40000.0002168,
+      "price_usd": 6.76905972175947,
+      "value_usd": 270762.39033791097
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x28561b8a2360f463011c16b6cc0b0cbef8dbbcad",
+      "token_symbol": "MOODENG",
+      "token_name": "MOO DENG",
+      "token_amount": 30002309167.968834,
+      "price_usd": 0.00000388634191127657,
+      "value_usd": 116599.23155455457
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xcf6a0a7826fa124b7705d6f3c675ead76f1e540d",
+      "token_symbol": "REPV2_YES_1",
+      "token_name": "Reputation",
+      "token_amount": 45105.3536148633,
+      "price_usd": 0.84950811873108,
+      "value_usd": 38317.36409406264
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "BNB",
+      "token_name": "BinanceCoin",
+      "token_amount": 34.01253092206243,
+      "price_usd": 723.9023547164799,
+      "value_usd": 24621.751224348078
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xe172e9b6cfbeeb5593bdce3f077356fdb33af904",
+      "token_symbol": "FOLD",
+      "token_name": "Interfold",
+      "token_amount": 240000,
+      "price_usd": 0.0699959987818865,
+      "value_usd": 16799.039707652762
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x21cfcfc3d8f98fc728f48341d10ad8283f6eb7ab",
+      "token_symbol": "TRUE",
+      "token_name": "True",
+      "token_amount": 1066680,
+      "price_usd": 0.0152569601842374,
+      "value_usd": 16274.29428932235
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x712f3378cd1a0476b53f0e29b1a9586e00d78683",
+      "token_symbol": "CATE",
+      "token_name": "Tsutsuji the Cate",
+      "token_amount": 30002848,
+      "price_usd": 0.000439312774974771,
+      "value_usd": 13180.634412026258
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "token_symbol": "WETH",
+      "token_name": "Wrapped Ether",
+      "token_amount": 4.126445189562348,
+      "price_usd": 2431.58,
+      "value_usd": 10033.781594036014
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+      "token_symbol": "ENS",
+      "token_name": "Ethereum Name Service",
+      "token_amount": 1495.2777427034773,
+      "price_usd": 5.48646077402644,
+      "value_usd": 8203.78268161743
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x77777feddddffc19ff86db637967013e6c6a116c",
+      "token_symbol": "TORN",
+      "token_name": "TORN Token",
+      "token_amount": 934.0633308020007,
+      "price_usd": 5.95900315946117,
+      "value_usd": 5566.086339385945
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum",
+      "token_amount": 2.2541607420418424,
+      "price_usd": 2434.10725090827,
+      "value_usd": 5486.869006916815
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xd26114cd6ee289accf82350c8d8487fedb8a0c07",
+      "token_symbol": "OMG",
+      "token_name": "OMGToken",
+      "token_amount": 123647.03042853207,
+      "price_usd": 0.043668270945398,
+      "value_usd": 5399.452026347009
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xb6ed7644c69416d67b522e20bc294a9a9b405b31",
+      "token_symbol": "0XBTC",
+      "token_name": "0xBitcoin Token",
+      "token_amount": 210157.001,
+      "price_usd": 0.0253653036033827,
+      "value_usd": 5330.696134741402
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x1f38d22f4ec3479c8268c85476b9418716bdb115",
+      "token_symbol": "MEH",
+      "token_name": "Meh",
+      "token_amount": 167146371,
+      "price_usd": 0.0000183069146785395,
+      "value_usd": 3059.934352724509
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x4ed4e862860bed51a9570b96d89af5e1b0efefed",
+      "token_symbol": "DEGEN",
+      "token_name": "Degen",
+      "token_amount": 2999828.1522732866,
+      "price_usd": 0.000979592409644005,
+      "value_usd": 2938.608888203312
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x1c4853ec0d55e420002c5efabc7ed8e0ba7a4121",
+      "token_symbol": "OKINAMI",
+      "token_name": "Kanagawa Nami",
+      "token_amount": 10616988.68226331,
+      "price_usd": 0.000256446316618132,
+      "value_usd": 2722.6876411428207
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x744d70fdbe2ba4cf95131626614a1763df805b9e",
+      "token_symbol": "SNT",
+      "token_name": "Status Network Token",
+      "token_amount": 234126.15909338265,
+      "price_usd": 0.00736408790554668,
+      "value_usd": 1724.125616551677
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x76e8e912097f0e6b81cab73147161bb616df1d7d",
+      "token_symbol": "KEL",
+      "token_name": "KelVPN v2",
+      "token_amount": 1669864.2613844094,
+      "price_usd": 0.000959789985061083,
+      "value_usd": 1602.7189944881786
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xa9d54f37ebb99f83b603cc95fc1a5f3907aaccfd",
+      "token_symbol": "PIKA",
+      "token_name": "Pikachu",
+      "token_amount": 70047000000,
+      "price_usd": 1.78268877358895e-8,
+      "value_usd": 1248.7200052358519
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x55d398326f99059ff775485246999027b3197955",
+      "token_symbol": "USDT",
+      "token_name": "Tether USD",
+      "token_amount": 1238.4072974563821,
+      "price_usd": 0.999141333386946,
+      "value_usd": 1237.343918456694
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x846e57af29fd21391919318a044191b8725822c2",
+      "token_symbol": "ETHARDIO",
+      "token_name": "ETHARDIO",
+      "token_amount": 100000000,
+      "price_usd": 0.0000115912673281395,
+      "value_usd": 1159.12673281395
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x2859e4544c4bb03966803b044a93563bd2d0dd4d",
+      "token_symbol": "SHIB",
+      "token_name": "SHIBA INU",
+      "token_amount": 218412757.9831089,
+      "price_usd": 0.00000504672559913962,
+      "value_usd": 1102.2692568920422
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x6c3ea9036406852006290770bedfcaba0e23a0e8",
+      "token_symbol": "PYUSD",
+      "token_name": "PayPal PYUSD",
+      "token_amount": 1000,
+      "price_usd": 0.999328813488145,
+      "value_usd": 999.328813488145
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "token_symbol": "USDT",
+      "token_name": "Tether USD",
+      "token_amount": 832.509976,
+      "price_usd": 0.993811797192403,
+      "value_usd": 827.3582354291643
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xcf8335727b776d190f9d15a54e6b9b9348439eee",
+      "token_symbol": "WHACKD",
+      "token_name": "Whackd",
+      "token_amount": 900031.50369,
+      "price_usd": 0.000872641540762915,
+      "value_usd": 785.4048781152048
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x8de39b057cc6522230ab19c0205080a8663331ef",
+      "token_symbol": "WOJAK",
+      "token_name": "wojak",
+      "token_amount": 15395266187.206408,
+      "price_usd": 4.3356190678356e-8,
+      "value_usd": 667.4800963565677
+    },
+    {
+      "chain": "robinhood",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ether",
+      "token_amount": 0.264983597724282,
+      "price_usd": 2434.10725090827,
+      "value_usd": 644.998496592435
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum Token",
+      "token_amount": 0.24678625546570945,
+      "price_usd": 2430.04091753354,
+      "value_usd": 599.7006986665592
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xf46ccb9e08fb7e32eed560c87d5e583a59a43420",
+      "token_symbol": "SPDG",
+      "token_name": "SPACEDOGE",
+      "token_amount": 100000000,
+      "price_usd": 0.00000528978152952248,
+      "value_usd": 528.978152952248
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x4200000000000000000000000000000000000006",
+      "token_symbol": "WETH",
+      "token_name": "Wrapped Ether",
+      "token_amount": 0.20035482603599555,
+      "price_usd": 2431.45,
+      "value_usd": 487.1527417652214
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum",
+      "token_amount": 0.18975150456830714,
+      "price_usd": 2434.10725090827,
+      "value_usd": 461.87551314047016
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum",
+      "token_amount": 0.1776177295451475,
+      "price_usd": 2434.10725090827,
+      "value_usd": 432.34060337570764
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x5026f006b85729a8b14553fae6af249ad16c9aab",
+      "token_symbol": "WOJAK",
+      "token_name": "Wojak Coin",
+      "token_amount": 21692746.56147167,
+      "price_usd": 0.000018898613706342,
+      "value_usd": 409.9628374948318
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xed664536023d8e4b1640c394777d34abaff1df8f",
+      "token_symbol": "POD",
+      "token_name": "Dolphin",
+      "token_amount": 962.7010192938277,
+      "price_usd": 0.274757968139654,
+      "value_usd": 264.50977598714593
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "token_symbol": "USD₮0",
+      "token_name": "USD₮0",
+      "token_amount": 263.933674,
+      "price_usd": 0.99933435615412,
+      "value_usd": 263.7579881741814
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x230ea9aed5d08afdb22cd3c06c47cf24ad501301",
+      "token_symbol": "SPX2.0",
+      "token_name": "SPX6900 2.0",
+      "token_amount": 2588640.1471344745,
+      "price_usd": 0.0000994157274851583,
+      "value_usd": 257.35154342466103
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xf6ce4be313ead51511215f1874c898239a331e37",
+      "token_symbol": "BIRDDOG",
+      "token_name": "Bird Dog",
+      "token_amount": 358886846.21899,
+      "price_usd": 6.71449428533526e-7,
+      "value_usd": 240.9743678019403
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0x4200000000000000000000000000000000000042",
+      "token_symbol": "OP",
+      "token_name": "Optimism",
+      "token_amount": 2345.476714863865,
+      "price_usd": 0.0967702640183767,
+      "value_usd": 226.97240094633105
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+      "token_symbol": "MKR",
+      "token_name": "Maker",
+      "token_amount": 0.15900068691160796,
+      "price_usd": 1344.84914267704,
+      "value_usd": 213.8319374781364
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0xbf5140a22578168fd562dccf235e5d43a02ce9b1",
+      "token_symbol": "UNI",
+      "token_name": "Uniswap",
+      "token_amount": 28.61635626081829,
+      "price_usd": 6.77463029733282,
+      "value_usd": 193.8652341238093
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+      "token_symbol": "BUSD",
+      "token_name": "BUSD Token",
+      "token_amount": 167.5439530966299,
+      "price_usd": 0.999998178896089,
+      "value_usd": 167.54364798168166
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 158.041811,
+      "price_usd": 1.00036671152012,
+      "value_usd": 158.09976675275433
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xf8ebf4849f1fa4faf0dff2106a173d3a6cb2eb3a",
+      "token_symbol": "TROLL",
+      "token_name": "TROLL",
+      "token_amount": 96960420001,
+      "price_usd": 1.48545562481405e-9,
+      "value_usd": 144.03040127481816
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x6cdd08de79231a1957f205a3fe5cf9dbf4b0c454",
+      "token_symbol": "BABYNEIRO",
+      "token_name": "Baby Neiro",
+      "token_amount": 510135753406751,
+      "price_usd": 2.48382875255904e-13,
+      "value_usd": 126.70898520200564
+    },
+    {
+      "chain": "robinhood",
+      "address": "",
+      "token_address": "0x1c1a7e9142dd3eaa76b1047045b6e0e95848e814",
+      "token_symbol": "WAGIE",
+      "token_name": "wagie wojaks",
+      "token_amount": 1000,
+      "price_usd": 0.113763658094218,
+      "value_usd": 113.763658094218
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+      "token_symbol": "SAI",
+      "token_name": "SAI",
+      "token_amount": 8.798958214248348,
+      "price_usd": 12.8327328218335,
+      "value_usd": 112.91467987392626
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x425087bf4969f45818c225ae30f8560ce518582e",
+      "token_symbol": "LFDOG",
+      "token_name": "lifedog",
+      "token_amount": 10000000,
+      "price_usd": 0.0000107637143945833,
+      "value_usd": 107.637143945833
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x4575f41308ec1483f3d399aa9a2826d74da13deb",
+      "token_symbol": "OXT",
+      "token_name": "Orchid",
+      "token_amount": 9452.953594256665,
+      "price_usd": 0.0104980832735992,
+      "value_usd": 99.23789401397535
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x9d6db6382444b70a51307a4291188f60d4eef205",
+      "token_symbol": "BABYPEPE",
+      "token_name": "Baby Pepe",
+      "token_amount": 734576227.99007,
+      "price_usd": 1.31261015087637e-7,
+      "value_usd": 96.42122134522405
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x814e0908b12a99fecf5bc101bb5d0b8b5cdf7d26",
+      "token_symbol": "MDT",
+      "token_name": "Measurable Data Token",
+      "token_amount": 10000,
+      "price_usd": 0.00960632028494332,
+      "value_usd": 96.06320284943321
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0xc011a7e12a19f7b1f670d46f03b03f3342e82dfb",
+      "token_symbol": "PUSD",
+      "token_name": "Polymarket USD",
+      "token_amount": 87.546638,
+      "price_usd": 1.0001394498886,
+      "value_usd": 87.5588463689164
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x8d760f4fda919a8e9f38237ee003fe8ff0ca9ef7",
+      "token_symbol": "JACK",
+      "token_name": "JACK",
+      "token_amount": 420069,
+      "price_usd": 0.000203009683170591,
+      "value_usd": 85.27807459978699
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0x4200000000000000000000000000000000000006",
+      "token_symbol": "WETH",
+      "token_name": "Wrapped Ether",
+      "token_amount": 0.03493032379712445,
+      "price_usd": 2435.18,
+      "value_usd": 85.06162590428151
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "token_symbol": "WBTC",
+      "token_name": "Wrapped BTC",
+      "token_amount": 0.00109695,
+      "price_usd": 76320.39218435,
+      "value_usd": 83.71965420662274
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "token_symbol": "USDT0",
+      "token_name": "USDT0",
+      "token_amount": 81.530892,
+      "price_usd": 0.998567557228559,
+      "value_usd": 81.41410366310546
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin (PoS)",
+      "token_amount": 80.177116,
+      "price_usd": 0.999979119051214,
+      "value_usd": 80.17544182574699
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x777777780838c00038ecd48f63f3c37669322bc8",
+      "token_symbol": "ETHCAT",
+      "token_name": "Ethereumcat",
+      "token_amount": 472581.117116635,
+      "price_usd": 0.000152931270237779,
+      "value_usd": 72.2724305310356
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x614d7f40701132e25fe6fc17801fbd34212d2eda",
+      "token_symbol": "BLAST",
+      "token_name": "SafeBLAST",
+      "token_amount": 25000000000,
+      "price_usd": 2.81316729839492e-9,
+      "value_usd": 70.329182459873
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x3cc0d3ecc81ba57abf3494abc8d4cb0a43410b07",
+      "token_symbol": "GM",
+      "token_name": "GMonchain",
+      "token_amount": 475372908.28141576,
+      "price_usd": 1.43469530535639e-7,
+      "value_usd": 68.2015279804961
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x18d0e455b3491e09210292d3953157a4bf104444",
+      "token_symbol": "比特币",
+      "token_name": "比特币",
+      "token_amount": 857.9633109471763,
+      "price_usd": 0.0769330208229535,
+      "value_usd": 66.00570926642925
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x0c5142bc58f9a61ab8c3d2085dd2f4e550c5ce0b",
+      "token_symbol": "RUSSELL",
+      "token_name": "RUSSELL",
+      "token_amount": 42069,
+      "price_usd": 0.00152379026176433,
+      "value_usd": 64.1043325221636
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x6b1c8765c7eff0b60706b0ae489eb9bb9667465a",
+      "token_symbol": "SATA",
+      "token_name": "Signata",
+      "token_amount": 3406.524904180662,
+      "price_usd": 0.0185478667411521,
+      "value_usd": 63.183769973158846
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x53ff62409b219ccaff01042bb2743211bb99882e",
+      "token_symbol": "PRZS",
+      "token_name": "Perezoso",
+      "token_amount": 100210010000,
+      "price_usd": 6.18448344115001e-10,
+      "value_usd": 61.974714748247685
+    },
+    {
+      "chain": "robinhood",
+      "address": "",
+      "token_address": "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
+      "token_symbol": "USDG",
+      "token_name": "Global Dollar",
+      "token_amount": 60.522615,
+      "price_usd": 1.00103762979344,
+      "value_usd": 60.5854150685009
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "token_symbol": "WETH",
+      "token_name": "Wrapped Ether",
+      "token_amount": 0.024671316772698272,
+      "price_usd": 2431.58,
+      "value_usd": 59.99028043815766
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x875ee70143fca7d78e03ee6b13a2b0d68be4af0c",
+      "token_symbol": "PAWTH",
+      "token_name": "Pawthereum",
+      "token_amount": 284969,
+      "price_usd": 0.000203541003071975,
+      "value_usd": 58.002876104417645
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "POL",
+      "token_name": "Polygon Ecosystem Token",
+      "token_amount": 604.0937654240183,
+      "price_usd": 0.09592529456157646,
+      "value_usd": 57.947872391110835
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xafb89a09d82fbde58f18ac6437b3fc81724e4df6",
+      "token_symbol": "DOG",
+      "token_name": "The Doge NFT",
+      "token_amount": 119541.79257155303,
+      "price_usd": 0.000409869230533277,
+      "value_usd": 48.99650253787105
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 48.43048699530867,
+      "price_usd": 1.00013786560424,
+      "value_usd": 48.43716389366191
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xa3931d71877c0e7a3148cb7eb4463524fec27fbd",
+      "token_symbol": "SUSDS",
+      "token_name": "Savings USDS",
+      "token_amount": 43.091714709517426,
+      "price_usd": 1.10538372409597,
+      "value_usd": 47.63288008328747
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x8baf5d75cae25c7df6d1e0d26c52d19ee848301a",
+      "token_symbol": "CATALORIAN",
+      "token_name": "Catalorian",
+      "token_amount": 257000,
+      "price_usd": 0.000180650638030256,
+      "value_usd": 46.42721397377579
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58",
+      "token_symbol": "USDT",
+      "token_name": "Tether USD",
+      "token_amount": 43.534903,
+      "price_usd": 1.00036089023131,
+      "value_usd": 43.55061432121372
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "token_symbol": "WETH",
+      "token_name": "Wrapped Ether",
+      "token_amount": 0.016335156736089096,
+      "price_usd": 2431.54,
+      "value_usd": 39.71958701007008
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 39.186374,
+      "price_usd": 0.999873498347437,
+      "value_usd": 39.18141685893105
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+      "token_symbol": "DAI",
+      "token_name": "Dai Stablecoin",
+      "token_amount": 35.207010491987845,
+      "price_usd": 1.00129386914278,
+      "value_usd": 35.25256375647296
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xb03eef386a61b5b462051636001485fffdd3d843",
+      "token_symbol": "AMERICA",
+      "token_name": "America Party",
+      "token_amount": 300000000,
+      "price_usd": 9.23341378215765e-8,
+      "value_usd": 27.70024134647295
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 24.433911,
+      "price_usd": 1.00204809827018,
+      "value_usd": 24.48395405085283
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x53229609f907be495704fca99ad0835c5f3abd3a",
+      "token_symbol": "RINTARO",
+      "token_name": "Rintaro",
+      "token_amount": 1000000100,
+      "price_usd": 2.277720305933e-8,
+      "value_usd": 22.777205337050308
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0xba2ae424d960c26247dd6c32edc70b295c744c43",
+      "token_symbol": "DOGE",
+      "token_name": "Dogecoin",
+      "token_amount": 266.59959793,
+      "price_usd": 0.0808119583854261,
+      "value_usd": 21.544435613490492
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xb8d98a102b0079b69ffbc760c8d857a31653e56e",
+      "token_symbol": "TOBY",
+      "token_name": "toby",
+      "token_amount": 2200004655,
+      "price_usd": 9.6839070808173e-9,
+      "value_usd": 21.304640656385523
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+      "token_symbol": "DAI",
+      "token_name": "Dai Stablecoin",
+      "token_amount": 21.231768845062525,
+      "price_usd": 1.00060170174093,
+      "value_usd": 21.244544037339626
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+      "token_symbol": "MATIC",
+      "token_name": "Matic Network Token",
+      "token_amount": 214.9151244238228,
+      "price_usd": 0.0960508631218946,
+      "value_usd": 20.64278319885755
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xc5f0f7b66764f6ec8c8dff7ba683102295e16409",
+      "token_symbol": "FDUSD",
+      "token_name": "First Digital USD",
+      "token_amount": 20.644611,
+      "price_usd": 0.985763459829941,
+      "value_usd": 20.350703166203257
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xb72e76ccf005313868db7b48070901a44629da98",
+      "token_symbol": "SQGROW",
+      "token_name": "SquidGrow",
+      "token_amount": 4342.295758587,
+      "price_usd": 0.00464372104993418,
+      "value_usd": 20.16441021919036
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x698b1d54e936b9f772b8f58447194bbc82ec1933",
+      "token_symbol": "PEEZY",
+      "token_name": "Peezy",
+      "token_amount": 20513938,
+      "price_usd": 9.56523966309896e-7,
+      "value_usd": 19.622073340395296
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+      "token_symbol": "CAKE",
+      "token_name": "PancakeSwap Token",
+      "token_amount": 7.4529457389427805,
+      "price_usd": 2.39318840447312,
+      "value_usd": 17.83630332160521
+    },
+    {
+      "chain": "linea",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum",
+      "token_amount": 0.007012087052313303,
+      "price_usd": 2434.10725090827,
+      "value_usd": 17.06817193803581
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x80122c6a83c8202ea365233363d3f4837d13e888",
+      "token_symbol": "M87",
+      "token_name": "Messier",
+      "token_amount": 878787,
+      "price_usd": 0.0000185553269978066,
+      "value_usd": 16.306180146421468
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x5ff325ec2cde57373cb3db511f96a33dc92e1986",
+      "token_symbol": "BABYHIPPO",
+      "token_name": "BABY HIPPO",
+      "token_amount": 1500000000000000,
+      "price_usd": 1.03330456942356e-14,
+      "value_usd": 15.4995685413534
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x9778ac3d5a2f916aa9abf1eb85c207d990ca2655",
+      "token_symbol": "OGSM",
+      "token_name": "OGSMINEM",
+      "token_amount": 7018121433.999999,
+      "price_usd": 2.16490399535569e-9,
+      "value_usd": 15.193559132358002
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xb29dc1703facd2967bb8ade2e392385644c6dca9",
+      "token_symbol": "GAGA",
+      "token_name": "Gaga (Pepe)",
+      "token_amount": 100000230719.5932,
+      "price_usd": 1.48203135871014e-10,
+      "value_usd": 14.82034778046862
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x4c9edd5852cd905f086c759e8383e09bff1e68b3",
+      "token_symbol": "USDE",
+      "token_name": "USDe",
+      "token_amount": 14.73979,
+      "price_usd": 0.999258519266549,
+      "value_usd": 14.728860729699885
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x88800092ff476844f74dc2fc427974bbee2794ae",
+      "token_symbol": "WALLET",
+      "token_name": "Ambire Wallet",
+      "token_amount": 1236.0000009999999,
+      "price_usd": 0.0117799723637331,
+      "value_usd": 14.560045853354083
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+      "token_symbol": "DAI",
+      "token_name": "(PoS) Dai Stablecoin",
+      "token_amount": 13.16349703444681,
+      "price_usd": 0.999287720439023,
+      "value_usd": 13.154120944558192
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xb4efd85c19999d84251304bda99e90b92300bd93",
+      "token_symbol": "RPL_OLD",
+      "token_name": "Rocket Pool",
+      "token_amount": 7,
+      "price_usd": 1.71695901437019,
+      "value_usd": 12.01871310059133
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee",
+      "token_symbol": "WEETH",
+      "token_name": "Wrapped eETH",
+      "token_amount": 0.004367159865037863,
+      "price_usd": 2692.761519849,
+      "value_usd": 11.759720035602909
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+      "token_symbol": "LINK",
+      "token_name": "ChainLink Token",
+      "token_amount": 1.00141,
+      "price_usd": 11.1507217908559,
+      "value_usd": 11.166444308581006
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x9b5e262cf9bb04869ab40b19af91d2dc85761722",
+      "token_symbol": "NOCK",
+      "token_name": "Nock",
+      "token_amount": 279.347353241922,
+      "price_usd": 0.039753294316316,
+      "value_usd": 11.104977549910016
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 10.925715,
+      "price_usd": 0.999267945148973,
+      "value_usd": 10.917716777333311
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x6368e1e18c4c419ddfc608a0bed1ccb87b9250fc",
+      "token_symbol": "XTP",
+      "token_name": "Tap",
+      "token_amount": 18309.270170566593,
+      "price_usd": 0.00057330529420089,
+      "value_usd": 10.49680152174026
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x03ab458634910aad20ef5f1c8ee96f1d6ac54919",
+      "token_symbol": "RAI",
+      "token_name": "Rai Reflex Index",
+      "token_amount": 3.3669076951587447,
+      "price_usd": 2.96597604349947,
+      "value_usd": 9.986167564514854
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x7fd4d7737597e7b4ee22acbf8d94362343ae0a79",
+      "token_symbol": "WMC",
+      "token_name": "Wrapped MistCoin",
+      "token_amount": 4.68,
+      "price_usd": 2.12491073736014,
+      "value_usd": 9.944582250845453
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0xe261d618a959afffd53168cd07d12e37b26761db",
+      "token_symbol": "DIMO",
+      "token_name": "Dimo",
+      "token_amount": 1235.8809468845166,
+      "price_usd": 0.00789116783727214,
+      "value_usd": 9.752543978752534
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x2b81945875f892aff04af0a298d35fb2cf848c7b",
+      "token_symbol": "WEB",
+      "token_name": "Web",
+      "token_amount": 100010000,
+      "price_usd": 9.66279831303931e-8,
+      "value_usd": 9.663764592870614
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+      "token_symbol": "WBNB",
+      "token_name": "Wrapped BNB",
+      "token_amount": 0.013113690901285757,
+      "price_usd": 723.17,
+      "value_usd": 9.48342784908282
+    },
+    {
+      "chain": "avalanche",
+      "address": "",
+      "token_address": "0xd586e7f844cea2f87f50152665bcbc2c279d8d70",
+      "token_symbol": "DAI.E",
+      "token_name": "Dai Stablecoin",
+      "token_amount": 9.223728291700532,
+      "price_usd": 0.9998602698805574,
+      "value_usd": 9.222439459044626
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x26734add0650719ea29087fe5cc0aab81b4f237d",
+      "token_symbol": "STEMX",
+      "token_name": "STEMX",
+      "token_amount": 99999.99999999999,
+      "price_usd": 0.0000905645082374249,
+      "value_usd": 9.05645082374249
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x58b6a8a3302369daec383334672404ee733ab239",
+      "token_symbol": "LPT",
+      "token_name": "Livepeer Token",
+      "token_amount": 6.593115685491404,
+      "price_usd": 1.34085888795787,
+      "value_usd": 8.840437766225595
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xbbbbca6a901c926f240b89eacb641d8aec7aeafd",
+      "token_symbol": "LRC",
+      "token_name": "LoopringCoin V2",
+      "token_amount": 1000.3219204506854,
+      "price_usd": 0.00880632997409001,
+      "value_usd": 8.809164911804153
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x3feb4fea5132695542f8ede5076ac43296d17c6d",
+      "token_symbol": "BTC2.0",
+      "token_name": "Bitcoin 2.0",
+      "token_amount": 627.52,
+      "price_usd": 0.0134734319174242,
+      "value_usd": 8.454847996822034
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xbe9895146f7af43049ca1c1ae358b0541ea49704",
+      "token_symbol": "CBETH",
+      "token_name": "Coinbase Wrapped Staked ETH",
+      "token_amount": 0.00299015,
+      "price_usd": 2788.09055047064,
+      "value_usd": 8.336808959489785
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xa27ec0006e59f245217ff08cd52a7e8b169e62d2",
+      "token_symbol": "AZTEC",
+      "token_name": "AZTEC",
+      "token_amount": 587.3061864836396,
+      "price_usd": 0.013235532404146,
+      "value_usd": 7.773310062359625
+    },
+    {
+      "chain": "robinhood",
+      "address": "",
+      "token_address": "0x232cdfc415d10b673845d83dc02ba2eabe7e30d1",
+      "token_symbol": "IF",
+      "token_name": "What If",
+      "token_amount": 717.0442424654462,
+      "price_usd": 0.010768754230413,
+      "value_usd": 7.721673219443059
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x73e0c0d45e048d25fc26fa3159b0aa04bfa4db98",
+      "token_symbol": "KBTC",
+      "token_name": "Kraken Wrapped Bitcoin",
+      "token_amount": 0.0001,
+      "price_usd": 75727.9151196164,
+      "value_usd": 7.572791511961641
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x4ba765ee44597d4986c3fbe9eab1535de3b3c3b6",
+      "token_symbol": "MXY",
+      "token_name": "MXY6900",
+      "token_amount": 950000,
+      "price_usd": 0.00000743567375453044,
+      "value_usd": 7.063890066803918
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x570a5d26f7765ecb712c0924e4de545b89fd43df",
+      "token_symbol": "SOL",
+      "token_name": "SOLANA",
+      "token_amount": 0.0685,
+      "price_usd": 99.6907173089192,
+      "value_usd": 6.828814135660966
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xef3daa5fda8ad7aabff4658f1f78061fd626b8f0",
+      "token_symbol": "MUZZ",
+      "token_name": "MuzzleToken",
+      "token_amount": 1000000,
+      "price_usd": 0.00000682242832865186,
+      "value_usd": 6.82242832865186
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x9813037ee2218799597d83d4a5b6f3b6778218d9",
+      "token_symbol": "BONE",
+      "token_name": "BONE SHIBASWAP",
+      "token_amount": 150,
+      "price_usd": 0.0440336325090917,
+      "value_usd": 6.605044876363755
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x8f8221afbb33998d8584a2b05749ba73c37a938a",
+      "token_symbol": "REQ",
+      "token_name": "Request",
+      "token_amount": 126.004,
+      "price_usd": 0.0510906994959936,
+      "value_usd": 6.437632499293177
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+      "token_symbol": "BAT",
+      "token_name": "Basic Attention Token",
+      "token_amount": 88.02170475426414,
+      "price_usd": 0.0728375451979583,
+      "value_usd": 6.411284898440056
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x26e0331355df5ef082f69df161218093708a73ac",
+      "token_symbol": "CHAOS",
+      "token_name": "harmonybot",
+      "token_amount": 10000000,
+      "price_usd": 6.27740928346496e-7,
+      "value_usd": 6.27740928346496
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "token_symbol": "CBBTC",
+      "token_name": "Coinbase Wrapped BTC",
+      "token_amount": 0.00008032,
+      "price_usd": 75755.126768883,
+      "value_usd": 6.084651782076683
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0xd566c529b33ecf15170f600d4b1ab12468c8efc6",
+      "token_symbol": "UERII",
+      "token_name": "UERII (PoS)",
+      "token_amount": 7400,
+      "price_usd": 0.0008141519598645253,
+      "value_usd": 6.024724502997487
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xd1d2eb1b1e90b638588728b4130137d262c87cae",
+      "token_symbol": "GALA",
+      "token_name": "Gala",
+      "token_amount": 3386.9461755,
+      "price_usd": 0.00173473415543275,
+      "value_usd": 5.875451213252175
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x289ff00235d2b98b0145ff5d4435d3e92f9540a6",
+      "token_symbol": "BOOE",
+      "token_name": "Book of Ethereum",
+      "token_amount": 179.2674,
+      "price_usd": 0.0284546542051701,
+      "value_usd": 5.1009918772599105
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x2d90785e30a9df6cce329c0171cb8ba0f4a5c17b",
+      "token_symbol": "BYTE",
+      "token_name": "BYTE by Virtuals",
+      "token_amount": 26983,
+      "price_usd": 0.000188828442677905,
+      "value_usd": 5.09515786877791
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x7c9f94a79b6b859dfb1d3312fc2311b39f89c677",
+      "token_symbol": "SOMETHING",
+      "token_name": "believe in somETHing",
+      "token_amount": 10000007,
+      "price_usd": 5.01144346820436e-7,
+      "value_usd": 5.0114469762147875
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3",
+      "token_symbol": "USDGLO",
+      "token_name": "Glo Dollar",
+      "token_amount": 5,
+      "price_usd": 0.9983029317,
+      "value_usd": 4.9915146585
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x423f4e6138e475d85cf7ea071ac92097ed631eea",
+      "token_symbol": "PNDC",
+      "token_name": "Pond Coin",
+      "token_amount": 41338847,
+      "price_usd": 1.1801034867207e-7,
+      "value_usd": 4.878411748171355
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xc5fb36dd2fb59d3b98deff88425a3f425ee469ed",
+      "token_symbol": "TSUKA",
+      "token_name": "Dejitaru Tsuka",
+      "token_amount": 3921.000061957,
+      "price_usd": 0.00123039076433788,
+      "value_usd": 4.824362263200148
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c",
+      "token_symbol": "BTCB",
+      "token_name": "BTCB Token",
+      "token_amount": 0.000062773076554093,
+      "price_usd": 76234.7183314658,
+      "value_usd": 4.78548780990082
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xe0151763455a8a021e64880c238ba1cff3787ff0",
+      "token_symbol": "APED",
+      "token_name": "Aped",
+      "token_amount": 50.00028289,
+      "price_usd": 0.0946443140522539,
+      "value_usd": 4.732242476542697
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "token_symbol": "DAI",
+      "token_name": "DAI",
+      "token_amount": 4.572078273323113,
+      "price_usd": 1.00225516272977,
+      "value_usd": 4.582389053842703
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca",
+      "token_symbol": "USDBC",
+      "token_name": "USD Base Coin",
+      "token_amount": 4.390786,
+      "price_usd": 1.00128350571633,
+      "value_usd": 4.396421598930182
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x8e42fe26fc1697f57076c9f2a8d1ff69cf7f6fda",
+      "token_symbol": "AGURI",
+      "token_name": "Aguri-Chan",
+      "token_amount": 25000000.000000004,
+      "price_usd": 1.73935333774188e-7,
+      "value_usd": 4.3483833443547
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0x172370d5cd63279efa6d502dab29171933a610af",
+      "token_symbol": "CRV",
+      "token_name": "CRV (PoS)",
+      "token_amount": 13.393399786517945,
+      "price_usd": 0.322519941042921,
+      "value_usd": 4.319638509512038
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x50c5725949a6f0c72e6c4a641f24049a917db0cb",
+      "token_symbol": "DAI",
+      "token_name": "Dai Stablecoin",
+      "token_amount": 4.234351889843576,
+      "price_usd": 1.00025608045221,
+      "value_usd": 4.235436224590344
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x47000bd34d9a7b7cdbeef4ec2ae452e73280a8b5",
+      "token_symbol": "SHRUBIUS",
+      "token_name": "Shrubius Maximus",
+      "token_amount": 200000,
+      "price_usd": 0.0000202333009734949,
+      "value_usd": 4.04666019469898
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x8c62ac3b71db8c81a764b84ffbc2a8d0bad7f111",
+      "token_symbol": "PREME",
+      "token_name": "PREME Token",
+      "token_amount": 2830.0852361189,
+      "price_usd": 0.00142911869201168,
+      "value_usd": 4.044527710923809
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xb755506531786c8ac63b756bab1ac387bacb0c04",
+      "token_symbol": "ZARP",
+      "token_name": "ZARP Stablecoin",
+      "token_amount": 67,
+      "price_usd": 0.0603058080429707,
+      "value_usd": 4.040489138879037
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xb1a03eda10342529bbf8eb700a06c60441fef25d",
+      "token_symbol": "MIGGLES",
+      "token_name": "Mister Miggles",
+      "token_amount": 2149.9941395278424,
+      "price_usd": 0.00185288504678407,
+      "value_usd": 3.9836919918045224
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x602f65bb8b8098ad804e99db6760fd36208cd967",
+      "token_symbol": "MOPS",
+      "token_name": "Mops",
+      "token_amount": 80000000,
+      "price_usd": 4.96498053942218e-8,
+      "value_usd": 3.9719844315377437
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x249130f5e2dd4cf278180c0df8273f3592ad1247",
+      "token_symbol": "DMT-NAT",
+      "token_name": "dmt-nat",
+      "token_amount": 50000000,
+      "price_usd": 7.86153186073209e-8,
+      "value_usd": 3.9307659303660447
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xd12a99dbc40036cec6f1b776dccd2d36f5953b94",
+      "token_symbol": "DRAGGY",
+      "token_name": "Draggy",
+      "token_amount": 20000000000,
+      "price_usd": 1.96356157539237e-10,
+      "value_usd": 3.92712315078474
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "token_symbol": "ARB",
+      "token_name": "Arbitrum",
+      "token_amount": 23.67206671726825,
+      "price_usd": 0.163687764848917,
+      "value_usd": 3.8748276903040804
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x56015bbe3c01fe05bc30a8a9a9fd9a88917e7db3",
+      "token_symbol": "CAT",
+      "token_name": "Cat Token",
+      "token_amount": 1000,
+      "price_usd": 0.00381516569549833,
+      "value_usd": 3.81516569549833
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xd7d919ea0c33a97ad6e7bd4f510498e2ec98cb78",
+      "token_symbol": "PEN",
+      "token_name": "Penjamin Blinkerton",
+      "token_amount": 69420000,
+      "price_usd": 5.41956786882154e-8,
+      "value_usd": 3.7622640145359134
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
+      "token_symbol": "WBTC",
+      "token_name": "(PoS) Wrapped BTC",
+      "token_amount": 0.00004917,
+      "price_usd": 76307.55789191,
+      "value_usd": 3.7520426215452143
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x30ae41d5f9988d359c733232c6c693c0e645c77e",
+      "token_symbol": "WAAC",
+      "token_name": "Wrapped AyeAyeCoin",
+      "token_amount": 12,
+      "price_usd": 0.306711315796437,
+      "value_usd": 3.6805357895572444
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xb753428af26e81097e7fd17f40c88aaa3e04902c",
+      "token_symbol": "SFI",
+      "token_name": "Spice by Saffron.Finance",
+      "token_amount": 0.031063699784252215,
+      "price_usd": 114.488666183499,
+      "value_usd": 3.556441555023682
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x0cf0ee63788a0849fe5297f3407f701e122cc023",
+      "token_symbol": "XDATA",
+      "token_name": "Streamr (old)",
+      "token_amount": 1362.299514277269,
+      "price_usd": 0.00250885673523147,
+      "value_usd": 3.4178143117970867
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xdf4c0665e67cf0698447ca9e454ed56cc6f2df1e",
+      "token_symbol": "T6900",
+      "token_name": "Token6900",
+      "token_amount": 7246.000000000001,
+      "price_usd": 0.000438623879811262,
+      "value_usd": 3.178268633112405
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x0da2082905583cedfffd4847879d0f1cf3d25c36",
+      "token_symbol": "MELO",
+      "token_name": "melo",
+      "token_amount": 51215535.70018739,
+      "price_usd": 6.04186301300133e-8,
+      "value_usd": 3.094372508380114
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x919e43a2cce006710090e64bde9e01b38fd7f32f",
+      "token_symbol": "AIYP",
+      "token_name": "Agent YP by Virtuals",
+      "token_amount": 35935,
+      "price_usd": 0.0000847921883570269,
+      "value_usd": 3.0470072886097617
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x12b4356c65340fb02cdff01293f95febb1512f3b",
+      "token_symbol": "BROCCOLI",
+      "token_name": "Broccoli",
+      "token_amount": 500,
+      "price_usd": 0.00607391288008402,
+      "value_usd": 3.03695644004201
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x970b9bb2c0444f5e81e9d0efb84c8ccdcdcaf84d",
+      "token_symbol": "FUSE",
+      "token_name": "Fuse Token",
+      "token_amount": 420,
+      "price_usd": 0.00718305290609081,
+      "value_usd": 3.01688222055814
+    },
+    {
+      "chain": "plasma",
+      "address": "",
+      "token_address": "0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb",
+      "token_symbol": "USDT0",
+      "token_name": "USDT0",
+      "token_amount": 3.009964,
+      "price_usd": 1.00077237115688,
+      "value_usd": 3.0122888093768467
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x92ed61fb8955cc4e392781cb8b7cd04aadc43d0c",
+      "token_symbol": "OGGY",
+      "token_name": "Oggy Inu",
+      "token_amount": 2801137399369.81,
+      "price_usd": 1.06577242647205e-12,
+      "value_usd": 2.9853750030079707
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x0c2e08e459fc43ddd1e2718c122f566473f59665",
+      "token_symbol": "BURGER",
+      "token_name": "Crypto Burger",
+      "token_amount": 51110000,
+      "price_usd": 5.77971049305142e-8,
+      "value_usd": 2.954010032998581
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0x5a04565ee1c90c84061ad357ae9e2f1c32d57dc6",
+      "token_symbol": "BABYBNBTIGER",
+      "token_name": "BabyBNBTiger",
+      "token_amount": 51014217541877240000,
+      "price_usd": 5.37493332703758e-20,
+      "value_usd": 2.741980180185811
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xfde4c96c8593536e31f229ea8f37b2ada2699bb2",
+      "token_symbol": "USDT",
+      "token_name": "Tether USD",
+      "token_amount": 2.738456,
+      "price_usd": 0.998297763022021,
+      "value_usd": 2.7337944989342313
+    },
+    {
+      "chain": "linea",
+      "address": "",
+      "token_address": "0xa219439258ca9da29e9cc4ce5596924745e12b93",
+      "token_symbol": "USDT",
+      "token_name": "Tether USD",
+      "token_amount": 2.639548,
+      "price_usd": 0.996258082345215,
+      "value_usd": 2.6296710287381475
+    },
+    {
+      "chain": "robinhood",
+      "address": "",
+      "token_address": "0x0bd7d308f8e1639fab988df18a8011f41eacad73",
+      "token_symbol": "WETH",
+      "token_name": "WETH",
+      "token_amount": 0.00106771216263355,
+      "price_usd": 2433.53,
+      "value_usd": 2.5983095791336233
+    },
+    {
+      "chain": "linea",
+      "address": "",
+      "token_address": "0x176211869ca2b568f2a7d4ee941e073a821ee1ff",
+      "token_symbol": "USDC",
+      "token_name": "USDC",
+      "token_amount": 2.525524,
+      "price_usd": 1.00179852403913,
+      "value_usd": 2.5300662156254
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x712bd4beb54c6b958267d9db0259abdbb0bff606",
+      "token_symbol": "UDS",
+      "token_name": "UndeadServiceToken",
+      "token_amount": 23.3506,
+      "price_usd": 0.106685372844044,
+      "value_usd": 2.4911674671321338
+    },
+    {
+      "chain": "avalanche",
+      "address": "",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "AVAX",
+      "token_name": "Avalanche",
+      "token_amount": 0.32595202414259494,
+      "price_usd": 7.51303040808664,
+      "value_usd": 2.4488874689607063
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0xf0cb96a4011a0a6f73d100c7080bf8020d10f87a",
+      "token_symbol": "MR_LIGHTSPEED",
+      "token_name": "mr_lightspeed",
+      "token_amount": 7940.70719502,
+      "price_usd": 0.000307117938119046,
+      "value_usd": 2.438733620941616
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x81db1949d0e888557bc632f7c0f6698b1f8c9106",
+      "token_symbol": "D/ACC",
+      "token_name": "d/acc",
+      "token_amount": 207571,
+      "price_usd": 0.0000115375302024275,
+      "value_usd": 2.3948566816480783
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xf19308f923582a6f7c465e5ce7a9dc1bec6665b1",
+      "token_symbol": "TITANX",
+      "token_name": "TITAN X",
+      "token_amount": 45288888,
+      "price_usd": 5.17090456235573e-8,
+      "value_usd": 2.3418451758321766
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c",
+      "token_symbol": "ENJ",
+      "token_name": "EnjinCoin",
+      "token_amount": 93.35576962,
+      "price_usd": 0.025063133462175,
+      "value_usd": 2.3397881134501226
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0x0a7b751fcdbbaa8bb988b9217ad5fb5cfe7bf7a0",
+      "token_symbol": "ITP",
+      "token_name": "Infinite Trading Protocol",
+      "token_amount": 569.0012252008135,
+      "price_usd": 0.00405413422972019,
+      "value_usd": 2.306807343839344
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x95af4af910c28e8ece4512bfe46f1f33687424ce",
+      "token_symbol": "MANYU",
+      "token_name": "Manyu",
+      "token_amount": 411542768.8771024,
+      "price_usd": 5.41013200139281e-9,
+      "value_usd": 2.2265007038438167
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x8a7b7b9b2f7d0c63f66171721339705a6188a7d5",
+      "token_symbol": "EDOGE",
+      "token_name": "EtherDoge",
+      "token_amount": 841480000042207,
+      "price_usd": 2.6416611746993e-15,
+      "value_usd": 2.2229050453974635
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x20d4db1946859e2adb0e5acc2eac58047ad41395",
+      "token_symbol": "MOONEY",
+      "token_name": "MOONEY",
+      "token_amount": 12288.555744145198,
+      "price_usd": 0.000178940369111956,
+      "value_usd": 2.198918700710189
+    },
+    {
+      "chain": "linea",
+      "address": "",
+      "token_address": "0xeb1fd1dbb8adda4fa2b5a5c4bce34f6f20d125d2",
+      "token_symbol": "DTC",
+      "token_name": "Donald Toad Coin",
+      "token_amount": 666,
+      "price_usd": 0.003177409200462781,
+      "value_usd": 2.116154527508212
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xbc544207ff1c5b2bc47a35f745010b603b97e99e",
+      "token_symbol": "AI",
+      "token_name": "AI PIN",
+      "token_amount": 2001,
+      "price_usd": 0.00103802009515158,
+      "value_usd": 2.0770782103983114
+    },
+    {
+      "chain": "base",
+      "address": "",
+      "token_address": "0x940181a94a35a4569e4529a3cdfb74e38fd98631",
+      "token_symbol": "AERO",
+      "token_name": "Aerodrome",
+      "token_amount": 3.7826209242,
+      "price_usd": 0.548423421185686,
+      "value_usd": 2.0744779082983253
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0x09e18590e8f76b6cf471b3cd75fe1a1a9d2b2c2b",
+      "token_symbol": "AIDOGE",
+      "token_name": "AIDOGE",
+      "token_amount": 194246624068.01105,
+      "price_usd": 1.06348471615721e-11,
+      "value_usd": 2.06578315861465
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xa0246c9032bc3a600820415ae600c6388619a14d",
+      "token_symbol": "FARM",
+      "token_name": "FARM Reward Token",
+      "token_amount": 0.3257263982236976,
+      "price_usd": 6.31366265849584,
+      "value_usd": 2.056526597351305
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x6c6ee5e31d828de241282b9606c8e98ea48526e2",
+      "token_symbol": "HOLO",
+      "token_name": "HoloToken",
+      "token_amount": 5643.1416643600005,
+      "price_usd": 0.000363761125035758,
+      "value_usd": 2.0527555605637535
+    },
+    {
+      "chain": "avalanche",
+      "address": "",
+      "token_address": "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7",
+      "token_symbol": "USDT",
+      "token_name": "TetherToken",
+      "token_amount": 2.002129,
+      "price_usd": 1.00160768636175,
+      "value_usd": 2.005347795487764
+    },
+    {
+      "chain": "optimism",
+      "address": "",
+      "token_address": "0xdc6ff44d5d932cbd77b52e5612ba0529dc6226f1",
+      "token_symbol": "WLD",
+      "token_name": "Worldcoin",
+      "token_amount": 5.277375163635195,
+      "price_usd": 0.372315600045484,
+      "value_usd": 1.964849100713972
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x19062190b1925b5b6689d7073fdfc8c2976ef8cb",
+      "token_symbol": "BZZ",
+      "token_name": "BZZ",
+      "token_amount": 47.44,
+      "price_usd": 0.0405339873814996,
+      "value_usd": 1.9229323613783411
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xc06caead870d3a8af2504637b6c5b7248bed6116",
+      "token_symbol": "BUSINESS",
+      "token_name": "BusinessCoin",
+      "token_amount": 6900,
+      "price_usd": 0.000272929850446895,
+      "value_usd": 1.8832159680835756
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
+      "token_symbol": "MANA",
+      "token_name": "Decentraland MANA",
+      "token_amount": 25.604226790000002,
+      "price_usd": 0.0730844684804919,
+      "value_usd": 1.8712713058011214
+    },
+    {
+      "chain": "bnb",
+      "address": "",
+      "token_address": "0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa",
+      "token_symbol": "ANY",
+      "token_name": "Anyswap-BEP20",
+      "token_amount": 3,
+      "price_usd": 0.620603795007588,
+      "value_usd": 1.861811385022764
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x420110d74c4c3ea14043a09e81fad53e1932f54c",
+      "token_symbol": "GROGGO",
+      "token_name": "Groggo By Matt Furie",
+      "token_amount": 16361.779988594933,
+      "price_usd": 0.000113076728374309,
+      "value_usd": 1.850136551490554
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0x0000000000000000000000000000000000001010",
+      "token_symbol": "POL",
+      "token_name": "Polygon Ecosystem Token",
+      "token_amount": 19.27830292753323,
+      "price_usd": 0.09592529456157646,
+      "value_usd": 1.8492768869709268
+    },
+    {
+      "chain": "arbitrum",
+      "address": "",
+      "token_address": "0x46850ad61c2b7d64d08c9c754f45254596696984",
+      "token_symbol": "PYUSD",
+      "token_name": "PayPal USD",
+      "token_amount": 1.843193,
+      "price_usd": 0.9990425829933836,
+      "value_usd": 1.8414282956753236
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xabd4c63d2616a5201454168269031355f4764337",
+      "token_symbol": "ORDER",
+      "token_name": "Orderly Network",
+      "token_amount": 56,
+      "price_usd": 0.0321687074764274,
+      "value_usd": 1.8014476186799344
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x812ba41e071c7b7fa4ebcfb62df5f45f6fa853ee",
+      "token_symbol": "NEIRO",
+      "token_name": "Neiro",
+      "token_amount": 22180.000000003,
+      "price_usd": 0.0000811047389062072,
+      "value_usd": 1.7989031089399192
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xcf91b70017eabde82c9671e30e5502d312ea6eb2",
+      "token_symbol": "PUPPIES",
+      "token_name": "I love puppies",
+      "token_amount": 10195987.486961564,
+      "price_usd": 1.74015511629695e-7,
+      "value_usd": 1.7742599791135847
+    },
+    {
+      "chain": "polygon",
+      "address": "",
+      "token_address": "0x282d8efce846a88b159800bd4130ad77443fa1a1",
+      "token_symbol": "MOCEAN",
+      "token_name": "Ocean Token (PoS)",
+      "token_amount": 11.021,
+      "price_usd": 0.1592067017038841,
+      "value_usd": 1.7546170594785067
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0x2597342ff387b63846eb456419590781c4bfcdaf",
+      "token_symbol": "TAXI",
+      "token_name": "Robotaxi",
+      "token_amount": 400,
+      "price_usd": 0.00437366034792144,
+      "value_usd": 1.749464139168576
+    },
+    {
+      "chain": "ethereum",
+      "address": "",
+      "token_address": "0xd7075f79df19c279ba5a9eb04a00474c43a3d73e",
+      "token_symbol": "DAIFUKU",
+      "token_name": "Daifuku",
+      "token_amount": 250000,
+      "price_usd": 0.00000697038714351513,
+      "value_usd": 1.7425967858787825
+    }
+  ]
+}

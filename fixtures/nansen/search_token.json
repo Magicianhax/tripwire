@@ -1,0 +1,106 @@
+{
+  "tokens": [
+    {
+      "name": "WIF",
+      "symbol": "WIF",
+      "chain": "hyperliquid",
+      "address": "WIF",
+      "price": 0.18421,
+      "volume_24h": 503914.8495600001,
+      "market_cap": 184833430.875649,
+      "rank": 186
+    },
+    {
+      "name": "dogwifhat",
+      "symbol": "WIF",
+      "chain": "solana",
+      "address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+      "price": 0.1851784596768997,
+      "volume_24h": 1197875.9953112975,
+      "market_cap": 184833430.875649,
+      "rank": 487
+    },
+    {
+      "name": "wifout",
+      "symbol": "WIFOUT",
+      "chain": "solana",
+      "address": "6JrR1iqPdinYTNvNPWTR2P7e2wSJ1rwdsrKGyhnzjUVr",
+      "price": 0.003633188193507625,
+      "volume_24h": 4224326.85795904,
+      "market_cap": 3633188.19350763,
+      "rank": 1209
+    },
+    {
+      "name": "World is Flat",
+      "symbol": "WIF",
+      "chain": "robinhood",
+      "address": "0x5173b8ea6923c2d40267890d45c46a3480954773",
+      "price": 0.000523337578008464,
+      "volume_24h": 55066.96385166672,
+      "market_cap": 523556.807,
+      "rank": 3629
+    },
+    {
+      "name": "RobinWifHat",
+      "symbol": "WIF",
+      "chain": "robinhood",
+      "address": "0xe49a1c3033ecc6b804bc423021d3f71f1a3e0f9b",
+      "price": 0.000932849506685589,
+      "volume_24h": 35557.1669598423,
+      "market_cap": 932849.5067,
+      "rank": 3830
+    },
+    {
+      "name": "cat wif helmet",
+      "symbol": "SUE",
+      "chain": "solana",
+      "address": "2NffKvfZTcFj2tyoY1Ev84PkqxA7DZnstyv6EwELpump",
+      "price": 0.000057898946843566714,
+      "volume_24h": 12532.178842099975,
+      "market_cap": 55556.2670276358,
+      "rank": 4102
+    },
+    {
+      "name": "Kitten Wif Hat",
+      "symbol": "KWIF",
+      "chain": "solana",
+      "address": "6Rwcmkz9yiYVM5EzyMcr4JsQPGEAWhcUvLvfBperYnUt",
+      "price": 0.00024988604233818927,
+      "volume_24h": 712.043264589273,
+      "market_cap": 248907.853284347,
+      "rank": 6051
+    },
+    {
+      "name": "Dog Wif Nunchucks",
+      "symbol": "NINJA",
+      "chain": "injective",
+      "address": "0x118bd92b73f0237f49e55ac638d87ed55535e2e7",
+      "price": 0.0007147271775532076,
+      "volume_24h": 438.28743515390516,
+      "market_cap": 715243,
+      "rank": 6456
+    },
+    {
+      "name": "cat wif hat",
+      "symbol": "CWH",
+      "chain": "solana",
+      "address": "2gkevSAUExkSUwwwj6uNbzwwNCXyzEBkGLg4wAyUpump",
+      "price": 0.000026336154314438686,
+      "volume_24h": 59.890722195036766,
+      "market_cap": 26337.0502559414,
+      "rank": 7999
+    },
+    {
+      "name": "DOGWIFHOOD",
+      "symbol": "WIF",
+      "chain": "ton",
+      "address": "0:2e728e5910f801d7d7d24e8ec49ad2d3272b2b2b16eee8cfd73850f059088d8c",
+      "price": 0.000053657809673852675,
+      "volume_24h": 47.90942610846858,
+      "market_cap": 53600,
+      "rank": 8181
+    }
+  ],
+  "entities": [],
+  "total_results": 10
+}

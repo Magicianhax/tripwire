@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "smart_money_volume": 42545811.14816,
+      "smart_money_buy_volume": 29321946.38799,
+      "smart_money_sell_volume": 13223864.76017,
+      "net_position_change": 16098081.62782,
+      "trader_count": 29,
+      "token_symbol": "ETH",
+      "mark_price": 2431.8,
+      "funding": 0.0000076822,
+      "previous_price_usd": 2402.6,
+      "open_interest": 2348413914.8043,
+      "current_smart_money_position_longs_usd": 77577513.00642,
+      "current_smart_money_position_shorts_usd": -36155132.30196,
+      "smart_money_longs_count": 56,
+      "smart_money_shorts_count": 28
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 1,
+    "is_last_page": true
+  }
+}

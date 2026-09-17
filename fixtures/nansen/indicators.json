@@ -1,0 +1,69 @@
+{
+  "token_address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+  "chain": "solana",
+  "token_info": {
+    "market_cap_usd": 183888162.913615,
+    "market_cap_group": "midcap",
+    "is_stablecoin": false
+  },
+  "risk_indicators": [
+    {
+      "indicator_type": "btc-reflexivity",
+      "score": "high",
+      "signal": 2.05,
+      "signal_percentile": 93.45454545454545,
+      "last_trigger_on": "2026-09-15"
+    },
+    {
+      "indicator_type": "cex-flows",
+      "score": "high",
+      "signal": 0.03141053425897812,
+      "signal_percentile": 87.87878787878788,
+      "last_trigger_on": "1970-01-01"
+    },
+    {
+      "indicator_type": "liquidity-risk",
+      "score": "low",
+      "signal": 0.018992740164246548,
+      "signal_percentile": 62.1832358674464,
+      "last_trigger_on": "2026-09-17"
+    },
+    {
+      "indicator_type": "token-supply-inflation",
+      "score": "low",
+      "signal": -0.019776453389361806,
+      "signal_percentile": 36.51315789473684,
+      "last_trigger_on": "2026-09-01"
+    }
+  ],
+  "reward_indicators": [
+    {
+      "indicator_type": "concentration-risk",
+      "score": "low",
+      "signal": 0.09512342236166854,
+      "signal_percentile": 60.63492063492063,
+      "last_trigger_on": "2026-08-23"
+    },
+    {
+      "indicator_type": "funding-rate",
+      "score": "bullish",
+      "signal": 1,
+      "signal_percentile": 21.052631578947366,
+      "last_trigger_on": "2026-09-15"
+    },
+    {
+      "indicator_type": "price-momentum",
+      "score": "bearish",
+      "signal": -0.01295462870040498,
+      "signal_percentile": 9.98439937597504,
+      "last_trigger_on": "2026-04-21"
+    },
+    {
+      "indicator_type": "price-momentum",
+      "score": "neutral",
+      "signal": -0.001420878751959287,
+      "signal_percentile": 35.413416536661465,
+      "last_trigger_on": "2026-09-17"
+    }
+  ]
+}

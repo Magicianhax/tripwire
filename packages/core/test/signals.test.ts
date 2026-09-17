@@ -65,6 +65,11 @@ describe("spotSignals", () => {
     expect(get(spotSignals({ indicators: null }), "risk_high_count").value).toBeNull();
   });
 
+  it("risk_high_count also scans reward_indicators (live API mixes them)", () => {
+    const ind: IndicatorsResp = { risk_indicators: [], reward_indicators: [{ indicator_type: "concentration-risk", score: "high", signal: 1, signal_percentile: 99 }] };
+    expect(get(spotSignals({ indicators: ind }), "risk_high_count").value).toBe(1);
+  });
+
   it("sm_netflow_24h passes through", () => {
     const s = spotSignals({ netflow: { token_address: "x", token_symbol: "X", net_flow_1h_usd: 1, net_flow_24h_usd: -75_000, net_flow_7d_usd: 0, net_flow_30d_usd: 0 } });
     expect(get(s, "sm_netflow_24h").value).toBe(-75_000);

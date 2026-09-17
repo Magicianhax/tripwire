@@ -10,6 +10,7 @@ export type SpotSignalInput = {
 };
 
 const FLOW = "tgm/flow-intelligence";
+export const TOKEN_RISKS = new Set(["concentration-risk", "liquidity-risk", "token-supply-inflation"]);
 
 /**
  * Nansen returns null net flow when a segment had no wallets in the window.
@@ -77,7 +78,11 @@ export function spotSignals(input: SpotSignalInput): Signal[] {
 
   // risk_high_count
   if (input.indicators) {
-    const highs = input.indicators.risk_indicators.filter((i) => i.score === "high");
+    // Nansen does not always file indicators under the documented array, so scan both.
+    // btc-reflexivity is excluded: high BTC correlation is market beta, not token-specific danger.
+    const highs = [...(input.indicators.risk_indicators ?? []), ...(input.indicators.reward_indicators ?? [])].filter(
+      (i) => i.score === "high" && TOKEN_RISKS.has(i.indicator_type),
+    );
     out.push({
       id: "risk_high_count",
       kind: "spot",

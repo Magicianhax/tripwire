@@ -1,0 +1,89 @@
+{
+  "data": [
+    {
+      "address": "5KXDF6QnqhBj72hDtJNkkpFaQVUfbFXNybMsp3DiK6tD",
+      "address_label": "Stonk: Rewards Distributor [5KXDF6Qn]",
+      "bought_token_volume": 283831.325816,
+      "sold_token_volume": 0,
+      "token_trade_volume": 283831.325816,
+      "bought_volume_usd": 52001.99004316397,
+      "sold_volume_usd": 0,
+      "trade_volume_usd": 52001.99004316397
+    },
+    {
+      "address": "CsVdJ8WH8Q9eHSTRpwtwN3TYApm24QnLKYUMNxJ3DaED",
+      "address_label": "​​🤖 DEX Trading Bot [CsVdJ8WH]",
+      "bought_token_volume": 276499.99644899997,
+      "sold_token_volume": 276205.95137300005,
+      "token_trade_volume": 294.0450759999221,
+      "bought_volume_usd": 49893.505864463135,
+      "sold_volume_usd": 49844.61619946406,
+      "trade_volume_usd": 48.88966499907838
+    },
+    {
+      "address": "6nFTCdnry6jkRz3jeHdmFsRpNs1UnGH9dA1RDAzqaNgm",
+      "address_label": "[6nFTCdnr]",
+      "bought_token_volume": 189396.679245,
+      "sold_token_volume": 30.408233,
+      "token_trade_volume": 189366.271012,
+      "bought_volume_usd": 35026.6374371974,
+      "sold_volume_usd": 5.382361245949781,
+      "trade_volume_usd": 35021.25507595145
+    },
+    {
+      "address": "8yE6dE89PWwR8F9UepokVWwu73gHvu8duyzhKmcyJzNM",
+      "address_label": "🤖 [8yE6dE89]",
+      "bought_token_volume": 25427.688561000003,
+      "sold_token_volume": 15166.327667000001,
+      "token_trade_volume": 10261.360894000001,
+      "bought_volume_usd": 4619.480033503139,
+      "sold_volume_usd": 2742.4829911541005,
+      "trade_volume_usd": 1876.997042349038
+    },
+    {
+      "address": "Fhbh1DTUDKt6qu9zVg8Q5VgnZa1WWWbxBxG6pCoJoggA",
+      "address_label": "[Fhbh1DTU]",
+      "bought_token_volume": 21327.272373,
+      "sold_token_volume": 19727.635815999998,
+      "token_trade_volume": 1599.6365570000016,
+      "bought_volume_usd": 3938.090582322819,
+      "sold_volume_usd": 3640.6982564786285,
+      "trade_volume_usd": 297.3923258441905
+    },
+    {
+      "address": "G8BsxkoiuxL7ZSiVj4dZkBGmpswQsWyqVtjEGNG3gSgq",
+      "address_label": "[G8Bsxkoi]",
+      "bought_token_volume": 15949.454154,
+      "sold_token_volume": 0,
+      "token_trade_volume": 15949.454154,
+      "bought_volume_usd": 2969.1087151487545,
+      "sold_volume_usd": 0,
+      "trade_volume_usd": 2969.1087151487545
+    },
+    {
+      "address": "3865Kzj7yiqW6A91esFu91Qxd64UY6cTbEpYRCy2KmLM",
+      "address_label": "[3865Kzj7]",
+      "bought_token_volume": 15782.947670000001,
+      "sold_token_volume": 15782.947670000001,
+      "token_trade_volume": 0,
+      "bought_volume_usd": 2853.507505986701,
+      "sold_volume_usd": 2855.720647615537,
+      "trade_volume_usd": -2.2131416288361834
+    },
+    {
+      "address": "dtrzJPj7yDdvm6eRqBAgxsK2sMJeD9HhBEBB3XMedXy",
+      "address_label": "🔧 \"raras\" on pump.fun [dtrzJPj7]",
+      "bought_token_volume": 12689.788961999999,
+      "sold_token_volume": 11347.911296,
+      "token_trade_volume": 1341.8776659999985,
+      "bought_volume_usd": 2347.9115663430994,
+      "sold_volume_usd": 2099.6324103970474,
+      "trade_volume_usd": 248.27915594605201
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 8,
+    "is_last_page": false
+  }
+}
