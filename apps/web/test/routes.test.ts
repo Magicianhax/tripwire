@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { resetDb } from "@/lib/db";
 import { _resetClientState } from "@/lib/nansen/client";
-import { recentOverrides } from "@/lib/store";
+import { recentOverrides, recentSettingsChanges } from "@/lib/store";
 import { GET as healthGET } from "@/app/api/health/route";
 import { POST as resolvePOST } from "@/app/api/resolve/route";
 import { POST as postIntelPOST } from "@/app/api/post-intel/route";
@@ -240,6 +240,25 @@ describe("/api/rules", () => {
     expect(body.preset).toBe("custom");
     const sm24 = body.rules.find((r: { signal: string }) => r.signal === "sm_netflow_24h");
     expect(sm24.threshold).toBe(-50_000);
+  });
+
+  it("logs a weaker preset or loosened block rule as a settings change, but not a stronger one", async () => {
+    await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "paranoid" } }));
+    const before = recentSettingsChanges().length;
+    await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "degen" } }));
+    const afterDowngrade = recentSettingsChanges();
+    expect(afterDowngrade.length).toBe(before + 1);
+    expect(afterDowngrade[0]).toMatchObject({ from_preset: "paranoid", to_preset: "degen" });
+    expect(JSON.parse(afterDowngrade[0]!.rule_ids)).toContain("spot-fresh");
+
+    await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "balanced" } }));
+    expect(recentSettingsChanges().length).toBe(before + 1);
+
+    const looser = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, threshold: -900_000 } : r));
+    await rulesPUT(req("/api/rules", { method: "PUT", body: { rules: looser } }));
+    const afterLoosen = recentSettingsChanges();
+    expect(afterLoosen.length).toBe(before + 2);
+    expect(JSON.parse(afterLoosen[0]!.rule_ids)).toEqual(["spot-exit"]);
   });
 });
 

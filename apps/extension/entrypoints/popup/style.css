@@ -6,6 +6,7 @@
   --tw-danger: #ff5a36;
   --tw-secondary: #8c8c8c;
   --tw-text: #ededed;
+  --tw-border-neutral: #2a2a2a;
   --tw-radius-sm: 3px;
   --tw-radius-md: 6px;
   --tw-space-xs: 4px;
@@ -70,7 +71,7 @@ body {
 
 .tw-segmented {
   display: flex;
-  border: 1px solid #2a2a2a;
+  border: 1px solid var(--tw-border-neutral);
   border-radius: var(--tw-radius-sm);
   overflow: hidden;
 }
@@ -89,7 +90,12 @@ body {
 }
 
 .tw-segmented button + button {
-  border-left: 1px solid #2a2a2a;
+  border-left: 1px solid var(--tw-border-neutral);
+}
+
+.tw-segmented button:disabled {
+  cursor: default;
+  color: var(--tw-secondary);
 }
 
 .tw-segmented button[aria-pressed="true"] {
@@ -100,6 +106,63 @@ body {
 .tw-segmented button:focus-visible {
   outline: 2px solid var(--tw-text);
   outline-offset: -2px;
+}
+
+/* Weaken confirm: a full 1.5px yellow border (DESIGN.md danger surface), not a side stripe. */
+.tw-confirm-row {
+  display: grid;
+  gap: var(--tw-space-sm);
+  padding: var(--tw-space-sm) var(--tw-space-md);
+  border: 1.5px solid var(--tw-yellow);
+  border-radius: var(--tw-radius-sm);
+  background: var(--tw-ink);
+}
+
+.tw-confirm-text {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--tw-yellow);
+}
+
+.tw-confirm-actions {
+  display: flex;
+  gap: var(--tw-space-sm);
+}
+
+.tw-button-danger,
+.tw-button-quiet {
+  appearance: none;
+  min-height: 28px;
+  padding: 0 var(--tw-space-md);
+  border-radius: var(--tw-radius-sm);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tw-button-danger {
+  border: 1.5px solid var(--tw-yellow);
+  background: var(--tw-yellow);
+  color: var(--tw-ink);
+}
+
+.tw-button-quiet {
+  border: 1px solid var(--tw-border-neutral);
+  background: transparent;
+  color: var(--tw-text);
+}
+
+.tw-button-danger:focus-visible {
+  outline: 2px solid var(--tw-text);
+  outline-offset: 2px;
+}
+
+.tw-button-quiet:focus-visible {
+  outline: 2px solid var(--tw-text);
+  outline-offset: 2px;
 }
 
 .tw-links {
@@ -115,7 +178,7 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid var(--tw-border-neutral);
 }
 
 .tw-links a:hover {
@@ -142,7 +205,7 @@ body {
 
 .tw-field input {
   background: var(--tw-surface-raised);
-  border: 1px solid #2a2a2a;
+  border: 1px solid var(--tw-border-neutral);
   border-radius: var(--tw-radius-sm);
   color: var(--tw-text);
   font-family: "JetBrains Mono", ui-monospace, monospace;

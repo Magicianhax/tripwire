@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { presetChangeNeedsConfirm } from "@tripwire/core";
 import { browser } from "wxt/browser";
 import { getRules, health, setPreset } from "../../lib/api";
-import type { KeySource } from "../../lib/api-types";
+import type { KeySource, RulesResponse } from "../../lib/api-types";
 import { popupStatus } from "./status";
 
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
@@ -12,7 +13,12 @@ const PRESET_LABELS: Record<Preset, string> = { degen: "Degen", balanced: "Balan
 
 export default function App() {
   const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource } | { ok: false } | null>(null);
+  // The server-confirmed rules: what "weaker" is measured against. null until loaded.
+  const [rules, setRulesState] = useState<RulesResponse | null>(null);
   const [preset, setPresetState] = useState<Preset | "custom" | null>(null);
+  const [pendingPreset, setPendingPreset] = useState<Preset | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [presetError, setPresetError] = useState("");
   const [backendUrl, setBackendUrl] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlDraft, setBackendUrlDraft] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlError, setBackendUrlError] = useState("");
@@ -41,17 +47,44 @@ export default function App() {
     (async () => {
       const result = await getRules();
       if (cancelled) return;
-      if (result.ok) setPresetState(result.data.preset);
+      if (result.ok) {
+        setRulesState(result.data);
+        setPresetState(result.data.preset);
+      } else {
+        setPresetError("Couldn't load rules. Is the backend running?");
+      }
     })();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  async function choosePreset(next: Preset) {
-    setPresetState(next);
+  /** Stronger or same preset: save straight away. Weaker: ask inline first (never
+   * window.confirm), matching /rules. The server logs every downgrade either way. */
+  function choosePreset(next: Preset) {
+    setPresetError("");
+    if (presetChangeNeedsConfirm(rules, next)) {
+      setPendingPreset(next);
+      return;
+    }
+    setPendingPreset(null);
+    void savePreset(next);
+  }
+
+  async function savePreset(next: Preset) {
+    const previous = preset;
+    setPendingPreset(null);
+    setSaving(true);
+    setPresetState(next); // optimistic
     const result = await setPreset(next);
-    if (result.ok) setPresetState(result.data.preset);
+    setSaving(false);
+    if (result.ok) {
+      setRulesState(result.data);
+      setPresetState(result.data.preset);
+      return;
+    }
+    setPresetState(previous); // roll back
+    setPresetError(result.status === 0 ? "Preset not saved: backend offline." : `Preset not saved: ${result.error || "request failed"}.`);
   }
 
   async function saveBackendUrl(next: string) {
@@ -74,13 +107,31 @@ export default function App() {
         {statusText}
       </p>
 
-      <div className="tw-segmented" role="group" aria-label="Rules preset">
+      <div className="tw-segmented" role="group" aria-label="Rules preset" aria-busy={rules === null || saving}>
         {PRESETS.map((p) => (
-          <button key={p} type="button" aria-pressed={preset === p} onClick={() => choosePreset(p)}>
+          <button key={p} type="button" aria-pressed={preset === p} disabled={rules === null || saving} onClick={() => choosePreset(p)}>
             {PRESET_LABELS[p]}
           </button>
         ))}
       </div>
+      {pendingPreset ? (
+        <div className="tw-confirm-row" role="alert">
+          <p className="tw-confirm-text">Switch to {PRESET_LABELS[pendingPreset]}? This lowers or removes blocks.</p>
+          <div className="tw-confirm-actions">
+            <button type="button" className="tw-button-danger" onClick={() => void savePreset(pendingPreset)}>
+              Confirm
+            </button>
+            <button type="button" className="tw-button-quiet" onClick={() => setPendingPreset(null)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : null}
+      {presetError ? (
+        <p className="tw-field-hint" role="status">
+          {presetError}
+        </p>
+      ) : null}
 
       <ul className="tw-links">
         <li>

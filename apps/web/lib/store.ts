@@ -43,6 +43,23 @@ export function recordOverride(venue: string, target: Target, verdict: Verdict, 
     .run(Date.now(), venue, JSON.stringify(target), verdict, JSON.stringify(ruleIds));
 }
 
+/** A rules change that lowered protection (weaker preset, or a block rule disabled, downgraded
+ * or loosened). Logged next to overrides so /history shows every way a block was removed. */
+export function recordSettingsChange(fromPreset: RulesState["preset"], toPreset: RulesState["preset"], ruleIds: string[]) {
+  getDb()
+    .prepare("INSERT INTO settings_changes (ts, from_preset, to_preset, rule_ids) VALUES (?, ?, ?, ?)")
+    .run(Date.now(), fromPreset, toPreset, JSON.stringify(ruleIds));
+}
+
+export function recentSettingsChanges(limit = 50) {
+  return getDb().prepare("SELECT ts, from_preset, to_preset, rule_ids FROM settings_changes ORDER BY id DESC LIMIT ?").all(limit) as {
+    ts: number;
+    from_preset: RulesState["preset"];
+    to_preset: RulesState["preset"];
+    rule_ids: string;
+  }[];
+}
+
 export type LedgerSummary = {
   totalCalls: number;
   successfulCalls: number;

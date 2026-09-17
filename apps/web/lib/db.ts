@@ -50,6 +50,13 @@ export function getDb(): DatabaseSync {
       verdict TEXT NOT NULL,
       rule_ids TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS settings_changes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ts INTEGER NOT NULL,
+      from_preset TEXT NOT NULL,
+      to_preset TEXT NOT NULL,
+      rule_ids TEXT NOT NULL
+    );
   `);
   return db;
 }

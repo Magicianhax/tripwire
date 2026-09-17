@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { PresetName, Rule, TargetKind } from "@tripwire/core";
 import type { RulesState } from "@/lib/store";
 import { displayValue, splitSentence, storedThreshold } from "./rule-text";
-import { isWeakerPreset, weakensRules } from "./weaken";
+import { isWeakerPreset, weakensRules } from "@tripwire/core";
 
 const PRESET_NAMES: PresetName[] = ["degen", "balanced", "paranoid"];
 const PRESET_LABEL: Record<PresetName, string> = { degen: "Degen", balanced: "Balanced", paranoid: "Paranoid" };

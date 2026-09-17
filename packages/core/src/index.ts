@@ -8,5 +8,6 @@ export * from "./signals/perp";
 export * from "./signals/prediction";
 export * from "./rules/presets";
 export * from "./rules/evaluate";
+export * from "./rules/weaken";
 export * from "./schemas";
 export * from "./constants";
