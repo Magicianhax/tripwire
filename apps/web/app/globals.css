@@ -266,6 +266,7 @@ main.tw-main {
 .tw-stat-value {
   display: block;
   font-size: 1.0625rem;
+  font-weight: 500;
   overflow-wrap: anywhere;
 }
 

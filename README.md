@@ -15,12 +15,15 @@ A short GIF walkthrough, if added, lives in `docs/media/`.
 
 - **On X:** every post that mentions a token gets a verdict chip (TRIPWIRE / CAUTION / CLEAR /
   UNCHECKED; when a post has both a cashtag and a contract address, the address is checked),
-  and a slide-out panel with buyer/seller flow, Smart Money netflow, risk
-  indicators and whether the post's author (matched by Nansen entity name) holds the token.
+  that opens a floating evidence card beside it (not inside the post): tabs for flow
+  (buyer/seller flow by wallet type, price since the post, Smart Money netflow), wallets (top
+  sellers and buyers) and risk (the rules that fired, risk indicators), plus whether the post's
+  author (matched by Nansen entity name) holds the token.
 - **On trading venues:** tier-1 venues (Jupiter, pump.fun, Uniswap, Jumper, Hyperliquid,
   Polymarket) get a block screen over the trade/buy/long/short/yes-no button when a rule
   fires, with the Nansen evidence that triggered it and a typed-phrase override. Tier-2
-  venues get a docked panel instead of a block (URL-derived target only, nothing to block).
+  venues get a docked verdict chip that opens the same evidence card (URL-derived target only,
+  nothing to block).
 - **User-owned rules:** three presets (Degen, Balanced, Paranoid) or a custom rule set,
   editable at `/rules`, evaluated locally against the signals below.
 
@@ -49,9 +52,9 @@ the Nansen API key never reaches the extension.
 
 **Offline / no key:** `pnpm dev:replay` (any shell) serves recorded real responses
 (`fixtures/nansen/`) instead of calling Nansen. By hand: `TRIPWIRE_REPLAY=1 pnpm -F web dev`
-(bash) or `$env:TRIPWIRE_REPLAY="1"; pnpm -F web dev` (PowerShell). A grey REPLAY watermark
-shows on every web page and on every extension surface (X chip and panel, strip, dock, block
-screen).
+(bash) or `$env:TRIPWIRE_REPLAY="1"; pnpm -F web dev` (PowerShell). A REPLAY tag
+shows on every web page and on every extension surface (X chip and evidence card, strip, dock,
+block screen).
 
 ## How the verdict works
 
@@ -114,7 +117,7 @@ on the chip and strip.
 | Birdeye | 2 | `birdeye.so/token/<addr>?chain=` | spot (default Solana), dock only |
 
 Tier 1 reads the live DOM and can put a block screen over the trade button. Tier 2 is
-URL-derived only and never blocks — no button to find, just a docked panel.
+URL-derived only and never blocks — no button to find, just a docked verdict chip.
 
 ## Architecture
 
@@ -205,7 +208,8 @@ before running it).
 - `pnpm dev:replay` — replay mode on any shell (wraps `TRIPWIRE_REPLAY=1 pnpm -F web dev`),
   no network calls, no key needed.
 - `pnpm verify:e2e` — Playwright smoke: the built extension in Chromium against a replay
-  backend and stubbed X / Jupiter pages (not part of `pnpm verify`; needs port 3000 free and
+  backend and stubbed X / Jupiter pages (not part of `pnpm verify`; needs port 3000 free, or
+  `TRIPWIRE_E2E_PORT=<free port>` to run the replay backend elsewhere, and
   `pnpm exec playwright install chromium` once).
 - `node scripts/record-fixtures.mjs` — re-record fixtures from live Nansen calls (costs
   credits).
@@ -216,7 +220,7 @@ before running it).
 |---|---|---|
 | Chip or dock says "backend offline" | `apps/web` isn't running, or the extension's configured backend URL doesn't match it | Run `pnpm -F web dev`; check the URL in the extension popup (default `http://127.0.0.1:3000`) |
 | "Nansen credit cap reached" | `NANSEN_DAILY_CREDIT_CAP` hit for the UTC day | Raise the cap in `apps/web/.env.local`, or wait for the next UTC day; cached results still serve |
-| A tier-1 venue shows a floating dock instead of a block screen | The venue changed its markup and the adapter's `anchor()` can no longer find the trade button | Tripwire never blocks blind — it falls back to a docked panel rather than guess at a button; file/fix the adapter in `apps/extension/lib/adapters/` |
+| A tier-1 venue shows a floating dock instead of a block screen | The venue changed its markup and the adapter's `anchor()` can no longer find the trade button | Tripwire never blocks blind — it falls back to the docked verdict chip rather than guess at a button; file/fix the adapter in `apps/extension/lib/adapters/` |
 | Every API call answers 403 "origin not allowed" | The extension was loaded with a different key (a fork), so its ID isn't the pinned one | Set `TRIPWIRE_EXTENSION_ORIGIN=chrome-extension://<your id>` for `apps/web` |
 | No chip appears on X posts | X changed its DOM structure and the content-script parser no longer matches | Check `apps/extension/entrypoints/x.content/` against the fixture tests in `apps/extension/test/` |
 

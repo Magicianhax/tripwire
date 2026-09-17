@@ -35,11 +35,11 @@ export default function StatusPage() {
         <div className="tw-stat-row">
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">API key</span>
-            <span className={`tw-data tw-stat-value${source === "none" ? " tw-chip-danger-text" : ""}`}>{KEY_SOURCE_LABEL[source]}</span>
+            <span className={`tw-stat-value${source === "none" ? " tw-chip-danger-text" : ""}`}>{KEY_SOURCE_LABEL[source]}</span>
           </div>
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Replay mode</span>
-            <span className="tw-data tw-stat-value">{replay ? "On" : "Off"}</span>
+            <span className="tw-stat-value">{replay ? "On" : "Off"}</span>
           </div>
         </div>
       </section>
