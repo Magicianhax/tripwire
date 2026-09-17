@@ -21,6 +21,7 @@ function stripVerdict(verdict: Verdict): "CAUTION" | "UNCHECKED" | "CLEAR" {
 }
 
 function closeEvidence(rc: RunnerContext): void {
+  rc.evidenceOpening = null; // cancels an open still in flight
   if (rc.evidenceMount) {
     rc.evidenceMount.ui.remove();
     rc.evidenceMount = null;
@@ -28,15 +29,21 @@ function closeEvidence(rc: RunnerContext): void {
 }
 
 /** Toggles the on-demand evidence Dock (Strip's "Details" / BlockScreen's "Evidence").
- * Fetches "panel" mode data lazily on open; never blocks the trade on a failed fetch. */
+ * Fetches "panel" mode data lazily on open; never blocks the trade on a failed fetch.
+ * Idempotent while opening: a repeat click during the fetch is ignored, and a close/teardown
+ * during it cancels the open (checked again after the async mount, so no orphaned Dock). */
 export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, target: Target): Promise<void> {
   if (rc.evidenceMount) {
     closeEvidence(rc);
     return;
   }
+  if (rc.evidenceOpening) return; // already opening
+  const opening = {};
+  rc.evidenceOpening = opening;
   const openedForKey = rc.currentKey;
+  const stillWanted = () => rc.evidenceOpening === opening && rc.currentKey === openedForKey;
   const result = await guard(target, adapter.id, "panel");
-  if (rc.currentKey !== openedForKey) return; // the page moved on while this was in flight
+  if (!stillWanted()) return; // closed, or the page moved on, while this was in flight
   const node = result.ok ? (
     <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} collapsedLabel="" replay={rc.replay}>
       <Panel data={result.data} title={targetTitle(target)} onClose={() => void toggleEvidence(rc, adapter, target)} />
@@ -46,7 +53,13 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
       <p className="tw-dock-error">{errorHeadline(result.status, result.error)}</p>
     </Dock>
   );
-  rc.evidenceMount = await mountReact(rc.ctx, { position: "inline" }, node);
+  const mount = await mountReact(rc.ctx, { position: "inline" }, node);
+  if (!stillWanted()) {
+    mount.ui.remove();
+    return;
+  }
+  rc.evidenceOpening = null;
+  rc.evidenceMount = mount;
 }
 
 export function closeEvidenceDock(rc: RunnerContext): void {

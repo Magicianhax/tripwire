@@ -33,6 +33,9 @@ export type RunnerContext = {
   ctx: ContentScriptContext;
   mainMount: Mount | null;
   evidenceMount: Mount | null;
+  /** Identity token of an evidence-Dock open still in flight (null when none); closing clears
+   * it, which cancels that open. See `toggleEvidence` in `displays.tsx`. */
+  evidenceOpening: object | null;
   blocker: { release(): void } | null;
   resizeObserver: ResizeObserver | null;
   repositionCleanup: (() => void) | null;

@@ -27,6 +27,7 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     ctx,
     mainMount: null,
     evidenceMount: null,
+    evidenceOpening: null,
     blocker: null,
     resizeObserver: null,
     repositionCleanup: null,

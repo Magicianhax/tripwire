@@ -13,6 +13,7 @@ import { Panel } from "../../lib/ui/Panel";
 import { X_MATCHES } from "../../lib/venues";
 import { createResultCache } from "../../lib/x/cache";
 import { createMountTracker } from "../../lib/x/mounts";
+import { createPanelToggle } from "../../lib/x/panel-toggle";
 import { chipErrorHeadline, chipHeadline } from "../../lib/x/headline";
 import { chainForAddress, pickToken, type ChipToken } from "../../lib/x/pick";
 import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
@@ -104,70 +105,59 @@ export default defineContentScript({
       let expanded = false;
       let lastVerdict: Verdict | "LOADING" = "LOADING";
       let lastHeadline = "";
-      let panelMount: Awaited<ReturnType<typeof mountReact>> | null = null;
       let panelDataPromise: Promise<[ApiResult<PostIntelResponse>, ApiResult<PersonIntelResponse>]> | null = null;
 
       const chipMount = await mountReact(
         ctx,
         { position: "inline", anchor: tweetTextEl, append: "after" },
-        <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void togglePanel()} />,
+        <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void panel.toggle()} />,
       );
       stopHostClicks(chipMount.ui.shadowHost);
       mounts.track(article, chipMount);
 
       function renderChip(): void {
         chipMount.update(
-          <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void togglePanel()} />,
+          <Chip verdict={lastVerdict} symbol={symbol} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void panel.toggle()} />,
         );
       }
 
-      async function togglePanel(): Promise<void> {
-        expanded = !expanded;
-        renderChip();
-
-        if (!expanded) {
-          if (panelMount) {
-            panelMount.ui.remove();
-            mounts.untrack(article, panelMount);
-          }
-          panelMount = null;
-          return;
-        }
-
-        panelDataPromise ??= Promise.all([
-          postIntel(target, tweet.timeIso ?? undefined, "panel"),
-          personIntel(tweet.handle, tweet.displayName, target),
-        ]);
-        const openId = expanded;
-        const [panelResult, personResult] = await panelDataPromise;
-        if (expanded !== openId) return; // closed again before the data came back
-
-        if (!panelResult.ok) {
-          expanded = false;
-          lastVerdict = "UNCHECKED";
-          lastHeadline = chipErrorHeadline(panelResult.status, panelResult.error);
+      // Sequenced open/close: rapid clicks never mount two panels (lib/x/panel-toggle.ts).
+      const panel = createPanelToggle({
+        onExpandedChange(value) {
+          expanded = value;
           renderChip();
-          panelDataPromise = null; // allow a retry on the next open
-          return;
-        }
+        },
+        async open(isCurrent) {
+          panelDataPromise ??= Promise.all([
+            postIntel(target, tweet.timeIso ?? undefined, "panel"),
+            personIntel(tweet.handle, tweet.displayName, target),
+          ]);
+          const [panelResult, personResult] = await panelDataPromise;
+          if (!isCurrent()) return null; // closed again before the data came back
 
-        const node = (
-          <Panel
-            data={panelResult.data}
-            title={`$${symbol}`}
-            onClose={() => void togglePanel()}
-            replay={replay}
-            person={personResult.ok ? personResult.data : null}
-          />
-        );
-        if (panelMount) {
-          panelMount.update(node);
-        } else {
-          panelMount = await mountReact(ctx, { position: "inline", anchor: chipMount.ui.shadowHost, append: "after" }, node);
+          if (!panelResult.ok) {
+            lastVerdict = "UNCHECKED";
+            lastHeadline = chipErrorHeadline(panelResult.status, panelResult.error);
+            panelDataPromise = null; // allow a retry on the next open
+            return null;
+          }
+
+          const node = (
+            <Panel
+              data={panelResult.data}
+              title={`$${symbol}`}
+              onClose={() => void panel.toggle()}
+              replay={replay}
+              person={personResult.ok ? personResult.data : null}
+            />
+          );
+          const panelMount = await mountReact(ctx, { position: "inline", anchor: chipMount.ui.shadowHost, append: "after" }, node);
           stopHostClicks(panelMount.ui.shadowHost);
-          mounts.track(article, panelMount);
-        }
-      }
+          return panelMount;
+        },
+        onMounted: (m) => mounts.track(article, m),
+        onRemoved: (m) => mounts.untrack(article, m),
+      });
 
       const chipResult = await getChipIntel(target, tweet.timeIso);
       if (chipResult.ok) {
