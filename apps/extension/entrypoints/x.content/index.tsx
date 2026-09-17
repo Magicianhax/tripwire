@@ -13,6 +13,7 @@ import { shortAddr } from "../../lib/ui/format";
 import { mountReact } from "../../lib/ui/mount";
 import { Panel } from "../../lib/ui/Panel";
 import { X_MATCHES } from "../../lib/venues";
+import { createResultCache } from "../../lib/x/cache";
 import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
 import { createQueue } from "../../lib/x/queue";
 
@@ -67,10 +68,12 @@ export default defineContentScript({
   cssInjectionMode: "ui",
   async main(ctx) {
     // Per-symbol resolve() cache (cashtag -> best token), shared across every tweet on the page.
-    const resolveCache = new Map<string, Promise<ApiResult<ResolveResponse>>>();
+    // A failed lookup (backend offline, budget, no match) evicts itself so a later tweet with
+    // the same cashtag retries instead of being stuck on the first failure for the whole tab.
+    const resolveCache = createResultCache<string, ApiResult<ResolveResponse>>();
     // Per-token postIntel("chip") cache, keyed "chain:address", dedupes across tweets that
-    // mention the same token.
-    const chipIntelCache = new Map<string, Promise<ApiResult<PostIntelResponse>>>();
+    // mention the same token — same eviction-on-failure behavior as resolveCache.
+    const chipIntelCache = createResultCache<string, ApiResult<PostIntelResponse>>();
     // At most CHIP_CONCURRENCY postIntel("chip") calls in flight at once.
     const chipQueue = createQueue(CHIP_CONCURRENCY);
 
@@ -79,11 +82,7 @@ export default defineContentScript({
 
     function getChipIntel(target: SpotTarget, timeIso: string | null): Promise<ApiResult<PostIntelResponse>> {
       const key = `${target.chain}:${target.tokenAddress}`;
-      const cached = chipIntelCache.get(key);
-      if (cached) return cached;
-      const started = chipQueue.run(() => postIntel(target, timeIso ?? undefined, "chip"));
-      chipIntelCache.set(key, started);
-      return started;
+      return chipIntelCache.get(key, () => chipQueue.run(() => postIntel(target, timeIso ?? undefined, "chip")));
     }
 
     async function resolveTarget(
@@ -91,9 +90,7 @@ export default defineContentScript({
       tweetText: string,
     ): Promise<{ target: SpotTarget; symbol: string } | null> {
       if (token.kind === "cashtag") {
-        const cached = resolveCache.get(token.symbol) ?? resolve(token.symbol);
-        resolveCache.set(token.symbol, cached);
-        const result = await cached;
+        const result = await resolveCache.get(token.symbol, () => resolve(token.symbol));
         if (!result.ok || !result.data.best) return null;
         const best = result.data.best;
         return {

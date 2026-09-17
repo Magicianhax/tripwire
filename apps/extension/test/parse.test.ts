@@ -66,6 +66,17 @@ describe("parseTweet", () => {
     expect(parsed?.tokens.addresses).toEqual([]);
   });
 
+  it("joins a display name split across sibling spans and excludes an svg badge's text (x-tweet-split-name.html)", () => {
+    const article = loadFixture("x-tweet-split-name.html");
+    const parsed = parseTweet(article);
+
+    expect(parsed).not.toBeNull();
+    expect(parsed?.handle).toBe("ansem");
+    expect(parsed?.displayName).toBe("Ansem 🐂");
+    expect(parsed?.displayName).not.toContain("Verified");
+    expect(parsed?.displayName).not.toContain("@ansem");
+  });
+
   it("returns null when there is no tweetText", () => {
     document.body.innerHTML = `
       <article data-testid="tweet">
