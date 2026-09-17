@@ -11,21 +11,22 @@ import { POST as postIntelPOST } from "@/app/api/post-intel/route";
 import { POST as guardPOST } from "@/app/api/guard/route";
 import { POST as personIntelPOST } from "@/app/api/person-intel/route";
 import { GET as rulesGET, PUT as rulesPUT } from "@/app/api/rules/route";
-import { PRESETS } from "@tripwire/core";
+import { PRESETS, TRIPWIRE_EXTENSION_ID } from "@tripwire/core";
 import { GET as ledgerGET } from "@/app/api/ledger/route";
 import { POST as overridePOST } from "@/app/api/override/route";
 
 const WIF = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";
 const PREDICTION_SLUG = "bitcoin-above-72k-on-september-17-2026";
 const FIXTURES = path.resolve(__dirname, "..", "..", "..", "fixtures", "nansen");
-const VALID_EXTENSION_ORIGIN = "chrome-extension://abcdefghijklmnopabcdefghijklmnop";
+const VALID_EXTENSION_ORIGIN = `chrome-extension://${TRIPWIRE_EXTENSION_ID}`;
+const RANDOM_EXTENSION_ORIGIN = "chrome-extension://abcdefghijklmnopabcdefghijklmnop";
 const ALLOWED_VERDICTS = new Set(["CLEAR", "CAUTION", "TRIPWIRE", "UNCHECKED"]);
 
-function req(url: string, opts: { method?: string; body?: unknown; origin?: string } = {}) {
-  const headers: Record<string, string> = {};
+function req(url: string, opts: { method?: string; body?: unknown; origin?: string; headers?: Record<string, string>; base?: string } = {}) {
+  const headers: Record<string, string> = { ...opts.headers };
   if (opts.body !== undefined) headers["content-type"] = "application/json";
   if (opts.origin !== undefined) headers.origin = opts.origin;
-  return new Request(`http://127.0.0.1:3000${url}`, {
+  return new Request(`${opts.base ?? "http://127.0.0.1:3000"}${url}`, {
     method: opts.method ?? (opts.body !== undefined ? "POST" : "GET"),
     headers,
     body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
@@ -89,7 +90,37 @@ describe("/api/guard", () => {
     expect(res.status).toBe(403);
   });
 
-  it("200s with the origin echoed for a chrome-extension Origin", async () => {
+  it("403s for an extension other than the pinned Tripwire ID", async () => {
+    const res = await guardPOST(
+      req("/api/guard", { body: { target: { kind: "perp", coin: "ETH" }, venue: "x" }, origin: RANDOM_EXTENSION_ORIGIN }),
+    );
+    expect(res.status).toBe(403);
+  });
+
+  it("accepts the TRIPWIRE_EXTENSION_ORIGIN override instead of the pinned ID", async () => {
+    process.env.TRIPWIRE_EXTENSION_ORIGIN = RANDOM_EXTENSION_ORIGIN;
+    try {
+      const body = { target: { kind: "perp", coin: "ETH" }, venue: "x" };
+      expect((await guardPOST(req("/api/guard", { body, origin: RANDOM_EXTENSION_ORIGIN }))).status).toBe(200);
+      expect((await guardPOST(req("/api/guard", { body, origin: VALID_EXTENSION_ORIGIN }))).status).toBe(403);
+    } finally {
+      delete process.env.TRIPWIRE_EXTENSION_ORIGIN;
+    }
+  });
+
+  it("403s a cross-site browser request that carries no Origin", async () => {
+    const body = { target: { kind: "perp", coin: "ETH" }, venue: "x" };
+    expect((await guardPOST(req("/api/guard", { body, headers: { "sec-fetch-site": "cross-site" } }))).status).toBe(403);
+    expect((await guardPOST(req("/api/guard", { body, headers: { "sec-fetch-site": "same-site" } }))).status).toBe(403);
+    expect((await guardPOST(req("/api/guard", { body, headers: { "sec-fetch-site": "same-origin" } }))).status).toBe(200);
+  });
+
+  it("403s a request for a foreign Host (DNS rebinding)", async () => {
+    const res = await guardPOST(req("/api/guard", { body: { target: { kind: "perp", coin: "ETH" }, venue: "x" }, base: "http://rebind.evil.example:3000" }));
+    expect(res.status).toBe(403);
+  });
+
+  it("200s with the origin echoed for the pinned extension Origin", async () => {
     const res = await guardPOST(
       req("/api/guard", { body: { target: { kind: "perp", coin: "ETH" }, venue: "x" }, origin: VALID_EXTENSION_ORIGIN }),
     );

@@ -1,18 +1,13 @@
 import { z } from "zod";
 import { BudgetExceeded, NansenError } from "./nansen/client";
+import { originAllowed, requestAllowed } from "./origin";
 
-const LOCAL_ORIGINS = new Set(["http://127.0.0.1:3000", "http://localhost:3000"]);
+export { originAllowed } from "./origin";
 
-/**
- * Only the extension and the local pages may call the API. Any other website open in the
- * browser could otherwise hit 127.0.0.1 and spend the user's Nansen credits.
- */
-export function originAllowed(origin: string | null): boolean {
-  if (!origin) return true; // same-origin navigations, curl
-  if (LOCAL_ORIGINS.has(origin)) return true;
-  const pinned = process.env.TRIPWIRE_EXTENSION_ORIGIN?.trim();
-  if (pinned) return origin === pinned;
-  return /^chrome-extension:\/\/[a-p]{32}$/.test(origin);
+const FORBIDDEN = () => Response.json({ error: "origin not allowed" }, { status: 403 });
+
+function allowed(req: Request): boolean {
+  return requestAllowed(req.headers, new URL(req.url).host);
 }
 
 function corsHeaders(origin: string | null): Record<string, string> {
@@ -30,17 +25,16 @@ export function json(req: Request, body: unknown, status = 200) {
 }
 
 export function preflight(req: Request) {
-  const origin = req.headers.get("origin");
-  if (!originAllowed(origin)) return new Response(null, { status: 403 });
-  return new Response(null, { status: 204, headers: corsHeaders(origin) });
+  if (!allowed(req)) return new Response(null, { status: 403 });
+  return new Response(null, { status: 204, headers: corsHeaders(req.headers.get("origin")) });
 }
 
 type Handler = (req: Request) => Promise<Response>;
 
-/** Origin check + zod body parsing + uniform error mapping. */
+/** Host/Origin check (lib/origin.ts) + zod body parsing + uniform error mapping. */
 export function route<S extends z.ZodType>(schema: S | null, fn: (req: Request, body: z.infer<S>) => Promise<unknown>): Handler {
   return async (req) => {
-    if (!originAllowed(req.headers.get("origin"))) return new Response(JSON.stringify({ error: "origin not allowed" }), { status: 403 });
+    if (!allowed(req)) return FORBIDDEN();
     let body: unknown = undefined;
     if (schema) {
       const raw = await req.json().catch(() => undefined);
