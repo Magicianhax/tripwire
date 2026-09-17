@@ -38,3 +38,48 @@ export function isSelected(el: Element): boolean {
     el.getAttribute("data-state") === "active"
   );
 }
+
+/** Every visible, enabled `<button>` under `root` whose trimmed text matches `regex`, in DOM
+ * order, minus any `exclude` rejects. */
+export function findButtons(root: ParentNode, regex: RegExp, exclude?: (btn: HTMLButtonElement) => boolean): HTMLButtonElement[] {
+  const out: HTMLButtonElement[] = [];
+  for (const btn of root.querySelectorAll("button")) {
+    if (btn.disabled) continue;
+    if (!regex.test((btn.textContent ?? "").trim())) continue;
+    if (!isVisible(btn)) continue;
+    if (exclude?.(btn)) continue;
+    out.push(btn);
+  }
+  return out;
+}
+
+const TOGGLE_ROLES = new Set(["tab", "radio", "switch", "checkbox", "option", "menuitemradio"]);
+
+/** A segmented-control / tab member (Buy|Sell, Long|Short), not a form's primary action:
+ * carries toggle ARIA state or role, or sits in a tablist/radiogroup. */
+export function isToggleLike(el: Element): boolean {
+  if (el.hasAttribute("aria-pressed") || el.hasAttribute("aria-selected") || el.hasAttribute("aria-checked")) return true;
+  if (TOGGLE_ROLES.has(el.getAttribute("role") ?? "")) return true;
+  return el.closest('[role="tablist"], [role="radiogroup"]') !== null;
+}
+
+/** Site chrome, not a trade form: inside a nav, a link, or a tab. */
+export function isNavigation(el: Element): boolean {
+  return el.closest('nav, [role="navigation"], a, [role="tab"], [role="tablist"], header') !== null;
+}
+
+/** Inside a list item / card (a token list's quick-buy), not the page's trade form. */
+export function isInCard(el: Element): boolean {
+  return el.closest('a, li, article, [role="listitem"], [role="row"]') !== null;
+}
+
+/** True when a nearby ancestor (the form, or up to `depth` levels) holds an amount input. */
+export function hasNearbyInput(el: Element, depth = 3): boolean {
+  const form = el.closest("form");
+  if (form) return form.querySelector("input") !== null;
+  let node: Element | null = el.parentElement;
+  for (let i = 0; node && i < depth; i++, node = node.parentElement) {
+    if (node.querySelector("input")) return true;
+  }
+  return false;
+}

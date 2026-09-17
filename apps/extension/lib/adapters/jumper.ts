@@ -1,9 +1,10 @@
 import type { Target } from "@tripwire/core";
 import { evmTarget, EVM_CHAIN_IDS, JUMPER_SOLANA_CHAIN_ID, solanaTarget } from "./chains";
-import { findButton } from "./dom";
+import { findButtons, isNavigation } from "./dom";
 import { OVERRIDE_PHRASES, type VenueAdapter } from "./types";
 
-const ANCHOR_RE = /exchange|swap|bridge|review/i;
+// Whole-label match on the widget's primary action; nav/tab/link items with the same words are skipped.
+const ANCHOR_RE = /^(exchange|swap|bridge|review( swap| bridge)?|start (swap|bridging))$/i;
 
 export const jumperAdapter: VenueAdapter = {
   id: "jumper",
@@ -21,7 +22,8 @@ export const jumperAdapter: VenueAdapter = {
     return evmTarget(chain, toToken);
   },
   anchor(doc) {
-    return findButton(doc, ANCHOR_RE);
+    const candidates = findButtons(doc, ANCHOR_RE, isNavigation);
+    return candidates[candidates.length - 1] ?? null;
   },
   overridePhrase: OVERRIDE_PHRASES.spot,
 };
