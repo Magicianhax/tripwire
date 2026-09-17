@@ -1,9 +1,10 @@
 import { resolveApiKey, type KeySource } from "@/lib/nansen/key";
 import { creditsToday, isReplay } from "@/lib/nansen/client";
 import { ledgerSummary, recentChecks } from "@/lib/store";
+import { Meter } from "./_components/Meter";
+import { TargetLabel } from "./_components/TargetLabel";
 import { Time } from "./_components/Time";
 import { VerdictChip } from "./_components/VerdictChip";
-import { targetLabelFromJson } from "./_lib/target-label";
 
 export const dynamic = "force-dynamic";
 
@@ -52,20 +53,16 @@ export default function StatusPage() {
             <span className="tw-data tw-stat-value">
               {credits} / {DAILY_CAP}
             </span>
+            <Meter label={`Nansen credits used today: ${credits} of the ${DAILY_CAP} cap`} value={credits} max={DAILY_CAP} />
           </div>
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Calls total</span>
             <span className="tw-data tw-stat-value">
               {totalCalls} / {BUILDATHON_GOAL}
             </span>
+            <Meter label={`Calls toward the buildathon goal: ${totalCalls} of ${BUILDATHON_GOAL}, ${goalPct}%`} value={totalCalls} max={BUILDATHON_GOAL} />
           </div>
         </div>
-        <progress
-          className="tw-meter-track"
-          value={Math.min(totalCalls, BUILDATHON_GOAL)}
-          max={BUILDATHON_GOAL}
-          aria-label={`Calls toward the buildathon goal: ${totalCalls} of ${BUILDATHON_GOAL}, ${goalPct}%`}
-        />
       </section>
 
       <section className="tw-section">
@@ -106,7 +103,7 @@ export default function StatusPage() {
                       <Time ts={c.ts} />
                     </td>
                     <td className="tw-nowrap">{c.venue}</td>
-                    <td className="tw-nowrap">{targetLabelFromJson(c.target)}</td>
+                    <td className="tw-nowrap"><TargetLabel json={c.target} /></td>
                     <td>
                       <VerdictChip verdict={c.verdict} />
                     </td>

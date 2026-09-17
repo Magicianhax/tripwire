@@ -2,7 +2,7 @@ import { getRules, recentChecks, recentOverrides, recentSettingsChanges } from "
 import { Time } from "../_components/Time";
 import { VerdictChip } from "../_components/VerdictChip";
 import { PRESET_LABEL, ruleDescriptions, rulesForPreset } from "../_lib/rule-names";
-import { targetLabelFromJson } from "../_lib/target-label";
+import { TargetLabel } from "../_components/TargetLabel";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +52,7 @@ export default function HistoryPage() {
                       <Time ts={o.ts} />
                     </td>
                     <td className="tw-nowrap">{o.venue}</td>
-                    <td className="tw-nowrap">{targetLabelFromJson(o.target)}</td>
+                    <td className="tw-nowrap"><TargetLabel json={o.target} /></td>
                     <td>
                       <VerdictChip verdict={o.verdict} />
                     </td>
@@ -123,7 +123,7 @@ export default function HistoryPage() {
                       <Time ts={c.ts} />
                     </td>
                     <td className="tw-nowrap">{c.venue}</td>
-                    <td className="tw-nowrap">{targetLabelFromJson(c.target)}</td>
+                    <td className="tw-nowrap"><TargetLabel json={c.target} /></td>
                     <td>
                       <VerdictChip verdict={c.verdict} />
                     </td>

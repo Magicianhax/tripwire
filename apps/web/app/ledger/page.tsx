@@ -18,9 +18,9 @@ export default function LedgerPage() {
         <div className="tw-stat-row">
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Calls</span>
-            <p className="tw-readout">
+            <span className="tw-data tw-stat-value">
               {s.totalCalls} / {1000}
-            </p>
+            </span>
           </div>
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Successful calls</span>

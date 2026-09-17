@@ -123,17 +123,6 @@ a {
   font-size: 0.875rem;
   font-variant-numeric: tabular-nums slashed-zero;
 }
-/* Large numeric readout: the mono face at display size. */
-.tw-readout {
-  margin: 0;
-  font-family: var(--tw-font-mono);
-  font-variant-numeric: tabular-nums slashed-zero;
-  font-weight: 700;
-  font-size: 2.25rem;
-  line-height: 1;
-  letter-spacing: -0.01em;
-}
-
 /* Layout */
 .tw-container {
   max-width: 1200px;
@@ -268,6 +257,12 @@ main.tw-main {
   font-size: 1.0625rem;
   font-weight: 500;
   overflow-wrap: anywhere;
+}
+/* Every numeric readout in a strip reads at one mono size: no hero-metric jump. */
+.tw-stat-value.tw-data {
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
 /* Replay tag: advisory, never an alert. */
@@ -418,26 +413,62 @@ main.tw-main {
   }
 }
 
-/* Progress toward the buildathon goal: an advisory bar in a ground-glass track. */
+/* Tick-scale meter: ground-glass track, quarter ticks, mono scale figures. */
+.tw-meter {
+  margin-top: var(--tw-space-2);
+}
 .tw-meter-track {
-  appearance: none;
-  -webkit-appearance: none;
-  display: block;
-  width: 100%;
-  height: 10px;
+  position: relative;
+  height: 12px;
+  background: var(--tw-ground);
   border: 1px solid var(--tw-bezel-strong);
   border-radius: var(--tw-radius-cell);
-  background: var(--tw-ground);
-  overflow: hidden;
 }
-.tw-meter-track::-webkit-progress-bar {
-  background: var(--tw-ground);
-}
-.tw-meter-track::-webkit-progress-value {
+.tw-meter-fill {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
   background: var(--tw-advisory);
 }
-.tw-meter-track::-moz-progress-bar {
+.tw-meter-tick {
+  position: absolute;
+  top: -1px;
+  width: 1px;
+  height: 5px;
+  margin-left: -0.5px;
+  background: var(--tw-text-2);
+}
+.tw-meter-tick[data-major] {
+  height: 12px;
+}
+/* Zero state: a lit needle standing on the zero tick. */
+.tw-meter-track[data-zero]::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: -1px;
+  width: 3px;
   background: var(--tw-advisory);
+}
+.tw-meter-scale {
+  position: relative;
+  height: 18px;
+  margin-top: var(--tw-space-1);
+}
+.tw-meter-scale span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: var(--tw-text-2);
+}
+.tw-meter-scale span[data-edge="start"] {
+  transform: none;
+}
+.tw-meter-scale span[data-edge="end"] {
+  transform: translateX(-100%);
 }
 
 /* Segmented control: the selected preset gets a lit advisory bezel. */

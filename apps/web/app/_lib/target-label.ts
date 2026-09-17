@@ -22,6 +22,25 @@ export function targetLabel(t: Target): string {
   }
 }
 
+export type LabelPart = { text: string; mono: boolean };
+
+/** The same label split by face: addresses in mono, words (symbols, chains, sides, slugs) in the
+ * UI face. Joining the parts' text gives `targetLabel`. */
+export function targetParts(t: Target): LabelPart[] {
+  if (t.kind === "spot") {
+    return [t.symbol ? { text: t.symbol, mono: false } : { text: shortAddress(t.tokenAddress), mono: true }, { text: ` · ${t.chain}`, mono: false }];
+  }
+  return [{ text: targetLabel(t), mono: false }];
+}
+
+export function targetPartsFromJson(raw: string): LabelPart[] {
+  try {
+    return targetParts(JSON.parse(raw) as Target);
+  } catch {
+    return [{ text: raw, mono: false }];
+  }
+}
+
 /** checks/overrides store `target` as a JSON string; render it defensively. */
 export function targetLabelFromJson(raw: string): string {
   try {
