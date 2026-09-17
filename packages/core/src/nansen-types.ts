@@ -70,6 +70,7 @@ export type Candle = { interval_start: string; open: number; high: number; low: 
 export type PerpScreenerRow = {
   token_symbol: string;
   mark_price: number | null;
+  /** Hyperliquid's hourly funding rate, as a decimal (see PERP_VENUES in perp-venues.ts). */
   funding: number | null;
   open_interest: number | null;
   current_smart_money_position_longs_usd: number | null;
@@ -78,6 +79,14 @@ export type PerpScreenerRow = {
   smart_money_longs_count: number | null;
   smart_money_shorts_count: number | null;
   net_position_change?: number | null;
+  /** Smart Money turnover in the window, and the two sides of it: the buy/sell pressure the
+   * Positioning tab reads out. */
+  smart_money_volume?: number | null;
+  smart_money_buy_volume?: number | null;
+  smart_money_sell_volume?: number | null;
+  /** Distinct Smart Money traders in this market in the window. */
+  trader_count?: number | null;
+  previous_price_usd?: number | null;
 };
 
 export type PerpPosition = {
@@ -90,6 +99,11 @@ export type PerpPosition = {
   mark_price: number | null;
   liquidation_price: number | null;
   upnl_usd: number | null;
+  /** Signed coin size (negative for a short). */
+  position_size?: number | null;
+  leverage_type?: string | null;
+  /** Funding this position has paid (positive) or received (negative) so far. */
+  funding_usd?: number | null;
 };
 
 export type PerpTrade = {

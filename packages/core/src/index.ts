@@ -13,6 +13,8 @@ export * from "./schemas";
 export * from "./constants";
 export * from "./labels";
 export * from "./brands";
+export * from "./perp-venues";
+export * from "./depth";
 export * from "./nansen-links";
 export * from "./curated-wallets";
 export * from "./wallet-detect";

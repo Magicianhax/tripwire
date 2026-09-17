@@ -62,6 +62,23 @@ export const CHAIN_LOGOS: Record<Chain, BrandLogo> = {
 /** Only for the "Powered by Nansen" credit, never as Tripwire's own logo. */
 export const NANSEN_LOGO: BrandLogo = { name: "Nansen", file: "logos/nansen.svg" };
 
+/**
+ * The perp venues quoted in the cross-venue funding table. Hyperliquid already has a venue mark
+ * above; the others are marks of exchanges Tripwire only *reads*, so they are kept in their own
+ * registry rather than in VENUE_LOGOS, which means "a page Tripwire runs on".
+ */
+export const PERP_VENUE_LOGOS: Record<string, BrandLogo> = {
+  hyperliquid: { name: "Hyperliquid", file: "logos/hyperliquid.png" },
+  binance: { name: "Binance", file: "logos/perp-binance.svg" },
+  bybit: { name: "Bybit", file: "logos/perp-bybit.png" },
+  okx: { name: "OKX", file: "logos/perp-okx.svg" },
+  dydx: { name: "dYdX", file: "logos/perp-dydx.svg" },
+};
+
+export function perpVenueLogo(id: string): BrandLogo | null {
+  return Object.hasOwn(PERP_VENUE_LOGOS, id) ? PERP_VENUE_LOGOS[id]! : null;
+}
+
 export function venueLogo(id: string): BrandLogo | null {
   return Object.hasOwn(VENUE_LOGOS, id) ? VENUE_LOGOS[id as VenueId] : null;
 }

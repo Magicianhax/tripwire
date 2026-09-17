@@ -45,8 +45,16 @@ markup). In the extension they are chrome-extension:// URLs listed in web_access
 | chain-polygon.svg | Polygon | simple-icons 16.31.0 `icons/polygon.svg` (guidelines https://polygon.technology/brandguidelines) | SVG, monochrome, fill #7B3FE4 | Icon data CC0 (simple-icons); Polygon Labs trademark |
 | chain-optimism.svg | Optimism | simple-icons 16.31.0 `icons/optimism.svg` (source github.com/ethereum-optimism/brand-kit) | SVG, fill #FF0420 | Icon data CC0 (simple-icons); Optimism Foundation trademark |
 | chain-avalanche.svg | Avalanche | https://www.avax.network/touchicon.svg | SVG, original colours | Ava Labs trademark; site icon |
+| perp-binance.svg | Binance | simple-icons 16.31.0 `icons/binance.svg` (source https://www.binance.com/en/about) | SVG, monochrome, fill #F0B90B (Binance brand hex) | Icon data CC0 (simple-icons); Binance trademark |
+| perp-bybit.png | Bybit | https://www.bybit.com/favicon.ico | 48px PNG-in-ICO -> 96px PNG | Bybit trademark; site icon |
+| perp-okx.svg | OKX | simple-icons 16.31.0 `icons/okx.svg` (source https://www.okx.com) | SVG, monochrome, fill #FFFFFF (the brand mark is black, unreadable on the dark ground) | Icon data CC0 (simple-icons); OKX trademark |
+| perp-dydx.svg | dYdX | https://dydx.trade/favicon.svg | SVG, original colours (dark tile, white glyph) | dYdX trademark; site icon |
 
-Missing: none. Every requested brand has an owner-published mark. Ten are raster only (the owner
+The four perp-venue marks (`perp-*`) identify exchanges Tripwire reads funding and open
+interest from through their free public APIs. They appear only in the cross-venue table's venue
+column, never as a Tripwire mark and never as a claim of partnership.
+
+Missing: none. Every requested brand has an owner-published mark. Eleven are raster only (the owner
 publishes no SVG at a reachable URL): Hyperliquid, pump.fun, Raydium, PancakeSwap, Axiom, Photon,
-GMGN, BullX, DEX Screener, Birdeye. If an owner later publishes an SVG, replace the PNG and update
+GMGN, BullX, DEX Screener, Birdeye, Bybit. If an owner later publishes an SVG, replace the PNG and update
 this table.

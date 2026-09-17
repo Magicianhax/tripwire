@@ -1,0 +1,1567 @@
+{
+  "data": [
+    {
+      "trader_address": "0xea0027b6ea9b6d7d401b5266979cc3b3ca87a918",
+      "trader_address_label": "Token Millionaire",
+      "total_pnl": 17628877.466571003,
+      "realized_pnl_usd": 5917143.409904,
+      "unrealized_pnl_usd": 11711734.056667002,
+      "roi": 0.20538325158511067,
+      "volume_usd": 38226271.236647,
+      "total_trades": 40069,
+      "top_positions": [
+        {
+          "coin": "ETH",
+          "side": "long",
+          "size_base": 10003.8263,
+          "position_value_usd": 24507373.669740003,
+          "entry_price": 2003.01,
+          "unrealized_pnl_usd": 4099425.671580002
+        },
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 100000,
+          "position_value_usd": 8301500,
+          "entry_price": 67.7326,
+          "unrealized_pnl_usd": 1323648.6100479995
+        },
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 5000,
+          "position_value_usd": 7429500,
+          "entry_price": 340.9101,
+          "unrealized_pnl_usd": 5561544.902528
+        },
+        {
+          "coin": "xyz:BRENTOIL",
+          "side": "short",
+          "size_base": 55000,
+          "position_value_usd": 5472280,
+          "entry_price": 94.2002,
+          "unrealized_pnl_usd": -535446.125391
+        },
+        {
+          "coin": "xyz:CL",
+          "side": "short",
+          "size_base": 55151.285,
+          "position_value_usd": 5328937.76184,
+          "entry_price": 89.222,
+          "unrealized_pnl_usd": -623242.4283760001
+        }
+      ],
+      "account_value": 8764088.294607
+    },
+    {
+      "trader_address": "0x152e41f0b83e6cad4b5dc730c1d6279b7d67c9dc",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 14210431.997560002,
+      "realized_pnl_usd": 7628187.545776,
+      "unrealized_pnl_usd": 6582244.451784001,
+      "roi": 0.044082227024305365,
+      "volume_usd": 298746253.40550804,
+      "total_trades": 42957,
+      "top_positions": [
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 225978.91,
+          "position_value_usd": 18759639.21365,
+          "entry_price": 61.1375,
+          "unrealized_pnl_usd": 4631571.3409899995
+        },
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 7641.17,
+          "position_value_usd": 11354014.503,
+          "entry_price": 1238.8315,
+          "unrealized_pnl_usd": 1871980.3771380007
+        },
+        {
+          "coin": "NEAR",
+          "side": "long",
+          "size_base": 136546.3,
+          "position_value_usd": 412629.26396999997,
+          "entry_price": 2.4444,
+          "unrealized_pnl_usd": 78692.73365600001
+        }
+      ],
+      "account_value": 6707999.844099
+    },
+    {
+      "trader_address": "0xa9b95f2a2e7ef219021efc5c04c32761b8553bbd",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 12529483.531118002,
+      "realized_pnl_usd": 2907201.41203,
+      "unrealized_pnl_usd": 9622282.119088002,
+      "roi": 0.14233987713118032,
+      "volume_usd": 78136503.17963,
+      "total_trades": 7592,
+      "top_positions": [
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 249500,
+          "position_value_usd": 20712242.5,
+          "entry_price": 39.6337,
+          "unrealized_pnl_usd": 9622282.119088002
+        }
+      ],
+      "account_value": 3199398.660201
+    },
+    {
+      "trader_address": "0xa5b0edf6b55128e0ddae8e51ac538c3188401d41",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 12032490.589371998,
+      "realized_pnl_usd": 12032490.589371998,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.07090248847248994,
+      "volume_usd": 169704771.27951,
+      "total_trades": 4592,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0xbf732ea04197942783e34730ed6e0f6099575d58",
+      "trader_address_label": "Uses \"DEXARI\" HL Referral Code",
+      "total_pnl": 11779744.455042003,
+      "realized_pnl_usd": 7781792.100124,
+      "unrealized_pnl_usd": 3997952.3549180026,
+      "roi": 0.024902693381900546,
+      "volume_usd": 455471332.57626003,
+      "total_trades": 46473,
+      "top_positions": [
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 14511.59,
+          "position_value_usd": 21562771.581,
+          "entry_price": 1210.0402,
+          "unrealized_pnl_usd": 3997952.3549180026
+        }
+      ],
+      "account_value": 2104795.778943
+    },
+    {
+      "trader_address": "0x45d26f28196d226497130c4bac709d808fed4029",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 11567317.945404993,
+      "realized_pnl_usd": 223671.804944,
+      "unrealized_pnl_usd": 11343646.140460994,
+      "roi": 0.07146571446240443,
+      "volume_usd": 56830210.487886995,
+      "total_trades": 59454,
+      "top_positions": [
+        {
+          "coin": "ETH",
+          "side": "short",
+          "size_base": 13950,
+          "position_value_usd": 34174710,
+          "entry_price": 2443.6,
+          "unrealized_pnl_usd": 3274834.571068996
+        },
+        {
+          "coin": "BTC",
+          "side": "short",
+          "size_base": 427.5,
+          "position_value_usd": 32704177.5,
+          "entry_price": 76891.9,
+          "unrealized_pnl_usd": 2962251.0846769977
+        },
+        {
+          "coin": "ZEC",
+          "side": "short",
+          "size_base": 5227,
+          "position_value_usd": 7766799.300000001,
+          "entry_price": 833.4375,
+          "unrealized_pnl_usd": -3362394.092015
+        },
+        {
+          "coin": "PUMP",
+          "side": "short",
+          "size_base": 1277810000,
+          "position_value_usd": 5007737.39,
+          "entry_price": 0.004715,
+          "unrealized_pnl_usd": 1136441.3757329998
+        },
+        {
+          "coin": "DOGE",
+          "side": "short",
+          "size_base": 45426000,
+          "position_value_usd": 3712848.684,
+          "entry_price": 0.095443,
+          "unrealized_pnl_usd": 672280.416036
+        }
+      ],
+      "account_value": 17642105.481335
+    },
+    {
+      "trader_address": "0x9c6a5b4662c722d2c47f43d6c9813cb080ffa4ed",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 11168195.987714997,
+      "realized_pnl_usd": 475197.5662600002,
+      "unrealized_pnl_usd": 10692998.421454996,
+      "roi": 0.12564221239824097,
+      "volume_usd": 44409948.12778,
+      "total_trades": 4500,
+      "top_positions": [
+        {
+          "coin": "SOL",
+          "side": "long",
+          "size_base": 550087.69,
+          "position_value_usd": 55569858.443799995,
+          "entry_price": 80.8579,
+          "unrealized_pnl_usd": 10692998.421454996
+        }
+      ],
+      "account_value": 7339050.413955
+    },
+    {
+      "trader_address": "0xde8d9e530b0528ffa7b1190f862536c055dd9524",
+      "trader_address_label": "Uses \"RABBYWALLET\" HL Referral Code",
+      "total_pnl": 10386388.858260008,
+      "realized_pnl_usd": 1383667.985116998,
+      "unrealized_pnl_usd": 9002720.87314301,
+      "roi": 0.03791644798148055,
+      "volume_usd": 209292042.85581002,
+      "total_trades": 7271,
+      "top_positions": [
+        {
+          "coin": "ETH",
+          "side": "long",
+          "size_base": 30282.4035,
+          "position_value_usd": 74185832.0943,
+          "entry_price": 2134.45,
+          "unrealized_pnl_usd": 9002720.87314301
+        }
+      ],
+      "account_value": 5504002.267064
+    },
+    {
+      "trader_address": "0xa2ce501d9c0c5e23d34272f84402cfb7835b3126",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 10331393.340455005,
+      "realized_pnl_usd": 4459383.647527,
+      "unrealized_pnl_usd": 5872009.692928005,
+      "roi": 0.10347273435338077,
+      "volume_usd": 44740285.35388,
+      "total_trades": 8429,
+      "top_positions": [
+        {
+          "coin": "ETH",
+          "side": "long",
+          "size_base": 10016.8752,
+          "position_value_usd": 24539340.864960004,
+          "entry_price": 2162.83,
+          "unrealized_pnl_usd": 2562556.1300510024
+        },
+        {
+          "coin": "BTC",
+          "side": "long",
+          "size_base": 300.49417,
+          "position_value_usd": 22988104.49917,
+          "entry_price": 70766.9,
+          "unrealized_pnl_usd": 1444818.946401002
+        },
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 150000,
+          "position_value_usd": 12452250,
+          "entry_price": 71.0145,
+          "unrealized_pnl_usd": 1449773.3438950004
+        },
+        {
+          "coin": "SOL",
+          "side": "long",
+          "size_base": 19600,
+          "position_value_usd": 1979992,
+          "entry_price": 77.7668,
+          "unrealized_pnl_usd": 414861.2725809999
+        }
+      ],
+      "account_value": 6924098.024554
+    },
+    {
+      "trader_address": "0x6c8512516ce5669d35113a11ca8b8de322fd84f6",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 9897557.50649,
+      "realized_pnl_usd": 9897557.50649,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.09846830818377755,
+      "volume_usd": 100515157.50649,
+      "total_trades": 2956,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0xedcdcaa1f18350c50c10bef860e64daa9785d05a",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 8993459.932111004,
+      "realized_pnl_usd": -898302.1626089996,
+      "unrealized_pnl_usd": 9891762.094720004,
+      "roi": 0.012125954298081562,
+      "volume_usd": 702950281.03791,
+      "total_trades": 29938,
+      "top_positions": [
+        {
+          "coin": "ETH",
+          "side": "long",
+          "size_base": 20000,
+          "position_value_usd": 48996000,
+          "entry_price": 1936,
+          "unrealized_pnl_usd": 9891762.094720004
+        }
+      ],
+      "account_value": 10629938.004563
+    },
+    {
+      "trader_address": "0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05",
+      "trader_address_label": "Uses \"TRADEXYZ1\" HL Referral Code",
+      "total_pnl": 8497742.908385,
+      "realized_pnl_usd": 7740487.324007,
+      "unrealized_pnl_usd": 757255.5843779999,
+      "roi": 0.12057102379947941,
+      "volume_usd": 30287547.369869996,
+      "total_trades": 8112,
+      "top_positions": [
+        {
+          "coin": "xyz:SP500",
+          "side": "long",
+          "size_base": 4650.314,
+          "position_value_usd": 35482360.8514,
+          "entry_price": 7074.158,
+          "unrealized_pnl_usd": 2650090.6099730004
+        },
+        {
+          "coin": "BTC",
+          "side": "long",
+          "size_base": 46.23883,
+          "position_value_usd": 3537316.73383,
+          "entry_price": 70673.1,
+          "unrealized_pnl_usd": -2258772.308604
+        },
+        {
+          "coin": "HYPE",
+          "side": "short",
+          "size_base": 28128.12,
+          "position_value_usd": 2335055.8818,
+          "entry_price": 83.9978,
+          "unrealized_pnl_usd": 38659.063565999924
+        },
+        {
+          "coin": "AAVE",
+          "side": "short",
+          "size_base": 8719.93,
+          "position_value_usd": 1121470.1973,
+          "entry_price": 130.7917,
+          "unrealized_pnl_usd": 28443.200150999808
+        },
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 688.83,
+          "position_value_usd": 1023532.4970000001,
+          "entry_price": 759.9555,
+          "unrealized_pnl_usd": 398561.33394900005
+        }
+      ],
+      "account_value": 6966461.883919
+    },
+    {
+      "trader_address": "0xa875890465da20062bcf3b024bf7d54e69c725a8",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 8413531.88117,
+      "realized_pnl_usd": 8413531.88117,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.1111326195050671,
+      "volume_usd": 75707131.88117,
+      "total_trades": 2572,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x469e9a7f624b04c24f0e64edf8d8a277e6bf58a5",
+      "trader_address_label": "Uses \"MMREFCSI\" HL Referral Code",
+      "total_pnl": 8350067.644444003,
+      "realized_pnl_usd": 8192763.003746002,
+      "unrealized_pnl_usd": 157304.6406980006,
+      "roi": 0.005088148654084586,
+      "volume_usd": 1577407478.9377236,
+      "total_trades": 179052,
+      "top_positions": [
+        {
+          "coin": "xyz:XYZ100",
+          "side": "long",
+          "size_base": 500,
+          "position_value_usd": 14710500,
+          "entry_price": 29141.51,
+          "unrealized_pnl_usd": 137987.4109200008
+        },
+        {
+          "coin": "xyz:META",
+          "side": "long",
+          "size_base": 15000,
+          "position_value_usd": 10220250,
+          "entry_price": 658.049,
+          "unrealized_pnl_usd": 338584.44538300065
+        },
+        {
+          "coin": "xyz:MU",
+          "side": "long",
+          "size_base": 10344.8,
+          "position_value_usd": 10135007.456,
+          "entry_price": 970.263,
+          "unrealized_pnl_usd": 85736.00477599993
+        },
+        {
+          "coin": "HYPE",
+          "side": "short",
+          "size_base": 120000.04,
+          "position_value_usd": 9961803.3206,
+          "entry_price": 79.884,
+          "unrealized_pnl_usd": -319058.895261
+        },
+        {
+          "coin": "xyz:BRENTOIL",
+          "side": "long",
+          "size_base": 75572.02,
+          "position_value_usd": 7519113.70192,
+          "entry_price": 102.8204,
+          "unrealized_pnl_usd": -253279.8935930009
+        }
+      ],
+      "account_value": 2049300.154538
+    },
+    {
+      "trader_address": "0x4f9b096385c4e66ce3dec9a17e150795b9a02e3f",
+      "trader_address_label": "Uses \"DAPPSO\" HL Referral Code",
+      "total_pnl": 8295491.26403,
+      "realized_pnl_usd": 8295491.26403,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.4924841291872592,
+      "volume_usd": 16844179.88803,
+      "total_trades": 5661,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x382bf59b250a3167a8b86862c2c56cd870353e39",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 7620988.224413001,
+      "realized_pnl_usd": 105744.376983,
+      "unrealized_pnl_usd": 7515243.847430001,
+      "roi": 0.37705932739004483,
+      "volume_usd": 8361919.749015,
+      "total_trades": 13560,
+      "top_positions": [
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 9814.22,
+          "position_value_usd": 14582949.498,
+          "entry_price": 517.6831,
+          "unrealized_pnl_usd": 9375445.292682001
+        },
+        {
+          "coin": "ETH",
+          "side": "short",
+          "size_base": 3550.6319,
+          "position_value_usd": 8698338.02862,
+          "entry_price": 1906.41,
+          "unrealized_pnl_usd": -1860181.6300790005
+        },
+        {
+          "coin": "NEAR",
+          "side": "short",
+          "size_base": 41.7,
+          "position_value_usd": 126.01323000000001,
+          "entry_price": 2.54113,
+          "unrealized_pnl_usd": -19.80792900000001
+        },
+        {
+          "coin": "XMR",
+          "side": "short",
+          "size_base": 0.001,
+          "position_value_usd": 0.5154500000000001,
+          "entry_price": 505.34,
+          "unrealized_pnl_usd": -0.008383000000000071
+        },
+        {
+          "coin": "FARTCOIN",
+          "side": "short",
+          "size_base": 0.1,
+          "position_value_usd": 0.014484,
+          "entry_price": 0.15623,
+          "unrealized_pnl_usd": 0.0011390000000000011
+        }
+      ],
+      "account_value": 10058923.372379
+    },
+    {
+      "trader_address": "0xc179e03922afe8fa9533d3f896338b9fb87ce0c8",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 7034718.954093001,
+      "realized_pnl_usd": 7391882.388138,
+      "unrealized_pnl_usd": -357163.43404499936,
+      "roi": 0.020364212133466394,
+      "volume_usd": 322141903.855132,
+      "total_trades": 327345,
+      "top_positions": [
+        {
+          "coin": "XMR",
+          "side": "long",
+          "size_base": 16542.912,
+          "position_value_usd": 8527043.990400001,
+          "entry_price": 512.533,
+          "unrealized_pnl_usd": -1144397.2798449995
+        },
+        {
+          "coin": "ETH",
+          "side": "long",
+          "size_base": 2883.8663,
+          "position_value_usd": 7064895.661740001,
+          "entry_price": 2213.5,
+          "unrealized_pnl_usd": 483993.8891560005
+        },
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 79486.15,
+          "position_value_usd": 6598542.742249999,
+          "entry_price": 78.6915,
+          "unrealized_pnl_usd": 175056.18837299963
+        },
+        {
+          "coin": "VVV",
+          "side": "long",
+          "size_base": 31289.74,
+          "position_value_usd": 775578.78538,
+          "entry_price": 22.5371,
+          "unrealized_pnl_usd": 69160.12587200002
+        },
+        {
+          "coin": "LIT",
+          "side": "long",
+          "size_base": 164531,
+          "position_value_usd": 763456.7462,
+          "entry_price": 4.312974,
+          "unrealized_pnl_usd": 52070.71329400008
+        }
+      ],
+      "account_value": 12104890.025245
+    },
+    {
+      "trader_address": "0xf29c6bc1147a841519b382459a6d7a373c6b9971",
+      "trader_address_label": "Uses \"SANTOCHAN\" HL Referral Code",
+      "total_pnl": 6942023.351428,
+      "realized_pnl_usd": 2232253.213166,
+      "unrealized_pnl_usd": 4709770.138262001,
+      "roi": 0.03823775081909907,
+      "volume_usd": 135424147.41196403,
+      "total_trades": 48228,
+      "top_positions": [
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 8500,
+          "position_value_usd": 12630150,
+          "entry_price": 900.647,
+          "unrealized_pnl_usd": 4896200.305945
+        },
+        {
+          "coin": "BTC",
+          "side": "long",
+          "size_base": 105,
+          "position_value_usd": 8032605,
+          "entry_price": 79234.6,
+          "unrealized_pnl_usd": -310097.8140160006
+        },
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 81000,
+          "position_value_usd": 6724215,
+          "entry_price": 77.7459,
+          "unrealized_pnl_usd": 382559.29663499957
+        },
+        {
+          "coin": "ETH",
+          "side": "long",
+          "size_base": 2000,
+          "position_value_usd": 4899600,
+          "entry_price": 2529.91,
+          "unrealized_pnl_usd": -163263.26062399935
+        },
+        {
+          "coin": "xyz:MU",
+          "side": "long",
+          "size_base": 4500,
+          "position_value_usd": 4408740,
+          "entry_price": 1000.321,
+          "unrealized_pnl_usd": -151885.732265
+        }
+      ],
+      "account_value": 4657693.853972
+    },
+    {
+      "trader_address": "0x8f78cb4c11dd66b99b2172b4c1ae05843bde87e7",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 6865332.030614999,
+      "realized_pnl_usd": 6865332.030614999,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.05699458262961019,
+      "volume_usd": 120455869.90663,
+      "total_trades": 5701,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x9a80d88c21be60e870d07d852390e92d09223cf2",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 6253108.194441001,
+      "realized_pnl_usd": 1065878.761352,
+      "unrealized_pnl_usd": 5187229.433089001,
+      "roi": 0.14139585890721604,
+      "volume_usd": 29902537.3614,
+      "total_trades": 96110,
+      "top_positions": [
+        {
+          "coin": "xyz:CXMT",
+          "side": "long",
+          "size_base": 1197603.9,
+          "position_value_usd": 9835441.78914,
+          "entry_price": 6.61557,
+          "unrealized_pnl_usd": 4747898.212589
+        },
+        {
+          "coin": "io:ANTH",
+          "side": "long",
+          "size_base": 3194.318,
+          "position_value_usd": 6875450.063200001,
+          "entry_price": 2003.168,
+          "unrealized_pnl_usd": 439331.22050000064
+        }
+      ],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x089fe537f4b2af55fa990bc64ff4125800bba4f8",
+      "trader_address_label": "Uses \"MMREFCSI\" HL Referral Code",
+      "total_pnl": 6217405.14418,
+      "realized_pnl_usd": 6217405.14418,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.3581512341168893,
+      "volume_usd": 17359720.006300002,
+      "total_trades": 18714,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0xec4a6f59960fb55a7fa49262e2628687b322cf62",
+      "trader_address_label": "Uses \"THEDOCTOR\" HL Referral Code",
+      "total_pnl": 6198963.084443,
+      "realized_pnl_usd": 6310146.686665,
+      "unrealized_pnl_usd": -111183.602222,
+      "roi": 0.003808689623988114,
+      "volume_usd": 1617346052.419575,
+      "total_trades": 86931,
+      "top_positions": [
+        {
+          "coin": "LIT",
+          "side": "long",
+          "size_base": 504298,
+          "position_value_usd": 2340043.5796,
+          "entry_price": 4.387075,
+          "unrealized_pnl_usd": 124959.92771099991
+        },
+        {
+          "coin": "CASHCAT",
+          "side": "long",
+          "size_base": 6641246,
+          "position_value_usd": 1336703.506158,
+          "entry_price": 0.202924,
+          "unrealized_pnl_usd": -27219.704580999904
+        },
+        {
+          "coin": "SPX",
+          "side": "long",
+          "size_base": 2373091.7,
+          "position_value_usd": 1108637.249489,
+          "entry_price": 0.52139,
+          "unrealized_pnl_usd": -134114.09620000012
+        },
+        {
+          "coin": "xyz:TSLA",
+          "side": "long",
+          "size_base": 3000,
+          "position_value_usd": 1098180,
+          "entry_price": 352.39,
+          "unrealized_pnl_usd": 38726.80912500005
+        },
+        {
+          "coin": "xyz:RKLB",
+          "side": "long",
+          "size_base": 14000,
+          "position_value_usd": 950264.0000000001,
+          "entry_price": 66.5979,
+          "unrealized_pnl_usd": 11667.515823000129
+        }
+      ],
+      "account_value": 1550006.967326
+    },
+    {
+      "trader_address": "0xb5b3f3caf9d778b1293e5cd29f32e84b04c67a08",
+      "trader_address_label": "Uses \"20BF8\" HL Referral Code",
+      "total_pnl": 5970574.233186,
+      "realized_pnl_usd": 5918461.136245,
+      "unrealized_pnl_usd": 52113.096941000054,
+      "roi": 0.02427956083031178,
+      "volume_usd": 244984005.25604007,
+      "total_trades": 15665,
+      "top_positions": [
+        {
+          "coin": "xyz:MU",
+          "side": "long",
+          "size_base": 1000,
+          "position_value_usd": 979720,
+          "entry_price": 925.477,
+          "unrealized_pnl_usd": 52113.096941000054
+        }
+      ],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0xe2ad376800c2da03d611700ffc1d013090733c8c",
+      "trader_address_label": "Uses \"FLUFFYSNOW\" HL Referral Code",
+      "total_pnl": 5732564.982469999,
+      "realized_pnl_usd": 4207579.372031999,
+      "unrealized_pnl_usd": 1524985.6104380006,
+      "roi": 0.011159863930506464,
+      "volume_usd": 499835670.071639,
+      "total_trades": 52088,
+      "top_positions": [
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 10341.8,
+          "position_value_usd": 15366880.62,
+          "entry_price": 1338.3831,
+          "unrealized_pnl_usd": 1524985.6104380006
+        }
+      ],
+      "account_value": 3118801.401799
+    },
+    {
+      "trader_address": "0x31b1ecf848443472e34d204a134812d86ab01434",
+      "trader_address_label": "Uses \"RABBYWALLET\" HL Referral Code",
+      "total_pnl": 5338902.665379003,
+      "realized_pnl_usd": 0,
+      "unrealized_pnl_usd": 5338902.665379003,
+      "roi": 0.08382127576415153,
+      "volume_usd": 24115024.6697,
+      "total_trades": 6549,
+      "top_positions": [
+        {
+          "coin": "XRP",
+          "side": "long",
+          "size_base": 35031430,
+          "position_value_usd": 45393726.994,
+          "entry_price": 1.12981,
+          "unrealized_pnl_usd": 5338902.665379003
+        }
+      ],
+      "account_value": 4381062.625818
+    },
+    {
+      "trader_address": "0x237152b038d88f4156a0cd71090462de7e3f0883",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 5238751.620807003,
+      "realized_pnl_usd": 6187943.11301,
+      "unrealized_pnl_usd": -949191.4922029977,
+      "roi": 0.0391536959811622,
+      "volume_usd": 102373510.49158001,
+      "total_trades": 2621,
+      "top_positions": [
+        {
+          "coin": "BTC",
+          "side": "long",
+          "size_base": 400,
+          "position_value_usd": 30600400,
+          "entry_price": 78565.4,
+          "unrealized_pnl_usd": -949191.4922029977
+        }
+      ],
+      "account_value": 2513313.78716
+    },
+    {
+      "trader_address": "0x93ab7dbdeb996806454de19c35c8247f4b2511f8",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 5233709.670557,
+      "realized_pnl_usd": 6165341.16276,
+      "unrealized_pnl_usd": -931631.492203,
+      "roi": 0.060193165034653336,
+      "volume_usd": 55539970.781150006,
+      "total_trades": 1060,
+      "top_positions": [
+        {
+          "coin": "BTC",
+          "side": "long",
+          "size_base": 400,
+          "position_value_usd": 30600400,
+          "entry_price": 78521.5,
+          "unrealized_pnl_usd": -931631.492203
+        }
+      ],
+      "account_value": 2493593.78716
+    },
+    {
+      "trader_address": "0x15b325660a1c4a9582a7d834c31119c0cb9e3a42",
+      "trader_address_label": "Token Millionaire",
+      "total_pnl": 5227110.923286998,
+      "realized_pnl_usd": 0,
+      "unrealized_pnl_usd": 5227110.923286998,
+      "roi": 0.10008021265033959,
+      "volume_usd": 14338635.109189998,
+      "total_trades": 4121,
+      "top_positions": [
+        {
+          "coin": "BTC",
+          "side": "long",
+          "size_base": 300,
+          "position_value_usd": 22950300,
+          "entry_price": 67524.6,
+          "unrealized_pnl_usd": 2372427.723275998
+        },
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 250819.67,
+          "position_value_usd": 20821794.905050002,
+          "entry_price": 70.3023,
+          "unrealized_pnl_usd": 2854683.2000109996
+        }
+      ],
+      "account_value": 4590500.727112
+    },
+    {
+      "trader_address": "0x350e33a777d510616fbdb483d1de3b50d1edfcfb",
+      "trader_address_label": "Uses \"RABBYWALLET\" HL Referral Code",
+      "total_pnl": 5143940.172102001,
+      "realized_pnl_usd": 3073280.824123,
+      "unrealized_pnl_usd": 2070659.3479790012,
+      "roi": 0.006428382880194783,
+      "volume_usd": 768776182.1530519,
+      "total_trades": 117389,
+      "top_positions": [
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 135388.71,
+          "position_value_usd": 11239293.76065,
+          "entry_price": 82.2378,
+          "unrealized_pnl_usd": 90390.06045300103
+        },
+        {
+          "coin": "ETH",
+          "side": "short",
+          "size_base": 4000,
+          "position_value_usd": 9799200,
+          "entry_price": 2437.61,
+          "unrealized_pnl_usd": -37137.53314900022
+        },
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 6500.4,
+          "position_value_usd": 9658944.36,
+          "entry_price": 1173.7745,
+          "unrealized_pnl_usd": 2017796.4980890003
+        },
+        {
+          "coin": "BTC",
+          "side": "short",
+          "size_base": 30,
+          "position_value_usd": 2295030,
+          "entry_price": 76295.3,
+          "unrealized_pnl_usd": -5074.3951029999125
+        },
+        {
+          "coin": "NEAR",
+          "side": "long",
+          "size_base": 159999,
+          "position_value_usd": 483500.9781,
+          "entry_price": 3.05847,
+          "unrealized_pnl_usd": -5857.140311999963
+        }
+      ],
+      "account_value": 4418765.273442
+    },
+    {
+      "trader_address": "0x18e2eb3cafa6ee5d3885e20d80298b37321e84fa",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 5138645.748032,
+      "realized_pnl_usd": 2373706.95933,
+      "unrealized_pnl_usd": 2764938.788702,
+      "roi": 0.08782911969886364,
+      "volume_usd": 55605313.64547001,
+      "total_trades": 5577,
+      "top_positions": [
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 74000,
+          "position_value_usd": 6143110,
+          "entry_price": 39.2162,
+          "unrealized_pnl_usd": 2764938.788702
+        }
+      ],
+      "account_value": 854329.369933
+    },
+    {
+      "trader_address": "0x795cfd1b03eafc11c4ec958b8a94cfc9aa64a242",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 5135926.309815,
+      "realized_pnl_usd": 3249529.044309,
+      "unrealized_pnl_usd": 1886397.2655059998,
+      "roi": 0.03722349086374223,
+      "volume_usd": 126756157.59196699,
+      "total_trades": 10893,
+      "top_positions": [
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 126327.77,
+          "position_value_usd": 10487099.826550001,
+          "entry_price": 65.6332,
+          "unrealized_pnl_usd": 1884313.7909209998
+        },
+        {
+          "coin": "xyz:NVDA",
+          "side": "long",
+          "size_base": 10518.894,
+          "position_value_usd": 2304374.10858,
+          "entry_price": 218.225,
+          "unrealized_pnl_usd": 356.8990029999877
+        },
+        {
+          "coin": "VVV",
+          "side": "long",
+          "size_base": 25705.7,
+          "position_value_usd": 637167.1859,
+          "entry_price": 24.6042,
+          "unrealized_pnl_usd": 1726.5755820000077
+        }
+      ],
+      "account_value": 2071501.049478
+    },
+    {
+      "trader_address": "0x92b75a5bfb7be7911747276ad335b8f5da3ce0f4",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 5047449.195819,
+      "realized_pnl_usd": 5344263.45016,
+      "unrealized_pnl_usd": -296814.254341,
+      "roi": 0.05921168758131847,
+      "volume_usd": 85234094.49524,
+      "total_trades": 1751,
+      "top_positions": [
+        {
+          "coin": "BTC",
+          "side": "long",
+          "size_base": 0.13246,
+          "position_value_usd": 10133.32246,
+          "entry_price": 75813.8,
+          "unrealized_pnl_usd": -296814.254341
+        }
+      ],
+      "account_value": 1258793.468938
+    },
+    {
+      "trader_address": "0xefe4c06b6d310978bead596e1798a4fc1d9d194b",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 4872790.317809,
+      "realized_pnl_usd": 6376055.097887,
+      "unrealized_pnl_usd": -1503264.7800780004,
+      "roi": 0.012949825968015157,
+      "volume_usd": 285461082.00241697,
+      "total_trades": 435564,
+      "top_positions": [
+        {
+          "coin": "xyz:GOLD",
+          "side": "long",
+          "size_base": 9570.4002,
+          "position_value_usd": 41573818.4688,
+          "entry_price": 4396.92,
+          "unrealized_pnl_usd": -614113.8047730007
+        },
+        {
+          "coin": "xyz:SNDK",
+          "side": "short",
+          "size_base": 15847.728,
+          "position_value_usd": 25565554.8096,
+          "entry_price": 1485.672,
+          "unrealized_pnl_usd": -1915966.8307650003
+        },
+        {
+          "coin": "xyz:NVDA",
+          "side": "short",
+          "size_base": 85002.802,
+          "position_value_usd": 18621563.83414,
+          "entry_price": 225.703,
+          "unrealized_pnl_usd": 611053.8928120008
+        },
+        {
+          "coin": "xyz:ORCL",
+          "side": "short",
+          "size_base": 26908.082,
+          "position_value_usd": 4048590.01772,
+          "entry_price": 147.459,
+          "unrealized_pnl_usd": -78142.57721100013
+        },
+        {
+          "coin": "xyz:CRWV",
+          "side": "short",
+          "size_base": 19132.62,
+          "position_value_usd": 1534761.37854,
+          "entry_price": 105.9547,
+          "unrealized_pnl_usd": 493575.95806900004
+        }
+      ],
+      "account_value": 17150375.496954
+    },
+    {
+      "trader_address": "0x3b7f4282f983c37526f04bbac7dab772ee743998",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 4871050.7588,
+      "realized_pnl_usd": 4871050.7588,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.08711894688097918,
+      "volume_usd": 55912645.10411,
+      "total_trades": 1330,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x9e2cbb5d800181c1ef21b25010dc4ea80eeb5508",
+      "trader_address_label": "Uses \"TRADEXYZ1\" HL Referral Code",
+      "total_pnl": 4826350.083654,
+      "realized_pnl_usd": 4833800.083654,
+      "unrealized_pnl_usd": -7450.0000000000455,
+      "roi": 0.003761811303626623,
+      "volume_usd": 1275548743.354979,
+      "total_trades": 102978,
+      "top_positions": [
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 5000,
+          "position_value_usd": 7429500,
+          "entry_price": 1487.39,
+          "unrealized_pnl_usd": -7450.0000000000455
+        }
+      ],
+      "account_value": 708950
+    },
+    {
+      "trader_address": "0xb7e0b9fbc9479330d70bcc82a7d4325a20e8d1aa",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 4739660.519934,
+      "realized_pnl_usd": 4773743.182657,
+      "unrealized_pnl_usd": -34082.662722999215,
+      "roi": 0.012393899198353516,
+      "volume_usd": 371219025.100019,
+      "total_trades": 44256,
+      "top_positions": [
+        {
+          "coin": "BTC",
+          "side": "short",
+          "size_base": 121.74453,
+          "position_value_usd": 9313578.28953,
+          "entry_price": 76367.6,
+          "unrealized_pnl_usd": -15426.86410299929
+        },
+        {
+          "coin": "HYPE",
+          "side": "short",
+          "size_base": 18337.55,
+          "position_value_usd": 1522291.71325,
+          "entry_price": 81.6846,
+          "unrealized_pnl_usd": -24072.80470299995
+        },
+        {
+          "coin": "XPL",
+          "side": "long",
+          "size_base": 4765585,
+          "position_value_usd": 410026.167815,
+          "entry_price": 0.084896,
+          "unrealized_pnl_usd": 5417.006083000025
+        }
+      ],
+      "account_value": 1143143.209321
+    },
+    {
+      "trader_address": "0x091159a8106b077c13e89bc09701117e8b5f129a",
+      "trader_address_label": "Uses \"RABBYWALLET\" HL Referral Code",
+      "total_pnl": 4635560.031716001,
+      "realized_pnl_usd": 4557324.231947001,
+      "unrealized_pnl_usd": 78235.79976900048,
+      "roi": 0.010179886898241312,
+      "volume_usd": 421068962.72169596,
+      "total_trades": 66566,
+      "top_positions": [
+        {
+          "coin": "ETH",
+          "side": "long",
+          "size_base": 4090.9884,
+          "position_value_usd": 10022103.382320002,
+          "entry_price": 2473.71,
+          "unrealized_pnl_usd": -103586.7300539994
+        },
+        {
+          "coin": "BTC",
+          "side": "short",
+          "size_base": 130.9471,
+          "position_value_usd": 10017584.0971,
+          "entry_price": 75812.3,
+          "unrealized_pnl_usd": -86187.88146799963
+        },
+        {
+          "coin": "xyz:CRCL",
+          "side": "long",
+          "size_base": 54920.079,
+          "position_value_usd": 4674247.92369,
+          "entry_price": 74.947,
+          "unrealized_pnl_usd": 410490.1101509998
+        },
+        {
+          "coin": "LIT",
+          "side": "long",
+          "size_base": 621778,
+          "position_value_usd": 2885174.2756000003,
+          "entry_price": 4.514128,
+          "unrealized_pnl_usd": -102534.65725300016
+        },
+        {
+          "coin": "PONS",
+          "side": "short",
+          "size_base": 1518730,
+          "position_value_usd": 1000022.9558000001,
+          "entry_price": 0.766531,
+          "unrealized_pnl_usd": 175171.2098419999
+        }
+      ],
+      "account_value": 4246221.007306
+    },
+    {
+      "trader_address": "0x30afce2f6842bf183c7e3fe7162e279ff0b6393e",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 4616544.500515001,
+      "realized_pnl_usd": -902827.2625719998,
+      "unrealized_pnl_usd": 5519371.763087001,
+      "roi": 0.029329939026644335,
+      "volume_usd": 138988257.64068002,
+      "total_trades": 44394,
+      "top_positions": [
+        {
+          "coin": "NEAR",
+          "side": "long",
+          "size_base": 5143187.8,
+          "position_value_usd": 15542199.21282,
+          "entry_price": 1.94725,
+          "unrealized_pnl_usd": 5449947.741316
+        },
+        {
+          "coin": "INJ",
+          "side": "long",
+          "size_base": 1487106.8,
+          "position_value_usd": 8512050.612520002,
+          "entry_price": 5.64659,
+          "unrealized_pnl_usd": 69424.02177100097
+        }
+      ],
+      "account_value": 8549155.543242
+    },
+    {
+      "trader_address": "0xdd7a372377fc633f74ab6e20963803d52f448830",
+      "trader_address_label": "rjgrant.eth*",
+      "total_pnl": 4325067.604042,
+      "realized_pnl_usd": 601950.514652,
+      "unrealized_pnl_usd": 3723117.0893900003,
+      "roi": 0.07816351094505898,
+      "volume_usd": 37125996.06829,
+      "total_trades": 4494,
+      "top_positions": [
+        {
+          "coin": "BTC",
+          "side": "long",
+          "size_base": 120.01489,
+          "position_value_usd": 9181259.09989,
+          "entry_price": 77266.4,
+          "unrealized_pnl_usd": -148793.2780999993
+        },
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 3978.99,
+          "position_value_usd": 5912381.241,
+          "entry_price": 699.2806,
+          "unrealized_pnl_usd": 3080945.267962
+        },
+        {
+          "coin": "LINK",
+          "side": "long",
+          "size_base": 415680.6,
+          "position_value_usd": 4716727.7682,
+          "entry_price": 9.28011,
+          "unrealized_pnl_usd": 793548.4121059995
+        },
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 24002.69,
+          "position_value_usd": 1992583.31035,
+          "entry_price": 83.1,
+          "unrealized_pnl_usd": -4372.027129999849
+        },
+        {
+          "coin": "PONS",
+          "side": "long",
+          "size_base": 458699,
+          "position_value_usd": 302034.94354,
+          "entry_price": 0.653716,
+          "unrealized_pnl_usd": 1788.7145520000374
+        }
+      ],
+      "account_value": 3822189.257032
+    },
+    {
+      "trader_address": "0xd260b2216b735277da6771564a01c04856e78321",
+      "trader_address_label": "Uses \"TOMRIDDLE\" HL Referral Code",
+      "total_pnl": 4260433.324485,
+      "realized_pnl_usd": 4260433.324485,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.025815019291618054,
+      "volume_usd": 165036999.44428596,
+      "total_trades": 50795,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0xd21d931890d27b6e7e2e668f27931e17698e90f1",
+      "trader_address_label": "High Balance",
+      "total_pnl": 4232591.1950779995,
+      "realized_pnl_usd": 2983371.879665,
+      "unrealized_pnl_usd": 1249219.3154129998,
+      "roi": 0.05425037484863768,
+      "volume_usd": 56855797.230720006,
+      "total_trades": 17753,
+      "top_positions": [
+        {
+          "coin": "PUMP",
+          "side": "long",
+          "size_base": 1510141593,
+          "position_value_usd": 5918244.902966999,
+          "entry_price": 0.004053,
+          "unrealized_pnl_usd": -240925.86252000066
+        },
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 57000.2,
+          "position_value_usd": 4731871.603,
+          "entry_price": 68.7371,
+          "unrealized_pnl_usd": 638841.9362900001
+        },
+        {
+          "coin": "VVV",
+          "side": "long",
+          "size_base": 185000.6,
+          "position_value_usd": 4585609.8722,
+          "entry_price": 24.7538,
+          "unrealized_pnl_usd": -8035.4588099998555
+        },
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 2500,
+          "position_value_usd": 3714750,
+          "entry_price": 1162.729,
+          "unrealized_pnl_usd": 799976.3363430001
+        },
+        {
+          "coin": "LIT",
+          "side": "long",
+          "size_base": 800000,
+          "position_value_usd": 3712160,
+          "entry_price": 4.548569,
+          "unrealized_pnl_usd": 59362.364110000366
+        }
+      ],
+      "account_value": 7757516.12133
+    },
+    {
+      "trader_address": "0xcab59c7a92b8f7c4d5cde72bb7669ee7d75b6e6e",
+      "trader_address_label": "Uses \"RABBYWALLET\" HL Referral Code",
+      "total_pnl": 4204797.69434,
+      "realized_pnl_usd": 4204797.69434,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.07872275137297027,
+      "volume_usd": 53412738.007829994,
+      "total_trades": 2586,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x5cee0ca5f78503820d857371bc018dceab01a723",
+      "trader_address_label": "Uses \"RABBYWALLET\" HL Referral Code",
+      "total_pnl": 4119937.9071990033,
+      "realized_pnl_usd": -649711.3568199999,
+      "unrealized_pnl_usd": 4769649.264019003,
+      "roi": 0.05595084538403348,
+      "volume_usd": 56137200.154,
+      "total_trades": 8152,
+      "top_positions": [
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 15000.76,
+          "position_value_usd": 22289629.284,
+          "entry_price": 1166.4578,
+          "unrealized_pnl_usd": 4769649.264019003
+        }
+      ],
+      "account_value": 4178782.534589
+    },
+    {
+      "trader_address": "0x634fe24f2f7396f5d967ec3936df04f49a3e6951",
+      "trader_address_label": "Uses \"HYPER088\" HL Referral Code",
+      "total_pnl": 4114747.177488,
+      "realized_pnl_usd": 4114747.177488,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.018991762730683266,
+      "volume_usd": 216659571.61734,
+      "total_trades": 15743,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x89da4baec446f35a1cbe17a9d1ee5c70b05ee43f",
+      "trader_address_label": "Uses \"MMCSI\" HL Referral Code",
+      "total_pnl": 4005314.6903149993,
+      "realized_pnl_usd": 4005314.6903149993,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.010878252003262102,
+      "volume_usd": 368194696.088481,
+      "total_trades": 9645,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x60b081bd8ee2b0e5a2b8f17503322cf7ee7a991e",
+      "trader_address_label": "Uses \"OUTCOME\" HL Referral Code",
+      "total_pnl": 3989047.2809420004,
+      "realized_pnl_usd": 1835083.738214,
+      "unrealized_pnl_usd": 2153963.5427280003,
+      "roi": 0.07686692682558204,
+      "volume_usd": 31567040.875178,
+      "total_trades": 7430,
+      "top_positions": [
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 10653.1,
+          "position_value_usd": 15829441.290000001,
+          "entry_price": 1181.7496,
+          "unrealized_pnl_usd": 3212823.8249210003
+        },
+        {
+          "coin": "PUMP",
+          "side": "long",
+          "size_base": 1709555621,
+          "position_value_usd": 6699748.478699,
+          "entry_price": 0.004527,
+          "unrealized_pnl_usd": -1058860.282193
+        }
+      ],
+      "account_value": 7943594.487028
+    },
+    {
+      "trader_address": "0x3ed4033676d0bdb3938728ca4ac673d00e74bd06",
+      "trader_address_label": "HL Perps Whale",
+      "total_pnl": 3968072.52539,
+      "realized_pnl_usd": 3968072.52539,
+      "unrealized_pnl_usd": 0,
+      "roi": 0.029988624386405604,
+      "volume_usd": 132319257.93798,
+      "total_trades": 9820,
+      "top_positions": [],
+      "account_value": 0
+    },
+    {
+      "trader_address": "0x0ad9e656d9e6211d0ea1c5462342e1fc94cc4cbf",
+      "trader_address_label": "High Balance",
+      "total_pnl": 3773881.7751560006,
+      "realized_pnl_usd": 3601288.987141,
+      "unrealized_pnl_usd": 172592.7880150004,
+      "roi": 0.02224865434837236,
+      "volume_usd": 157231248.95612,
+      "total_trades": 37096,
+      "top_positions": [
+        {
+          "coin": "xyz:SNDK",
+          "side": "long",
+          "size_base": 3174.887,
+          "position_value_usd": 5121727.708400001,
+          "entry_price": 1575.031,
+          "unrealized_pnl_usd": 115130.27979100031
+        },
+        {
+          "coin": "xyz:NBIS",
+          "side": "long",
+          "size_base": 16262.37,
+          "position_value_usd": 3527795.9241000004,
+          "entry_price": 215.1227,
+          "unrealized_pnl_usd": 23460.414997999967
+        },
+        {
+          "coin": "io:ANTH",
+          "side": "short",
+          "size_base": 829.333,
+          "position_value_usd": 1785056.3492,
+          "entry_price": 2037.233,
+          "unrealized_pnl_usd": -85576.92949700012
+        },
+        {
+          "coin": "xyz:BRENTOIL",
+          "side": "short",
+          "size_base": 12035.65,
+          "position_value_usd": 1197499.0324,
+          "entry_price": 99.6997,
+          "unrealized_pnl_usd": -25122.579525999856
+        },
+        {
+          "coin": "PONS",
+          "side": "long",
+          "size_base": 1765668,
+          "position_value_usd": 1162621.75128,
+          "entry_price": 0.567627,
+          "unrealized_pnl_usd": 159276.0585880001
+        }
+      ],
+      "account_value": 614791.533254
+    },
+    {
+      "trader_address": "0x9321d8117e73b0c79035f0e87debcfd8dbb1d75a",
+      "trader_address_label": "Uses \"TRADEXYZ1\" HL Referral Code",
+      "total_pnl": 3684680.304262,
+      "realized_pnl_usd": -8232459.779611,
+      "unrealized_pnl_usd": 11917140.083873,
+      "roi": 0.008933233671063285,
+      "volume_usd": 382097778.39672303,
+      "total_trades": 189280,
+      "top_positions": [
+        {
+          "coin": "LIT",
+          "side": "long",
+          "size_base": 4999999,
+          "position_value_usd": 23200995.3598,
+          "entry_price": 2.641761,
+          "unrealized_pnl_usd": 9704514.403504001
+        },
+        {
+          "coin": "HYPE",
+          "side": "long",
+          "size_base": 200000,
+          "position_value_usd": 16603000,
+          "entry_price": 71.7396,
+          "unrealized_pnl_usd": 2076722.929238001
+        },
+        {
+          "coin": "xyz:DRAM",
+          "side": "long",
+          "size_base": 50000,
+          "position_value_usd": 2895700,
+          "entry_price": 56.2847,
+          "unrealized_pnl_usd": 80110.47561100003
+        },
+        {
+          "coin": "BTC",
+          "side": "short",
+          "size_base": 0.001,
+          "position_value_usd": 76.501,
+          "entry_price": 77642.9,
+          "unrealized_pnl_usd": 36975.986185
+        },
+        {
+          "coin": "XRP",
+          "side": "short",
+          "size_base": 1,
+          "position_value_usd": 1.2958,
+          "entry_price": 1.360392,
+          "unrealized_pnl_usd": 18816.289334999998
+        }
+      ],
+      "account_value": 5957067.116745
+    },
+    {
+      "trader_address": "0x0748e296e5a350ec36c8487a1cea406e1b57d4b2",
+      "trader_address_label": "Uses \"LIMINAL\" HL Referral Code",
+      "total_pnl": 3679816.3000020003,
+      "realized_pnl_usd": 1202794.287998,
+      "unrealized_pnl_usd": 2477022.0120040006,
+      "roi": 0.08949351850255134,
+      "volume_usd": 30927160.19914,
+      "total_trades": 5944,
+      "top_positions": [
+        {
+          "coin": "ZEC",
+          "side": "long",
+          "size_base": 1500,
+          "position_value_usd": 2228850,
+          "entry_price": 597.8066,
+          "unrealized_pnl_usd": 1308609.8556640001
+        },
+        {
+          "coin": "AAVE",
+          "side": "long",
+          "size_base": 15087.49,
+          "position_value_usd": 1940402.0889,
+          "entry_price": 73.3731,
+          "unrealized_pnl_usd": 774029.1147690003
+        },
+        {
+          "coin": "ADA",
+          "side": "short",
+          "size_base": 7014047,
+          "position_value_usd": 1416697.21306,
+          "entry_price": 0.203571,
+          "unrealized_pnl_usd": 4498.419651000063
+        },
+        {
+          "coin": "xyz:META",
+          "side": "long",
+          "size_base": 2000,
+          "position_value_usd": 1362700,
+          "entry_price": 681.891,
+          "unrealized_pnl_usd": -1239.36353999988
+        },
+        {
+          "coin": "SOL",
+          "side": "long",
+          "size_base": 10000,
+          "position_value_usd": 1010200,
+          "entry_price": 97.8282,
+          "unrealized_pnl_usd": 25347.632544000007
+        }
+      ],
+      "account_value": 1682719.82355
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 50,
+    "is_last_page": false
+  }
+}

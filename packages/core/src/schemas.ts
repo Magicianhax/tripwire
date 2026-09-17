@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isEvmAddress, isSolanaAddress } from "./addresses";
 import { CHAINS, SIGNAL_IDS } from "./types";
+import { DEPTH_SECTIONS } from "./depth";
 import { VIEW_TIMEFRAMES } from "./timeframe";
 import { HANDLE_RE, isVenueWalletAddress, normalizeHandle, WALLET_VENUES } from "./curated-wallets";
 import { classify } from "./wallet-detect";
@@ -119,6 +120,18 @@ export const GuardBodySchema = z.object({
   venue: z.string().max(40),
   mode: z.enum(["chip", "panel"]).default("chip"),
   /** Panel mode only: which window the gauges and chart show. Ignored by the verdict. */
+  timeframe: ViewTimeframeSchema.optional(),
+});
+
+/**
+ * POST /api/depth: the card's lazy sections. The card is already on screen when this is asked
+ * for, and every section here is either free or explicitly priced in the tab that requests it,
+ * so `sections` is a list rather than a mode -- a tab asks for exactly what it draws.
+ */
+export const DepthRequestSchema = z.object({
+  target: TargetSchema,
+  sections: z.array(z.enum(DEPTH_SECTIONS)).min(1).max(DEPTH_SECTIONS.length),
+  /** The perp chart's window; ignored by every other section. */
   timeframe: ViewTimeframeSchema.optional(),
 });
 

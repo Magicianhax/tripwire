@@ -17,10 +17,15 @@ import { nansenPost } from "./client";
 const MIN = 60_000;
 const HOUR = 60 * MIN;
 
+/** The date-only form the leaderboard endpoints require ("YYYY-MM-DD"), UTC. */
+const ymd = (d: Date) => d.toISOString().slice(0, 10);
+
 /** TTLs for the dated endpoints; callers bucket their `to` to the same window (see bucketNow). */
 export const WHO_BOUGHT_SOLD_TTL = 5 * MIN;
 export const OHLCV_TTL = 5 * MIN;
 export const PERP_SCREENER_TTL = 2 * MIN;
+/** The 5-credit perp PnL leaderboard: one call per coin per 5 minutes, and only on demand. */
+export const PERP_LEADERBOARD_TTL = 5 * MIN;
 /** Name, symbol, logo and a day's volume: one call per token per day. */
 export const TOKEN_INFO_TTL = 24 * 60 * MIN;
 /** The 7-day window the drawdown signal is measured over; part of the verdict, so it is cached
@@ -241,6 +246,85 @@ export const nansen = {
       path: "smart-money/perp-trades",
       body: { filters: { token_symbol }, lookback_hours: 24, only_new_positions: false, pagination: { page: 1, per_page: 12 } },
       ttlMs: 5 * MIN,
+    }),
+
+  /**
+   * Perp card, Traders tab: the coin's top traders by PnL. **5 credits**, so it is never part of
+   * a card's own load -- only the Traders tab or the expanded view asks for it.
+   *
+   * `premium_labels` stays off: it costs 150 credits a call.
+   */
+  perpPnlLeaderboard: (token_symbol: string) => {
+    const to = bucketNow(PERP_LEADERBOARD_TTL);
+    return nansenPost<Paged<Record<string, unknown>>>({
+      name: "perpPnlLeaderboard",
+      path: "tgm/perp-pnl-leaderboard",
+      body: {
+        token_symbol,
+        date: { from: ymd(new Date(to.getTime() - PERP_PNL_WINDOW_DAYS * DAY)), to: ymd(to) },
+        pagination: { page: 1, per_page: 20 },
+        order_by: [{ field: "pnl_usd_realised", direction: "DESC" }],
+      },
+      ttlMs: PERP_LEADERBOARD_TTL,
+    });
+  },
+
+  /** Perp card, Traders tab: every recent trade in this coin, labeled -- not just Smart Money's. */
+  tokenPerpTrades: (token_symbol: string) => {
+    const to = bucketNow(2 * MIN);
+    return nansenPost<Paged<Record<string, unknown>>>({
+      name: "tokenPerpTrades",
+      path: "tgm/perp-trades",
+      body: {
+        token_symbol,
+        date: { from: isoNoMs(new Date(to.getTime() - 24 * HOUR)), to: isoNoMs(to) },
+        pagination: { page: 1, per_page: 20 },
+        order_by: [{ field: "value_usd", direction: "DESC" }],
+      },
+      ttlMs: 2 * MIN,
+    });
+  },
+
+  /** Perp card, Traders tab: the top Hyperliquid accounts overall, with their five largest open
+   * positions -- which is how the card knows whether any of them is in this coin right now.
+   * Slow-moving, so one call an hour. */
+  hyperliquidLeaderboard: () => {
+    const to = bucketNow(HOUR);
+    return nansenPost<Paged<Record<string, unknown>>>({
+      name: "hyperliquidLeaderboard",
+      path: "perp-leaderboard",
+      body: {
+        date: { from: ymd(new Date(to.getTime() - PERP_PNL_WINDOW_DAYS * DAY)), to: ymd(to) },
+        pagination: { page: 1, per_page: 50 },
+        order_by: [{ field: "total_pnl", direction: "DESC" }],
+      },
+      ttlMs: HOUR,
+    });
+  },
+
+  /** Spot card, expanded only: who holds the token. **5 credits**, lazy, never in a card's load.
+   * `premium_labels` stays off (150 credits). */
+  tokenHolders: (chain: string, token_address: string) =>
+    nansenPost<Paged<Record<string, unknown>>>({
+      name: "tokenHolders",
+      path: "tgm/holders",
+      body: {
+        chain,
+        token_address,
+        label_type: "all_holders",
+        pagination: { page: 1, per_page: 20 },
+        order_by: [{ field: "value_usd", direction: "DESC" }],
+      },
+      ttlMs: 10 * MIN,
+    }),
+
+  /** Prediction card, expanded only: the market's resting book, one row per price level. */
+  pmOrderbook: (market_id: string) =>
+    nansenPost<Paged<Record<string, unknown>>>({
+      name: "pmOrderbook",
+      path: "prediction-market/orderbook",
+      body: { market_id, pagination: { page: 1, per_page: 40 } },
+      ttlMs: 2 * MIN,
     }),
 
   pmScreener: (query: string) =>

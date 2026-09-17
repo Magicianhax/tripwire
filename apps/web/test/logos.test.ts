@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { CHAIN_LOGOS, NANSEN_LOGO, VENUE_LOGOS } from "@tripwire/core";
+import { CHAIN_LOGOS, NANSEN_LOGO, PERP_VENUE_LOGOS, VENUE_LOGOS } from "@tripwire/core";
 
 const repo = path.resolve(__dirname, "..", "..", "..");
 const EXT = path.join(repo, "apps", "extension", "public", "logos");
@@ -16,7 +16,7 @@ describe("bundled brand logos", () => {
 
   it("every registry entry has its file and a SOURCES.md row", () => {
     const sources = fs.readFileSync(path.join(EXT, "SOURCES.md"), "utf8");
-    for (const logo of [...Object.values(VENUE_LOGOS), ...Object.values(CHAIN_LOGOS), NANSEN_LOGO]) {
+    for (const logo of [...Object.values(VENUE_LOGOS), ...Object.values(CHAIN_LOGOS), ...Object.values(PERP_VENUE_LOGOS), NANSEN_LOGO]) {
       const file = path.join(repo, "apps", "extension", "public", logo.file);
       expect(fs.existsSync(file), logo.file).toBe(true);
       expect(sources).toContain(`| ${path.basename(logo.file)} |`);

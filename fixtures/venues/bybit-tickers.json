@@ -1,0 +1,45 @@
+{
+  "retCode": 0,
+  "retMsg": "OK",
+  "result": {
+    "category": "linear",
+    "list": [
+      {
+        "symbol": "ETHUSDT",
+        "lastPrice": "2450.34",
+        "indexPrice": "2451.55",
+        "markPrice": "2450.48",
+        "prevPrice24h": "2407.90",
+        "price24hPcnt": "0.017625",
+        "highPrice24h": "2482.73",
+        "lowPrice24h": "2386.41",
+        "prevPrice1h": "2448.60",
+        "openInterest": "797657.13",
+        "openInterestValue": "1954642843.92",
+        "singleOpenInterest": "398828.57",
+        "singleOpenInterestValue": "977321434.21",
+        "turnover24h": "2692158450.4150",
+        "volume24h": "1101140.6500",
+        "fundingRate": "0.00003531",
+        "nextFundingTime": "1789689600000",
+        "predictedDeliveryPrice": "",
+        "basisRate": "",
+        "deliveryFeeRate": "",
+        "deliveryTime": "0",
+        "ask1Size": "62.30",
+        "bid1Price": "2450.33",
+        "ask1Price": "2450.34",
+        "bid1Size": "17.41",
+        "basis": "",
+        "preOpenPrice": "",
+        "preQty": "",
+        "curPreListingPhase": "",
+        "fundingIntervalHour": "8",
+        "basisRateYear": "",
+        "fundingCap": "0.00333"
+      }
+    ]
+  },
+  "retExtInfo": {},
+  "time": 1789677926362
+}

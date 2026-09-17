@@ -11,6 +11,42 @@ export type PerpSignalInput = {
 
 export const LIQ_BAND_PCT = 3;
 
+/** The distances from mark the Liquidations tab totals up. Cumulative: ±5% includes ±3%. */
+export const LIQ_BANDS = [3, 5, 10] as const;
+
+export type LiquidationBand = { pct: number; usd: number; count: number; longUsd: number; shortUsd: number };
+
+/**
+ * How much Smart Money money is sitting on a liquidation price within ±3%, ±5% and ±10% of
+ * mark — the number that says whether a 4% candle would cascade.
+ *
+ * Null (rather than zeroes) when there is no mark price or no positions at all: "we don't know"
+ * and "nothing is close" are different answers, and only one of them is reassuring.
+ */
+export function liquidationBands(positions: PerpPosition[] | null | undefined, markPrice: number | null | undefined): LiquidationBand[] | null {
+  if (!markPrice || markPrice <= 0 || !positions || positions.length === 0) return null;
+  return LIQ_BANDS.map((pct) => {
+    const band: LiquidationBand = { pct, usd: 0, count: 0, longUsd: 0, shortUsd: 0 };
+    for (const p of positions) {
+      const liq = p.liquidation_price;
+      if (liq === null || liq === undefined || liq <= 0) continue;
+      if ((Math.abs(liq - markPrice) / markPrice) * 100 > pct) continue;
+      band.usd += p.position_value_usd;
+      band.count++;
+      if (p.side === "Long") band.longUsd += p.position_value_usd;
+      else band.shortUsd += p.position_value_usd;
+    }
+    return band;
+  });
+}
+
+/** Distance from mark to this position's liquidation, as a signed percentage of mark. */
+export function distanceToLiquidationPct(position: PerpPosition, markPrice: number | null | undefined): number | null {
+  const liq = position.liquidation_price;
+  if (!markPrice || markPrice <= 0 || liq === null || liq === undefined || liq <= 0) return null;
+  return ((liq - markPrice) / markPrice) * 100;
+}
+
 export function perpSignals(input: PerpSignalInput): Signal[] {
   const out: Signal[] = [];
   const s = input.screener;
