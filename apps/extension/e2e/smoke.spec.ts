@@ -44,6 +44,11 @@ test("@smoke extension loads with the pinned ID and its popup reaches the backen
 test("@smoke X: the chip opens a floating evidence card on <body>, beside the chip, not inside the post", async ({ context, consoleErrors }) => {
   const page = await context.newPage();
   await page.setViewportSize({ width: 1280, height: 800 });
+  // Fonts and brand logos come from the extension package, never from a third-party origin.
+  const assetRequests: string[] = [];
+  page.on("request", (req) => {
+    if (["font", "image"].includes(req.resourceType())) assetRequests.push(req.url());
+  });
   await page.goto("https://x.com/home");
   const chip = page.locator(".tw-chip");
   await expect(chip.locator(".tw-chip-key")).toHaveText(/^(TRIPWIRE|CAUTION|Clear|Unchecked)$/, { timeout: 10_000 });
@@ -56,7 +61,7 @@ test("@smoke X: the chip opens a floating evidence card on <body>, beside the ch
   await expect(card).toBeVisible();
   await expect(chip).toHaveAttribute("aria-expanded", "true");
   await expect(card).toHaveAttribute("aria-modal", "false");
-  // Let the 160ms scale-in settle before measuring geometry.
+  // Let the 180ms rise-in settle before measuring geometry.
   await card.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
 
   // Its shadow host hangs off <body>; the tweet itself neither contains it nor grows.
@@ -93,6 +98,9 @@ test("@smoke X: the chip opens a floating evidence card on <body>, beside the ch
   await expect(card).toBeVisible();
   await page.mouse.click(1200, 700);
   await expect(card).toHaveCount(0);
+  await page.evaluate(() => document.fonts.ready);
+  expect(assetRequests.some((u) => u.endsWith("/logos/chain-solana.svg")), "chain logo requested").toBe(true);
+  expect(assetRequests.filter((u) => !u.startsWith("chrome-extension://"))).toEqual([]);
   expect(consoleErrors).toEqual([]);
 });
 
