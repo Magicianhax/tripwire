@@ -10,11 +10,11 @@ describe("chip headline", () => {
     expect(chipHeadline(base({ verdict: "UNCHECKED", headline: "Nansen credit cap reached" }))).toBe("Nansen credit cap reached");
   });
 
-  it("a hit label wins; otherwise the exit_pressure label", () => {
-    const hit = { ruleId: "r", action: "warn" as const, text: "t", signalId: "exit_pressure" as const, label: "Dumping", value: -1, evidence: [] };
+  it("a hit label wins; otherwise the labeled_exit_pct label", () => {
+    const hit = { ruleId: "r", action: "warn" as const, text: "t", signalId: "labeled_exit_pct" as const, label: "Dumping", value: -1, evidence: [] };
     expect(chipHeadline(base({ verdict: "CAUTION", hits: [hit] }))).toBe("Dumping");
-    const signal = { id: "exit_pressure" as const, kind: "spot" as const, severity: "info" as const, value: 5, label: "Labeled wallets net +$5", evidence: [] };
-    expect(chipHeadline(base({ signals: [signal] }))).toBe("Labeled wallets net +$5");
+    const signal = { id: "labeled_exit_pct" as const, kind: "spot" as const, severity: "info" as const, value: 5, label: "Labeled wallets net bought 0.6% of 24h volume", evidence: [] };
+    expect(chipHeadline(base({ signals: [signal] }))).toBe("Labeled wallets net bought 0.6% of 24h volume");
   });
 
   it("maps a 429 to the credit cap", () => {

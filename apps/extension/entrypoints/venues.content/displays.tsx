@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
-import type { Target, Verdict } from "@tripwire/core";
+import type { Target, Verdict, ViewTimeframe } from "@tripwire/core";
 import { installBlocker } from "../../lib/adapters/blocker";
 import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, override } from "../../lib/api";
-import type { GuardResponse } from "../../lib/api-types";
+import type { GuardResponse, SpotPanel } from "../../lib/api-types";
 import { EVIDENCE_TAB } from "../../lib/ui/BlockScreen";
 import { Dock, SHEET_BELOW } from "../../lib/ui/Dock";
 import { mountIfCurrent, mountReact } from "../../lib/ui/mount";
@@ -23,6 +23,13 @@ const EVIDENCE_Z_INDEX = MODAL_Z_INDEX + 1;
 
 function stripVerdict(verdict: Verdict): "CAUTION" | "UNCHECKED" | "CLEAR" {
   return verdict === "TRIPWIRE" ? "CAUTION" : verdict;
+}
+
+/** Refetches the evidence for another view window. The verdict is recomputed server-side on the
+ * rule window either way, so only the panel is taken: the card keeps the verdict it opened with. */
+async function fetchSpotPanel(adapter: VenueAdapter, target: Target, timeframe: ViewTimeframe): Promise<SpotPanel | null> {
+  const result = await guard(target, adapter.id, "panel", timeframe);
+  return result.ok ? (result.data.panel as SpotPanel) : null;
 }
 
 function closeEvidence(rc: RunnerContext): void {
@@ -64,7 +71,15 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
       verdict={result.ok ? result.data.verdict : "UNCHECKED"}
     >
       {result.ok ? (
-        <Panel data={result.data} title={targetTitle(target)} onClose={() => closeEvidence(rc)} replay={rc.replay} initialTab={initialTab} checkedAtIso={checkedAtIso} />
+        <Panel
+          data={result.data}
+          title={targetTitle(target)}
+          onClose={() => closeEvidence(rc)}
+          replay={rc.replay}
+          initialTab={initialTab}
+          checkedAtIso={checkedAtIso}
+          onTimeframe={target.kind === "spot" ? (timeframe) => fetchSpotPanel(adapter, target, timeframe) : undefined}
+        />
       ) : (
         <CardMessage title={targetTitle(target)} chain={target?.kind === "spot" ? target.chain : null} kind="error" message={errorHeadline(result.status, result.error)} replay={rc.replay} checkedAtIso={checkedAtIso} />
       )}
@@ -122,6 +137,7 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
             data={panelData}
             title={targetTitle(target)}
             checkedAtIso={checkedAtIso}
+            onTimeframe={target?.kind === "spot" ? (timeframe) => fetchSpotPanel(adapter, target, timeframe) : undefined}
             onClose={() => {
               collapsed = true;
               rc.mainMount?.update(node());

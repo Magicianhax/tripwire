@@ -34,7 +34,7 @@ function makeHit(i: number): HitDto {
     ruleId: `r${i}`,
     action: "block",
     text: `Hit number ${i}`,
-    signalId: "exit_pressure",
+    signalId: "labeled_exit_pct",
     label: `hit ${i}`,
     value: -1000 * i,
     evidence: [{ endpoint: `endpoint-${i}`, field: "x", value: "y" }],
@@ -337,13 +337,12 @@ describe("Panel (spot)", () => {
     const spotPanel: SpotPanel = {
       flow: null,
       flowTimeframe: "1d",
-      sincePost: null,
-      netflow: null,
+          netflow: null,
       indicators: null,
       marketCapUsd: null,
       topBuyers: null,
       topSellers: null,
-      candles: null,
+      chart: null,
       postTimeIso: null,
       errors: ["flow-intel timed out"],
     };
@@ -504,12 +503,12 @@ describe("HitList findings", () => {
       evidence: [],
     });
     const { container, root } = mountNode(
-      <HitList hits={[hit("exit_pressure", "<", -100_000, "Smart money, whales & public figures net −$412K"), hit("fresh_buy_share", ">", 70, "Fresh wallets are 82% of buying")]} />,
+      <HitList hits={[hit("labeled_exit_pct", "<", -5, "Smart money, whales and public figures sold 5.4% of 24h volume"), hit("distribution_pct", "<", -2, "Labeled wallets sold 4.2% of 24h volume and fresh wallets bought 2.8x that")]} />,
     );
     const findings = [...container.querySelectorAll(".tw-hit-finding")].map((n) => n.textContent);
     const rules = [...container.querySelectorAll(".tw-hit-rule")].map((n) => n.textContent);
-    expect(findings).toEqual(["Smart money, whales & public figures net −$412K", "Fresh wallets are 82% of buying"]);
-    expect(rules).toEqual(["rule: < −$100K", "rule: > 70%"]);
+    expect(findings).toEqual(["Smart money, whales and public figures sold 5.4% of 24h volume", "Labeled wallets sold 4.2% of 24h volume and fresh wallets bought 2.8x that"]);
+    expect(rules).toEqual(["rule: < −5% of volume", "rule: < −2% of volume"]);
     expect(container.textContent).not.toContain("rule template");
     root.unmount();
   });
@@ -520,10 +519,10 @@ describe("HitList findings", () => {
       <Panel
         data={{
           verdict: "CAUTION",
-          hits: [hit("fresh_buy_share", 82), hit("risk_high_count", 2), hit("exit_pressure", -150_000), hit("inside_liq_band", 1_500_000)],
+          hits: [hit("distribution_pct", -2.4), hit("risk_high_count", 2), hit("labeled_exit_pct", -5.4), hit("inside_liq_band", 1_500_000)],
           unavailable: [],
           signals: [],
-          panel: { flow: null, flowTimeframe: "1d", sincePost: null, netflow: null, indicators: null, marketCapUsd: null, topBuyers: null, topSellers: null, candles: null, postTimeIso: null, errors: [] },
+          panel: { flow: null, flowTimeframe: "1d", netflow: null, indicators: null, marketCapUsd: null, topBuyers: null, topSellers: null, chart: null, postTimeIso: null, errors: [] },
           rulesPreset: "balanced",
         }}
         title="$X"
@@ -531,7 +530,7 @@ describe("HitList findings", () => {
       />,
     );
     const values = [...container.querySelectorAll(".tw-hit-finding")].map((b) => b.textContent?.trim());
-    expect(values).toEqual(["fresh_buy_share 82%", "risk_high_count 2", "exit_pressure −$150K", "inside_liq_band $1.5M"]);
+    expect(values).toEqual(["distribution_pct −2.4% of volume", "risk_high_count 2", "labeled_exit_pct −5.4% of volume", "inside_liq_band $1.5M"]);
     root.unmount();
   });
 });
@@ -615,7 +614,7 @@ describe("Annunciator plates (verdict -> tone/mark)", () => {
 });
 
 describe("Evidence card tabs", () => {
-  const emptySpot: SpotPanel = { flow: null, flowTimeframe: "1d", sincePost: null, netflow: null, indicators: null, marketCapUsd: null, topBuyers: null, topSellers: null, candles: null, postTimeIso: null, errors: [] };
+  const emptySpot: SpotPanel = { flow: null, flowTimeframe: "1d", netflow: null, indicators: null, marketCapUsd: null, topBuyers: null, topSellers: null, chart: null, postTimeIso: null, errors: [] };
   const tabLabels = (container: HTMLElement) => [...container.querySelectorAll('[role="tab"]')].map((t) => t.textContent);
   const selected = (container: HTMLElement) => container.querySelector('[role="tab"][aria-selected="true"]')?.textContent;
 

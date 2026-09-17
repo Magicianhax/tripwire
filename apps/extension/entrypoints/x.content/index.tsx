@@ -175,6 +175,11 @@ export default defineContentScript({
                 headline={chipHeadline(panelResult.data)}
                 postTimeIso={tweet.timeIso}
                 chain={target.chain}
+                address={target.tokenAddress}
+                onTimeframe={async (timeframe) => {
+                  const result = await postIntel(target, tweet.timeIso ?? undefined, "panel", timeframe);
+                  return result.ok ? result.data.panel : null;
+                }}
                 author={badges.authorSection(
                   tweet,
                   personResult.ok && personResult.data.entity !== null,

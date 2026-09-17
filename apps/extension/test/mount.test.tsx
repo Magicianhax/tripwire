@@ -73,7 +73,9 @@ describe("mountReact", () => {
     // Each shadow root carries only the (small) theme, without @font-face.
     const shadowCss = mounts[0]!.ui.shadow.querySelector("style")?.textContent ?? "";
     expect(shadowCss).not.toContain("@font-face");
-    expect(shadowCss.length).toBeLessThan(40_000);
+    // A ceiling on the theme itself. What it guards is the two assertions above (no inlined
+    // fonts, no data: URIs); the number is generous enough for the card's own CSS to grow.
+    expect(shadowCss.length).toBeLessThan(60_000);
     for (const m of mounts) m.ui.remove();
   });
 

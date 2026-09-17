@@ -38,7 +38,7 @@ function spot(mint: string): Target {
 function response(target: Target, verdict: GuardResponse["verdict"]): ApiResult<GuardResponse> {
   const hits =
     verdict === "TRIPWIRE"
-      ? [{ ruleId: "spot-exit", action: "block" as const, text: "Dumping", signalId: "exit_pressure" as const, label: "x", value: -1, evidence: [] }]
+      ? [{ ruleId: "spot-exit", action: "block" as const, text: "Dumping", signalId: "labeled_exit_pct" as const, label: "x", value: -1, evidence: [] }]
       : [];
   return {
     ok: true,

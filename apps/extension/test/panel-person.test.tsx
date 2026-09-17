@@ -21,13 +21,12 @@ function mountNode(node: React.ReactNode): { container: HTMLDivElement; root: Ro
 const spotPanel: SpotPanel = {
   flow: null,
   flowTimeframe: "1d",
-  sincePost: null,
   netflow: null,
   indicators: null,
   marketCapUsd: null,
   topBuyers: null,
   topSellers: null,
-  candles: null,
+  chart: null,
   postTimeIso: null,
   errors: [],
 };

@@ -4,7 +4,7 @@
  * through browser.runtime.sendMessage so it works from any extension context.
  */
 import { browser } from "wxt/browser";
-import type { Chain, SpotTarget, Target, Verdict } from "@tripwire/core";
+import type { Chain, SpotTarget, Target, Verdict, ViewTimeframe } from "@tripwire/core";
 import { toResult, type ApiResult } from "./api-result";
 import type { BridgeResponse } from "./bridge";
 import type {
@@ -49,12 +49,13 @@ export function postIntel(
   target: SpotTarget,
   postTimeIso?: string,
   mode: "chip" | "panel" = "chip",
+  timeframe?: ViewTimeframe,
 ): Promise<ApiResult<PostIntelResponse>> {
-  return call("POST", "/api/post-intel", { target, postTimeIso, mode });
+  return call("POST", "/api/post-intel", { target, postTimeIso, mode, timeframe });
 }
 
-export function guard(target: Target, venue: string, mode: "chip" | "panel" = "chip"): Promise<ApiResult<GuardResponse>> {
-  return call("POST", "/api/guard", { target, venue, mode });
+export function guard(target: Target, venue: string, mode: "chip" | "panel" = "chip", timeframe?: ViewTimeframe): Promise<ApiResult<GuardResponse>> {
+  return call("POST", "/api/guard", { target, venue, mode, timeframe });
 }
 
 export function personIntel(handle: string, displayName: string, target?: SpotTarget): Promise<ApiResult<PersonIntelResponse>> {

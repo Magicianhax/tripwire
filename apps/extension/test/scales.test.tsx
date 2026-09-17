@@ -88,23 +88,23 @@ describe("Flow gauges light the rule-tripping rows", () => {
       fresh_wallets_net_flow_usd: 576_000,
     } as SpotPanel["flow"],
     flowTimeframe: "1d",
-    sincePost: null,
-    netflow: { h1: 0, h24: -401, d7: -1_220, d30: 536 } as SpotPanel["netflow"],
+    token: { name: "dogwifhat", symbol: "WIF", logoUrl: null, marketCapUsd: 185_000_000, volume24hUsd: 1_471_491, liquidityUsd: null, priceUsd: null },
+      netflow: { h1: 0, h24: -401, d7: -1_220, d30: 536 } as SpotPanel["netflow"],
     indicators: null,
     marketCapUsd: null,
     topBuyers: null,
     topSellers: null,
-    candles: null,
+    chart: null,
     postTimeIso: null,
     errors: [],
   };
   const hit = (signalId: HitDto["signalId"], threshold: number, op: HitDto["op"] = "<"): HitDto => ({ ruleId: signalId, action: "block", text: signalId, signalId, op, threshold, label: signalId, value: 1, evidence: [] });
-  const signals = [{ id: "exit_pressure", kind: "spot", severity: "high", value: -9_394, label: "x", evidence: [] }] as Signal[];
+  const signals = [{ id: "labeled_exit_pct", kind: "spot", severity: "high", value: -9_394, label: "x", evidence: [] }] as Signal[];
 
   it("lights exit-pressure rows and fresh wallets, adds a threshold tick, and lights the 24h readout", () => {
-    const c = render(<SpotBody panel={panel} hits={[hit("exit_pressure", -5_000), hit("fresh_buy_share", 50, ">"), hit("sm_netflow_24h", 0)]} signals={signals} />);
+    const c = render(<SpotBody panel={panel} hits={[hit("labeled_exit_pct", -1), hit("sm_netflow_pct", -1.5)]} signals={signals} />);
     const lit = [...c.querySelectorAll(".tw-seg[data-lit]")].map((r) => r.querySelector(".tw-seg-label")?.textContent);
-    expect(lit).toEqual(["Exit pressure", "Smart Traders", "Whales", "Public Figures", "Fresh wallets"]);
+    expect(lit).toEqual(["Labeled wallets", "Smart Traders", "Whales", "Public Figures"]);
     const exitRow = c.querySelector(".tw-seg[data-rule]") as HTMLElement;
     expect(exitRow.querySelector(".tw-gauge-threshold")).not.toBeNull();
     expect(c.querySelectorAll(".tw-gauge-threshold")).toHaveLength(1);
@@ -112,9 +112,10 @@ describe("Flow gauges light the rule-tripping rows", () => {
   });
 
   it("lights a row in the lamp of its rule: caution for a warn rule", () => {
-    const warn = { ...hit("fresh_buy_share", 50, ">"), action: "warn" as const };
+    const warn = { ...hit("labeled_exit_pct", -1), action: "warn" as const };
     const c = render(<SpotBody panel={panel} hits={[warn]} signals={signals} />);
-    expect([...c.querySelectorAll(".tw-seg[data-lit]")].map((r) => (r as HTMLElement).dataset.lit)).toEqual(["caution"]);
+    // The rule measures the lead row, and every labeled segment that is selling fed it.
+    expect([...c.querySelectorAll(".tw-seg[data-lit]")].map((r) => (r as HTMLElement).dataset.lit)).toEqual(["caution", "caution", "caution", "caution"]);
   });
 
   it("lights nothing when no rule fired", () => {
@@ -126,11 +127,11 @@ describe("Flow gauges light the rule-tripping rows", () => {
 
 describe("rule clause faces", () => {
   it("sets the comparison as tabular figures in the UI face (mono is for addresses only), text unchanged", () => {
-    const c = render(<HitList hits={[{ ruleId: "r", action: "block", text: "t", signalId: "fresh_buy_share", op: ">", threshold: 70, label: "Fresh wallets are 82% of buying", value: 82, evidence: [] }]} />);
+    const c = render(<HitList hits={[{ ruleId: "r", action: "block", text: "t", signalId: "distribution_pct", op: "<", threshold: -2, label: "Labeled wallets sold 4.2% of 24h volume", value: -4.2, evidence: [] }]} />);
     const clause = c.querySelector(".tw-hit-rule") as HTMLElement;
-    expect(clause.textContent).toBe("rule: > 70%");
+    expect(clause.textContent).toBe("rule: < −2% of volume");
     expect(clause.querySelector(".tw-mono")).toBeNull();
-    expect(clause.querySelector(".tw-fig")?.textContent).toBe("> 70%");
+    expect(clause.querySelector(".tw-fig")?.textContent).toBe("< −2% of volume");
   });
 });
 
@@ -139,7 +140,7 @@ describe("card age on venue cards", () => {
     const { Panel } = await import("../lib/ui/Panel");
     const c = render(
       <Panel
-        data={{ verdict: "CLEAR", hits: [], unavailable: [], signals: [], panel: { flow: null, flowTimeframe: "1d", sincePost: null, netflow: null, indicators: null, marketCapUsd: null, topBuyers: null, topSellers: null, candles: null, postTimeIso: null, errors: [] }, rulesPreset: "balanced" }}
+        data={{ verdict: "CLEAR", hits: [], unavailable: [], signals: [], panel: { flow: null, flowTimeframe: "1d", netflow: null, indicators: null, marketCapUsd: null, topBuyers: null, topSellers: null, chart: null, postTimeIso: null, errors: [] }, rulesPreset: "balanced" }}
         title="WIF"
         onClose={() => {}}
         checkedAtIso={new Date().toISOString()}

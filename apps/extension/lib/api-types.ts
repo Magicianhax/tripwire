@@ -20,7 +20,9 @@ import type {
   Signal,
   SignalId,
   Target,
+  TokenInfo,
   Verdict,
+  ViewTimeframe,
   WhoRow,
 } from "@tripwire/core";
 
@@ -61,19 +63,36 @@ export type HitDto = {
   evidence: Evidence[];
 };
 
+export type SpotChart = {
+  timeframe: ViewTimeframe;
+  /** The candle interval inside the window ("15m"). */
+  interval: string;
+  candles: Candle[] | null;
+};
+
 export type SpotPanel = {
+  /** Name, symbol, logo and market figures from `tgm/token-information`. Optional: an older
+   * backend doesn't send it, and the header falls back to the address. */
+  token?: TokenInfo | null;
+  /** The flow the verdict was computed from, always on the verdict window. */
   flow: FlowRow | null;
   flowTimeframe: string;
-  sincePost: { timeframe: string; flow: FlowRow | null } | null;
-  netflow: { h1: number | null; h24: number | null; d7: number | null; d30: number | null; symbol: string | null } | null;
+  /** The flow for the window the user picked. Optional for the same reason as `token`. */
+  viewFlow?: FlowRow | null;
+  viewTimeframe?: ViewTimeframe;
+  netflow: { h1: number | null; h24: number | null; d7: number | null; d30: number | null; symbol: string | null; traders?: number | null } | null;
   indicators: { type: string; score: string; percentile: number | null }[] | null;
   marketCapUsd: number | null;
   topBuyers: WhoRow[] | null;
   topSellers: WhoRow[] | null;
-  candles: Candle[] | null;
+  chart?: SpotChart | null;
+  /** How much fresh-wallet money took the other side of the labeled exit ("2.8×"), or null. */
+  absorption?: number | null;
+  labeledUsd?: number | null;
+  labeledWallets?: number;
   postTimeIso: string | null;
-  /** Token logo (https) from Nansen token information, panel mode only. Optional: an older
-   * backend doesn't send it, and the header shows a monogram. */
+  /** Token logo (https) from Nansen token information. Optional: an older backend doesn't send
+   * it, and the header shows a monogram. */
   logoUrl?: string | null;
   errors: string[];
 };

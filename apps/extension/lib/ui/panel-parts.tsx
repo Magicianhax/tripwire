@@ -1,8 +1,8 @@
 import { useContext, useEffect, useId, useState, type ReactNode } from "react";
-import { CircleAlert, OctagonX, TriangleAlert, type LucideIcon } from "lucide-react";
+import { Check, CircleAlert, Copy, ExternalLink, OctagonX, TriangleAlert, type LucideIcon } from "lucide-react";
 import { formatSignalValue, NANSEN_LOGO, ruleClause, type Verdict } from "@tripwire/core";
 import type { HitDto } from "../api-types";
-import { timeAgo, usd } from "./format";
+import { shortAddr, timeAgo, usd } from "./format";
 import { CloseIcon, Icon } from "./icons";
 import { BrandMark, ChainLogo, TokenLogo } from "./Logo";
 import { Plate } from "./Plate";
@@ -133,12 +133,54 @@ export function HitList({ hits, max, className = "tw-hits", id }: { hits: HitDto
   );
 }
 
+/** The copyable short address, the one place the raw contract still belongs now that the header
+ * names the token. Copy falls back silently: a clipboard the browser refuses is not an error
+ * worth a message, and the address stays selectable. */
+export function AddressChip({ address }: { address: string }) {
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 1_400);
+    return () => clearTimeout(timer);
+  }, [copied]);
+  return (
+    <span className="tw-addr">
+      <span className="tw-addr-text">{shortAddr(address)}</span>
+      <button
+        type="button"
+        className="tw-addr-copy"
+        aria-label={copied ? "Address copied" : "Copy token address"}
+        onClick={() => {
+          void navigator.clipboard?.writeText(address).then(
+            () => setCopied(true),
+            () => {},
+          );
+        }}
+      >
+        <Icon icon={copied ? Check : Copy} size={14} />
+      </button>
+    </span>
+  );
+}
+
+/** "View on Nansen": the same token, in the product this evidence came from. */
+export function NansenLink({ href }: { href: string }) {
+  return (
+    <a className="tw-nansen-link" href={href} target="_blank" rel="noopener noreferrer">
+      <BrandMark logo={NANSEN_LOGO} size={14} />
+      View on Nansen
+      <Icon icon={ExternalLink} size={14} />
+    </a>
+  );
+}
+
 /** "Powered by Nansen" credit with the endpoint count, plus "Unavailable: <message>" per
  * panel.errors entry. */
-export function PanelFooter({ endpointCount, errors }: { endpointCount: number; errors: string[] }) {
+export function PanelFooter({ endpointCount, errors, nansenUrl }: { endpointCount: number; errors: string[]; nansenUrl?: string | null }) {
   return (
     <footer className="tw-card-footer">
       <div className="tw-card-credit">
+        {nansenUrl ? <NansenLink href={nansenUrl} /> : null}
         <p className="tw-meta tw-powered">
           Powered by <BrandMark logo={NANSEN_LOGO} size={14} /> <span className="tw-powered-name">Nansen</span>
         </p>
@@ -174,12 +216,19 @@ function Age({ iso, prefix }: { iso: string; prefix?: string }) {
   );
 }
 
-/** The card's header row: token logo, title (the dialog's label and first focus stop), chain
- * logo and age, then the verdict pill, Replay tag and close. Inside a Popover the close button
- * closes through it. */
+/**
+ * The card's header: the token's own identity first — logo, $SYMBOL, name, chain — with the
+ * contract address demoted to a copyable mono line underneath, then the verdict pill, Replay
+ * tag and close. Inside a Popover the close button closes through it.
+ *
+ * The title is the dialog's label and its first focus stop, so a screen reader hears
+ * "$WIF dogwifhat" rather than a base58 string.
+ */
 export function CardHeader({
   verdict,
   title,
+  name,
+  address,
   since,
   replay,
   onClose,
@@ -188,7 +237,12 @@ export function CardHeader({
   showToken = true,
 }: {
   verdict?: Verdict;
+  /** The headline name: "$WIF" when the token resolved, else the short address. */
   title: string;
+  /** The token's full name ("dogwifhat"), shown beside the symbol. */
+  name?: string | null;
+  /** The contract address, shown short and copyable under the name. */
+  address?: string | null;
   /** The card's age: the post time on X, the check time on a venue ("checked 20s ago"). */
   since?: { iso: string; prefix?: string } | null;
   replay?: boolean;
@@ -209,10 +263,12 @@ export function CardHeader({
       {showToken ? <TokenLogo url={logoUrl} symbol={title} /> : null}
       <div className="tw-card-heading">
         <h2 id={headingId} className="tw-card-title" tabIndex={-1}>
-          {title}
+          <span className="tw-card-symbol">{title}</span>
+          {name ? <span className="tw-card-name"> {name}</span> : null}
         </h2>
         <span className="tw-card-sub">
           <ChainLogo chain={chain} size={14} />
+          {address ? <AddressChip address={address} /> : null}
           {since ? <Age iso={since.iso} prefix={since.prefix} /> : null}
         </span>
       </div>

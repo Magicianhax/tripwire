@@ -101,7 +101,7 @@ describe("rendered text contrast (Chromium, real cascade)", () => {
   for (const [hostName, hostBg] of HOSTS) {
     it(`chip value text is readable for every verdict on ${hostName}`, async () => {
       const markup = VERDICTS.map((v) =>
-        renderToStaticMarkup(<Chip verdict={v} symbol="WIF" headline="Fresh wallets are 100% of buying" expanded={false} onClick={() => {}} chain="solana" replay />),
+        renderToStaticMarkup(<Chip verdict={v} symbol="WIF" headline="Smart money, whales and public figures sold 14.5% of 24h volume" expanded={false} onClick={() => {}} chain="solana" replay />),
       ).join("");
       const results = await measure(markup, ".tw-chip-value", hostBg);
       expect(results).toHaveLength(VERDICTS.length);
@@ -118,8 +118,8 @@ describe("rendered text contrast (Chromium, real cascade)", () => {
 
   it("strip, dock, block screen and lit rows keep every text colour at 4.5:1 or more", async () => {
     const hits: HitDto[] = [
-      { ruleId: "r1", signalId: "fresh_buy_share", action: "block", text: "Fresh wallets", label: "Fresh wallets are 82% of buying", value: 82, evidence: [], op: ">", threshold: 70 },
-      { ruleId: "r2", signalId: "exit_pressure", action: "warn", text: "Exit", label: "Labeled wallets sold $9.4K", value: -9400, evidence: [], op: "<", threshold: -1000 },
+      { ruleId: "r1", signalId: "distribution_pct", action: "block", text: "Fresh wallets", label: "Labeled wallets sold 4.2% of 24h volume ($287K of $6.8M), 17 wallets", value: -4.2, evidence: [], op: "<", threshold: -2 },
+      { ruleId: "r2", signalId: "labeled_exit_pct", action: "warn", text: "Exit", label: "Labeled wallets sold 1.4% of 24h volume ($9.4K of $671K), 12 wallets", value: -1.4, evidence: [], op: "<", threshold: -1 },
     ] as HitDto[];
     const markup = [
       renderToStaticMarkup(<Strip verdict="CAUTION" text="Smart Money sold $401" rule="rule: < −$100" onDetails={() => {}} venue="jupiter" />),

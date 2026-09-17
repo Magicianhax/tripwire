@@ -53,7 +53,7 @@ describe("verdict icons", () => {
 
 describe("bundled logos", () => {
   it("chip, strip, dock, block screen and footer show logos from the extension package", () => {
-    const hits = [{ ruleId: "r", signalId: "fresh_buy_share", action: "block", text: "t", label: "Fresh wallets are 82% of buying", value: 82, evidence: [] }] as unknown as HitDto[];
+    const hits = [{ ruleId: "r", signalId: "distribution_pct", action: "block", text: "t", label: "Labeled wallets sold 4.2% of 24h volume", value: -4.2, evidence: [] }] as unknown as HitDto[];
     const cases: [string, React.ReactNode][] = [
       ["logos/chain-solana.svg", <Chip verdict="CLEAR" symbol="WIF" headline="x" expanded={false} onClick={() => {}} chain="solana" />],
       ["logos/jupiter.svg", <Strip verdict="CAUTION" text="x" venue="jupiter" />],
