@@ -1,14 +1,8 @@
-import type { Rule, SignalId } from "@tripwire/core";
+import { isNegativeSignal, type Rule, type SignalId } from "@tripwire/core";
 
-// exit_pressure and sm_netflow_24h are outflow signals: their threshold is always
-// non-positive (0 or negative) across every preset. The editor shows the magnitude and
-// re-applies the sign on save, unconditionally — this does not depend on whether a given
-// preset's threshold happens to be negative or zero (paranoid's sm_netflow_24h is 0).
-const NEGATIVE_SIGNALS: SignalId[] = ["exit_pressure", "sm_netflow_24h"];
-
-export function isNegativeSignal(signal: SignalId): boolean {
-  return NEGATIVE_SIGNALS.includes(signal);
-}
+// The downward signals (labeled_exit_pct, distribution_pct, sm_netflow_pct, drawdown_pct) live
+// in @tripwire/core, because rule sentences there print the same magnitudes this editor edits.
+export { isNegativeSignal };
 
 export type SentenceParts = { before: string; after: string; isUsd: boolean };
 

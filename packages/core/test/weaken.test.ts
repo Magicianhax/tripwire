@@ -25,19 +25,19 @@ describe("isWeakerPreset", () => {
 
 describe("weakensRules", () => {
   it("disabling an enabled block rule weakens protection", () => {
-    const next = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, enabled: false } : r));
+    const next = PRESETS.balanced.map((r) => (r.id === "spot-exit-deep" ? { ...r, enabled: false } : r));
     expect(weakensRules(PRESETS.balanced, next)).toBe(true);
   });
 
   it("turning a block rule into a warn weakens protection", () => {
-    const next = PRESETS.balanced.map((r) => (r.id === "spot-risk" ? { ...r, action: "warn" as const } : r));
+    const next = PRESETS.balanced.map((r) => (r.id === "spot-distribution" ? { ...r, action: "warn" as const } : r));
     expect(weakensRules(PRESETS.balanced, next)).toBe(true);
   });
 
   it("disabling a warn rule, or enabling/adding blocks, does not", () => {
-    const disabledWarn = PRESETS.balanced.map((r) => (r.id === "spot-fresh" ? { ...r, enabled: false } : r));
+    const disabledWarn = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, enabled: false } : r));
     expect(weakensRules(PRESETS.balanced, disabledWarn)).toBe(false);
-    const warnToBlock = PRESETS.balanced.map((r) => (r.id === "spot-fresh" ? { ...r, action: "block" as const } : r));
+    const warnToBlock = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, action: "block" as const } : r));
     expect(weakensRules(PRESETS.balanced, warnToBlock)).toBe(false);
     expect(weakensRules(PRESETS.balanced, PRESETS.balanced)).toBe(false);
   });
@@ -45,22 +45,22 @@ describe("weakensRules", () => {
 
 describe("threshold loosening on block rules", () => {
   it("a bigger outflow threshold (more negative, op <) weakens a block rule", () => {
-    const next = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, threshold: -200_000 } : r));
+    const next = PRESETS.balanced.map((r) => (r.id === "spot-exit-deep" ? { ...r, threshold: -20 } : r));
     expect(weakensRules(PRESETS.balanced, next)).toBe(true);
-    expect(weakenedRuleIds(PRESETS.balanced, next)).toEqual(["spot-exit"]);
+    expect(weakenedRuleIds(PRESETS.balanced, next)).toEqual(["spot-exit-deep"]);
   });
 
   it("a higher threshold on a > / >= block rule weakens it", () => {
     const opp = PRESETS.balanced.map((r) => (r.id === "perp-opp" ? { ...r, threshold: 90 } : r));
     expect(weakensRules(PRESETS.balanced, opp)).toBe(true);
-    const risk = PRESETS.balanced.map((r) => (r.id === "spot-risk" ? { ...r, threshold: 3 } : r));
-    expect(weakensRules(PRESETS.balanced, risk)).toBe(true);
+    const pm = PRESETS.balanced.map((r) => (r.id === "pm-smart" ? { ...r, threshold: 90 } : r));
+    expect(weakensRules(PRESETS.balanced, pm)).toBe(true);
   });
 
   it("tightening a block, or loosening a warn, does not weaken", () => {
-    const tighter = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, threshold: -50_000 } : r.id === "perp-opp" ? { ...r, threshold: 60 } : r));
+    const tighter = PRESETS.balanced.map((r) => (r.id === "spot-exit-deep" ? { ...r, threshold: -2 } : r.id === "perp-opp" ? { ...r, threshold: 60 } : r));
     expect(weakensRules(PRESETS.balanced, tighter)).toBe(false);
-    const looserWarn = PRESETS.balanced.map((r) => (r.id === "spot-fresh" ? { ...r, threshold: 95 } : r));
+    const looserWarn = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, threshold: -4 } : r));
     expect(weakensRules(PRESETS.balanced, looserWarn)).toBe(false);
   });
 
@@ -79,7 +79,7 @@ describe("presetChangeNeedsConfirm (popup + /rules)", () => {
   });
 
   it("compares a custom rule set against the target preset's rules", () => {
-    const custom = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, threshold: -10_000 } : r));
+    const custom = PRESETS.balanced.map((r) => (r.id === "spot-exit-deep" ? { ...r, threshold: -1 } : r));
     expect(presetChangeNeedsConfirm({ preset: "custom", rules: custom }, "balanced")).toBe(true);
     expect(presetChangeNeedsConfirm({ preset: "custom", rules: PRESETS.degen }, "paranoid")).toBe(false);
   });

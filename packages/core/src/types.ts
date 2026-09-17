@@ -21,15 +21,54 @@ export type PredictionTarget = {
 export type Target = SpotTarget | PerpTarget | PredictionTarget;
 export type TargetKind = Target["kind"];
 
-export type SignalId =
-  | "exit_pressure"
-  | "fresh_buy_share"
-  | "sm_netflow_24h"
-  | "risk_high_count"
-  | "author_holds_token"
-  | "sm_opposite_side_pct"
-  | "inside_liq_band"
-  | "smart_side_disagrees";
+/** Every signal a rule may reference. The four spot flow/price signals are volume-normalized
+ * (docs/CALIBRATION.md): the USD-denominated `exit_pressure`/`sm_netflow_24h` and the
+ * degenerate `fresh_buy_share` were removed in the 2026-09-17 recalibration. */
+export const SIGNAL_IDS = [
+  "labeled_exit_pct",
+  "distribution_pct",
+  "sm_netflow_pct",
+  "drawdown_pct",
+  "risk_high_count",
+  "author_holds_token",
+  "sm_opposite_side_pct",
+  "inside_liq_band",
+  "smart_side_disagrees",
+] as const;
+
+export type SignalId = (typeof SIGNAL_IDS)[number];
+
+/** How a signal's value and its rule threshold are written.
+ * - `pct-volume`: a share of the token's 24h DEX volume ("−14.5% of volume")
+ * - `pct`: a plain percentage ("−75%")
+ * - `usd`: a dollar amount
+ * - `count`: a whole number of things */
+export type SignalUnit = "pct-volume" | "pct" | "usd" | "count";
+
+export const SIGNAL_UNITS: Record<SignalId, SignalUnit> = {
+  labeled_exit_pct: "pct-volume",
+  distribution_pct: "pct-volume",
+  sm_netflow_pct: "pct-volume",
+  drawdown_pct: "pct",
+  risk_high_count: "count",
+  author_holds_token: "usd",
+  sm_opposite_side_pct: "pct",
+  inside_liq_band: "usd",
+  smart_side_disagrees: "pct",
+};
+
+/** Signals whose rule thresholds always point downward (0 or negative) across every preset.
+ * The rules editor shows the magnitude and re-applies the sign on save, and rule sentences
+ * print the magnitude ("down more than 50%", not "down more than −50%"). */
+export const NEGATIVE_SIGNALS: SignalId[] = ["labeled_exit_pct", "distribution_pct", "sm_netflow_pct", "drawdown_pct"];
+
+export function isNegativeSignal(signal: SignalId): boolean {
+  return NEGATIVE_SIGNALS.includes(signal);
+}
+
+export function isSignalId(value: unknown): value is SignalId {
+  return typeof value === "string" && (SIGNAL_IDS as readonly string[]).includes(value);
+}
 
 export type Evidence = { endpoint: string; field: string; value: string };
 

@@ -4,12 +4,36 @@ import { getDb } from "./db";
 
 export type RulesState = { preset: PresetName | "custom"; rules: Rule[] };
 
+/** The stored shape, one rule at a time: a rule naming a signal this build no longer has must
+ * not take the whole custom rule set down with it (see dropUnknownSignalRules). */
 const StoredRulesSchema = z.object({
   preset: z.enum(["degen", "balanced", "paranoid", "custom"]),
-  rules: z.array(RuleSchema),
+  rules: z.array(z.unknown()),
 });
 
 const DEFAULT_RULES = (): RulesState => ({ preset: "balanced", rules: PRESETS.balanced });
+
+let warnedAboutDroppedRules = false;
+
+/**
+ * Keeps the rules this build understands and drops the rest.
+ *
+ * The 2026-09-17 recalibration (docs/CALIBRATION.md) removed `exit_pressure`,
+ * `fresh_buy_share` and `sm_netflow_24h`. Their thresholds were in USD and in percent-of-buying
+ * and have no honest conversion into a percent of 24h volume, so a saved rule that names one is
+ * dropped rather than silently reinterpreted — a rule that means something different from what
+ * the user set is worse than a rule that is gone.
+ */
+export function dropUnknownSignalRules(rules: unknown[]): { rules: Rule[]; dropped: number } {
+  const kept: Rule[] = [];
+  let dropped = 0;
+  for (const raw of rules) {
+    const parsed = RuleSchema.safeParse(raw);
+    if (parsed.success) kept.push(parsed.data as Rule);
+    else dropped += 1;
+  }
+  return { rules: kept, dropped };
+}
 
 /** The saved rules, validated: a corrupt or hand-edited row falls back to the balanced preset
  * rather than feeding malformed rules into evaluate(). */
@@ -24,8 +48,20 @@ export function getRules(): RulesState {
   }
   const parsed = StoredRulesSchema.safeParse(raw);
   if (!parsed.success) return DEFAULT_RULES();
+  const { rules, dropped } = dropUnknownSignalRules(parsed.data.rules);
+  if (dropped > 0 && !warnedAboutDroppedRules) {
+    warnedAboutDroppedRules = true;
+    console.warn(`[tripwire] dropped ${dropped} saved rule(s) naming a signal this build no longer has (see docs/CALIBRATION.md).`);
+  }
+  // A saved set that lost every rule would evaluate to UNCHECKED on everything: fall back.
+  if (rules.length === 0) return DEFAULT_RULES();
   // Rules saved before the verb moved to `action` still start with "Block when"/"Warn when".
-  return { ...parsed.data, rules: parsed.data.rules.map((r) => ({ ...r, text: stripRuleVerb(r.text) })) };
+  return { preset: parsed.data.preset, rules: rules.map((r) => ({ ...r, text: stripRuleVerb(r.text) })) };
+}
+
+/** Test helper: the "logged once" latch is process-wide. */
+export function _resetRuleMigrationWarning() {
+  warnedAboutDroppedRules = false;
 }
 
 export function setRules(state: RulesState) {

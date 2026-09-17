@@ -1,4 +1,4 @@
-import type { Signal, SignalId, TargetKind, Verdict } from "../types";
+import { isNegativeSignal, type Signal, type SignalId, type TargetKind, type Verdict } from "../types";
 import type { Rule } from "./presets";
 
 export type RuleHit = { rule: Rule; signal: Signal };
@@ -41,10 +41,13 @@ export function stripRuleVerb(text: string): string {
   return text.replace(LEGACY_VERB, "");
 }
 
-/** The rule's condition with its threshold filled in, no verb: "fresh wallets are more than 70% of buying". */
+/** The rule's condition with its threshold filled in, no verb: "labeled wallets sell more than
+ * 1% of 24h volume". Downward signals print their magnitude: the sentence already carries the
+ * direction ("sell", "down"), so a minus sign would negate it a second time. */
 export function ruleSentence(rule: Rule, formatUsd: (n: number) => string): string {
   const text = stripRuleVerb(rule.text);
-  const n = text.includes("${n}") ? formatUsd(Math.abs(rule.threshold)) : String(rule.threshold);
+  const magnitude = isNegativeSignal(rule.signal) ? Math.abs(rule.threshold) : rule.threshold;
+  const n = text.includes("${n}") ? formatUsd(Math.abs(rule.threshold)) : String(magnitude);
   return text.replace("${n}", n).replace("{n}", n);
 }
 

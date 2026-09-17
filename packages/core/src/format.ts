@@ -1,4 +1,4 @@
-import type { SignalId, Verdict } from "./types";
+import { SIGNAL_UNITS, type SignalId, type Verdict } from "./types";
 
 export type RuleOp = ">" | "<" | ">=" | "<=";
 
@@ -28,22 +28,29 @@ export function usd(n: number | null | undefined, signed = false): string {
 export const pct = (n: number | null | undefined) =>
   n === null || n === undefined || !Number.isFinite(n) ? "—" : `${Math.round(n)}%`;
 
-/** A signal's value in its own unit: percent, plain count, or (signed for flows) USD. */
+/** A share of 24h volume: one decimal below 10%, whole percent above, minus sign for outflow.
+ * These numbers routinely live between 0.1% and 15%, so rounding to whole percent would erase
+ * the difference between "ordinary rotation" and "a block". */
+export function pctVol(n: number | null | undefined, withUnit = false): string {
+  if (n === null || n === undefined || !Number.isFinite(n)) return "—";
+  const abs = Math.abs(n);
+  // Trailing ".0" reads as false precision: "5%", but "14.5%" and "0.75%".
+  const body = (abs >= 1 ? abs.toFixed(1) : abs.toFixed(2)).replace(/\.0+$/, "");
+  return `${n < 0 ? "−" : ""}${body}%${withUnit ? " of volume" : ""}`;
+}
+
+/** A signal's value written in its own unit (see SIGNAL_UNITS). */
 export function formatSignalValue(signalId: SignalId, value: number | null | undefined): string {
   if (value === null || value === undefined || !Number.isFinite(value)) return "—";
-  switch (signalId) {
-    case "fresh_buy_share":
-    case "sm_opposite_side_pct":
-    case "smart_side_disagrees":
+  switch (SIGNAL_UNITS[signalId]) {
+    case "pct-volume":
+      return pctVol(value, true);
+    case "pct":
       return pct(value);
-    case "risk_high_count":
+    case "count":
       return String(Math.round(value));
-    case "exit_pressure":
-    case "sm_netflow_24h":
-      return usd(value, true);
-    case "inside_liq_band":
-    case "author_holds_token":
-      return usd(value);
+    case "usd":
+      return signalId === "author_holds_token" || signalId === "inside_liq_band" ? usd(value) : usd(value, true);
   }
 }
 

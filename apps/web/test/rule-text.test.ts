@@ -27,13 +27,14 @@ describe("splitSentence", () => {
 });
 
 describe("isNegativeSignal", () => {
-  it("is true for the two outflow signals", () => {
-    expect(isNegativeSignal("exit_pressure")).toBe(true);
-    expect(isNegativeSignal("sm_netflow_24h")).toBe(true);
+  it("is true for every downward signal", () => {
+    expect(isNegativeSignal("labeled_exit_pct")).toBe(true);
+    expect(isNegativeSignal("distribution_pct")).toBe(true);
+    expect(isNegativeSignal("sm_netflow_pct")).toBe(true);
+    expect(isNegativeSignal("drawdown_pct")).toBe(true);
   });
 
   it("is false for every other signal", () => {
-    expect(isNegativeSignal("fresh_buy_share")).toBe(false);
     expect(isNegativeSignal("risk_high_count")).toBe(false);
     expect(isNegativeSignal("sm_opposite_side_pct")).toBe(false);
     expect(isNegativeSignal("inside_liq_band")).toBe(false);
@@ -44,33 +45,34 @@ describe("isNegativeSignal", () => {
 
 describe("displayValue", () => {
   it("shows the magnitude for a negative-threshold signal, including the paranoid preset's 0", () => {
-    expect(displayValue({ signal: "exit_pressure", threshold: -25_000 })).toBe(25_000);
-    expect(displayValue({ signal: "sm_netflow_24h", threshold: -50_000 })).toBe(50_000);
-    expect(displayValue({ signal: "sm_netflow_24h", threshold: 0 })).toBe(0);
+    expect(displayValue({ signal: "labeled_exit_pct", threshold: -2.5 })).toBe(2.5);
+    expect(displayValue({ signal: "sm_netflow_pct", threshold: -1.5 })).toBe(1.5);
+    expect(displayValue({ signal: "drawdown_pct", threshold: -50 })).toBe(50);
+    expect(displayValue({ signal: "sm_netflow_pct", threshold: 0 })).toBe(0);
   });
 
   it("passes a positive-signal threshold through unchanged", () => {
-    expect(displayValue({ signal: "fresh_buy_share", threshold: 70 })).toBe(70);
+    expect(displayValue({ signal: "risk_high_count", threshold: 2 })).toBe(2);
   });
 });
 
 describe("storedThreshold", () => {
-  it("stores -50000 when 50000 is typed for sm_netflow_24h", () => {
-    expect(storedThreshold("sm_netflow_24h", 50_000)).toBe(-50_000);
+  it("stores -1.5 when 1.5 is typed for sm_netflow_pct", () => {
+    expect(storedThreshold("sm_netflow_pct", 1.5)).toBe(-1.5);
   });
 
-  it("stores -25000 when 25000 is typed for exit_pressure", () => {
-    expect(storedThreshold("exit_pressure", 25_000)).toBe(-25_000);
+  it("stores -2.5 when 2.5 is typed for labeled_exit_pct", () => {
+    expect(storedThreshold("labeled_exit_pct", 2.5)).toBe(-2.5);
   });
 
   it("stores 0 when 0 is typed, never -0", () => {
-    const stored = storedThreshold("sm_netflow_24h", 0);
+    const stored = storedThreshold("sm_netflow_pct", 0);
     expect(stored).toBe(0);
     expect(Object.is(stored, -0)).toBe(false);
   });
 
   it("stores a positive-signal rule's typed value unchanged", () => {
-    expect(storedThreshold("fresh_buy_share", 70)).toBe(70);
+    expect(storedThreshold("risk_high_count", 2)).toBe(2);
   });
 });
 

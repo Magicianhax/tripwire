@@ -3,15 +3,33 @@
 export type FlowRow = {
   smart_trader_net_flow_usd: number | null;
   smart_trader_wallet_count: number | null;
+  /** Mean two-sided flow per wallet in the segment; × wallet_count is the segment's turnover. */
+  smart_trader_avg_flow_usd?: number | null;
   whale_net_flow_usd: number | null;
   whale_wallet_count: number | null;
+  whale_avg_flow_usd?: number | null;
   public_figure_net_flow_usd: number | null;
   public_figure_wallet_count: number | null;
+  public_figure_avg_flow_usd?: number | null;
   top_pnl_net_flow_usd: number | null;
   top_pnl_wallet_count: number | null;
+  top_pnl_avg_flow_usd?: number | null;
   exchange_net_flow_usd: number | null;
   fresh_wallets_net_flow_usd: number | null;
   fresh_wallets_wallet_count: number | null;
+  fresh_wallets_avg_flow_usd?: number | null;
+};
+
+/** `tgm/token-information`: the token's identity and its current spot metrics. */
+export type TokenInfo = {
+  name: string | null;
+  symbol: string | null;
+  logoUrl: string | null;
+  marketCapUsd: number | null;
+  /** 24h spot volume; the denominator behind every volume-normalized signal. */
+  volume24hUsd: number | null;
+  liquidityUsd: number | null;
+  priceUsd: number | null;
 };
 
 export type NetflowRow = {

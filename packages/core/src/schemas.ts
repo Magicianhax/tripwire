@@ -1,9 +1,14 @@
 import { z } from "zod";
 import { isEvmAddress, isSolanaAddress } from "./addresses";
-import { CHAINS } from "./types";
+import { CHAINS, SIGNAL_IDS } from "./types";
+import { VIEW_TIMEFRAMES } from "./timeframe";
 import { HANDLE_RE, isVenueWalletAddress, normalizeHandle, WALLET_VENUES } from "./curated-wallets";
 
 export const ChainSchema = z.enum(CHAINS);
+
+/** The card's view window. It drives the flow gauges and the price chart only: the verdict is
+ * always computed on VERDICT_TIMEFRAME. */
+export const ViewTimeframeSchema = z.enum(VIEW_TIMEFRAMES);
 
 const tokenAddress = z
   .string()
@@ -39,6 +44,8 @@ export const PostIntelRequestSchema = z.object({
   target: SpotTargetSchema,
   postTimeIso: z.iso.datetime({ offset: true }).optional(),
   mode: z.enum(["chip", "panel"]).default("chip"),
+  /** Panel mode only: which window the gauges and chart show. Ignored by the verdict. */
+  timeframe: ViewTimeframeSchema.optional(),
 });
 
 export const PersonIntelRequestSchema = z.object({
@@ -68,16 +75,7 @@ export const AuthorBadgesRequestSchema = z.object({
 export const RuleSchema = z.object({
   id: z.string().min(1).max(40),
   kind: z.enum(["spot", "perp", "prediction"]),
-  signal: z.enum([
-    "exit_pressure",
-    "fresh_buy_share",
-    "sm_netflow_24h",
-    "risk_high_count",
-    "author_holds_token",
-    "sm_opposite_side_pct",
-    "inside_liq_band",
-    "smart_side_disagrees",
-  ]),
+  signal: z.enum(SIGNAL_IDS),
   op: z.enum([">", "<", ">=", "<="]),
   threshold: z.number().finite(),
   action: z.enum(["warn", "block"]),
@@ -94,6 +92,8 @@ export const GuardBodySchema = z.object({
   target: TargetSchema,
   venue: z.string().max(40),
   mode: z.enum(["chip", "panel"]).default("chip"),
+  /** Panel mode only: which window the gauges and chart show. Ignored by the verdict. */
+  timeframe: ViewTimeframeSchema.optional(),
 });
 
 export const OverrideRequestSchema = z.object({

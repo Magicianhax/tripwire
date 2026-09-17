@@ -37,7 +37,8 @@ function WeakenConfirm({ onConfirm, onCancel }: { onConfirm: () => void; onCance
 }
 
 /** Threshold field: grouped digits ("100,000") at rest, the raw number while editing. Text input
- * with a numeric keyboard, since a number input can't show grouping. */
+ * with a decimal keyboard, since a number input can't show grouping and the volume-normalized
+ * thresholds are fractions of a percent ("0.75"). */
 function ThresholdInput({ id, value, label, onChange }: { id: string; value: number; label: string; onChange: (n: number) => void }) {
   const [draft, setDraft] = useState<string | null>(null);
   return (
@@ -45,7 +46,7 @@ function ThresholdInput({ id, value, label, onChange }: { id: string; value: num
       id={id}
       className="tw-input-number"
       type="text"
-      inputMode="numeric"
+      inputMode="decimal"
       autoComplete="off"
       spellCheck={false}
       value={draft ?? formatThresholdInput(value)}
