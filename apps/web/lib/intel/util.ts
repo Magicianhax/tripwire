@@ -27,3 +27,10 @@ export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) =>
 }
 
 export const isoNoMs = (d: Date) => d.toISOString().replace(/\.\d{3}Z$/, "Z");
+
+/**
+ * `now` rounded down to a multiple of `bucketMs`. Dated Nansen bodies use this as their `to`
+ * (and derive `from` from it) so the request body -- and therefore the cache key -- stays
+ * identical for a whole TTL window instead of changing every second.
+ */
+export const bucketNow = (bucketMs: number, now = Date.now()) => new Date(Math.floor(now / bucketMs) * bucketMs);

@@ -11,10 +11,16 @@ import type {
   PmTrade,
   WhoRow,
 } from "@tripwire/core";
+import { bucketNow, isoNoMs } from "../intel/util";
 import { nansenPost } from "./client";
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;
+
+/** TTLs for the dated endpoints; callers bucket their `to` to the same window (see bucketNow). */
+export const WHO_BOUGHT_SOLD_TTL = 5 * MIN;
+export const OHLCV_TTL = 5 * MIN;
+export const PERP_SCREENER_TTL = 2 * MIN;
 
 type Paged<T> = { data: T[]; pagination?: { is_last_page: boolean } };
 
@@ -34,7 +40,7 @@ export const nansen = {
         pagination: { page: 1, per_page: 8 },
         order_by: [{ field: side === "BUY" ? "bought_volume_usd" : "sold_volume_usd", direction: "DESC" }],
       },
-      ttlMs: 5 * MIN,
+      ttlMs: WHO_BOUGHT_SOLD_TTL,
     }),
 
   indicators: (chain: string, token_address: string) =>
@@ -45,7 +51,7 @@ export const nansen = {
       name: "ohlcv",
       path: "tgm/token-ohlcv",
       body: { chain, token_address, timeframe, date: { from, to } },
-      ttlMs: 5 * MIN,
+      ttlMs: OHLCV_TTL,
     }),
 
   smNetflow: (chain: string, token_address: string) =>
@@ -71,15 +77,14 @@ export const nansen = {
     }),
 
   perpScreener: (token_symbol: string) => {
-    const to = new Date();
+    // `to` bucketed to the TTL, `from` derived from it: one cache key per 2-minute window.
+    const to = bucketNow(PERP_SCREENER_TTL);
     const from = new Date(to.getTime() - 24 * HOUR);
-    // round to the minute so the cache key is stable within a TTL window
-    const iso = (d: Date) => new Date(Math.floor(d.getTime() / MIN) * MIN).toISOString().replace(".000Z", "Z");
     return nansenPost<Paged<PerpScreenerRow>>({
       name: "perpScreener",
       path: "perp-screener",
-      body: { date: { from: iso(from), to: iso(to) }, filters: { trader_type: "sm", token_symbol }, pagination: { page: 1, per_page: 1 } },
-      ttlMs: 2 * MIN,
+      body: { date: { from: isoNoMs(from), to: isoNoMs(to) }, filters: { trader_type: "sm", token_symbol }, pagination: { page: 1, per_page: 1 } },
+      ttlMs: PERP_SCREENER_TTL,
     });
   },
 

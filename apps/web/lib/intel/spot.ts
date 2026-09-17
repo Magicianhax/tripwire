@@ -1,6 +1,6 @@
 import { pickFlowTimeframe, spotSignals, type Candle, type FlowRow, type Signal, type SpotTarget, type WhoRow } from "@tripwire/core";
-import { nansen } from "../nansen/endpoints";
-import { isoNoMs, settle } from "./util";
+import { nansen, OHLCV_TTL, WHO_BOUGHT_SOLD_TTL } from "../nansen/endpoints";
+import { bucketNow, isoNoMs, settle } from "./util";
 
 export type SpotPanel = {
   flow: FlowRow | null;
@@ -23,7 +23,6 @@ export async function buildSpotIntel(
   opts: { mode: "chip" | "panel"; postTimeIso?: string; author?: { entity: string; valueUsd: number } | null },
 ): Promise<SpotIntel> {
   const { chain, tokenAddress } = t;
-  const now = new Date();
 
   // Signals always use the 1d window: fresh-wallet data only exists for 1d/7d.
   const [flow, netflow, indicators] = await Promise.all([
@@ -64,6 +63,9 @@ export async function buildSpotIntel(
   };
 
   if (opts.mode === "panel") {
+    // who-bought-sold and token-ohlcv share a 5-minute TTL: bucket `now` to it and derive every
+    // `from` from the bucketed value, so repeat opens within the window reuse the cache.
+    const now = bucketNow(Math.min(WHO_BOUGHT_SOLD_TTL, OHLCV_TTL));
     const postTime = opts.postTimeIso ? new Date(opts.postTimeIso) : null;
     const ageMs = postTime ? Math.max(0, now.getTime() - postTime.getTime()) : 24 * 3_600_000;
     const from = new Date(now.getTime() - Math.max(ageMs, 3_600_000));

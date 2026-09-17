@@ -66,7 +66,8 @@ let lastRefill = Date.now();
 async function takeToken() {
   for (;;) {
     const now = Date.now();
-    tokens = Math.min(RATE, tokens + ((now - lastRefill) / 1000) * RATE);
+    // max(0, …): a wall-clock step backwards must not drain the bucket into a long stall.
+    tokens = Math.min(RATE, tokens + (Math.max(0, now - lastRefill) / 1000) * RATE);
     lastRefill = now;
     if (tokens >= 1) {
       tokens -= 1;
