@@ -9,7 +9,7 @@ export type PopoverPlacement = {
   width: number;
   /** The card's height limit: min(70vh, 640px), and never taller than the room on its side. */
   maxHeight: number;
-  side: "below" | "above";
+  side: "below" | "above" | "right" | "left";
   /** transform-origin inside the card, so it scales out of the anchor. */
   originX: number;
   originY: number;
@@ -43,11 +43,35 @@ export function computePopoverPosition(
   anchor: AnchorRect,
   size: { height: number },
   viewport: Viewport,
-  options: { sheetBelow?: number } = {},
+  options: { sheetBelow?: number; prefer?: "vertical" | "side" } = {},
 ): PopoverPlacement {
   const width = popoverWidth(viewport.width);
   const cap = popoverMaxHeight(viewport.height);
   const sheet = options.sheetBelow !== undefined && viewport.width < options.sheetBelow;
+
+  // Beside a large anchor (the block screen) so the card never covers it: right, else left,
+  // top-aligned with the anchor and kept inside the viewport.
+  if (options.prefer === "side" && !sheet) {
+    const rightLeft = anchor.right + POPOVER_GAP;
+    const leftLeft = anchor.left - POPOVER_GAP - width;
+    const fitsRight = rightLeft + width <= viewport.width - POPOVER_MARGIN;
+    const fitsLeft = leftLeft >= POPOVER_MARGIN;
+    if (fitsRight || fitsLeft) {
+      const maxHeight = Math.min(cap, viewport.height - 2 * POPOVER_MARGIN);
+      const height = Math.min(size.height, maxHeight);
+      const top = clamp(anchor.top, POPOVER_MARGIN, Math.max(POPOVER_MARGIN, viewport.height - POPOVER_MARGIN - height));
+      return {
+        top,
+        left: fitsRight ? rightLeft : leftLeft,
+        width,
+        maxHeight,
+        side: fitsRight ? "right" : "left",
+        originX: fitsRight ? 0 : width,
+        originY: clamp(anchor.top - top, 0, height),
+        sheet,
+      };
+    }
+  }
 
   const spaceBelow = viewport.height - POPOVER_MARGIN - (anchor.bottom + POPOVER_GAP);
   const spaceAbove = anchor.top - POPOVER_GAP - POPOVER_MARGIN;

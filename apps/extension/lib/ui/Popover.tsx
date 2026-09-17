@@ -18,6 +18,9 @@ export type PopoverProps = {
   returnFocus?: () => HTMLElement | null | undefined;
   /** Below this viewport width the card becomes a bottom sheet (venue evidence and the dock). */
   sheetBelow?: number;
+  /** "side" opens beside the anchor (right, else left) before trying below/above: used for the
+   * block screen, so its evidence never covers the warning it explains. */
+  prefer?: "vertical" | "side";
   /** Close once the anchor scrolls fully out of the viewport (default true). */
   closeWhenAnchorHidden?: boolean;
   verdict?: string;
@@ -43,7 +46,7 @@ function isLaidOut(rect: AnchorRect): boolean {
  * Geometry is written straight to the element's style inside a layout effect, before the first
  * paint, so the entrance animation always starts from the right place and origin.
  */
-export function Popover({ anchor, onClose, returnFocus, sheetBelow, closeWhenAnchorHidden = true, verdict, className, children }: PopoverProps) {
+export function Popover({ anchor, onClose, returnFocus, sheetBelow, prefer, closeWhenAnchorHidden = true, verdict, className, children }: PopoverProps) {
   const headingId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const reasonRef = useRef<PopoverCloseReason | null>(null);
@@ -80,11 +83,11 @@ export function Popover({ anchor, onClose, returnFocus, sheetBelow, closeWhenAnc
     }
 
     // Natural height at the width it will render: drop the cap for one synchronous read.
-    const probe = computePopoverPosition(rect, { height: 0 }, viewport, { sheetBelow });
+    const probe = computePopoverPosition(rect, { height: 0 }, viewport, { sheetBelow, prefer });
     el.style.width = probe.sheet ? "" : `${probe.width}px`;
     el.style.maxHeight = "none";
     const height = el.offsetHeight;
-    const p = computePopoverPosition(rect, { height }, viewport, { sheetBelow });
+    const p = computePopoverPosition(rect, { height }, viewport, { sheetBelow, prefer });
 
     if (p.sheet) {
       el.dataset.sheet = "";
@@ -100,7 +103,7 @@ export function Popover({ anchor, onClose, returnFocus, sheetBelow, closeWhenAnc
     el.style.width = `${p.width}px`;
     el.style.maxHeight = `${p.maxHeight}px`;
     el.style.transformOrigin = `${Math.round(p.originX)}px ${Math.round(p.originY)}px`;
-  }, [anchor, sheetBelow, closeWhenAnchorHidden, close]);
+  }, [anchor, sheetBelow, prefer, closeWhenAnchorHidden, close]);
 
   useLayoutEffect(() => {
     reposition();

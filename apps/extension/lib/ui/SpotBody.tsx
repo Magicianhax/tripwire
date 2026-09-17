@@ -41,8 +41,10 @@ function Sparkline({ candles, postTimeIso }: { candles: Candle[] | null; postTim
       </svg>
       {markerX !== null ? (
         <p className="tw-legend">
-          <i className="tw-key tw-key-post" aria-hidden="true" />
-          Post
+          <span>
+            <i className="tw-key tw-key-post" aria-hidden="true" />
+            Post time
+          </span>
         </p>
       ) : null}
     </Section>

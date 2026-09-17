@@ -61,6 +61,31 @@ describe("computePopoverPosition", () => {
   });
 });
 
+describe("computePopoverPosition side placement", () => {
+  const block = { left: 460, top: 280, width: 344, height: 340, right: 804, bottom: 620 };
+
+  it("opens to the right of a large anchor (the block screen) when there is room, top-aligned", () => {
+    const p = computePopoverPosition(block, { height: 500 }, { width: 1440, height: 900 }, { prefer: "side" });
+    expect(p.side).toBe("right");
+    expect(p.left).toBe(804 + 8);
+    expect(p.top).toBe(280);
+    expect(p.originX).toBe(0);
+  });
+
+  it("uses the left side when only the left has room, and keeps the card inside the viewport vertically", () => {
+    const p = computePopoverPosition({ ...block, left: 900, right: 1244, top: 700, bottom: 1040 }, { height: 500 }, { width: 1280, height: 900 }, { prefer: "side" });
+    expect(p.side).toBe("left");
+    expect(p.left).toBe(900 - 8 - 440);
+    expect(p.top).toBe(900 - 16 - 500);
+    expect(p.originX).toBe(440);
+  });
+
+  it("falls back to above/below when neither side fits", () => {
+    const p = computePopoverPosition(block, { height: 200 }, { width: 1000, height: 900 }, { prefer: "side" });
+    expect(["below", "above"]).toContain(p.side);
+  });
+});
+
 describe("anchorOutOfView", () => {
   it("is true only once the anchor has fully left the viewport", () => {
     expect(anchorOutOfView(rect(0, -30), desktop)).toBe(true);

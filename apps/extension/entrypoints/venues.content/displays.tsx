@@ -50,9 +50,13 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
   const stillWanted = () => rc.evidenceOpening === opening && rc.currentKey === openedForKey;
   const result = await guard(target, adapter.id, "panel");
   if (!stillWanted()) return; // closed, or the page moved on, while this was in flight
+  // From the block screen the card opens beside the whole block (so it never hides the
+  // warning, and clicks inside the block don't dismiss it); from a Strip, beside Details.
+  const block = trigger?.closest(".tw-block") ?? null;
   const node = (
     <Popover
-      anchor={trigger}
+      anchor={block ?? trigger}
+      prefer={block ? "side" : "vertical"}
       onClose={() => closeEvidence(rc)}
       returnFocus={() => trigger}
       sheetBelow={SHEET_BELOW}

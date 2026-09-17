@@ -160,7 +160,7 @@ export default defineContentScript({
             >
               <Panel
                 data={panelResult.data}
-                title={`$${symbol}`}
+                title={token.kind === "cashtag" ? `$${symbol}` : symbol}
                 onClose={() => void panel.toggle()}
                 replay={replay}
                 person={personResult.ok ? personResult.data : null}

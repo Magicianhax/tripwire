@@ -31,7 +31,7 @@ export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", chi
     return (
       <div className="tw-chip tw-dock-chip" data-verdict="LOADING" role="status">
         <Plate verdict="LOADING" label="Tripwire" className="tw-chip-key" />
-        <span className="tw-chip-value tw-mono">Checking…</span>
+        <span className="tw-chip-value">Checking…</span>
         <ReplayBadge replay={replay} />
       </div>
     );
@@ -51,7 +51,7 @@ export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", chi
         aria-label={`Tripwire evidence. ${word}${headline ? `: ${headline}` : ""}`}
       >
         {verdict ? <Plate verdict={verdict} className="tw-chip-key" /> : <span className="tw-chip-key tw-plate" data-tone="unlit" data-mark="dashed">Tripwire</span>}
-        {headline ? <span className="tw-chip-value tw-mono">{headline}</span> : null}
+        {headline ? <span className="tw-chip-value">{headline}</span> : null}
         <ReplayBadge replay={replay} />
       </button>
       {!collapsed ? (

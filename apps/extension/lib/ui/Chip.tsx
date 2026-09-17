@@ -24,7 +24,7 @@ export function Chip({ verdict, symbol, headline, onClick, expanded, replay }: C
   return (
     <button type="button" className="tw-chip" data-verdict={verdict} aria-expanded={expanded} aria-haspopup="dialog" aria-label={ariaLabel} onClick={onClick}>
       <Plate verdict={verdict} label={isLoading ? symbol : undefined} className="tw-chip-key" />
-      <span className="tw-chip-value tw-mono">{valueText}</span>
+      <span className="tw-chip-value">{valueText}</span>
       <ReplayBadge replay={replay} />
     </button>
   );
