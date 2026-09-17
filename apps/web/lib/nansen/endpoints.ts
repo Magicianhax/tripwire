@@ -132,7 +132,9 @@ export const nansen = {
         token_address,
         buy_or_sell: side,
         date: { from, to },
-        pagination: { page: 1, per_page: 8 },
+        // 20, not 8: the expanded card shows the whole list, and one page costs what one
+        // page costs either way.
+        pagination: { page: 1, per_page: 20 },
         order_by: [{ field: side === "BUY" ? "bought_volume_usd" : "sold_volume_usd", direction: "DESC" }],
       },
       ttlMs: WHO_BOUGHT_SOLD_TTL,

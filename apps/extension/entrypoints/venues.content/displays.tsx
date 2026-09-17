@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import type { Target, Verdict, ViewTimeframe } from "@tripwire/core";
+import type { DepthSection, Target, Verdict, ViewTimeframe } from "@tripwire/core";
 import { installBlocker } from "../../lib/adapters/blocker";
 import type { VenueAdapter } from "../../lib/adapters/types";
-import { guard, override } from "../../lib/api";
-import type { GuardResponse, SpotPanel } from "../../lib/api-types";
+import { depth, guard, override } from "../../lib/api";
+import type { DepthResponse, GuardResponse, SpotPanel } from "../../lib/api-types";
+import { cardSize, setCardSize, type CardSize } from "../../lib/card-size";
 import { EVIDENCE_TAB } from "../../lib/ui/BlockScreen";
 import { fitToAnchor, liftOutOfRow } from "../../lib/ui/fit";
 import { Dock, SHEET_BELOW } from "../../lib/ui/Dock";
@@ -33,6 +34,12 @@ async function fetchSpotPanel(adapter: VenueAdapter, target: Target, timeframe: 
   return result.ok ? (result.data.panel as SpotPanel) : null;
 }
 
+/** One tab's lazy sections, with the failure turned into the sentence the card prints. */
+async function fetchDepth(target: Target, sections: DepthSection[]): Promise<{ ok: true; data: DepthResponse } | { ok: false; error: string }> {
+  const result = await depth(target, sections);
+  return result.ok ? { ok: true, data: result.data } : { ok: false, error: errorHeadline(result.status, result.error) };
+}
+
 function closeEvidence(rc: RunnerContext): void {
   rc.evidenceOpening = null; // cancels an open still in flight
   if (rc.evidenceMount) {
@@ -55,44 +62,64 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
   const opening = {};
   rc.evidenceOpening = opening;
   const openedForKey = rc.currentKey;
-  const stillWanted = () => rc.evidenceOpening === opening && rc.currentKey === openedForKey;
-  const result = await guard(target, adapter.id, "panel");
-  const checkedAtIso = new Date().toISOString();
-  if (!stillWanted()) return; // closed, or the page moved on, while this was in flight
+  const stillWanted = () => (rc.evidenceOpening === opening || rc.evidenceMount === mount) && rc.currentKey === openedForKey;
+
   // From the block screen the card opens beside the whole block (so it never hides the
   // warning, and clicks inside the block don't dismiss it); from a Strip, beside Details.
   const block = trigger?.closest(".tw-block") ?? null;
-  const node = (
-    <Popover
-      anchor={block ?? trigger}
-      prefer={block ? "side" : "vertical"}
-      onClose={() => closeEvidence(rc)}
-      returnFocus={() => trigger}
-      sheetBelow={SHEET_BELOW}
-      verdict={result.ok ? result.data.verdict : "UNCHECKED"}
-    >
-      {result.ok ? (
+  const checkedAtIso = new Date().toISOString();
+  let size: CardSize = cardSize(target.kind);
+  let result: Awaited<ReturnType<typeof guard>> | null = null;
+  let mount: Awaited<ReturnType<typeof mountReact>> | null = null;
+
+  function node(): ReactNode {
+    const ok = result?.ok ? result.data : null;
+    return (
+      <Popover
+        anchor={block ?? trigger}
+        prefer={block ? "side" : "vertical"}
+        onClose={() => closeEvidence(rc)}
+        returnFocus={() => trigger}
+        sheetBelow={SHEET_BELOW}
+        verdict={ok?.verdict ?? (result ? "UNCHECKED" : "LOADING")}
+        size={size}
+        onToggleSize={() => {
+          size = size === "expanded" ? "compact" : "expanded";
+          setCardSize(target.kind, size);
+          mount?.update(node());
+        }}
+      >
         <Panel
-          data={result.data}
+          data={ok}
+          error={result && !result.ok ? errorHeadline(result.status, result.error) : null}
           title={targetTitle(target)}
           onClose={() => closeEvidence(rc)}
           replay={rc.replay}
           initialTab={initialTab}
           checkedAtIso={checkedAtIso}
+          chain={target.kind === "spot" ? target.chain : null}
+          target={target}
+          onDepth={(sections) => fetchDepth(target, sections)}
           onTimeframe={target.kind === "spot" ? (timeframe) => fetchSpotPanel(adapter, target, timeframe) : undefined}
         />
-      ) : (
-        <CardMessage title={targetTitle(target)} chain={target?.kind === "spot" ? target.chain : null} kind="error" message={errorHeadline(result.status, result.error)} replay={rc.replay} checkedAtIso={checkedAtIso} />
-      )}
-    </Popover>
-  );
-  const mount = await mountReact(rc.ctx, { position: "modal", zIndex: EVIDENCE_Z_INDEX }, node);
+      </Popover>
+    );
+  }
+
+  // The card is mounted before the guard call, not after it: clicking Details puts something on
+  // screen in the same frame, with a skeleton per section, and the evidence fills in.
+  mount = await mountReact(rc.ctx, { position: "modal", zIndex: EVIDENCE_Z_INDEX }, node());
   if (!stillWanted()) {
     mount.ui.remove();
     return;
   }
   rc.evidenceOpening = null;
   rc.evidenceMount = mount;
+
+  const answered = await guard(target, adapter.id, "panel");
+  if (rc.evidenceMount !== mount) return; // closed, or the page moved on, while this was in flight
+  result = answered;
+  mount.update(node());
 }
 
 export function closeEvidenceDock(rc: RunnerContext): void {
@@ -131,27 +158,41 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
   let panelData: GuardResponse | null = null;
   let panelError: string | null = null;
   let checkedAtIso: string | undefined;
+  let size: CardSize = cardSize(target?.kind ?? "spot");
   const openedForKey = rc.currentKey;
 
   function node(): ReactNode {
     return (
-      <Dock collapsed={collapsed} verdict={verdict} headline={headline} onToggleCollapsed={() => void toggle()} replay={rc.replay} venue={adapter.id}>
-        {panelData ? (
-          <Panel
-            data={panelData}
-            title={targetTitle(target)}
-            checkedAtIso={checkedAtIso}
-            onTimeframe={target?.kind === "spot" ? (timeframe) => fetchSpotPanel(adapter, target, timeframe) : undefined}
-            onClose={() => {
-              collapsed = true;
-              rc.mainMount?.update(node());
-            }}
-          />
-        ) : panelError ? (
-          <CardMessage title={targetTitle(target)} chain={target?.kind === "spot" ? target.chain : null} kind="error" message={panelError} checkedAtIso={checkedAtIso} />
-        ) : (
-          <CardMessage title={targetTitle(target)} chain={target?.kind === "spot" ? target.chain : null} message="Loading evidence…" />
-        )}
+      <Dock
+        collapsed={collapsed}
+        verdict={verdict}
+        headline={headline}
+        onToggleCollapsed={() => void toggle()}
+        replay={rc.replay}
+        venue={adapter.id}
+        size={size}
+        onToggleSize={() => {
+          size = size === "expanded" ? "compact" : "expanded";
+          setCardSize(target?.kind ?? "spot", size);
+          rc.mainMount?.update(node());
+        }}
+      >
+        {/* The card is the same one every surface uses, so it opens with skeletons here too:
+            the dock chip expands into a card immediately, not after the guard call. */}
+        <Panel
+          data={panelData}
+          error={panelError}
+          title={targetTitle(target)}
+          checkedAtIso={checkedAtIso}
+          chain={target?.kind === "spot" ? target.chain : null}
+          target={target}
+          onDepth={target ? (sections) => fetchDepth(target, sections) : undefined}
+          onTimeframe={target?.kind === "spot" ? (timeframe) => fetchSpotPanel(adapter, target, timeframe) : undefined}
+          onClose={() => {
+            collapsed = true;
+            rc.mainMount?.update(node());
+          }}
+        />
       </Dock>
     );
   }

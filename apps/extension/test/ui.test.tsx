@@ -627,9 +627,9 @@ describe("Evidence card tabs", () => {
     root.unmount();
   });
 
-  it("perp evidence is Positioning / Liquidations / Trades; prediction is Proven winners / Holders / Trades", () => {
+  it("perp evidence is Positioning / Liquidations / Traders / Chart; prediction is Proven winners / Holders / Trades", () => {
     const perp = mountNode(<PerpBody panel={{ coin: "ETH", screener: null, positions: null, trades: null, errors: [] }} />);
-    expect(tabLabels(perp.container)).toEqual(["Positioning", "Liquidations", "Trades"]);
+    expect(tabLabels(perp.container)).toEqual(["Positioning", "Liquidations", "Traders11 credits", "Chart"]);
     perp.root.unmount();
     const prediction = mountNode(<PredictionBody panel={{ market: null, holders: null, trades: null, errors: [] }} initialTab="holders" />);
     expect(tabLabels(prediction.container)).toEqual(["Proven winners", "Holders", "Trades"]);

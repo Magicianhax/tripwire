@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import type { CardSize } from "../card-size";
 import { LoaderCircle } from "lucide-react";
 import { verdictLabel, type Verdict } from "@tripwire/core";
 import { Icon } from "./icons";
@@ -25,11 +26,14 @@ export type DockProps = {
   replay?: boolean;
   /** Adapter id: the venue's logo leads the chip. */
   venue?: string;
+  /** Passed through to the card's frame: anchored beside the chip, or the centred overlay. */
+  size?: CardSize;
+  onToggleSize?: () => void;
 };
 
 /** The tier-2 dock: a verdict chip pinned to the top-right edge that opens the evidence card
  * beside it (a bottom sheet under 720px). Always stacked below the block screen. */
-export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", children, replay, venue }: DockProps) {
+export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", children, replay, venue, size, onToggleSize }: DockProps) {
   const [chip, setChip] = useState<HTMLButtonElement | null>(null);
 
   if (verdict === "LOADING") {
@@ -74,6 +78,8 @@ export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", chi
           closeWhenAnchorHidden={false}
           verdict={verdict}
           className="tw-dock"
+          size={size}
+          onToggleSize={onToggleSize}
         >
           {children}
         </Popover>

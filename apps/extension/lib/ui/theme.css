@@ -32,6 +32,11 @@
   --tw-line-strong: rgba(255, 255, 255, 0.16);
   --tw-glow: #061a1f;
   --tw-scroll-edge: rgba(6, 8, 11, 0.95);
+  /* The expanded card dims the page behind it; no blur, so nothing pays for a viewport-sized
+     compositor layer on every venue. */
+  --tw-scrim: rgba(0, 0, 0, 0.6);
+  /* The lit pass of a loading placeholder. */
+  --tw-shimmer: rgba(255, 255, 255, 0.06);
 
   /* Text */
   --tw-text: #ffffff;
@@ -52,6 +57,7 @@
   --tw-amber-line: rgba(245, 184, 61, 0.45);
 
   /* Shape */
+  --tw-radius-overlay: 24px;
   --tw-radius-pill: 16px;
   --tw-radius-card: 12px;
   --tw-radius-tile: 8px;
@@ -2225,7 +2231,12 @@ div.tw-dock-chip {
   color: var(--tw-text-2);
 }
 
-/* Per-section loading, so switching the window never blanks the card. */
+/* -------------------- Loading: the card's first frame --------------------
+ *
+ * A section reserves the height its real content will take, so nothing below it moves when the
+ * numbers land and the card never collapses and re-expands. Heights are matched to the thing
+ * each shape stands in for: a gauge row, a figure tile, a table row, the chart box.
+ */
 .tw-skeleton {
   display: grid;
   gap: 6px;
@@ -2234,13 +2245,39 @@ div.tw-dock-chip {
 .tw-skeleton-row {
   height: 18px;
   border-radius: var(--tw-radius-tile);
-  background: linear-gradient(90deg, var(--tw-raised) 0%, rgba(255, 255, 255, 0.06) 50%, var(--tw-raised) 100%);
+  background: linear-gradient(90deg, var(--tw-raised) 0%, var(--tw-shimmer) 50%, var(--tw-raised) 100%);
   background-size: 200% 100%;
-  animation: tw-skeleton-sweep 1.4s var(--tw-ease-out) infinite;
+  animation: tw-skeleton-sweep 1.2s var(--tw-ease-out) infinite;
 }
 
+/* Matched heights: gauge rows are 20px, figure tiles 52px, table rows 28px, the chart 132px
+   (320px once the card is expanded, where the chart box itself grows). */
+.tw-skeleton-row[data-shape="gauge"] {
+  height: 20px;
+}
+
+.tw-skeleton-row[data-shape="tile"] {
+  height: 52px;
+}
+
+.tw-skeleton-row[data-shape="table"] {
+  height: 28px;
+}
+
+.tw-skeleton-row[data-shape="chart"],
 .tw-skeleton-row[data-tall] {
   height: 132px;
+}
+
+.tw-card[data-size="expanded"] .tw-skeleton-row[data-shape="chart"],
+.tw-card[data-size="expanded"] .tw-skeleton-row[data-tall] {
+  height: 320px;
+}
+
+/* Figure tiles come in rows of four, so their placeholder does too. */
+.tw-skeleton[data-shape="tile"] {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--tw-space-2);
 }
 
 @keyframes tw-skeleton-sweep {
@@ -2253,9 +2290,308 @@ div.tw-dock-chip {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Still a placeholder, just a still one: removing it would collapse the reserved height. */
   .tw-skeleton-row {
     animation: none;
+    background: var(--tw-raised);
   }
+}
+
+/* The finding's line, held open while the sentence is still on its way. */
+.tw-card-finding-pending {
+  height: 1.25em;
+}
+
+/* -------------------- Expanded card --------------------
+ *
+ * The anchored card is 440px beside its trigger. Expanded is a centred overlay on a dimmed
+ * backdrop: the same content, laid out in two columns with room for full tables and a real
+ * chart. Desktop only — Tripwire is a PC product, so there is no narrow variant here.
+ */
+.tw-pop-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* No blur: the page behind is context, and blurring it costs a compositor layer the size of
+     the viewport on every venue we run on. */
+  background: var(--tw-scrim);
+  pointer-events: auto;
+  animation: tw-backdrop-in 180ms var(--tw-ease-out) both;
+}
+
+@keyframes tw-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.tw-pop[data-size="expanded"] {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  width: min(1280px, 80vw);
+  height: min(880px, 80vh);
+  max-height: min(880px, 80vh);
+  transform: translate(-50%, -50%);
+  border-radius: var(--tw-radius-overlay);
+  animation: tw-expand-in 180ms var(--tw-ease-out) both;
+}
+
+/* Below about 1100px there is no room for 80vw to look deliberate, so the overlay takes the
+   width it needs. This is the narrowest desktop window we support; there is no phone layout. */
+@media (max-width: 1100px) {
+  .tw-pop[data-size="expanded"] {
+    width: 92vw;
+    height: 88vh;
+    max-height: 88vh;
+  }
+}
+
+.tw-pop[data-size="expanded"]::before {
+  height: 140px;
+}
+
+@keyframes tw-expand-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-pop[data-size="expanded"] {
+    animation-name: tw-backdrop-in;
+  }
+}
+
+/* Two columns once there is room: the tab's sections flow into them, so a table and a chart sit
+   side by side instead of one scrolling past the other. */
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]) {
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) 1fr;
+  align-items: start;
+  gap: 0 var(--tw-space-5);
+}
+
+/* The things that want the full width: the window control, the wide tables and the chart. */
+.tw-card[data-size="expanded"] .tw-tabpanel > .tw-window,
+.tw-card[data-size="expanded"] .tw-tabpanel > .tw-sources,
+.tw-card[data-size="expanded"] .tw-tabpanel > .tw-errors,
+.tw-card[data-size="expanded"] .tw-tabpanel > .tw-question,
+.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-venue-table),
+.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-chart) {
+  grid-column: 1 / -1;
+}
+
+.tw-card[data-size="expanded"] .tw-card-finding {
+  font-size: 1.0625rem;
+}
+
+/* The chart gets real height in the expanded card; the library sizes itself to this box. */
+.tw-chart-box {
+  height: 132px;
+}
+
+.tw-chart-box[data-size="expanded"] {
+  height: 320px;
+}
+
+.tw-chart-box > .tw-chart,
+.tw-chart-box > .tw-chart > .tw-chart-canvas {
+  height: 100%;
+}
+
+/* The header's expand/collapse control, the same 24px square as Close beside it. */
+.tw-card-size {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--tw-radius-tile);
+  background: transparent;
+  color: var(--tw-text-2);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .tw-card-size:hover {
+    background: var(--tw-raised);
+    color: var(--tw-text);
+  }
+}
+
+.tw-card-size:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 1px;
+  color: var(--tw-text);
+}
+
+/* -------------------- Cross-venue funding table -------------------- */
+
+.tw-venue-table {
+  /* Six numeric columns at 13px need the room; the venue column takes what's left. */
+  table-layout: auto;
+}
+
+.tw-venue-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tw-venue-label {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.tw-venue-symbol {
+  font-size: 0.6875rem;
+  color: var(--tw-text-2);
+  white-space: nowrap;
+}
+
+/* The venue's own funding schedule, next to the figure it was rebased from. */
+.tw-venue-interval {
+  margin-left: 4px;
+  font-size: 0.6875rem;
+}
+
+.tw-venue-error {
+  font-size: 0.75rem;
+  color: var(--tw-text-2);
+  text-align: right;
+}
+
+.tw-venue-table tr[data-missing] .tw-venue-name {
+  opacity: 0.6;
+}
+
+.tw-venue-table td,
+.tw-venue-table th[scope="row"] {
+  padding: 8px 0;
+}
+
+/* -------------------- Funding history -------------------- */
+
+.tw-funding-history {
+  display: grid;
+  gap: 6px;
+}
+
+.tw-funding-svg {
+  width: 100%;
+  height: 56px;
+}
+
+.tw-card[data-size="expanded"] .tw-funding-svg {
+  height: 96px;
+}
+
+.tw-funding-zero {
+  stroke: var(--tw-line-strong);
+  stroke-width: 1;
+}
+
+/* Who is paying: longs paying is the expensive direction, so it reads red. */
+.tw-funding-bar[data-sign="pos"] {
+  fill: var(--tw-red);
+}
+
+.tw-funding-bar[data-sign="neg"] {
+  fill: var(--tw-mint);
+}
+
+/* -------------------- Prediction order book -------------------- */
+
+.tw-book {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--tw-space-4);
+}
+
+.tw-book-side {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 2px;
+}
+
+.tw-book-side li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: 3px 6px;
+  font-size: 0.75rem;
+}
+
+.tw-book-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--tw-radius-tile);
+}
+
+.tw-book-side[data-side="bid"] .tw-book-bar {
+  left: 0;
+  background: var(--tw-mint-dim);
+}
+
+.tw-book-side[data-side="ask"] .tw-book-bar {
+  right: 0;
+  background: var(--tw-red-dim);
+}
+
+.tw-book-price {
+  position: relative;
+  font-weight: 600;
+}
+
+.tw-book-side[data-side="bid"] .tw-book-price {
+  color: var(--tw-mint);
+}
+
+.tw-book-side[data-side="ask"] .tw-book-price {
+  color: var(--tw-red);
+}
+
+.tw-book-size {
+  position: relative;
+  color: var(--tw-text-2);
+}
+
+/* -------------------- What a tab costs --------------------
+ *
+ * Printed on the tab itself, so the price of the Traders tab is read before it is paid.
+ */
+.tw-tab-cost {
+  margin-left: 6px;
+  padding: 1px 5px;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--tw-text-2);
+}
+
+.tw-tab[aria-selected="true"] .tw-tab-cost {
+  border-color: var(--tw-mint-line);
+  color: var(--tw-mint);
 }
 
 

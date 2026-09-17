@@ -7,7 +7,10 @@
 import type {
   Candle,
   Chain,
+  DepthSection,
   Evidence,
+  PerpVenueId,
+  PerpVenueQuote,
   FlowRow,
   IndicatorsResp,
   LabelKind,
@@ -134,6 +137,109 @@ export type GuardResponse = {
   signals: Signal[];
   panel: SpotPanel | PerpPanel | PredictionPanel;
   rulesPreset: RulesPreset;
+};
+
+// ---- Depth (POST /api/depth): the card's lazy sections ----
+//
+// Mirrors apps/web/lib/intel/depth.ts, the same way the panel types above mirror their routes.
+// Nothing here is part of a card's own load: a tab asks for exactly what it draws.
+
+export type HlMarketDto = {
+  coin: string;
+  markPrice: number | null;
+  oraclePrice: number | null;
+  midPrice: number | null;
+  premiumPct: number | null;
+  fundingHourly: number | null;
+  fundingPer8h: number | null;
+  fundingAnnualPct: number | null;
+  openInterestCoins: number | null;
+  openInterestUsd: number | null;
+  dayVolumeUsd: number | null;
+  dayChangePct: number | null;
+  maxLeverage: number | null;
+};
+
+export type BookDepthDto = {
+  bestBid: number | null;
+  bestAsk: number | null;
+  spreadBps: number | null;
+  bandPct: number;
+  bidUsd: number;
+  askUsd: number;
+  imbalance: number | null;
+};
+
+export type FundingPointDto = { timeMs: number; hourlyRate: number; per8h: number; premium: number | null };
+
+export type PerpMarketSection = { market: HlMarketDto | null; book: BookDepthDto | null; funding: FundingPointDto[] | null; errors: string[] };
+export type PerpVenuesSection = { rows: PerpVenueQuote[]; unmapped: PerpVenueId[]; errors: string[] };
+export type PerpChartSection = { interval: string; candles: Candle[] | null; errors: string[] };
+
+export type PerpLeaderRow = {
+  address: string | null;
+  label: string | null;
+  side: string | null;
+  realizedPnlUsd: number | null;
+  unrealizedPnlUsd: number | null;
+  totalPnlUsd: number | null;
+  positionValueUsd: number | null;
+  holdingAmount: number | null;
+  roiPct: number | null;
+  tradeCount: number | null;
+};
+
+export type PerpDepthTrade = {
+  address: string | null;
+  label: string | null;
+  side: string | null;
+  action: string | null;
+  valueUsd: number | null;
+  priceUsd: number | null;
+  tokenAmount: number | null;
+  orderType: string | null;
+  timestamp: string | null;
+};
+
+export type TopAccountPosition = { coin: string; side: string | null; valueUsd: number | null; entryPrice: number | null; unrealizedPnlUsd: number | null };
+
+export type TopAccount = {
+  address: string | null;
+  label: string | null;
+  totalPnlUsd: number | null;
+  realizedPnlUsd: number | null;
+  unrealizedPnlUsd: number | null;
+  roiPct: number | null;
+  accountValueUsd: number | null;
+  volumeUsd: number | null;
+  hereNow: TopAccountPosition | null;
+};
+
+export type PerpTradersSection = {
+  leaderboard: PerpLeaderRow[] | null;
+  trades: PerpDepthTrade[] | null;
+  topAccounts: TopAccount[] | null;
+  topAccountsHere: number;
+  credits: number;
+  errors: string[];
+};
+
+export type SpotHolderRow = { address: string | null; label: string | null; valueUsd: number | null; tokenAmount: number | null; sharePct: number | null };
+export type SpotHoldersSection = { holders: SpotHolderRow[] | null; top10SharePct: number | null; credits: number; errors: string[] };
+
+export type BookLevelDto = { price: number; size: number; cumulative: number | null };
+export type OutcomeBook = { outcome: string; bids: BookLevelDto[]; asks: BookLevelDto[]; bestBid: number | null; bestAsk: number | null; spread: number | null };
+export type PredictionBookSection = { books: OutcomeBook[] | null; snapshotIso: string | null; errors: string[] };
+
+export type DepthResponse = {
+  perpMarket?: PerpMarketSection;
+  perpVenues?: PerpVenuesSection;
+  perpTraders?: PerpTradersSection;
+  perpChart?: PerpChartSection;
+  spotHolders?: SpotHoldersSection;
+  predictionBook?: PredictionBookSection;
+  credits: number;
+  skipped: DepthSection[];
 };
 
 export type PersonIntelResponse = {

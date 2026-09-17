@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 
 export type TabDef = {
   id: string;
@@ -6,18 +6,34 @@ export type TabDef = {
   content: ReactNode;
   /** An optional brand mark before the label (the author badge card's venue tabs). */
   icon?: ReactNode;
+  /** What opening this tab costs, when it costs something ("11 credits"). Shown beside the
+   * label so the price is visible before the press, not after it. */
+  cost?: string;
 };
 
 /**
  * WAI-ARIA tabs with automatic activation: one tab stop, arrow keys (wrapping), Home and End
  * move selection and focus together. Every panel stays in the DOM (`hidden` when inactive), so
  * switching is instant and nothing refetches.
+ *
+ * `onSelect` fires for the tab that is showing — once on mount for the initial tab, and once per
+ * change after that. It is how a tab loads its own data the first time it is looked at, and it
+ * is the reason a card open costs only what the first tab costs.
  */
-export function Tabs({ tabs, label, initial }: { tabs: TabDef[]; label: string; initial?: string }) {
+export function Tabs({ tabs, label, initial, onSelect }: { tabs: TabDef[]; label: string; initial?: string; onSelect?: (id: string) => void }) {
   const base = useId();
   const [selected, setSelected] = useState<string | undefined>(initial);
   const refs = useRef(new Map<string, HTMLButtonElement>());
   const current = tabs.some((t) => t.id === selected) ? selected : tabs[0]?.id;
+
+  // The selected tab announces itself, including the first one. `onSelect` is expected to be
+  // idempotent (the card's loader ignores a section it already has or is already fetching), so
+  // a re-render that keeps the same tab costs nothing.
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
+  useEffect(() => {
+    if (current) onSelectRef.current?.(current);
+  }, [current]);
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const index = tabs.findIndex((t) => t.id === current);
@@ -71,6 +87,7 @@ export function Tabs({ tabs, label, initial }: { tabs: TabDef[]; label: string; 
             >
               {t.icon}
               {t.label}
+              {t.cost ? <span className="tw-tab-cost tw-fig">{t.cost}</span> : null}
             </button>
           );
         })}

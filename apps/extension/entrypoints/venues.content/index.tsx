@@ -5,6 +5,7 @@ import type { Chain, Target } from "@tripwire/core";
 import { findAdapter } from "../../lib/adapters/registry";
 import type { TargetGap } from "../../lib/adapters/types";
 import { health, resolve } from "../../lib/api";
+import { warmCardSizes } from "../../lib/card-size";
 import { createReplayFlag } from "../../lib/replay";
 import { TIER1_MATCHES, TIER2_MATCHES } from "../../lib/venues";
 import { createResultCache } from "../../lib/x/cache";
@@ -23,6 +24,9 @@ export default defineContentScript({
   matches: [...TIER1_MATCHES, ...TIER2_MATCHES],
   cssInjectionMode: "ui",
   async main(ctx) {
+    // The remembered compact/expanded choice, warmed once so a card can read it during
+    // render: a card has to mount in the same frame as the click, and storage is asynchronous.
+    void warmCardSizes();
     const runner = createGuardRunner(ctx, createReplayFlag(health));
     // Symbol -> token, for the venues that keep their tokens out of the URL. `search/general`
     // is free, and a failure evicts itself so a later tick retries.

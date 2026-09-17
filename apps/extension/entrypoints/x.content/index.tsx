@@ -1,9 +1,11 @@
 import "../../lib/ui/theme.css";
 
+import type { ReactNode } from "react";
 import type { SpotTarget, Verdict } from "@tripwire/core";
 import { defineContentScript } from "wxt/utils/define-content-script";
 import type { ApiResult } from "../../lib/api";
-import { health, personIntel, postIntel, resolve } from "../../lib/api";
+import { depth, health, personIntel, postIntel, resolve } from "../../lib/api";
+import { cardSize, setCardSize, warmCardSizes, type CardSize } from "../../lib/card-size";
 import { claimToken } from "../../lib/claimed-tokens";
 import { createReplayFlag } from "../../lib/replay";
 import type { PersonIntelResponse, PostIntelResponse, ResolveResponse } from "../../lib/api-types";
@@ -51,6 +53,9 @@ export default defineContentScript({
 
     // Backend replay mode, asked once per page session: every chip and panel shows REPLAY.
     const getReplay = createReplayFlag(health);
+    // The remembered compact/expanded choice, warmed once so a card can read it during render:
+    // a card has to mount in the same frame as the click, and storage is asynchronous.
+    void warmCardSizes();
 
     const discovered = new WeakSet<Element>();
     const processed = new WeakSet<Element>();
@@ -140,61 +145,101 @@ export default defineContentScript({
           expanded = value;
           renderChip();
         },
+        /**
+         * The card goes up first; the data catches up.
+         *
+         * The old order was fetch, then mount, which is why "it takes some time to load": the
+         * click produced nothing at all until the slowest call answered. Now the click mounts a
+         * card carrying what it already knows -- the symbol, the chain, the post's age -- with a
+         * skeleton per section, and each answer re-renders it in place. Nothing below a section
+         * moves when its numbers land, because the skeleton reserved the height.
+         */
         async open(isCurrent) {
+          // The chip's own button: the card opens beside it, clicks on it toggle instead of
+          // counting as "outside", and focus returns to it on close.
+          const chipButton = chipMount.ui.shadow.querySelector<HTMLButtonElement>(".tw-chip");
+          // Captured here, not read inside the render closure: `token` is the resolved one this
+          // chip was built from, and TS can't see that it stays non-null across the callback.
+          const cardTitle = token.kind === "cashtag" ? `$${symbol}` : symbol;
+          let size: CardSize = cardSize("spot");
+          let panelResult: ApiResult<PostIntelResponse> | null = null;
+          let personResult: ApiResult<PersonIntelResponse> | null = null;
+          let badgeResult: Awaited<ReturnType<typeof badges.load>> | null = null;
+          let panelMount: Awaited<ReturnType<typeof mountReact>> | null = null;
+
+          function cardNode(): ReactNode {
+            const ok = panelResult?.ok ? panelResult.data : null;
+            return (
+              <Popover
+                anchor={chipButton}
+                returnFocus={() => chipButton}
+                verdict={ok?.verdict ?? "LOADING"}
+                size={size}
+                onToggleSize={() => {
+                  size = size === "expanded" ? "compact" : "expanded";
+                  setCardSize("spot", size);
+                  panelMount?.update(cardNode());
+                }}
+                onClose={() => {
+                  if (panel.expanded) void panel.toggle();
+                }}
+              >
+                <Panel
+                  data={ok}
+                  error={panelResult && !panelResult.ok ? chipErrorHeadline(panelResult.status, panelResult.error) : null}
+                  title={cardTitle}
+                  onClose={() => void panel.toggle()}
+                  replay={replay}
+                  person={personResult?.ok ? personResult.data : null}
+                  headline={ok ? chipHeadline(ok) : undefined}
+                  postTimeIso={tweet.timeIso}
+                  chain={target.chain}
+                  address={target.tokenAddress}
+                  target={target}
+                  onDepth={async (sections) => {
+                    const result = await depth(target, sections);
+                    return result.ok
+                      ? { ok: true as const, data: result.data }
+                      : { ok: false as const, error: chipErrorHeadline(result.status, result.error) };
+                  }}
+                  onTimeframe={async (timeframe) => {
+                    const result = await postIntel(target, tweet.timeIso ?? undefined, "panel", timeframe);
+                    return result.ok ? result.data.panel : null;
+                  }}
+                  author={badges.authorSection(tweet, personResult?.ok === true && personResult.data.entity !== null, badgeResult?.ok ? badgeResult.data : null)}
+                />
+              </Popover>
+            );
+          }
+
+          // Its own shadow root on <body>, never inside the tweet: X's layout can't clip or
+          // restyle it, and the post's height never changes. Mounted before anything is awaited.
+          panelMount = await mountReact(ctx, { position: "modal", zIndex: POPOVER_Z_INDEX }, cardNode());
+          stopHostClicks(panelMount.ui.shadowHost);
+          if (!isCurrent()) {
+            panelMount.ui.remove();
+            return null;
+          }
+
           panelDataPromise ??= Promise.all([
             postIntel(target, tweet.timeIso ?? undefined, "panel"),
             personIntel(tweet.handle, tweet.displayName, target),
           ]);
-          const [panelResult, personResult] = await panelDataPromise;
-          // Already loaded for the badge row (one fetch per handle per page session).
-          const badgeResult = tweet.handle ? await badges.load(tweet.handle, tweet.displayName) : null;
-          if (!isCurrent()) return null; // closed again before the data came back
+          void panelDataPromise.then(async ([intel, person]) => {
+            panelResult = intel;
+            personResult = person;
+            // Already loaded for the badge row (one fetch per handle per page session).
+            badgeResult = tweet.handle ? await badges.load(tweet.handle, tweet.displayName) : null;
+            if (!intel.ok) {
+              // The chip carries the failure too, and the next open retries.
+              lastVerdict = "UNCHECKED";
+              lastHeadline = chipErrorHeadline(intel.status, intel.error);
+              panelDataPromise = null;
+              renderChip();
+            }
+            panelMount?.update(cardNode());
+          });
 
-          if (!panelResult.ok) {
-            lastVerdict = "UNCHECKED";
-            lastHeadline = chipErrorHeadline(panelResult.status, panelResult.error);
-            panelDataPromise = null; // allow a retry on the next open
-            return null;
-          }
-
-          // The chip's own button: the card opens beside it, clicks on it toggle instead of
-          // counting as "outside", and focus returns to it on close.
-          const chipButton = chipMount.ui.shadow.querySelector<HTMLButtonElement>(".tw-chip");
-          const node = (
-            <Popover
-              anchor={chipButton}
-              returnFocus={() => chipButton}
-              verdict={panelResult.data.verdict}
-              onClose={() => {
-                if (panel.expanded) void panel.toggle();
-              }}
-            >
-              <Panel
-                data={panelResult.data}
-                title={token.kind === "cashtag" ? `$${symbol}` : symbol}
-                onClose={() => void panel.toggle()}
-                replay={replay}
-                person={personResult.ok ? personResult.data : null}
-                headline={chipHeadline(panelResult.data)}
-                postTimeIso={tweet.timeIso}
-                chain={target.chain}
-                address={target.tokenAddress}
-                onTimeframe={async (timeframe) => {
-                  const result = await postIntel(target, tweet.timeIso ?? undefined, "panel", timeframe);
-                  return result.ok ? result.data.panel : null;
-                }}
-                author={badges.authorSection(
-                  tweet,
-                  personResult.ok && personResult.data.entity !== null,
-                  badgeResult?.ok ? badgeResult.data : null,
-                )}
-              />
-            </Popover>
-          );
-          // Its own shadow root on <body>, never inside the tweet: X's layout can't clip or
-          // restyle it, and the post's height never changes.
-          const panelMount = await mountReact(ctx, { position: "modal", zIndex: POPOVER_Z_INDEX }, node);
-          stopHostClicks(panelMount.ui.shadowHost);
           return panelMount;
         },
         onMounted: (m) => mounts.track(article, m),

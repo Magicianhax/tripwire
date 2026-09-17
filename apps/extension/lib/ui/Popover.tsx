@@ -1,12 +1,19 @@
 import { createContext, useCallback, useEffect, useId, useLayoutEffect, useRef, type ReactNode } from "react";
-import { deepActiveElement } from "./focus";
+import type { CardSize } from "../card-size";
+import { deepActiveElement, focusableIn } from "./focus";
 import { anchorOutOfView, computePopoverPosition, popoverMaxHeight, type AnchorRect } from "./popover-position";
 
 export type PopoverCloseReason = "escape" | "outside" | "close-button" | "scroll-out" | "replaced";
 
 /** What the card's contents need from the frame: the id their heading must carry (the dialog
- * is labelled by it and focus lands on it) and a close request that keeps focus bookkeeping. */
-export const PopoverContext = createContext<{ headingId: string; close(reason: PopoverCloseReason): void } | null>(null);
+ * is labelled by it and focus lands on it), a close request that keeps focus bookkeeping, and
+ * the size control the header's expand button drives. */
+export const PopoverContext = createContext<{
+  headingId: string;
+  close(reason: PopoverCloseReason): void;
+  size: CardSize;
+  onToggleSize?: () => void;
+} | null>(null);
 
 export type PopoverProps = {
   /** The element the card opens beside (chip, dock chip, Details/evidence button). Clicks on
@@ -25,6 +32,14 @@ export type PopoverProps = {
   closeWhenAnchorHidden?: boolean;
   verdict?: string;
   className?: string;
+  /**
+   * "compact" is the anchored card. "expanded" is a centred overlay on a dimmed backdrop, sized
+   * by CSS at min(1280px, 80vw) x min(880px, 80vh), with focus trapped inside it. Anchor
+   * geometry is skipped entirely while expanded: it has no anchor to follow.
+   */
+  size?: CardSize;
+  /** Flips between the two. Omitted on surfaces that only ever show one. */
+  onToggleSize?: () => void;
   children: ReactNode;
 };
 
@@ -46,9 +61,22 @@ function isLaidOut(rect: AnchorRect): boolean {
  * Geometry is written straight to the element's style inside a layout effect, before the first
  * paint, so the entrance animation always starts from the right place and origin.
  */
-export function Popover({ anchor, onClose, returnFocus, sheetBelow, prefer, closeWhenAnchorHidden = true, verdict, className, children }: PopoverProps) {
+export function Popover({
+  anchor,
+  onClose,
+  returnFocus,
+  sheetBelow,
+  prefer,
+  closeWhenAnchorHidden = true,
+  verdict,
+  className,
+  size = "compact",
+  onToggleSize,
+  children,
+}: PopoverProps) {
   const headingId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const expanded = size === "expanded";
   const reasonRef = useRef<PopoverCloseReason | null>(null);
   const focusInside = useRef(false);
   const onCloseRef = useRef(onClose);
@@ -65,6 +93,14 @@ export function Popover({ anchor, onClose, returnFocus, sheetBelow, prefer, clos
   const reposition = useCallback(() => {
     const el = rootRef.current;
     if (!el) return;
+    // Expanded is centred by CSS and has no anchor to follow: clear every inline geometry the
+    // anchored mode wrote, so collapsing back later starts from a clean element.
+    if (expanded) {
+      el.style.top = el.style.left = el.style.right = el.style.width = el.style.maxHeight = el.style.transformOrigin = "";
+      delete el.dataset.sheet;
+      delete el.dataset.side;
+      return;
+    }
     const viewport = { width: window.innerWidth, height: window.innerHeight };
     let rect: AnchorRect;
     if (anchor) {
@@ -103,7 +139,7 @@ export function Popover({ anchor, onClose, returnFocus, sheetBelow, prefer, clos
     el.style.width = `${p.width}px`;
     el.style.maxHeight = `${p.maxHeight}px`;
     el.style.transformOrigin = `${Math.round(p.originX)}px ${Math.round(p.originY)}px`;
-  }, [anchor, sheetBelow, prefer, closeWhenAnchorHidden, close]);
+  }, [anchor, sheetBelow, prefer, closeWhenAnchorHidden, close, expanded]);
 
   useLayoutEffect(() => {
     reposition();
@@ -207,19 +243,78 @@ export function Popover({ anchor, onClose, returnFocus, sheetBelow, prefer, clos
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
+  /**
+   * Focus trap, expanded only. The expanded card covers the page and takes it over, so Tab has
+   * to stay inside it; the anchored card deliberately does not trap, because it sits beside the
+   * page the user is still reading.
+   *
+   * Tab order is recomputed on every press rather than cached: the card's own tab panels appear
+   * and disappear as the user moves between them.
+   */
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || !expanded) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const stops = focusableIn(root);
+      if (stops.length === 0) {
+        event.preventDefault();
+        root.focus({ preventScroll: true });
+        return;
+      }
+      const first = stops[0]!;
+      const last = stops[stops.length - 1]!;
+      const active = deepActiveElement();
+      const inside = active instanceof HTMLElement && root.contains(active);
+      if (!inside) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus({ preventScroll: true });
+        return;
+      }
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus({ preventScroll: true });
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus({ preventScroll: true });
+      }
+    };
+    root.addEventListener("keydown", onKeyDown);
+    // Also catch a Tab pressed while focus sits outside the card (the host page still has it).
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => {
+      root.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keydown", onKeyDown, true);
+    };
+  }, [expanded]);
+
+  const card = (
     <div
       ref={rootRef}
       className={className ? `tw-pop ${className}` : "tw-pop"}
       data-verdict={verdict}
+      data-size={size}
       role="dialog"
-      aria-modal="false"
+      // Expanded covers the page and traps focus, so it is genuinely modal; anchored is not.
+      aria-modal={expanded ? "true" : "false"}
       aria-labelledby={headingId}
       tabIndex={-1}
       onKeyDown={(e) => e.stopPropagation()}
       onKeyUp={(e) => e.stopPropagation()}
     >
-      <PopoverContext.Provider value={{ headingId, close }}>{children}</PopoverContext.Provider>
+      <PopoverContext.Provider value={{ headingId, close, size, onToggleSize }}>{children}</PopoverContext.Provider>
     </div>
+  );
+
+  if (!expanded) return card;
+  return (
+    <>
+      {/* The backdrop takes the click that dismisses the card. `pointer-events` has to be
+          re-enabled here: the shadow host's modal container is click-through so the venue's own
+          page stays usable behind an anchored card. The outside-pointerdown listener above is
+          what actually closes it; this element only has to be hittable and opaque. */}
+      <div className="tw-pop-backdrop" aria-hidden="true" />
+      {card}
+    </>
   );
 }

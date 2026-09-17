@@ -1,5 +1,5 @@
 import { useContext, useEffect, useId, useState, type ReactNode } from "react";
-import { Check, CircleAlert, Copy, ExternalLink, OctagonX, TriangleAlert, type LucideIcon } from "lucide-react";
+import { Check, CircleAlert, Copy, ExternalLink, Maximize2, Minimize2, OctagonX, TriangleAlert, type LucideIcon } from "lucide-react";
 import { formatSignalValue, NANSEN_LOGO, ruleClause, type Verdict } from "@tripwire/core";
 import type { HitDto } from "../api-types";
 import { shortAddr, timeAgo, usd } from "./format";
@@ -185,7 +185,19 @@ export function NansenLink({ href }: { href: string }) {
 
 /** "Powered by Nansen" credit with the endpoint count, plus "Unavailable: <message>" per
  * panel.errors entry. */
-export function PanelFooter({ endpointCount, errors, nansenUrl }: { endpointCount: number; errors: string[]; nansenUrl?: string | null }) {
+export function PanelFooter({
+  endpointCount,
+  errors,
+  nansenUrl,
+  depthCredits = 0,
+}: {
+  endpointCount: number;
+  errors: string[];
+  nansenUrl?: string | null;
+  /** Credits the tabs opened so far have spent, over and above the card's own load. Only shown
+   * once something has actually been spent, so a free card's footer stays quiet. */
+  depthCredits?: number;
+}) {
   return (
     <footer className="tw-card-footer">
       <div className="tw-card-credit">
@@ -196,6 +208,11 @@ export function PanelFooter({ endpointCount, errors, nansenUrl }: { endpointCoun
         <p className="tw-meta">
           <span className="tw-fig">{endpointCount}</span> endpoint{endpointCount === 1 ? "" : "s"}
         </p>
+        {depthCredits > 0 ? (
+          <p className="tw-meta">
+            <span className="tw-fig">{depthCredits}</span> credit{depthCredits === 1 ? "" : "s"} this tab
+          </p>
+        ) : null}
       </div>
       {errors.length > 0 ? (
         <ul className="tw-errors">
@@ -246,7 +263,8 @@ export function CardHeader({
   logoUrl,
   showToken = true,
 }: {
-  verdict?: Verdict;
+  /** "LOADING" is the card's first frame: a spinner pill, never a verdict word. */
+  verdict?: Verdict | "LOADING";
   /** The headline name: "$WIF" when the token resolved, else the short address. */
   title: string;
   /** The token's full name ("dogwifhat"), shown beside the symbol. */
@@ -270,6 +288,10 @@ export function CardHeader({
   const ownId = useId();
   const headingId = pop?.headingId ?? ownId;
   const close = pop ? () => pop.close("close-button") : onClose;
+  // Only a card inside a Popover that was given a size control gets the expand button: a card
+  // rendered anywhere else has nothing to expand into.
+  const toggleSize = pop?.onToggleSize;
+  const size = pop?.size ?? "compact";
   return (
     <header className="tw-card-header">
       {showToken ? <TokenLogo url={logoUrl} symbol={title} chain={chain} tokenAddress={address} /> : null}
@@ -286,6 +308,19 @@ export function CardHeader({
       </div>
       {verdict ? <Plate verdict={verdict} className="tw-card-plate" /> : null}
       <ReplayBadge replay={replay} />
+      {toggleSize ? (
+        <button
+          type="button"
+          className="tw-card-size"
+          // The label says what the press will do, not what the card currently is.
+          aria-label={size === "expanded" ? "Collapse card" : "Expand card"}
+          title={size === "expanded" ? "Collapse card" : "Expand card"}
+          aria-pressed={size === "expanded"}
+          onClick={toggleSize}
+        >
+          <Icon icon={size === "expanded" ? Minimize2 : Maximize2} size={16} />
+        </button>
+      ) : null}
       {close ? (
         <button type="button" className="tw-card-close" aria-label="Close" onClick={close}>
           <CloseIcon />

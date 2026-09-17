@@ -1,10 +1,23 @@
-import { NETFLOW_TILE_TIMEFRAME, VERDICT_TIMEFRAME, VIEW_TIMEFRAMES, type FlowRow, type Signal, type ViewTimeframe } from "@tripwire/core";
+import {
+  depthCostLabel,
+  NETFLOW_TILE_TIMEFRAME,
+  VERDICT_TIMEFRAME,
+  VIEW_TIMEFRAMES,
+  type DepthSection,
+  type FlowRow,
+  type Signal,
+  type ViewTimeframe,
+} from "@tripwire/core";
 import type { HitDto, SpotPanel } from "../api-types";
-import { Brain, Fish, LogOut, Megaphone, Sprout, Trophy } from "lucide-react";
+import { Brain, Fish, LogOut, Megaphone, PieChart, Sprout, Trophy } from "lucide-react";
+import { rowLimit, useCardSize } from "./card-size";
 import { usd } from "./format";
-import { Empty, HitList, Section, SegmentRow } from "./panel-parts";
+import { Icon } from "./icons";
+import { Empty, HitList, Section, SegmentRow, signOf } from "./panel-parts";
+import { EMPTY_DEPTH, type DepthState } from "./PerpBody";
 import { PriceChart } from "./PriceChart";
 import { Segmented } from "./Segmented";
+import { SectionProblem, Skeleton as LoadingBlock } from "./Skeleton";
 import { Tabs, type TabDef } from "./Tabs";
 import { WalletLabel } from "./WalletLabel";
 
@@ -27,14 +40,12 @@ export type TimeframeState = {
 /** A section still waiting for the window the user just picked. Keeps the card's height instead
  * of collapsing it, so nothing below jumps while the data arrives. */
 function Skeleton({ rows = 3, tall = false }: { rows?: number; tall?: boolean }) {
-  return (
-    <div className="tw-skeleton" role="status" aria-label="Loading">
-      {Array.from({ length: rows }, (_, i) => (
-        <span key={i} className="tw-skeleton-row" data-tall={tall ? "" : undefined} />
-      ))}
-    </div>
-  );
+  return <LoadingBlock shape={tall ? "chart" : "row"} rows={rows} />;
 }
+
+/** Which lazy section each spot tab needs. Only Holders costs anything, and it exists only in
+ * the expanded card, where there is room for it. */
+export const SPOT_TAB_SECTIONS: Record<string, DepthSection[]> = { flow: [], wallets: [], risk: [], holders: ["spotHolders"] };
 
 /** Labeled money's net USD flow in whatever window is on screen: the three segments the
  * `labeled_exit_pct` rule is measured from, summed. */
@@ -46,6 +57,7 @@ function labeledNet(flow: FlowRow | null): number | null {
 }
 
 function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: HitDto[]; signals: Signal[]; timeframe?: TimeframeState }) {
+  const size = useCardSize();
   const view = timeframe?.value ?? panel.viewTimeframe ?? VERDICT_TIMEFRAME;
   const loading = timeframe?.pending != null;
   const flow: FlowRow | null = panel.viewFlow ?? panel.flow;
@@ -126,7 +138,15 @@ function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: 
       ) : null}
 
       <Section title="Price" aside={panel.token?.symbol ? `$${panel.token.symbol}` : null}>
-        {loading ? <Skeleton rows={1} tall /> : <PriceChart candles={chart?.candles} postTimeIso={panel.postTimeIso} timeframe={view} symbol={panel.token?.symbol} />}
+        {loading ? (
+          <Skeleton rows={1} tall />
+        ) : (
+          // The chart is the one thing that gains most from the expanded card: same series,
+          // more than twice the height to read it in.
+          <div className="tw-chart-box" data-size={size}>
+            <PriceChart candles={chart?.candles} postTimeIso={panel.postTimeIso} timeframe={view} symbol={panel.token?.symbol} />
+          </div>
+        )}
         {!loading && !(chart?.candles && chart.candles.length > 1) ? <Empty>No price history came back for this window.</Empty> : null}
       </Section>
 
@@ -182,8 +202,11 @@ function WalletList({ rows, side }: { rows: { name: string | null; address: stri
 }
 
 function WalletsTab({ panel }: { panel: SpotPanel }) {
-  const sellers = (panel.topSellers ?? []).slice(0, 5);
-  const buyers = (panel.topBuyers ?? []).slice(0, 5);
+  // The backend asks for 20 of each either way; compact shows the five that matter, expanded
+  // shows the list. Same data, more of it.
+  const limit = rowLimit(useCardSize(), 5, 20);
+  const sellers = (panel.topSellers ?? []).slice(0, limit);
+  const buyers = (panel.topBuyers ?? []).slice(0, limit);
   if (sellers.length === 0 && buyers.length === 0) return <Empty>No top buyers or sellers came back for this window.</Empty>;
   return (
     <>
@@ -245,12 +268,101 @@ function RiskTab({ panel, hits }: { panel: SpotPanel; hits: HitDto[] }) {
   );
 }
 
-export function spotTabs(panel: SpotPanel, hits: HitDto[], signals: Signal[] = [], timeframe?: TimeframeState): TabDef[] {
-  return [
+
+/**
+ * Who actually holds the token. The one paid thing on a spot card (5 credits), so it lives in
+ * its own tab, that tab only exists in the expanded view, and the price is printed on it.
+ */
+function HoldersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
+  const size = useCardSize();
+  const holders = depth.data?.spotHolders;
+  const loading = depth.loading.includes("spotHolders");
+  const failure = depth.failed.spotHolders;
+  const symbol = panel.token?.symbol ?? "the token";
+
+  if (failure) return <SectionProblem reasons={[failure]} />;
+  if (loading) {
+    return (
+      <Section title="Top holders">
+        <LoadingBlock shape="table" rows={rowLimit(size, 8, 16)} label="Loading holders" />
+      </Section>
+    );
+  }
+  if (!holders) return <Empty>Open this tab to load who holds {symbol}.</Empty>;
+  const rows = (holders.holders ?? []).slice(0, rowLimit(size, 10, 20));
+  if (rows.length === 0) return <Empty>Nansen returned no holder list for this token.</Empty>;
+
+  return (
+    <>
+      {holders.top10SharePct !== null ? (
+        <Section title="Concentration">
+          <p className="tw-note">
+            The top ten wallets hold <b className="tw-fig">{holders.top10SharePct.toFixed(2)}%</b> of {symbol}.
+          </p>
+        </Section>
+      ) : null}
+      <Section title="Top holders" aside={`${rows.length} of ${(holders.holders ?? []).length}`}>
+        <table className="tw-table">
+          <thead>
+            <tr>
+              <th scope="col">Wallet</th>
+              <th scope="col" className="tw-num">
+                Holding
+              </th>
+              <th scope="col" className="tw-num">
+                Value
+              </th>
+              <th scope="col" className="tw-num">
+                Share
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((h, i) => (
+              <tr key={`${h.address}-${i}`}>
+                <th scope="row">
+                  <WalletLabel label={h.label} address={h.address ?? ""} />
+                </th>
+                <td className="tw-fig tw-num">{h.tokenAmount === null ? "—" : h.tokenAmount.toLocaleString("en-US", { maximumFractionDigits: 0 })}</td>
+                <td className="tw-fig tw-num" data-sign={signOf(h.valueUsd)}>
+                  {usd(h.valueUsd)}
+                </td>
+                <td className="tw-fig tw-num">{h.sharePct === null ? "—" : `${h.sharePct.toFixed(2)}%`}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Section>
+      <SectionProblem reasons={holders.errors} />
+    </>
+  );
+}
+
+export function spotTabs(
+  panel: SpotPanel,
+  hits: HitDto[],
+  signals: Signal[] = [],
+  timeframe?: TimeframeState,
+  depth: DepthState = EMPTY_DEPTH,
+  expanded = false,
+): TabDef[] {
+  const tabs: TabDef[] = [
     { id: "flow", label: "Flow", content: <FlowTab panel={panel} hits={hits} signals={signals} timeframe={timeframe} /> },
     { id: "wallets", label: "Wallets", content: <WalletsTab panel={panel} /> },
     { id: "risk", label: "Risk", content: <RiskTab panel={panel} hits={hits} /> },
   ];
+  // Holder concentration is worth 5 credits only when there is room to read it, so the tab
+  // exists in the expanded card and nowhere else.
+  if (expanded) {
+    tabs.push({
+      id: "holders",
+      label: "Holders",
+      icon: <Icon icon={PieChart} size={14} />,
+      cost: depthCostLabel(SPOT_TAB_SECTIONS.holders!),
+      content: <HoldersTab panel={panel} depth={depth} />,
+    });
+  }
+  return tabs;
 }
 
 export function SpotBody({
@@ -259,12 +371,27 @@ export function SpotBody({
   signals = [],
   initialTab,
   timeframe,
+  depth = EMPTY_DEPTH,
+  onNeedSections,
 }: {
   panel: SpotPanel;
   hits?: HitDto[];
   signals?: Signal[];
   initialTab?: string;
   timeframe?: TimeframeState;
+  depth?: DepthState;
+  onNeedSections?: (sections: DepthSection[]) => void;
 }) {
-  return <Tabs label="Evidence" tabs={spotTabs(panel, hits, signals, timeframe)} initial={initialTab} />;
+  const expanded = useCardSize() === "expanded";
+  return (
+    <Tabs
+      label="Evidence"
+      tabs={spotTabs(panel, hits, signals, timeframe, depth, expanded)}
+      initial={initialTab}
+      onSelect={(id) => {
+        const sections = SPOT_TAB_SECTIONS[id];
+        if (sections && sections.length > 0) onNeedSections?.(sections);
+      }}
+    />
+  );
 }

@@ -5,6 +5,7 @@ import type { WalletRef } from "@tripwire/core";
 import { health } from "../../lib/api";
 import { findAdapter } from "../../lib/adapters/registry";
 import { claimToken, isTokenClaimed } from "../../lib/claimed-tokens";
+import { warmCardSizes } from "../../lib/card-size";
 import { createReplayFlag } from "../../lib/replay";
 import { BUILTIN_MATCHES } from "../../lib/permissions";
 import { createWalletLens } from "../../lib/wallet/lens";
@@ -31,6 +32,9 @@ export default defineContentScript({
   cssInjectionMode: "ui",
   runAt: "document_idle",
   async main(ctx) {
+    // The remembered compact/expanded choice, warmed once so a card can read it during
+    // render: a card has to mount in the same frame as the click, and storage is asynchronous.
+    void warmCardSizes();
     const replay = await createReplayFlag(health)();
 
     // A venue's own target token is a contract, not somebody's wallet: the strip, dock or block

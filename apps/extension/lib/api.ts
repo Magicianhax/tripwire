@@ -4,11 +4,12 @@
  * through browser.runtime.sendMessage so it works from any extension context.
  */
 import { browser } from "wxt/browser";
-import type { Chain, SpotTarget, Target, Verdict, ViewTimeframe } from "@tripwire/core";
+import type { Chain, DepthSection, SpotTarget, Target, Verdict, ViewTimeframe } from "@tripwire/core";
 import { toResult, type ApiResult } from "./api-result";
 import type { BridgeResponse } from "./bridge";
 import type {
   AuthorBadgesResponse,
+  DepthResponse,
   GuardResponse,
   LinkResponse,
   UnlinkResponse,
@@ -58,6 +59,15 @@ export function postIntel(
 
 export function guard(target: Target, venue: string, mode: "chip" | "panel" = "chip", timeframe?: ViewTimeframe): Promise<ApiResult<GuardResponse>> {
   return call("POST", "/api/guard", { target, venue, mode, timeframe });
+}
+
+/**
+ * The card's lazy sections. Called by a tab, never on a card open: `sections` is exactly what
+ * the tab about to be drawn needs, and the paid ones (perp traders, spot holders) only ever get
+ * here because somebody opened that tab or expanded the card.
+ */
+export function depth(target: Target, sections: DepthSection[], timeframe?: ViewTimeframe): Promise<ApiResult<DepthResponse>> {
+  return call("POST", "/api/depth", timeframe ? { target, sections, timeframe } : { target, sections });
 }
 
 export function personIntel(handle: string, displayName: string, target?: SpotTarget): Promise<ApiResult<PersonIntelResponse>> {

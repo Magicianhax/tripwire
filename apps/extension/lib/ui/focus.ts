@@ -35,3 +35,17 @@ export function isEditableElement(el: Element | null): el is HTMLElement {
 export function getFocusable(root: HTMLElement): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>("input, button")).filter((el) => !el.hasAttribute("disabled") && el.tabIndex !== -1);
 }
+
+/**
+ * Everything Tab can reach inside `root`, in tab order — the wider set the expanded card's focus
+ * trap needs: links and scrollable tab panels count, and so does anything that opted in with a
+ * `tabindex`. Elements inside a `hidden` tab panel are skipped, because Tab cannot reach them.
+ */
+export function focusableIn(root: HTMLElement): HTMLElement[] {
+  const selector = "a[href], button, input, select, textarea, [tabindex]";
+  return Array.from(root.querySelectorAll<HTMLElement>(selector)).filter((el) => {
+    if (el.hasAttribute("disabled") || el.getAttribute("aria-hidden") === "true") return false;
+    if (el.tabIndex < 0) return false;
+    return el.closest("[hidden]") === null;
+  });
+}

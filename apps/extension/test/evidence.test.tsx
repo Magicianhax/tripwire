@@ -14,7 +14,10 @@ vi.hoisted(() => {
 });
 
 const guardMock = vi.fn<() => Promise<ApiResult<GuardResponse>>>();
-vi.mock("../lib/api", () => ({ guard: () => guardMock(), override: vi.fn() }));
+/** The card's tabs ask for their own sections as soon as one is shown, so the mock has to
+ * answer `depth` too — with nothing, which is what an empty depth section looks like. */
+const depthMock = vi.fn(async () => ({ ok: true as const, status: 200, data: { credits: 0, skipped: [] } }));
+vi.mock("../lib/api", () => ({ guard: () => guardMock(), depth: () => depthMock(), override: vi.fn() }));
 
 const { toggleEvidence, closeEvidenceDock } = await import("../entrypoints/venues.content/displays");
 
