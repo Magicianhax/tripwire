@@ -27,30 +27,57 @@ afterAll(() => {
 });
 
 describe("intel builders (replay of live-recorded responses)", () => {
-  it("spot chip computes all spot signals from real payloads", async () => {
+  it("spot chip computes every spot signal the presets read, from real payloads", async () => {
     const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
-    for (const id of ["exit_pressure", "fresh_buy_share", "sm_netflow_24h", "risk_high_count"]) {
+    for (const id of ["labeled_exit_pct", "distribution_pct", "sm_netflow_pct", "drawdown_pct", "risk_high_count"]) {
       expect(val(r.signals, id), id).not.toBeNull();
     }
     expect(r.panel.netflow?.symbol).toBe("WIF");
     expect(r.panel.topBuyers).toBeNull();
   });
 
-  it("spot panel adds buyers, sellers, candles and since-post flow", async () => {
+  it("chip mode already carries the token's identity, so the chip can say $WIF", async () => {
+    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
+    expect(r.panel.token?.name).toBe("dogwifhat");
+    expect(r.panel.token?.symbol).toBe("WIF");
+    expect(r.panel.token?.logoUrl).toMatch(/^https:\/\//);
+    expect(r.panel.token?.volume24hUsd).toBeGreaterThan(0);
+    expect(r.panel.token?.marketCapUsd).toBeGreaterThan(0);
+    expect(r.panel.logoUrl).toBe(r.panel.token?.logoUrl);
+  });
+
+  it("the volume denominator is what the flow signals are sized against", async () => {
+    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
+    const vol = r.panel.token!.volume24hUsd!;
+    // Labeled net flow over 24h volume, as a percentage: the same number the rule compares.
+    expect(val(r.signals, "labeled_exit_pct")).toBeCloseTo((r.panel.labeledUsd! / vol) * 100, 6);
+    expect(r.panel.labeledWallets).toBeGreaterThanOrEqual(3);
+    expect(r.panel.absorption).toBeGreaterThan(1);
+  });
+
+  it("spot panel adds buyers, sellers and a chart for the window asked for", async () => {
     const post = new Date(Date.now() - 2 * 3_600_000).toISOString();
     const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "panel", postTimeIso: post });
     expect(r.panel.topBuyers?.length).toBeGreaterThan(0);
     expect(r.panel.topSellers?.length).toBeGreaterThan(0);
-    expect(r.panel.candles?.length).toBeGreaterThan(0);
-    expect(r.panel.sincePost?.timeframe).toBe("6h");
+    expect(r.panel.chart?.candles?.length).toBeGreaterThan(0);
+    expect(r.panel.chart?.timeframe).toBe("1d");
+    expect(r.panel.chart?.interval).toBe("15m");
   });
 
-  it("spot panel: no token-information fixture means no logo, and no error line for a cosmetic field", async () => {
-    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "panel" });
-    expect(r.panel.logoUrl).toBeNull();
-    expect(r.panel.errors.join(" ")).not.toMatch(/tokenInformation/);
-    const chip = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
-    expect(chip.panel.logoUrl).toBeNull();
+  it("the view timeframe moves the chart and the gauges but never the verdict", async () => {
+    const day = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "panel", timeframe: "1d" });
+    for (const timeframe of ["5m", "1h", "6h", "7d"] as const) {
+      const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "panel", timeframe });
+      expect(r.panel.chart?.timeframe, timeframe).toBe(timeframe);
+      expect(r.panel.viewTimeframe, timeframe).toBe(timeframe);
+      // The flow the verdict reads stays on the rule window whatever the card is showing.
+      expect(r.panel.flowTimeframe, timeframe).toBe("1d");
+      expect(
+        r.signals.map((s) => [s.id, s.value]),
+        `signals unchanged on ${timeframe}`,
+      ).toEqual(day.signals.map((s) => [s.id, s.value]));
+    }
   });
 
   it("only passes https image URLs through as a token logo", () => {

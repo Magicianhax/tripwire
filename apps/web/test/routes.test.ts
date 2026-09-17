@@ -78,13 +78,19 @@ describe("/api/guard", () => {
     expect(body.target.kind).toBe("prediction");
   });
 
-  it("balanced preset: the recorded WIF data is a CAUTION", async () => {
+  // The recalibration's own headline case: WIF sheds 0.6% of a day's volume, which is ordinary
+  // rotation on Balanced and worth a warning only to someone who asked for one.
+  it("balanced clears the recorded WIF data; paranoid warns on it", async () => {
     expect((await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "balanced" } }))).status).toBe(200);
-    const res = await guardPOST(req("/api/guard", { body: { target: { kind: "spot", chain: "solana", tokenAddress: WIF }, venue: "jupiter" } }));
-    const body = await res.json();
-    expect(body.verdict).toBe("CAUTION");
-    expect(body.hits.length).toBeGreaterThan(0);
-    expect(body.headline).toBeNull();
+    const clear = await (await guardPOST(req("/api/guard", { body: { target: { kind: "spot", chain: "solana", tokenAddress: WIF }, venue: "jupiter" } }))).json();
+    expect(clear.verdict).toBe("CLEAR");
+    expect(clear.hits).toEqual([]);
+    expect(clear.headline).toBeNull();
+
+    expect((await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "paranoid" } }))).status).toBe(200);
+    const caution = await (await guardPOST(req("/api/guard", { body: { target: { kind: "spot", chain: "solana", tokenAddress: WIF }, venue: "jupiter" } }))).json();
+    expect(caution.verdict).toBe("CAUTION");
+    expect(caution.hits.map((h: { ruleId: string }) => h.ruleId)).toEqual(["spot-exit"]);
   });
 
   it("UNCHECKED (never CLEAR) when every Nansen lookup fails", async () => {
@@ -231,15 +237,15 @@ describe("/api/rules", () => {
     expect(body.rules.length).toBeGreaterThan(0);
   });
 
-  it("normalizes a positive sm_netflow_24h threshold to negative on PUT custom rules", async () => {
-    const rules = PRESETS.balanced.map((r) => (r.signal === "sm_netflow_24h" ? { ...r, threshold: 50_000 } : r));
+  it("normalizes a positive sm_netflow_pct threshold to negative on PUT custom rules", async () => {
+    const rules = PRESETS.balanced.map((r) => (r.signal === "sm_netflow_pct" ? { ...r, threshold: 1.5 } : r));
     const put = await rulesPUT(req("/api/rules", { method: "PUT", body: { rules } }));
     expect(put.status).toBe(200);
     const get = await rulesGET(req("/api/rules"));
     const body = await get.json();
     expect(body.preset).toBe("custom");
-    const sm24 = body.rules.find((r: { signal: string }) => r.signal === "sm_netflow_24h");
-    expect(sm24.threshold).toBe(-50_000);
+    const sm24 = body.rules.find((r: { signal: string }) => r.signal === "sm_netflow_pct");
+    expect(sm24.threshold).toBe(-1.5);
   });
 
   it("logs a weaker preset or loosened block rule as a settings change, but not a stronger one", async () => {
@@ -249,16 +255,16 @@ describe("/api/rules", () => {
     const afterDowngrade = recentSettingsChanges();
     expect(afterDowngrade.length).toBe(before + 1);
     expect(afterDowngrade[0]).toMatchObject({ from_preset: "paranoid", to_preset: "degen" });
-    expect(JSON.parse(afterDowngrade[0]!.rule_ids)).toContain("spot-fresh");
+    expect(JSON.parse(afterDowngrade[0]!.rule_ids)).toContain("spot-distribution");
 
     await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "balanced" } }));
     expect(recentSettingsChanges().length).toBe(before + 1);
 
-    const looser = PRESETS.balanced.map((r) => (r.id === "spot-exit" ? { ...r, threshold: -900_000 } : r));
+    const looser = PRESETS.balanced.map((r) => (r.id === "spot-exit-deep" ? { ...r, threshold: -90 } : r));
     await rulesPUT(req("/api/rules", { method: "PUT", body: { rules: looser } }));
     const afterLoosen = recentSettingsChanges();
     expect(afterLoosen.length).toBe(before + 2);
-    expect(JSON.parse(afterLoosen[0]!.rule_ids)).toEqual(["spot-exit"]);
+    expect(JSON.parse(afterLoosen[0]!.rule_ids)).toEqual(["spot-exit-deep"]);
   });
 });
 

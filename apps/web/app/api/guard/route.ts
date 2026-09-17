@@ -1,4 +1,4 @@
-import { evaluate, GuardBodySchema, type Signal, type Target } from "@tripwire/core";
+import { evaluate, GuardBodySchema, type Signal, type Target, type ViewTimeframe } from "@tripwire/core";
 import { preflight, route } from "@/lib/http";
 import { uncheckedHeadline } from "@/lib/headline";
 import { toHits } from "@/lib/hits";
@@ -14,15 +14,18 @@ export const OPTIONS = preflight;
 function buildIntel(
   target: Target,
   mode: "chip" | "panel",
+  timeframe?: ViewTimeframe,
 ): Promise<{ signals: Signal[]; panel: { errors: string[] }; headline?: string | null }> {
-  if (target.kind === "spot") return buildSpotIntel(target, { mode });
+  // `timeframe` is a view control: it reaches the spot panel's gauges and chart, never the
+  // signals the verdict is evaluated from.
+  if (target.kind === "spot") return buildSpotIntel(target, { mode, timeframe });
   if (target.kind === "perp") return buildPerpIntel(target, mode);
   return buildPredictionIntel(target, mode);
 }
 
 export const POST = route(GuardBodySchema, async (_req, body) => {
-  const { target, venue, mode } = body;
-  const { signals, panel, headline } = await buildIntel(target, mode);
+  const { target, venue, mode, timeframe } = body;
+  const { signals, panel, headline } = await buildIntel(target, mode, timeframe);
   const { preset, rules } = getRules();
   const { verdict, hits, unavailable } = evaluate(rules, signals, target.kind);
   recordCheck(venue, target, verdict, signals);

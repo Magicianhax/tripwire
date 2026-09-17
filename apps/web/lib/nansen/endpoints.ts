@@ -21,6 +21,31 @@ const HOUR = 60 * MIN;
 export const WHO_BOUGHT_SOLD_TTL = 5 * MIN;
 export const OHLCV_TTL = 5 * MIN;
 export const PERP_SCREENER_TTL = 2 * MIN;
+/** Name, symbol, logo and a day's volume: one call per token per day. */
+export const TOKEN_INFO_TTL = 24 * 60 * MIN;
+/** The 7-day window the drawdown signal is measured over; part of the verdict, so it is cached
+ * far longer than the hoverable chart, which the user can move around at will. */
+export const DRAWDOWN_TTL = 60 * MIN;
+export const DRAWDOWN_DAYS = 8;
+
+/** The chart's cache window per candle interval: about 20 candles' worth, floored at a minute
+ * and capped at a quarter hour, so a 1-minute chart stays live and a 1-hour chart stays cheap. */
+export const CANDLE_TTL: Record<string, number> = {
+  "1m": MIN,
+  "5m": 2 * MIN,
+  "15m": 5 * MIN,
+  "1h": 15 * MIN,
+};
+
+/** `tgm/token-information` as the API returns it. */
+export type TokenInformationResponse = {
+  name?: string | null;
+  symbol?: string | null;
+  contract_address?: string | null;
+  logo?: string | null;
+  token_details?: { market_cap_usd?: number | null; fdv_usd?: number | null } | null;
+  spot_metrics?: { volume_total_usd?: number | null; liquidity_usd?: number | null } | null;
+};
 
 const DAY = 24 * HOUR;
 export const ENTITY_PNL_TTL = 30 * MIN;
@@ -82,24 +107,30 @@ export const nansen = {
       ttlMs: WHO_BOUGHT_SOLD_TTL,
     }),
 
-  /** Token metadata; only its `logo` URL is used (the card header). Logos rarely change: 24h. */
+  /**
+   * The token's identity (name, symbol, logo) and its current spot metrics. 1 credit, measured.
+   *
+   * `spot_metrics.volume_total_usd` is the denominator behind every volume-normalized signal,
+   * so this is no longer a cosmetic call: without it the spot verdict is UNCHECKED. Names,
+   * logos and a day's volume all move slowly, so one call per token per day is enough.
+   */
   tokenInformation: (chain: string, token_address: string) =>
-    nansenPost<{ data: { logo?: string | null } | null }>({
+    nansenPost<{ data: TokenInformationResponse | null }>({
       name: "tokenInformation",
       path: "tgm/token-information",
       body: { chain, token_address, timeframe: "1d" },
-      ttlMs: 24 * HOUR,
+      ttlMs: TOKEN_INFO_TTL,
     }),
 
   indicators: (chain: string, token_address: string) =>
     nansenPost<IndicatorsResp>({ name: "indicators", path: "tgm/indicators", body: { chain, token_address }, ttlMs: 6 * HOUR }),
 
-  ohlcv: (chain: string, token_address: string, timeframe: string, from: string, to: string) =>
+  ohlcv: (chain: string, token_address: string, timeframe: string, from: string, to: string, ttlMs: number = OHLCV_TTL) =>
     nansenPost<{ data: Candle[] }>({
       name: "ohlcv",
       path: "tgm/token-ohlcv",
       body: { chain, token_address, timeframe, date: { from, to } },
-      ttlMs: OHLCV_TTL,
+      ttlMs,
     }),
 
   smNetflow: (chain: string, token_address: string) =>

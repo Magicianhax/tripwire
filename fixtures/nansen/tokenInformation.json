@@ -1,0 +1,29 @@
+{
+  "data": {
+    "name": "dogwifhat",
+    "symbol": "$WIF",
+    "contract_address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+    "logo": "https://coin-images.coingecko.com/coins/images/33566/small/dogwifhat.jpg?1702499428",
+    "token_details": {
+      "token_deployment_date": "2023-11-20 19:22:43",
+      "website": "https://dogwifcoin.org",
+      "x": "dogwifcoin",
+      "telegram": "dogwifcoin",
+      "market_cap_usd": 184991078.88999683,
+      "fdv_usd": 186435297.959249,
+      "circulating_supply": 998926392,
+      "total_supply": 998926392
+    },
+    "spot_metrics": {
+      "volume_total_usd": 1471491.2552693444,
+      "buy_volume_usd": 703148.2830862598,
+      "sell_volume_usd": 768342.9721830847,
+      "total_buys": 8204,
+      "total_sells": 10497,
+      "unique_buyers": 642,
+      "unique_sellers": 1641,
+      "liquidity_usd": 3533476.7922049407,
+      "total_holders": 86022
+    }
+  }
+}

@@ -49,9 +49,12 @@ describe("dated Nansen bodies are bucketed to the endpoint TTL", () => {
     const who = callsTo(f, "tgm/who-bought-sold");
     const ohlcv = callsTo(f, "tgm/token-ohlcv");
     expect(who).toHaveLength(2); // BUY + SELL, each fetched once
-    expect(ohlcv).toHaveLength(1);
-    const body = JSON.parse(ohlcv[0]!);
-    expect(body.date.to).toBe("2026-09-17T12:00:00Z");
+    // Two price windows, each fetched once: the 8-day daily series the drawdown signal is
+    // measured on (1h bucket), and the chart's own window (bucketed to its candle interval).
+    expect(ohlcv).toHaveLength(2);
+    const windows = ohlcv.map((b) => JSON.parse(b)).map((b) => [b.timeframe, b.date.from, b.date.to]);
+    expect(windows).toContainEqual(["1d", "2026-09-09T12:00:00Z", "2026-09-17T12:00:00Z"]);
+    expect(windows).toContainEqual(["15m", "2026-09-16T12:00:00Z", "2026-09-17T12:00:00Z"]);
     expect(JSON.parse(who[0]!).date).toEqual({ from: "2026-09-17T10:00:00Z", to: "2026-09-17T12:00:00Z" });
   });
 
