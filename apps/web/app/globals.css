@@ -422,6 +422,32 @@ select {
   opacity: 0.5;
   cursor: default;
 }
+.tw-confirm-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tw-space-sm) var(--tw-space-md);
+  margin-top: var(--tw-space-md);
+  padding: var(--tw-space-sm) var(--tw-space-md);
+  border-left: 4px solid var(--tw-yellow);
+  background: var(--tw-surface-raised);
+}
+.tw-confirm-text {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tw-body);
+}
+.tw-button-danger {
+  color: var(--tw-ink);
+  background: var(--tw-yellow);
+  border-color: var(--tw-yellow);
+}
+.tw-button-quiet {
+  color: var(--tw-body);
+  background: transparent;
+  border-color: var(--tw-border);
+}
 .tw-status-message {
   font-family: var(--tw-font-display);
   font-size: 0.75rem;
