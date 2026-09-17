@@ -44,7 +44,8 @@ the Nansen API key never reaches the extension.
 6. In Chrome: `chrome://extensions` -> enable Developer mode -> Load unpacked ->
    `apps/extension/.output/chrome-mv3`.
 7. Open x.com and search `$WIF`, or open
-   https://jup.ag/swap/SOL-EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm.
+   https://jup.ag/swap?sell=So11111111111111111111111111111111111111112&buy=EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm
+   (jup.ag now rewrites the `/swap/<in>-<out>` path form to its default pair; see docs/VENUE-CHECK.md).
 
 **Offline / no key:** `pnpm dev:replay` (any shell) serves recorded real responses
 (`fixtures/nansen/`) instead of calling Nansen. By hand: `TRIPWIRE_REPLAY=1 pnpm -F web dev`
@@ -93,12 +94,12 @@ on the chip and strip.
 
 | Venue | Tier | URL pattern | What's read |
 |---|---|---|---|
-| Jupiter | 1 | `jup.ag/swap/<in>-<out>`, or `?sell=&buy=` / `?inputMint=&outputMint=` on `/swap` or the root page | spot, output mint (Solana); anchor: the exact "Swap" / "Place order" button |
-| pump.fun | 1 | `pump.fun/coin/<mint>` | spot (Solana); anchor: "Place trade", else an exact "Buy" in the trade form (token-card quick-buys ignored) |
-| Uniswap | 1 | `app.uniswap.org?outputCurrency=&chain=` | spot (EVM); no `chain` param -> null target, UNCHECKED dock (no chain to guess) |
-| Jumper | 1 | `jumper.exchange?toChain=&toToken=` | spot (EVM or Solana, by chain id); anchor: a whole-label Exchange/Swap/Bridge/Review button, never nav or tab items |
-| Hyperliquid | 1 | `app.hyperliquid.xyz/trade/<COIN>` | perp, coin + long/short side read from the selected side toggle; anchor: the order form's submit, never the side toggles; HIP-3 non-crypto markets (e.g. `/trade/xyz:TSLA`) -> null target, UNCHECKED dock |
-| Polymarket | 1 | `polymarket.com/event/<event>[/<market>]` | prediction; checked only when the URL names a market or the event has exactly one open market ("Pick a market" otherwise), the market's outcomes are exactly Yes/No, and the outcome is read from the trade form that owns the button ("Pick Yes or No" otherwise) |
+| Jupiter | 1 | `jup.ag/swap/<in>-<out>`, or `?sell=&buy=` / `?inputMint=&outputMint=` on `/swap` or the root page | spot, output mint (Solana); anchor: the swap form's Swap / Place order / Connect button (logged out it reads "Connect"), never the header Connect |
+| pump.fun | 1 | `pump.fun/coin/<mint>` | spot (Solana); anchor: the trade panel's primary action next to its Buy/Sell tabs ("Connect wallet to trade" logged out), never the tabs, quick-buy chips or token-card quick-buys |
+| Uniswap | 1 | `app.uniswap.org?outputCurrency=&chain=` | spot (EVM); anchor: `review-swap` ("Get started" logged out); no `chain` param -> null target, UNCHECKED dock (no chain to guess) |
+| Jumper | 1 | `jumper.exchange` or `jumper.xyz` (the redirect target) `?toChain=&toToken=` | spot (EVM or Solana, by chain id); anchor: the widget's transaction button ("Connect wallet" logged out), else a whole-label Exchange/Swap/Bridge/Review button, never nav or tab items |
+| Hyperliquid | 1 | `app.hyperliquid.xyz/trade/<COIN>` | perp, coin + long/short side read from the selected side toggle (live: plain divs marked by a left/right class token); anchor: the order form's submit ("Connect" logged out), never the side toggles; HIP-3 non-crypto markets (e.g. `/trade/xyz:TSLA`) -> null target, UNCHECKED dock |
+| Polymarket | 1 | `polymarket.com/event/<event>[/<market>]` or `/event/<event>?marketSlug=<market>` | prediction; checked only when the URL names a market or the event has exactly one open market ("Pick a market" otherwise), the market's outcomes are exactly Yes/No, and the outcome is read from the trade form that owns the button ("Pick Yes or No" otherwise) |
 | Raydium | 2 | `raydium.io?outputMint=` | spot (Solana), dock only |
 | Aerodrome | 2 | `aerodrome.finance?to=` | spot (Base), dock only |
 | PancakeSwap | 2 | `pancakeswap.finance?outputCurrency=&chain=` | spot (EVM), dock only; no `chain` param -> null target, UNCHECKED dock |

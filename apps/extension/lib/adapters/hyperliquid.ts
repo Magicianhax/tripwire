@@ -1,5 +1,5 @@
 import type { Target } from "@tripwire/core";
-import { findButtons, isSelected, isToggleLike } from "./dom";
+import { closestWithin, findButtons, isSelected, isToggleLike, leavesWithText } from "./dom";
 import { OVERRIDE_PHRASES, type VenueAdapter } from "./types";
 
 const COIN_PATH_RE = /^\/trade\/([^/]+)/;
@@ -11,18 +11,55 @@ const TOGGLE_SHORT_WORD_RE = /^(sell|short)\b/i;
 const FALLBACK_LONG_RE = /^(buy|long)/i;
 const FALLBACK_SHORT_RE = /^(sell|short)/i;
 
+// Live markup (2026-09-17): the side toggle is plain divs "Buy / Long" | "Sell / Short" with no ARIA;
+// the selected label carries the class token "left" (long) or "right" (short). The order form's
+// primary action reads "Connect" logged out; connected labels are inferred.
+const LIVE_LONG_LABEL_RE = /^buy \/ long$/i;
+const LIVE_SHORT_LABEL_RE = /^sell \/ short$/i;
+const FORM_PRIMARY_RE = /^(connect|enable trading|place order|buy|sell|long|short)/i;
+const FORM_MAX_DEPTH = 8;
+
+/** The live div toggle's two labels, when present. */
+function liveSideLabels(doc: Document): { long: Element; short: Element } | null {
+  const long = leavesWithText(doc, LIVE_LONG_LABEL_RE)[0];
+  const short = leavesWithText(doc, LIVE_SHORT_LABEL_RE)[0];
+  return long && short ? { long, short } : null;
+}
+
+/** The order form around the live side toggle: the nearest ancestor holding a primary-action
+ * button. Closer than the site header's own "Connect", which sits outside the form. */
+function liveFormSubmit(doc: Document): HTMLButtonElement | null {
+  const labels = liveSideLabels(doc);
+  if (!labels) return null;
+  let found: HTMLButtonElement[] = [];
+  closestWithin(labels.long, FORM_MAX_DEPTH, (el) => {
+    found = findButtons(el, FORM_PRIMARY_RE, isToggleLike);
+    return found.length > 0;
+  });
+  return found.find((btn) => btn.getAttribute("type") === "submit") ?? found[found.length - 1] ?? null;
+}
+
 /** The order form's primary action: never a Buy/Long | Sell/Short side toggle (ARIA toggle
  * state/role, or inside a tablist/radiogroup). A `type=submit` button wins; otherwise the last
  * matching button (order forms put the submit after their controls). */
 function findSubmit(doc: Document): HTMLButtonElement | null {
+  const live = liveFormSubmit(doc);
+  if (live) return live;
   const candidates = findButtons(doc, ANCHOR_RE, isToggleLike);
   return candidates.find((btn) => btn.getAttribute("type") === "submit") ?? candidates[candidates.length - 1] ?? null;
 }
 
-/** The active Long/Buy vs Short/Sell toggle, by aria-pressed/aria-selected/data-state, else
- * the submit button's own text. Ambiguous -> undefined (the signal then shows "Pick long or
- * short"). */
+/** The active Long/Buy vs Short/Sell toggle: the live div toggle's left/right class token, else
+ * aria-pressed/aria-selected/data-state on button toggles, else the submit button's own text.
+ * Ambiguous -> undefined (the signal then shows "Pick long or short"). */
 function detectSide(doc: Document): "long" | "short" | undefined {
+  const live = liveSideLabels(doc);
+  if (live) {
+    const long = live.long.classList.contains("left");
+    const short = live.short.classList.contains("right");
+    if (long !== short) return long ? "long" : "short";
+  }
+
   let longBtn: HTMLButtonElement | null = null;
   let shortBtn: HTMLButtonElement | null = null;
   for (const btn of doc.querySelectorAll("button")) {

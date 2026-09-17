@@ -73,6 +73,27 @@ export function isInCard(el: Element): boolean {
   return el.closest('a, li, article, [role="listitem"], [role="row"]') !== null;
 }
 
+/** The nearest ancestor of `el` (at most `maxDepth` levels up, never `<body>` or above) for which
+ * `test` holds, or null. */
+export function closestWithin(el: Element, maxDepth: number, test: (ancestor: Element) => boolean): Element | null {
+  let node: Element | null = el.parentElement;
+  const body = el.ownerDocument.body;
+  for (let depth = 0; node && node !== body && depth < maxDepth; depth++, node = node.parentElement) {
+    if (test(node)) return node;
+  }
+  return null;
+}
+
+/** Elements under `root` with no element children whose trimmed text matches `regex` (for
+ * controls built from plain divs, e.g. Hyperliquid's side toggle). */
+export function leavesWithText(root: ParentNode, regex: RegExp): Element[] {
+  const out: Element[] = [];
+  for (const el of root.querySelectorAll("div, span, label")) {
+    if (el.childElementCount === 0 && regex.test((el.textContent ?? "").trim())) out.push(el);
+  }
+  return out;
+}
+
 /** True when a nearby ancestor (the form, or up to `depth` levels) holds an amount input. */
 export function hasNearbyInput(el: Element, depth = 3): boolean {
   const form = el.closest("form");

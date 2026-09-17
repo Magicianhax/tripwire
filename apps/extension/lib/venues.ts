@@ -4,6 +4,7 @@ export const TIER1_MATCHES = [
   "https://pump.fun/*",
   "https://app.uniswap.org/*",
   "https://jumper.exchange/*",
+  "https://jumper.xyz/*",
   "https://app.hyperliquid.xyz/*",
   "https://polymarket.com/*",
 ];
