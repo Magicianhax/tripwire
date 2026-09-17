@@ -98,3 +98,52 @@ describe("toggleEvidence (D4)", () => {
     expect(rc.evidenceMount).toBeNull();
   });
 });
+
+describe("evidence card popover", () => {
+  const ok: ApiResult<GuardResponse> = {
+    ok: true,
+    data: { target, verdict: "TRIPWIRE", hits: [], unavailable: [], signals: [], panel: { coin: "ETH", screener: null, positions: null, trades: null, errors: [] }, rulesPreset: "balanced" },
+  };
+
+  it("opens as a body-level dialog anchored to its trigger, on the requested tab, and Escape closes it with focus back on the trigger", async () => {
+    const rc = rcFor();
+    guardMock.mockResolvedValue(ok);
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    await act(async () => {
+      await toggleEvidence(rc, adapter, target, trigger, "liquidations");
+    });
+    const host = document.querySelector("tripwire-ui") as HTMLElement;
+    expect(host.parentElement).toBe(document.body);
+    const dialog = host.shadowRoot!.querySelector('[role="dialog"]') as HTMLElement;
+    expect(dialog).not.toBeNull();
+    expect(dialog.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toBe("Liquidations");
+    expect(host.shadowRoot!.activeElement?.id).toBe(dialog.getAttribute("aria-labelledby"));
+
+    await act(async () => {
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    });
+    expect(rc.evidenceMount).toBeNull();
+    expect(docks()).toBe(0);
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("a pointerdown outside the card closes it; one on the trigger leaves it for the trigger's own toggle", async () => {
+    const rc = rcFor();
+    guardMock.mockResolvedValue(ok);
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    await act(async () => {
+      await toggleEvidence(rc, adapter, target, trigger);
+    });
+    await act(async () => {
+      trigger.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, composed: true }));
+    });
+    expect(rc.evidenceMount).not.toBeNull();
+    await act(async () => {
+      document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, composed: true }));
+    });
+    expect(rc.evidenceMount).toBeNull();
+    expect(docks()).toBe(0);
+  });
+});

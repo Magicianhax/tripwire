@@ -8,7 +8,8 @@ import { ReplayBadge } from "./ReplayBadge";
 export type BlockScreenProps = {
   hits: HitDto[];
   phrase: string;
-  onEvidence: () => void;
+  /** Opens the evidence card anchored to the button it receives. */
+  onEvidence: (trigger: HTMLElement) => void;
   onOverride: () => void;
   /** What's blocked: labels the Evidence button ("See who's selling" / "See positions" /
    * "See holders"). Default "spot". */
@@ -30,6 +31,13 @@ export type BlockScreenProps = {
 
 const MAX_HITS = 3;
 
+/** Which evidence tab the block screen's button opens on. */
+export const EVIDENCE_TAB: Record<TargetKind, string> = {
+  spot: "wallets",
+  perp: "positioning",
+  prediction: "holders",
+};
+
 const EVIDENCE_LABEL: Record<TargetKind, string> = {
   spot: "See who's selling",
   perp: "See positions",
@@ -46,7 +54,7 @@ export function phraseMatches(input: string, phrase: string): boolean {
   return normalizePhrase(input) !== "" && normalizePhrase(input) === normalizePhrase(phrase);
 }
 
-/** Full-yellow block screen: hazard stripe, TRIPWIRE display word, up to 3 hits, the Evidence
+/** Master-warning block screen: a lit red TRIPWIRE band, up to 3 hits, the Evidence
  * button, a reassurance line, and an override input that only unlocks the Override button when
  * `phrase` is typed (case-insensitive, whitespace-normalized).
  *
@@ -148,17 +156,18 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, kind = "spot
       onKeyDown={handleRootKeyDown}
       onKeyUp={isolateKey}
     >
-      <div className="tw-block-stripe" aria-hidden="true" />
-      <div className="tw-block-body">
+      <div className="tw-block-band">
         <h3 id={headingId} className="tw-block-heading">
           TRIPWIRE
         </h3>
+        <span className="tw-block-sub">Trade blocked by your rules</span>
         <ReplayBadge replay={replay} />
-
+      </div>
+      <div className="tw-block-body">
         <HitList hits={hits} max={MAX_HITS} className="tw-block-hits" id={hitsId} />
 
         <div className="tw-block-footer">
-          <button type="button" className="tw-block-evidence" onClick={onEvidence}>
+          <button type="button" className="tw-block-evidence" aria-haspopup="dialog" onClick={(e) => onEvidence(e.currentTarget)}>
             {EVIDENCE_LABEL[kind]}
           </button>
           <p id={safeId} className="tw-block-safe">

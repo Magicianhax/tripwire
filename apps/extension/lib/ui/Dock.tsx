@@ -1,63 +1,72 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { verdictLabel, type Verdict } from "@tripwire/core";
+import { Plate } from "./Plate";
+import { Popover } from "./Popover";
 import { ReplayBadge } from "./ReplayBadge";
 
+/** Below this width the evidence card opens as a bottom sheet. */
+export const SHEET_BELOW = 720;
+
 export type DockProps = {
-  /** Whether the dock is collapsed to a small chip. State is owned by the caller so it can be
-   * driven from the same place that re-renders the wrapped Panel via mountReact's `update`. */
+  /** Whether the evidence card is closed. State is owned by the caller so it can be driven
+   * from the same place that re-renders the card's contents via mountReact's `update`. */
   collapsed: boolean;
   onToggleCollapsed: () => void;
-  /** Drives the collapsed chip's key/value anatomy (same as the X Chip) and the expanded
-   * frame's border. "LOADING" renders a non-interactive "Checking…" status chip. */
+  /** Drives the dock chip's plate. "LOADING" renders a non-interactive "Checking…" status. */
   verdict?: Verdict | "LOADING";
-  /** The collapsed chip's value cell: the top finding or the reason it couldn't check. */
+  /** The dock chip's value cell: the top finding or the reason it couldn't check. */
   headline?: string;
-  /** The Panel (or any content) to show when expanded. */
+  /** The card contents (evidence card or a status card) shown when open. */
   children: ReactNode;
-  /** Shown on the Dock itself (collapsed chip and expanded frame); don't also pass it to a
-   * Panel rendered inside, or the watermark shows twice. */
+  /** Shown on the dock chip; don't also pass it to a card rendered inside, or it shows twice. */
   replay?: boolean;
 };
 
-/** Floating container for the tier-2 dock and the evidence panel: right edge, 360px wide on
- * wide viewports; a bottom sheet capped at 50vh under 720px. Always stacked below the block
- * screen. Collapses to a verdict chip. */
+/** The tier-2 dock: a verdict chip pinned to the top-right edge that opens the evidence card
+ * beside it (a bottom sheet under 720px). Always stacked below the block screen. */
 export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", children, replay }: DockProps) {
-  if (collapsed && verdict === "LOADING") {
+  const [chip, setChip] = useState<HTMLButtonElement | null>(null);
+
+  if (verdict === "LOADING") {
     return (
       <div className="tw-chip tw-dock-chip" data-verdict="LOADING" role="status">
-        <span className="tw-chip-key">Tripwire</span>
+        <Plate verdict="LOADING" label="Tripwire" className="tw-chip-key" />
         <span className="tw-chip-value tw-mono">Checking…</span>
         <ReplayBadge replay={replay} />
       </div>
     );
   }
 
-  if (collapsed) {
-    const word = verdict && verdict !== "LOADING" ? verdictLabel(verdict) : "Tripwire";
-    return (
+  const word = verdict ? verdictLabel(verdict) : "Tripwire";
+  return (
+    <>
       <button
+        ref={setChip}
         type="button"
         className="tw-chip tw-dock-chip"
         data-verdict={verdict}
         onClick={onToggleCollapsed}
-        aria-expanded={false}
-        aria-label={`Expand Tripwire panel. ${word}${headline ? `: ${headline}` : ""}`}
+        aria-expanded={!collapsed}
+        aria-haspopup="dialog"
+        aria-label={`Tripwire evidence. ${word}${headline ? `: ${headline}` : ""}`}
       >
-        <span className="tw-chip-key">{word}</span>
+        {verdict ? <Plate verdict={verdict} className="tw-chip-key" /> : <span className="tw-chip-key tw-plate" data-tone="unlit" data-mark="dashed">Tripwire</span>}
         {headline ? <span className="tw-chip-value tw-mono">{headline}</span> : null}
         <ReplayBadge replay={replay} />
       </button>
-    );
-  }
-
-  return (
-    <div className="tw-dock" data-verdict={verdict === "LOADING" ? undefined : verdict}>
-      <button type="button" className="tw-dock-collapse" onClick={onToggleCollapsed} aria-expanded={true} aria-label="Collapse Tripwire panel">
-        –
-      </button>
-      <ReplayBadge replay={replay} />
-      {children}
-    </div>
+      {!collapsed ? (
+        <Popover
+          anchor={chip}
+          onClose={onToggleCollapsed}
+          returnFocus={() => chip}
+          sheetBelow={SHEET_BELOW}
+          closeWhenAnchorHidden={false}
+          verdict={verdict}
+          className="tw-dock"
+        >
+          {children}
+        </Popover>
+      ) : null}
+    </>
   );
 }

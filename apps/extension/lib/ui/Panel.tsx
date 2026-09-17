@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
-import { verdictLabel } from "@tripwire/core";
+import type { Verdict } from "@tripwire/core";
 import type { GuardResponse, PerpPanel, PersonIntelResponse, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
-import { usd } from "./format";
-import { HitList, PanelFooter } from "./panel-parts";
-import { ReplayBadge } from "./ReplayBadge";
+import { timeAgo, usd } from "./format";
+import { CardHeader, hitFinding, PanelFooter } from "./panel-parts";
 import { PerpBody } from "./PerpBody";
 import { PredictionBody } from "./PredictionBody";
 import { SpotBody } from "./SpotBody";
@@ -11,14 +10,21 @@ import { SpotBody } from "./SpotBody";
 export type PanelProps = {
   data: GuardResponse | PostIntelResponse;
   title: string;
+  /** Used when the card is rendered outside a Popover; inside one, close goes through it. */
   onClose: () => void;
   replay?: boolean;
-  /** Optional Nansen person-intel match for the post's author, rendered as a small line at
-   * the top of the panel when an entity matched. */
+  /** Optional Nansen person-intel match for the post's author: an advisory line under the
+   * finding when an entity matched. */
   person?: PersonIntelResponse | null;
+  /** The one-line finding when no rule fired (e.g. the backend's reason it couldn't check). */
+  headline?: string;
+  /** The post's time, shown as its age in the header. */
+  postTimeIso?: string | null;
+  /** Which evidence tab opens first (e.g. "wallets" from the block screen's "See who's selling"). */
+  initialTab?: string;
 };
 
-/** "Nansen label: <entity> (tags) · holds $X of SYMBOL" — only rendered when an entity matched. */
+/** "Nansen label: <entity> (tags) · holds $X of SYMBOL", only rendered when an entity matched. */
 function PersonLine({ person }: { person: PersonIntelResponse }) {
   if (!person.entity) return null;
   return (
@@ -49,36 +55,42 @@ function endpointCount(data: PanelProps["data"]): number {
   return set.size;
 }
 
-/** Header (verdict + display-type title + close), hits list, then a kind-specific body:
- * spot for PostIntelResponse always, spot/perp/prediction for GuardResponse per target.kind. */
-export function Panel({ data, title, onClose, replay, person }: PanelProps) {
+function defaultFinding(verdict: Verdict): string {
+  switch (verdict) {
+    case "CLEAR":
+      return "None of your rules fired on this token.";
+    case "UNCHECKED":
+      return "Tripwire couldn't check this token.";
+    default:
+      return "A rule fired on this token.";
+  }
+}
+
+/** The instrument card: header row (annunciator plate, title, age, close), the one-line
+ * finding, the author's Nansen label, evidence tabs by target kind, and the source line. */
+export function Panel({ data, title, onClose, replay, person, headline, postTimeIso, initialTab }: PanelProps) {
   let body: ReactNode;
   if ("target" in data) {
     // GuardResponse: data.panel is a union, but target.kind tells us which member it actually is.
-    if (data.target.kind === "spot") body = <SpotBody panel={data.panel as SpotPanel} />;
-    else if (data.target.kind === "perp") body = <PerpBody panel={data.panel as PerpPanel} />;
-    else body = <PredictionBody panel={data.panel as PredictionPanel} />;
+    if (data.target.kind === "spot") body = <SpotBody panel={data.panel as SpotPanel} hits={data.hits} initialTab={initialTab} />;
+    else if (data.target.kind === "perp") body = <PerpBody panel={data.panel as PerpPanel} hits={data.hits} initialTab={initialTab} />;
+    else body = <PredictionBody panel={data.panel as PredictionPanel} hits={data.hits} initialTab={initialTab} />;
   } else {
-    body = <SpotBody panel={data.panel} />;
+    body = <SpotBody panel={data.panel} hits={data.hits} initialTab={initialTab} />;
   }
 
+  const top = data.hits[0];
+  const finding = top ? hitFinding(top) : headline || defaultFinding(data.verdict);
+  const age = postTimeIso ? timeAgo(postTimeIso) : null;
+
   return (
-    <section className="tw-panel" data-verdict={data.verdict} role="region" aria-label={title}>
-      <header className="tw-panel-header">
-        <span className="tw-panel-verdict">{verdictLabel(data.verdict)}</span>
-        <h2 className="tw-panel-title">{title}</h2>
-        <ReplayBadge replay={replay} />
-        <button type="button" className="tw-panel-close" aria-label="Close" onClick={onClose}>
-          ×
-        </button>
-      </header>
-
-      {person ? <PersonLine person={person} /> : null}
-
-      <HitList hits={data.hits} />
-
-      <div className="tw-panel-body">{body}</div>
-
+    <section className="tw-card" data-verdict={data.verdict}>
+      <CardHeader verdict={data.verdict} title={title} age={age} replay={replay} onClose={onClose} />
+      <div className="tw-card-scroll">
+        <p className="tw-card-finding">{finding}</p>
+        {person ? <PersonLine person={person} /> : null}
+        {body}
+      </div>
       <PanelFooter endpointCount={endpointCount(data)} errors={data.panel.errors} />
     </section>
   );

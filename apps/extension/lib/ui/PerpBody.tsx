@@ -1,7 +1,10 @@
 import type { PerpPosition } from "@tripwire/core";
-import type { PerpPanel } from "../api-types";
+import type { HitDto, PerpPanel } from "../api-types";
 import { shortAddr, timeAgo, usd } from "./format";
+import { Empty, HitList, Section } from "./panel-parts";
+import { Tabs, type TabDef } from "./Tabs";
 
+/** Long share filled, short share outlined: the split never relies on colour or lightness. */
 function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
   const longUsd = screener?.current_smart_money_position_longs_usd ?? 0;
   const shortUsd = Math.abs(screener?.current_smart_money_position_shorts_usd ?? 0);
@@ -10,7 +13,7 @@ function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
   const shortPct = 100 - longPct;
   return (
     <div className="tw-longshort">
-      <div className="tw-longshort-bar" role="img" aria-hidden="true">
+      <div className="tw-longshort-bar" role="img" aria-label={`Smart Money long ${longPct.toFixed(0)}%, short ${shortPct.toFixed(0)}%`}>
         <i className="tw-longshort-long" style={{ width: `${longPct}%` }} />
         <i className="tw-longshort-short" style={{ width: `${shortPct}%` }} />
       </div>
@@ -28,16 +31,16 @@ function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
 
 /** Vertical price axis centered on mark price ±15%. A tick per Smart Money position at its
  * liquidation_price, width scaled by position_value_usd. Positions with a null
- * liquidation_price are skipped (never crash). A dashed neutral band marks ±3% around mark;
- * longs are solid #EDEDED ticks, shorts outlined in the danger stroke. */
+ * liquidation_price are skipped (never crash). A dashed band marks ±3% around mark; longs are
+ * filled ticks, shorts outlined in warning red; mark price is an advisory rule. */
 function LiquidationLadder({ positions, markPrice }: { positions: PerpPosition[] | null; markPrice: number | null }) {
   if (!markPrice || !positions || positions.length === 0) return null;
   const lo = markPrice * 0.85;
   const hi = markPrice * 1.15;
   const range = hi - lo;
   if (range <= 0) return null;
-  const H = 160;
-  const W = 328;
+  const H = 180;
+  const W = 400;
 
   const ticks = positions.filter(
     (p): p is PerpPosition & { liquidation_price: number } => p.liquidation_price !== null && p.liquidation_price >= lo && p.liquidation_price <= hi,
@@ -67,50 +70,99 @@ function LiquidationLadder({ positions, markPrice }: { positions: PerpPosition[]
   );
 }
 
-export function PerpBody({ panel }: { panel: PerpPanel }) {
+function PositioningTab({ panel, hits }: { panel: PerpPanel; hits: HitDto[] }) {
   const markPrice = panel.screener?.mark_price ?? panel.positions?.[0]?.mark_price ?? null;
   const funding = panel.screener?.funding ?? null;
-  const trades = (panel.trades ?? []).slice(0, 5);
-
   return (
     <>
-      <section className="tw-section" aria-label="Long vs short">
-        <h3 className="tw-section-title">Long vs short</h3>
-        <LongShortBar screener={panel.screener} />
-      </section>
-
-      {funding !== null ? (
-        <section className="tw-section" aria-label="Funding">
-          <div className="tw-seg">
-            <span className="tw-seg-label">Funding</span>
-            <span />
-            <span className="tw-mono">{(funding * 100).toFixed(4)}%</span>
-          </div>
-        </section>
+      {hits.length > 0 ? (
+        <Section title="Rules that fired">
+          <HitList hits={hits} />
+        </Section>
       ) : null}
-
-      <section className="tw-section" aria-label="Liquidation ladder">
-        <h3 className="tw-section-title">Liquidation ladder</h3>
-        <LiquidationLadder positions={panel.positions} markPrice={markPrice} />
-      </section>
-
-      {trades.length > 0 ? (
-        <section className="tw-section" aria-label="Recent Smart Money trades">
-          <h3 className="tw-section-title">Recent Smart Money trades</h3>
-          <ul className="tw-trade-list">
-            {trades.map((t, i) => (
-              <li key={i}>
-                <span>{t.trader_address_label ?? shortAddr(t.trader_address)}</span>
-                <span>
-                  {t.action} {t.side}
-                </span>
-                <span className="tw-mono">{usd(t.value_usd)}</span>
-                <span className="tw-mono tw-meta">{timeAgo(t.block_timestamp)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+      <Section title="Smart Money long vs short">
+        {panel.screener ? <LongShortBar screener={panel.screener} /> : <Empty>No positioning data came back for this market.</Empty>}
+      </Section>
+      {funding !== null || markPrice !== null ? (
+        <dl className="tw-readouts">
+          {markPrice !== null ? (
+            <div>
+              <dt>Mark</dt>
+              <dd className="tw-mono">{markPrice.toLocaleString("en-US", { maximumFractionDigits: 4 })}</dd>
+            </div>
+          ) : null}
+          {funding !== null ? (
+            <div>
+              <dt>Funding</dt>
+              <dd className="tw-mono">{(funding * 100).toFixed(4)}%</dd>
+            </div>
+          ) : null}
+        </dl>
       ) : null}
     </>
   );
+}
+
+function LiquidationsTab({ panel }: { panel: PerpPanel }) {
+  const markPrice = panel.screener?.mark_price ?? panel.positions?.[0]?.mark_price ?? null;
+  const ladder = <LiquidationLadder positions={panel.positions} markPrice={markPrice} />;
+  const hasTicks = (panel.positions ?? []).some((p) => p.liquidation_price !== null);
+  return (
+    <Section title="Liquidation ladder" aside="mark ±15%">
+      {markPrice && hasTicks ? (
+        <>
+          {ladder}
+          <p className="tw-legend">
+            <span>
+              <i className="tw-key tw-key-long" aria-hidden="true" />
+              Long liq.
+            </span>
+            <span>
+              <i className="tw-key tw-key-short" aria-hidden="true" />
+              Short liq.
+            </span>
+            <span>
+              <i className="tw-key tw-key-band" aria-hidden="true" />
+              ±3% of mark
+            </span>
+          </p>
+        </>
+      ) : (
+        <Empty>No Smart Money liquidation prices near mark.</Empty>
+      )}
+    </Section>
+  );
+}
+
+function TradesTab({ panel }: { panel: PerpPanel }) {
+  const trades = (panel.trades ?? []).slice(0, 8);
+  if (trades.length === 0) return <Empty>No recent Smart Money trades on this market.</Empty>;
+  return (
+    <Section title="Recent Smart Money trades">
+      <ul className="tw-trade-list">
+        {trades.map((t, i) => (
+          <li key={i}>
+            <span className="tw-row-name">{t.trader_address_label ?? shortAddr(t.trader_address)}</span>
+            <span>
+              {t.action} {t.side}
+            </span>
+            <span className="tw-mono">{usd(t.value_usd)}</span>
+            <span className="tw-mono tw-meta">{timeAgo(t.block_timestamp)}</span>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+}
+
+export function perpTabs(panel: PerpPanel, hits: HitDto[]): TabDef[] {
+  return [
+    { id: "positioning", label: "Positioning", content: <PositioningTab panel={panel} hits={hits} /> },
+    { id: "liquidations", label: "Liquidations", content: <LiquidationsTab panel={panel} /> },
+    { id: "trades", label: "Trades", content: <TradesTab panel={panel} /> },
+  ];
+}
+
+export function PerpBody({ panel, hits = [], initialTab }: { panel: PerpPanel; hits?: HitDto[]; initialTab?: string }) {
+  return <Tabs label="Evidence" tabs={perpTabs(panel, hits)} initial={initialTab} />;
 }

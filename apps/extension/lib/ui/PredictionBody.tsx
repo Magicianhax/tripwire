@@ -1,25 +1,27 @@
 import { provenWinnerSplit } from "@tripwire/core";
-import type { PredictionPanel } from "../api-types";
+import type { HitDto, PredictionPanel } from "../api-types";
 import { shortAddr, timeAgo, usd } from "./format";
+import { Empty, HitList, Section } from "./panel-parts";
+import { Tabs, type TabDef } from "./Tabs";
 
-export function PredictionBody({ panel }: { panel: PredictionPanel }) {
+function WinnersTab({ panel, hits }: { panel: PredictionPanel; hits: HitDto[] }) {
   // Same rule as the smart_side_disagrees signal: proven winners on Yes/No sides only.
   const { yes, no } = provenWinnerSplit(panel.holders ?? [], (h) => h.pnl);
   const total = yes + no;
   const yesPct = total > 0 ? (yes / total) * 100 : 50;
   const noPct = 100 - yesPct;
-  const holders = (panel.holders ?? []).slice(0, 5);
-  const trades = (panel.trades ?? []).slice(0, 5);
-
   return (
     <>
       {panel.market ? <p className="tw-question">{panel.market.question}</p> : null}
-
-      {total > 0 ? (
-        <section className="tw-section" aria-label="Proven winners">
-          <h3 className="tw-section-title">Proven winners</h3>
+      {hits.length > 0 ? (
+        <Section title="Rules that fired">
+          <HitList hits={hits} />
+        </Section>
+      ) : null}
+      <Section title="Proven winners by side">
+        {total > 0 ? (
           <div className="tw-longshort">
-            <div className="tw-longshort-bar" role="img" aria-hidden="true">
+            <div className="tw-longshort-bar" role="img" aria-label={`Proven winners: Yes ${yesPct.toFixed(0)}%, No ${noPct.toFixed(0)}%`}>
               <i className="tw-longshort-long" style={{ width: `${yesPct}%` }} />
               <i className="tw-longshort-short" style={{ width: `${noPct}%` }} />
             </div>
@@ -28,51 +30,75 @@ export function PredictionBody({ panel }: { panel: PredictionPanel }) {
               <span>No {noPct.toFixed(0)}%</span>
             </div>
           </div>
-        </section>
-      ) : null}
-
-      {holders.length > 0 ? (
-        <section className="tw-section" aria-label="Top holders">
-          <h3 className="tw-section-title">Top holders</h3>
-          <table className="tw-table">
-            <thead>
-              <tr>
-                <th>Wallet</th>
-                <th>Side</th>
-                <th>Size</th>
-                <th>PnL</th>
-              </tr>
-            </thead>
-            <tbody>
-              {holders.map((h) => (
-                <tr key={h.key}>
-                  <td>{shortAddr(h.address)}</td>
-                  <td>{h.side}</td>
-                  <td className="tw-mono">{h.position_size.toLocaleString()}</td>
-                  <td className={`tw-mono${h.pnl !== null && h.pnl < 0 ? " tw-neg" : ""}`}>{usd(h.pnl, true)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      ) : null}
-
-      {trades.length > 0 ? (
-        <section className="tw-section" aria-label="Recent trades">
-          <h3 className="tw-section-title">Recent trades</h3>
-          <ul className="tw-trade-list">
-            {trades.map((t, i) => (
-              <li key={i}>
-                <span>
-                  {t.taker_action} {t.side}
-                </span>
-                <span className="tw-mono">{usd(t.usdc_value)}</span>
-                <span className="tw-mono tw-meta">{timeAgo(t.timestamp)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+        ) : (
+          <Empty>No holders with a winning record on either side yet.</Empty>
+        )}
+      </Section>
     </>
   );
+}
+
+function HoldersTab({ panel }: { panel: PredictionPanel }) {
+  const holders = (panel.holders ?? []).slice(0, 8);
+  if (holders.length === 0) return <Empty>No holder data came back for this market.</Empty>;
+  return (
+    <Section title="Top holders">
+      <table className="tw-table">
+        <thead>
+          <tr>
+            <th scope="col">Wallet</th>
+            <th scope="col">Side</th>
+            <th scope="col" className="tw-num">
+              Size
+            </th>
+            <th scope="col" className="tw-num">
+              PnL
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {holders.map((h) => (
+            <tr key={h.key}>
+              <td className="tw-mono">{shortAddr(h.address)}</td>
+              <td>{h.side}</td>
+              <td className="tw-mono tw-num">{h.position_size.toLocaleString()}</td>
+              <td className={`tw-mono tw-num${h.pnl !== null && h.pnl < 0 ? " tw-neg" : ""}`}>{usd(h.pnl, true)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Section>
+  );
+}
+
+function TradesTab({ panel }: { panel: PredictionPanel }) {
+  const trades = (panel.trades ?? []).slice(0, 8);
+  if (trades.length === 0) return <Empty>No recent trades on this market.</Empty>;
+  return (
+    <Section title="Recent trades">
+      <ul className="tw-trade-list" data-cols="3">
+        {trades.map((t, i) => (
+          <li key={i}>
+            <span>
+              {t.taker_action} {t.side}
+            </span>
+            <span className="tw-mono">{usd(t.usdc_value)}</span>
+            <span className="tw-mono tw-meta">{timeAgo(t.timestamp)}</span>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+}
+
+export function predictionTabs(panel: PredictionPanel, hits: HitDto[]): TabDef[] {
+  return [
+    { id: "winners", label: "Proven winners", content: <WinnersTab panel={panel} hits={hits} /> },
+    { id: "holders", label: "Holders", content: <HoldersTab panel={panel} /> },
+    { id: "trades", label: "Trades", content: <TradesTab panel={panel} /> },
+  ];
+}
+
+export function PredictionBody({ panel, hits = [], initialTab }: { panel: PredictionPanel; hits?: HitDto[]; initialTab?: string }) {
+  return <Tabs label="Evidence" tabs={predictionTabs(panel, hits)} initial={initialTab} />;
 }

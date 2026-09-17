@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatSignalValue, ruleClause, usd, verdictLabel } from "../src/format";
+import { formatSignalValue, ruleClause, usd, verdictLabel, verdictPlate } from "../src/format";
 
 describe("usd", () => {
   it("keeps the zeros of whole hundreds (150K is not 15K)", () => {
@@ -52,5 +52,25 @@ describe("ruleClause", () => {
 describe("verdictLabel", () => {
   it("keeps caps only for the danger words", () => {
     expect(["TRIPWIRE", "CAUTION", "CLEAR", "UNCHECKED"].map((v) => verdictLabel(v as "CLEAR"))).toEqual(["TRIPWIRE", "CAUTION", "Clear", "Unchecked"]);
+  });
+});
+
+describe("verdictPlate", () => {
+  it("maps each verdict to its crew-alerting tone and a non-colour mark", () => {
+    expect(verdictPlate("TRIPWIRE")).toEqual({ tone: "warning", mark: "filled" });
+    expect(verdictPlate("CAUTION")).toEqual({ tone: "caution", mark: "filled" });
+    expect(verdictPlate("CLEAR")).toEqual({ tone: "normal", mark: "outlined" });
+    expect(verdictPlate("UNCHECKED")).toEqual({ tone: "unlit", mark: "dashed" });
+    expect(verdictPlate("LOADING")).toEqual({ tone: "unlit", mark: "dashed" });
+  });
+
+  it("never lights UNCHECKED (or a pending check) green, and CLEAR never shares a mark with a lit alert", () => {
+    // Red/amber vs green is the colour-blind failure pair: the mark must differ on its own.
+    expect(verdictPlate("CLEAR").mark).not.toBe(verdictPlate("TRIPWIRE").mark);
+    expect(verdictPlate("CLEAR").mark).not.toBe(verdictPlate("CAUTION").mark);
+    for (const v of ["UNCHECKED", "LOADING"] as const) {
+      expect(verdictPlate(v).tone).not.toBe("normal");
+      expect(verdictPlate(v).mark).not.toBe(verdictPlate("CLEAR").mark);
+    }
   });
 });

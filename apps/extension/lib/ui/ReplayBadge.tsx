@@ -1,4 +1,5 @@
-/** "Replay" watermark: the backend is serving recorded fixtures, not live Nansen data. */
+/** "Replay" watermark: the backend is serving recorded fixtures, not live Nansen data. An
+ * advisory (cyan) outlined tag. */
 export function ReplayBadge({ replay }: { replay?: boolean }) {
   if (!replay) return null;
   return (

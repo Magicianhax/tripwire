@@ -10,6 +10,7 @@ import { Chip } from "../../lib/ui/Chip";
 import { shortAddr } from "../../lib/ui/format";
 import { mountReact } from "../../lib/ui/mount";
 import { Panel } from "../../lib/ui/Panel";
+import { Popover } from "../../lib/ui/Popover";
 import { X_MATCHES } from "../../lib/venues";
 import { createResultCache } from "../../lib/x/cache";
 import { createMountTracker } from "../../lib/x/mounts";
@@ -23,6 +24,8 @@ const TWEET_SELECTOR = 'article[data-testid="tweet"]';
 const CHIP_CONCURRENCY = 4;
 const VIEWPORT_MARGIN = "600px 0px";
 const SWEEP_DEBOUNCE_MS = 1000;
+/** The evidence card floats above X's own header and menus. */
+const POPOVER_Z_INDEX = 2_147_483_000;
 
 /** Clicks anywhere inside a mounted Tripwire shadow-root UI must never reach X's own
  * click-to-open-tweet handlers. */
@@ -121,7 +124,8 @@ export default defineContentScript({
         );
       }
 
-      // Sequenced open/close: rapid clicks never mount two panels (lib/x/panel-toggle.ts).
+      // Sequenced open/close: rapid clicks never mount two cards (lib/x/panel-toggle.ts). The
+      // card is tracked against this article, so the sweep removes it with the chip.
       const panel = createPanelToggle({
         onExpandedChange(value) {
           expanded = value;
@@ -142,16 +146,32 @@ export default defineContentScript({
             return null;
           }
 
+          // The chip's own button: the card opens beside it, clicks on it toggle instead of
+          // counting as "outside", and focus returns to it on close.
+          const chipButton = chipMount.ui.shadow.querySelector<HTMLButtonElement>(".tw-chip");
           const node = (
-            <Panel
-              data={panelResult.data}
-              title={`$${symbol}`}
-              onClose={() => void panel.toggle()}
-              replay={replay}
-              person={personResult.ok ? personResult.data : null}
-            />
+            <Popover
+              anchor={chipButton}
+              returnFocus={() => chipButton}
+              verdict={panelResult.data.verdict}
+              onClose={() => {
+                if (panel.expanded) void panel.toggle();
+              }}
+            >
+              <Panel
+                data={panelResult.data}
+                title={`$${symbol}`}
+                onClose={() => void panel.toggle()}
+                replay={replay}
+                person={personResult.ok ? personResult.data : null}
+                headline={chipHeadline(panelResult.data)}
+                postTimeIso={tweet.timeIso}
+              />
+            </Popover>
           );
-          const panelMount = await mountReact(ctx, { position: "inline", anchor: chipMount.ui.shadowHost, append: "after" }, node);
+          // Its own shadow root on <body>, never inside the tweet: X's layout can't clip or
+          // restyle it, and the post's height never changes.
+          const panelMount = await mountReact(ctx, { position: "modal", zIndex: POPOVER_Z_INDEX }, node);
           stopHostClicks(panelMount.ui.shadowHost);
           return panelMount;
         },

@@ -4,9 +4,12 @@ import { installBlocker } from "../../lib/adapters/blocker";
 import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, override } from "../../lib/api";
 import type { GuardResponse } from "../../lib/api-types";
-import { Dock } from "../../lib/ui/Dock";
+import { EVIDENCE_TAB } from "../../lib/ui/BlockScreen";
+import { Dock, SHEET_BELOW } from "../../lib/ui/Dock";
 import { mountIfCurrent, mountReact } from "../../lib/ui/mount";
+import { CardMessage } from "../../lib/ui/panel-parts";
 import { Panel } from "../../lib/ui/Panel";
+import { Popover } from "../../lib/ui/Popover";
 import { Strip } from "../../lib/ui/Strip";
 import { BlockOverlay } from "./BlockOverlay";
 import { errorHeadline, overrideFailureText, targetTitle } from "./format";
@@ -14,6 +17,9 @@ import type { RunnerContext } from "./runner-state";
 
 const UNLOCK_MS = 60_000;
 const MODAL_Z_INDEX = 2_147_483_000;
+/** The evidence card the user opened sits above the block screen it was opened from (the
+ * blocker on the trade button is a listener, so covering the block never unblocks anything). */
+const EVIDENCE_Z_INDEX = MODAL_Z_INDEX + 1;
 
 function stripVerdict(verdict: Verdict): "CAUTION" | "UNCHECKED" | "CLEAR" {
   return verdict === "TRIPWIRE" ? "CAUTION" : verdict;
@@ -27,11 +33,12 @@ function closeEvidence(rc: RunnerContext): void {
   }
 }
 
-/** Toggles the on-demand evidence Dock (Strip's "Details" / BlockScreen's "Evidence").
+/** Toggles the on-demand evidence card (Strip's "Details" / BlockScreen's evidence button),
+ * anchored to the button that opened it (`trigger`) in its own body-level shadow root.
  * Fetches "panel" mode data lazily on open; never blocks the trade on a failed fetch.
  * Idempotent while opening: a repeat click during the fetch is ignored, and a close/teardown
- * during it cancels the open (checked again after the async mount, so no orphaned Dock). */
-export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, target: Target): Promise<void> {
+ * during it cancels the open (checked again after the async mount, so no orphaned card). */
+export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, target: Target, trigger: HTMLElement | null = null, initialTab?: string): Promise<void> {
   if (rc.evidenceMount) {
     closeEvidence(rc);
     return;
@@ -43,16 +50,22 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
   const stillWanted = () => rc.evidenceOpening === opening && rc.currentKey === openedForKey;
   const result = await guard(target, adapter.id, "panel");
   if (!stillWanted()) return; // closed, or the page moved on, while this was in flight
-  const node = result.ok ? (
-    <Dock collapsed={false} verdict={result.data.verdict} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} replay={rc.replay}>
-      <Panel data={result.data} title={targetTitle(target)} onClose={() => void toggleEvidence(rc, adapter, target)} />
-    </Dock>
-  ) : (
-    <Dock collapsed={false} onToggleCollapsed={() => void toggleEvidence(rc, adapter, target)} replay={rc.replay}>
-      <p className="tw-dock-error" role="status">{errorHeadline(result.status, result.error)}</p>
-    </Dock>
+  const node = (
+    <Popover
+      anchor={trigger}
+      onClose={() => closeEvidence(rc)}
+      returnFocus={() => trigger}
+      sheetBelow={SHEET_BELOW}
+      verdict={result.ok ? result.data.verdict : "UNCHECKED"}
+    >
+      {result.ok ? (
+        <Panel data={result.data} title={targetTitle(target)} onClose={() => closeEvidence(rc)} replay={rc.replay} initialTab={initialTab} />
+      ) : (
+        <CardMessage title={targetTitle(target)} kind="error" message={errorHeadline(result.status, result.error)} replay={rc.replay} />
+      )}
+    </Popover>
   );
-  const mount = await mountReact(rc.ctx, { position: "inline" }, node);
+  const mount = await mountReact(rc.ctx, { position: "modal", zIndex: EVIDENCE_Z_INDEX }, node);
   if (!stillWanted()) {
     mount.ui.remove();
     return;
@@ -87,8 +100,8 @@ export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key
   rc.mainMount = mount;
 }
 
-/** Primary Dock for tier 2 (or tier 1 with no anchor found): starts as a collapsed chip,
- * fetches "panel" mode data lazily on first expand. */
+/** Primary Dock for tier 2 (or tier 1 with no anchor found): a verdict chip that opens the
+ * evidence card beside it, fetching "panel" mode data lazily on first open. */
 export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, target: Target | null, verdict: Verdict, headline: string): Promise<void> {
   let collapsed = true;
   let panelData: GuardResponse | null = null;
@@ -108,13 +121,9 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
             }}
           />
         ) : panelError ? (
-          <p className="tw-dock-error" role="status">
-            {panelError}
-          </p>
+          <CardMessage title={targetTitle(target)} kind="error" message={panelError} />
         ) : (
-          <p className="tw-dock-loading" role="status">
-            Loading evidence…
-          </p>
+          <CardMessage title={targetTitle(target)} message="Loading evidence…" />
         )}
       </Dock>
     );
@@ -149,7 +158,7 @@ export function createStripBinding(
   async function onBind(anchor: HTMLElement): Promise<void> {
     const text = unlocked ? `${headline} · unlocked for this session` : headline;
     const node = (
-      <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} onDetails={target ? () => void toggleEvidence(rc, adapter, target) : undefined} />
+      <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} onDetails={target ? (trigger) => void toggleEvidence(rc, adapter, target, trigger) : undefined} />
     );
     if (rc.mainMount) rc.mainMount.ui.remove();
     // Guards the residual A2 race: `sync()` (runner.tsx) calls this without awaiting it, so a
@@ -194,7 +203,7 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
         pending={overridePending}
         error={overrideError}
         replay={rc.replay}
-        onEvidence={() => void toggleEvidence(rc, adapter, target)}
+        onEvidence={(trigger) => void toggleEvidence(rc, adapter, target, trigger, EVIDENCE_TAB[target.kind])}
         onOverride={() => void doOverride()}
       />
     );

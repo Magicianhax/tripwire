@@ -10,6 +10,8 @@ import { deepActiveElement } from "../lib/ui/focus";
 import { HitList } from "../lib/ui/panel-parts";
 import { Panel } from "../lib/ui/Panel";
 import { PerpBody } from "../lib/ui/PerpBody";
+import { PredictionBody } from "../lib/ui/PredictionBody";
+import { Strip } from "../lib/ui/Strip";
 
 function mountNode(node: React.ReactNode): { container: HTMLDivElement; root: Root } {
   const container = document.createElement("div");
@@ -580,6 +582,68 @@ describe("Dock collapsed chip", () => {
       </Dock>,
     );
     expect((container.querySelector(".tw-dock") as HTMLElement).dataset.verdict).toBe("CAUTION");
+    root.unmount();
+  });
+});
+
+describe("Annunciator plates (verdict -> tone/mark)", () => {
+  it("never lights an UNCHECKED or checking chip, strip or dock green", () => {
+    const cases: [string, React.ReactNode][] = [
+      ["chip", <Chip verdict="UNCHECKED" symbol="WIF" headline="backend offline" expanded={false} onClick={() => {}} />],
+      ["chip loading", <Chip verdict="LOADING" symbol="WIF" headline="" expanded={false} onClick={() => {}} />],
+      ["strip", <Strip verdict="UNCHECKED" text="Pick a market" />],
+      ["dock", <Dock collapsed verdict="UNCHECKED" headline="Pick a market" onToggleCollapsed={() => {}}>{null}</Dock>],
+    ];
+    for (const [name, node] of cases) {
+      const { container, root } = mountNode(node);
+      const plate = container.querySelector(".tw-plate") as HTMLElement;
+      expect(plate, name).not.toBeNull();
+      expect(plate.dataset.tone, name).toBe("unlit");
+      expect(plate.dataset.mark, name).toBe("dashed");
+      root.unmount();
+    }
+  });
+
+  it("lights TRIPWIRE as a filled warning plate and CLEAR as an outlined normal plate", () => {
+    const tripwire = mountNode(<Chip verdict="TRIPWIRE" symbol="WIF" headline="x" expanded={false} onClick={() => {}} />);
+    expect((tripwire.container.querySelector(".tw-plate") as HTMLElement).dataset).toMatchObject({ tone: "warning", mark: "filled" });
+    tripwire.root.unmount();
+    const clear = mountNode(<Strip verdict="CLEAR" text="No flags on this token" />);
+    expect((clear.container.querySelector(".tw-plate") as HTMLElement).dataset).toMatchObject({ tone: "normal", mark: "outlined" });
+    clear.root.unmount();
+  });
+});
+
+describe("Evidence card tabs", () => {
+  const emptySpot: SpotPanel = { flow: null, flowTimeframe: "1d", sincePost: null, netflow: null, indicators: null, marketCapUsd: null, topBuyers: null, topSellers: null, candles: null, postTimeIso: null, errors: [] };
+  const tabLabels = (container: HTMLElement) => [...container.querySelectorAll('[role="tab"]')].map((t) => t.textContent);
+  const selected = (container: HTMLElement) => container.querySelector('[role="tab"][aria-selected="true"]')?.textContent;
+
+  it("spot evidence is Flow / Wallets / Risk, and opens on the requested tab", () => {
+    const data: PostIntelResponse = { verdict: "CLEAR", hits: [], unavailable: [], signals: [], panel: emptySpot, rulesPreset: "balanced" };
+    const { container, root } = mountNode(<Panel data={data} title="$WIF" onClose={() => {}} initialTab="wallets" />);
+    expect(tabLabels(container)).toEqual(["Flow", "Wallets", "Risk"]);
+    expect(selected(container)).toBe("Wallets");
+    expect(container.querySelector(".tw-card-finding")?.textContent).toBe("None of your rules fired on this token.");
+    root.unmount();
+  });
+
+  it("perp evidence is Positioning / Liquidations / Trades; prediction is Proven winners / Holders / Trades", () => {
+    const perp = mountNode(<PerpBody panel={{ coin: "ETH", screener: null, positions: null, trades: null, errors: [] }} />);
+    expect(tabLabels(perp.container)).toEqual(["Positioning", "Liquidations", "Trades"]);
+    perp.root.unmount();
+    const prediction = mountNode(<PredictionBody panel={{ market: null, holders: null, trades: null, errors: [] }} initialTab="holders" />);
+    expect(tabLabels(prediction.container)).toEqual(["Proven winners", "Holders", "Trades"]);
+    expect(selected(prediction.container)).toBe("Holders");
+    prediction.root.unmount();
+  });
+
+  it("the block screen's evidence button hands itself to onEvidence as the card's anchor", () => {
+    const onEvidence = vi.fn();
+    const { container, root } = mountNode(<BlockScreen hits={[]} phrase="X" onEvidence={onEvidence} onOverride={() => {}} autoFocus={false} />);
+    const button = container.querySelector(".tw-block-evidence") as HTMLButtonElement;
+    act(() => button.click());
+    expect(onEvidence).toHaveBeenCalledWith(button);
     root.unmount();
   });
 });

@@ -10,7 +10,7 @@ export type BlockOverlayProps = {
   kind: TargetKind;
   hits: HitDto[];
   phrase: string;
-  onEvidence: () => void;
+  onEvidence: (trigger: HTMLElement) => void;
   onOverride: () => void;
   /** True while an override() call is in flight -- disables BlockScreen's Override button so
    * rapid repeat clicks can't fire duplicate override() calls. */

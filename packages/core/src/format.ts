@@ -53,8 +53,27 @@ export function ruleClause(hit: { signalId: SignalId; op: RuleOp; threshold: num
   return `rule: ${hit.op} ${formatSignalValue(hit.signalId, hit.threshold)}`;
 }
 
-/** The word shown for a verdict. DESIGN.md allows caps only for the two danger display words;
- * the quiet states are sentence case. */
+export type PlateTone = "warning" | "caution" | "normal" | "unlit";
+export type PlateMark = "filled" | "outlined" | "dashed";
+
+/** Crew-alerting plate for a verdict (or a check still in flight): the tone picks the lamp
+ * colour, the mark carries the same meaning without colour. Alerts are filled plates, CLEAR an
+ * outlined plate, and anything unverified a dashed, unlit plate: never green. */
+export function verdictPlate(verdict: Verdict | "LOADING"): { tone: PlateTone; mark: PlateMark } {
+  switch (verdict) {
+    case "TRIPWIRE":
+      return { tone: "warning", mark: "filled" };
+    case "CAUTION":
+      return { tone: "caution", mark: "filled" };
+    case "CLEAR":
+      return { tone: "normal", mark: "outlined" };
+    default:
+      return { tone: "unlit", mark: "dashed" };
+  }
+}
+
+/** The word shown for a verdict. The two alert words are caps in the DOM; the quiet states stay
+ * sentence case (plates set every word in caps visually; screen readers get the DOM word). */
 export function verdictLabel(verdict: Verdict): string {
   switch (verdict) {
     case "TRIPWIRE":
