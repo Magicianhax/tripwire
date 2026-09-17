@@ -50,11 +50,11 @@ a {
   color: inherit;
 }
 
-/* Focus rings: 2px offset, ink/yellow per DESIGN.md. Default surface is dark, so the
-   visible ring is yellow; the one control that sits on a yellow fill (the TRIPWIRE chip)
-   flips to an ink ring so it still reads against its own background. */
+/* Focus rings never use yellow (reserved for danger, DESIGN.md): #EDEDED on the dark ink
+   surfaces; the one control that sits on a yellow fill (the TRIPWIRE chip) flips to an ink
+   ring so it still reads against its own background. */
 :focus-visible {
-  outline: 2px solid var(--tw-yellow);
+  outline: 2px solid var(--tw-body);
   outline-offset: 2px;
 }
 .tw-chip-tripwire:focus-visible {

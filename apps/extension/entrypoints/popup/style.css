@@ -96,8 +96,9 @@ body {
   background: var(--tw-surface-raised);
 }
 
+/* Focus rings: #EDEDED on ink, never yellow (reserved for danger). */
 .tw-segmented button:focus-visible {
-  outline: 2px solid var(--tw-yellow);
+  outline: 2px solid var(--tw-text);
   outline-offset: -2px;
 }
 
@@ -117,9 +118,14 @@ body {
   border-bottom: 1px solid #2a2a2a;
 }
 
-.tw-links a:hover,
+.tw-links a:hover {
+  border-bottom-color: var(--tw-text);
+}
+
 .tw-links a:focus-visible {
-  border-bottom-color: var(--tw-yellow);
+  outline: 2px solid var(--tw-text);
+  outline-offset: 2px;
+  border-bottom-color: var(--tw-text);
 }
 
 .tw-field {
@@ -145,7 +151,7 @@ body {
 }
 
 .tw-field input:focus-visible {
-  outline: 2px solid var(--tw-yellow);
+  outline: 2px solid var(--tw-text);
   outline-offset: 2px;
 }
 
