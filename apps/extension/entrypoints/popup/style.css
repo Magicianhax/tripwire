@@ -63,7 +63,8 @@ body {
   color: var(--tw-success);
 }
 
-.tw-status[data-state="offline"] {
+.tw-status[data-state="offline"],
+.tw-status[data-state="not-ready"] {
   color: var(--tw-danger);
 }
 

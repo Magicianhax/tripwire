@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { browser } from "wxt/browser";
 import { getRules, health, setPreset } from "../../lib/api";
+import type { KeySource } from "../../lib/api-types";
+import { popupStatus } from "./status";
 
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
 const BACKEND_URL_RE = /^http:\/\/(127\.0\.0\.1|localhost):\d{1,5}$/;
@@ -8,10 +10,8 @@ const PRESETS = ["degen", "balanced", "paranoid"] as const;
 type Preset = (typeof PRESETS)[number];
 const PRESET_LABELS: Record<Preset, string> = { degen: "Degen", balanced: "Balanced", paranoid: "Paranoid" };
 
-type Status = "checking" | "connected" | "offline";
-
 export default function App() {
-  const [status, setStatus] = useState<Status>("checking");
+  const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource } | { ok: false } | null>(null);
   const [preset, setPresetState] = useState<Preset | "custom" | null>(null);
   const [backendUrl, setBackendUrl] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlDraft, setBackendUrlDraft] = useState(DEFAULT_BACKEND_URL);
@@ -36,7 +36,7 @@ export default function App() {
     (async () => {
       const result = await health();
       if (cancelled) return;
-      setStatus(result.ok ? "connected" : "offline");
+      setHealthState(result.ok ? { ok: true, keySource: result.data.keySource } : { ok: false });
     })();
     (async () => {
       const result = await getRules();
@@ -65,8 +65,7 @@ export default function App() {
     await browser.storage.local.set({ backendUrl: next });
   }
 
-  const statusText = status === "connected" ? "Backend connected · key via Nansen CLI" : status === "offline" ? "Backend offline: run pnpm dev" : "Checking backend…";
-  const statusState = status === "checking" ? undefined : status;
+  const { text: statusText, state: statusState } = popupStatus(healthState);
 
   return (
     <div className="tw-popup">
