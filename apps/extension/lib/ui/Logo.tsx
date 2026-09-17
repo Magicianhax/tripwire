@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { browser } from "wxt/browser";
 import { chainLogo, venueLogo, type BrandLogo } from "@tripwire/core";
-import { tokenLogoUrl } from "../backend-url";
+import { tokenLogoDataUrl } from "../token-logo";
 
 /** A file bundled under the extension's public/ dir, as a chrome-extension:// URL. Brand marks
  * are never fetched from their owners' sites at runtime. Outside an extension context (unit
@@ -53,12 +53,8 @@ export function monogram(text: string): string {
  * Nansen's `logo` is a third-party CDN URL (CoinGecko's, today). Requesting it from the host
  * page would tell that CDN which token this user is looking at, on every card — so Tripwire
  * doesn't. `GET /api/token-logo` on the local backend fetches those bytes instead, from a URL
- * Nansen already gave it, and serves them from 127.0.0.1. The only host this `<img>` ever names
- * is the user's own machine.
- *
- * `chain`/`tokenAddress` name the token to the proxy. Anything that goes wrong — no logo known,
- * a page CSP that refuses the localhost origin, the backend not running — falls back to the
- * monogram through `onError`, so the header is never a broken image.
+ * Nansen already gave it, and the background hands them here as a data URL (see
+ * lib/token-logo.ts for why it cannot be a plain `src`). The host page requests nothing.
  */
 export function TokenLogo({
   symbol,
@@ -72,29 +68,27 @@ export function TokenLogo({
   chain?: string | null;
   tokenAddress?: string | null;
 }) {
-  const src = tokenLogoUrl(chain, tokenAddress);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [src]);
+  const [dataUrl, setDataUrl] = useState<string | null>(null);
 
-  if (!src || failed) {
+  useEffect(() => {
+    let cancelled = false;
+    setDataUrl(null);
+    void tokenLogoDataUrl(chain, tokenAddress).then((url) => {
+      if (!cancelled) setDataUrl(url);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [chain, tokenAddress]);
+
+  // The monogram is what shows while the bytes are on their way, and what stays if they never
+  // arrive: the header never flashes a broken image.
+  if (!dataUrl) {
     return (
       <span className="tw-token-logo tw-monogram" aria-hidden="true" style={{ width: size, height: size }}>
         {monogram(symbol)}
       </span>
     );
   }
-  return (
-    <img
-      className="tw-token-logo tw-token-image"
-      src={src}
-      alt=""
-      width={size}
-      height={size}
-      decoding="async"
-      loading="lazy"
-      referrerPolicy="no-referrer"
-      draggable={false}
-      onError={() => setFailed(true)}
-    />
-  );
+  return <img className="tw-token-logo tw-token-image" src={dataUrl} alt="" width={size} height={size} decoding="async" draggable={false} />;
 }

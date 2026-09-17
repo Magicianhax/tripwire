@@ -20,6 +20,45 @@ describe("createBridge", () => {
     expect(fetchImpl).not.toHaveBeenCalled();
   });
 
+  it("allows one sub-path, for the gated label lookup", async () => {
+    const fetchImpl = vi.fn(async () => jsonResponse(200, { labels: [] }));
+    const bridge = createBridge({ fetchImpl, getBackendUrl: () => "http://127.0.0.1:3000" });
+    await bridge.handle({ type: "api", method: "POST", path: "/api/wallet/labels", body: { address: "0x1" } });
+    expect(fetchImpl).toHaveBeenCalledWith("http://127.0.0.1:3000/api/wallet/labels", expect.anything());
+    expect(await bridge.handle({ type: "api", method: "POST", path: "/api/a/b/c" })).toEqual({ ok: false, status: 400, json: { error: "bad path" } });
+  });
+
+  describe("tokenLogo", () => {
+    const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
+    const SOL = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";
+    const image = (type: string, bytes: Uint8Array = png) =>
+      new Response(bytes.slice().buffer as ArrayBuffer, { status: 200, headers: { "Content-Type": type } });
+
+    it("fetches the local proxy and hands the bytes back as a data URL", async () => {
+      const fetchImpl = vi.fn(async () => image("image/jpeg"));
+      const bridge = createBridge({ fetchImpl, getBackendUrl: () => "http://127.0.0.1:3000" });
+      const result = await bridge.handle({ type: "tokenLogo", chain: "solana", address: SOL });
+      expect(fetchImpl).toHaveBeenCalledWith(`http://127.0.0.1:3000/api/token-logo?chain=solana&address=${SOL}`, expect.anything());
+      expect(result).toEqual({ ok: true, status: 200, json: { dataUrl: "data:image/jpeg;base64,iVBORw==" } });
+    });
+
+    it("refuses anything that is not an image, and anything oversized", async () => {
+      const bridge = (res: Response) => createBridge({ fetchImpl: async () => res, getBackendUrl: () => "http://127.0.0.1:3000" });
+      expect((await bridge(jsonResponse(404, { error: "no_logo" })).handle({ type: "tokenLogo", chain: "solana", address: SOL })).ok).toBe(false);
+      expect((await bridge(image("text/html")).handle({ type: "tokenLogo", chain: "solana", address: SOL })).ok).toBe(false);
+      const big = new Response(new ArrayBuffer(200 * 1024 + 1), { status: 200, headers: { "Content-Type": "image/png" } });
+      expect((await bridge(big).handle({ type: "tokenLogo", chain: "solana", address: SOL })).ok).toBe(false);
+    });
+
+    it("never asks for a chain or an address that is not shaped like one", async () => {
+      const fetchImpl = vi.fn();
+      const bridge = createBridge({ fetchImpl, getBackendUrl: () => "http://127.0.0.1:3000" });
+      expect(await bridge.handle({ type: "tokenLogo", chain: "../../etc", address: SOL })).toEqual({ ok: false, status: 400, json: { error: "bad token" } });
+      expect(await bridge.handle({ type: "tokenLogo", chain: "solana", address: "?x=1" })).toEqual({ ok: false, status: 400, json: { error: "bad token" } });
+      expect(fetchImpl).not.toHaveBeenCalled();
+    });
+  });
+
   it("dedupes two concurrent identical POSTs into a single fetch", async () => {
     let resolveFetch!: (r: Response) => void;
     const fetchImpl = vi.fn(

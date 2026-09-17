@@ -173,7 +173,7 @@ describe("extractLabels", () => {
 describe("GET /api/token-logo", () => {
   const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 1, 2, 3, 4]);
   const image = (type: string, bytes: Uint8Array = png) =>
-    new Response(bytes, { status: 200, headers: { "content-type": type, "content-length": String(bytes.byteLength) } });
+    new Response(bytes.slice().buffer as ArrayBuffer, { status: 200, headers: { "content-type": type, "content-length": String(bytes.byteLength) } });
 
   it("rejects bad params", async () => {
     expect((await logoGET(req("/api/token-logo"))).status).toBe(400);
@@ -196,11 +196,22 @@ describe("GET /api/token-logo", () => {
     expect(first.headers.get("content-type")).toBe("image/jpeg");
     expect(new Uint8Array(await first.arrayBuffer())).toEqual(png);
     // The URL fetched is the one out of Nansen's own answer, never one from the request.
-    expect(String(fetchMock.mock.calls[0]![0])).toMatch(/^https:\/\/coin-images\.coingecko\.com\//);
+    expect(String((fetchMock.mock.calls as unknown as unknown[][])[0]![0])).toMatch(/^https:\/\/coin-images\.coingecko\.com\//);
 
     const second = await logoGET(req(`/api/token-logo?chain=solana&address=${WIF}`));
     expect(second.status).toBe(200);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("lets the extension's background fetch it from a backend on any local port", async () => {
+    _forgetLogo("solana", WIF);
+    vi.stubGlobal("fetch", vi.fn(async () => image("image/png")));
+    const res = await logoGET(req(`/api/token-logo?chain=solana&address=${WIF}`, { origin: ORIGIN }));
+    expect(res.headers.get("access-control-allow-origin")).toBe(ORIGIN);
+    expect(res.headers.get("vary")).toBe("Origin");
+
+    const stranger = await logoGET(req(`/api/token-logo?chain=solana&address=${WIF}`, { origin: "https://evil.example.com" }));
+    expect(stranger.headers.get("access-control-allow-origin")).toBeNull();
   });
 
   it("refuses a response that is not an image", async () => {
@@ -215,12 +226,12 @@ describe("GET /api/token-logo", () => {
     _forgetLogo("solana", WIF);
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response(png, { status: 200, headers: { "content-type": "image/png", "content-length": String(MAX_LOGO_BYTES + 1) } })),
+      vi.fn(async () => new Response(png.slice().buffer as ArrayBuffer, { status: 200, headers: { "content-type": "image/png", "content-length": String(MAX_LOGO_BYTES + 1) } })),
     );
     expect((await logoGET(req(`/api/token-logo?chain=solana&address=${WIF}`))).status).toBe(502);
 
     _forgetLogo("solana", WIF);
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(new Uint8Array(MAX_LOGO_BYTES + 10), { status: 200, headers: { "content-type": "image/png" } })));
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(new ArrayBuffer(MAX_LOGO_BYTES + 10), { status: 200, headers: { "content-type": "image/png" } })));
     const res = await logoGET(req(`/api/token-logo?chain=solana&address=${WIF}`));
     expect(res.status).toBe(502);
     expect((await res.json()).message).toMatch(/larger than/);

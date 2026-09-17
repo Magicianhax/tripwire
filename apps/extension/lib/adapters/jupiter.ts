@@ -1,7 +1,7 @@
-import type { Target } from "@tripwire/core";
-import { solanaTarget } from "./chains";
+import { isSolanaAddress, type Target } from "@tripwire/core";
+import { isNativeSymbol, readTokenSymbol, solanaTarget } from "./chains";
 import { findButton, findButtons } from "./dom";
-import { OVERRIDE_PHRASES, type VenueAdapter } from "./types";
+import { OVERRIDE_PHRASES, type TargetGap, type VenueAdapter } from "./types";
 
 const PATH_PAIR_RE = /^\/swap\/([^/]+)-([^/]+)$/;
 const ANCHOR_RE = /^(swap|place order)$/i;
@@ -42,7 +42,17 @@ export const jupiterAdapter: VenueAdapter = {
     return url.hostname === "jup.ag" && (url.pathname.startsWith("/swap") || isRootSwap(url));
   },
   readTarget(_doc, url): Target | null {
-    return solanaTarget(outMint(url));
+    // jup.ag accepts a mint or a bare symbol in the same slot ("/swap/USDC-SOL"). Only a real
+    // mint is a target; a symbol is a gap the caller resolves, and a native coin is neither.
+    const out = outMint(url);
+    return out && isSolanaAddress(out) ? solanaTarget(out) : null;
+  },
+  readGap(_doc, url): TargetGap | null {
+    const out = outMint(url);
+    if (!out || isSolanaAddress(out)) return null;
+    const symbol = readTokenSymbol({ textContent: out } as Element);
+    if (!symbol) return null;
+    return isNativeSymbol(symbol, "solana") ? { kind: "native-asset", symbol } : { kind: "symbol", symbol, chainHint: "solana" };
   },
   anchor(doc) {
     return formAnchor(doc) ?? findButton(doc, ANCHOR_RE);

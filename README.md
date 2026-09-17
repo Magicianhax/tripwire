@@ -33,12 +33,20 @@ A short GIF walkthrough, if added, lives in `docs/media/`.
   source-verified entry in `packages/core/src/curated-wallets.ts` (shipped empty: no candidate
   had a fetchable source where the account itself states the address). Nothing is ever inferred
   from a similar name.
+- **Wallet lens (anywhere):** wherever somebody shares a wallet — an address, an ENS name, or a
+  link to an explorer, Polymarket profile, Hyperliquid explorer, DeBank, DEX Screener maker or
+  Pendle dashboard — a small Nansen mark appears beside it and opens a card with that wallet's
+  Nansen holdings and 90-day PnL, its Hyperliquid positions and fills, and its Polymarket
+  record. It runs on X and every venue out of the box; anywhere else you turn it on per site
+  from the popup, which asks the browser for that one origin. Tripwire never requests
+  `<all_urls>` at install and never injects into a site you have not enabled.
 - **User-owned rules:** three presets (Degen, Balanced, Paranoid) or a custom rule set,
   editable at `/rules`, evaluated locally against the signals below.
 
 **What it never does:** it never reads, derives or stores a wallet address for an unlabeled X
 account; it never signs, sends or intercepts a transaction, and never connects to a wallet;
-the Nansen API key never reaches the extension.
+the Nansen API key never reaches the extension; and it never talks to a third party from your
+browser — every request, including token logos, goes through the backend on your own machine.
 
 ## Quick start (under 10 minutes)
 
@@ -108,8 +116,8 @@ on the chip and strip.
 |---|---|---|---|
 | Jupiter | 1 | `jup.ag/swap/<in>-<out>`, or `?sell=&buy=` / `?inputMint=&outputMint=` on `/swap` or the root page | spot, output mint (Solana); anchor: the swap form's Swap / Place order / Connect button (logged out it reads "Connect"), never the header Connect |
 | pump.fun | 1 | `pump.fun/coin/<mint>` | spot (Solana); anchor: the trade panel's primary action next to its Buy/Sell tabs ("Connect wallet to trade" logged out), never the tabs, quick-buy chips or token-card quick-buys |
-| Uniswap | 1 | `app.uniswap.org?outputCurrency=&chain=` | spot (EVM); anchor: `review-swap` ("Get started" logged out); no `chain` param -> null target, UNCHECKED dock (no chain to guess) |
-| Jumper | 1 | `jumper.exchange` or `jumper.xyz` (the redirect target) `?toChain=&toToken=` | spot (EVM or Solana, by chain id); anchor: the widget's transaction button ("Connect wallet" logged out), else a whole-label Exchange/Swap/Bridge/Review button, never nav or tab items |
+| Uniswap | 1 | `app.uniswap.org?outputCurrency=&chain=`, else the Buy field | spot (EVM); anchor: `review-swap` ("Get started" logged out). With no token in the URL the Buy selector is read and the symbol resolved through Nansen; a native coin (ETH) and a chain outside coverage each get their own UNCHECKED reason |
+| Jumper | 1 | `jumper.exchange` or `jumper.xyz` (the redirect target) `?toChain=&toToken=`, else the Receive field | spot (EVM or Solana, by chain id); a destination chain Tripwire does not cover reads "Tripwire doesn't cover Bitcoin" rather than a failure; anchor: the widget's transaction button ("Connect wallet" logged out), else a whole-label Exchange/Swap/Bridge/Review button, never nav or tab items |
 | Hyperliquid | 1 | `app.hyperliquid.xyz/trade/<COIN>` | perp, coin + long/short side read from the selected side toggle (live: plain divs marked by a left/right class token); anchor: the order form's submit ("Connect" logged out), never the side toggles; HIP-3 non-crypto markets (e.g. `/trade/xyz:TSLA`) -> null target, UNCHECKED dock |
 | Polymarket | 1 | `polymarket.com/event/<event>[/<market>]` or `/event/<event>?marketSlug=<market>` | prediction; checked only when the URL names a market or the event has exactly one open market ("Pick a market" otherwise), the market's outcomes are exactly Yes/No, and the outcome is read from the trade form that owns the button ("Pick Yes or No" otherwise) |
 | Raydium | 2 | `raydium.io?outputMint=` | spot (Solana), dock only |
@@ -277,6 +285,24 @@ before running it).
   from your own machine. It is never uploaded, never shared with the account it names, and
   `DELETE /api/links` removes it. Curated entries carry the public source URL where the owner
   stated the address; no wallet is ever guessed from a name.
+- **Per-site consent for the wallet lens:** the manifest asks for X and the venues and nothing
+  else. Any other site is off until you press "Enable Tripwire on this site" in the popup,
+  which calls `browser.permissions.request` for that one origin; only then does the background
+  register the wallet content script for it, and removing the site revokes the permission and
+  unregisters the script. The background re-syncs that registration on install, on browser
+  start and on every permission change, so a permission you revoke in Chrome's own settings
+  stops the injection too.
+- **Wallet lens privacy:** an address you inspect goes to your own local backend, and from
+  there to Nansen, Hyperliquid's public API and Polymarket (via Nansen). Nothing is stored
+  beyond the local cache and a "Recent wallets" list of the last 10, which lives in this
+  browser profile, is never uploaded, and is cleared from the popup. ENS names are resolved by
+  the backend (`api.ensideas.com`, then an ENS registry call over a public RPC), never by the
+  page. `.sol` names are not resolved at all: no free Solana Name Service resolver answered
+  when this was built, and the card says so rather than guessing an address.
+- **Token logos:** Nansen returns a third-party CDN URL for a token's picture. The extension
+  never requests it; `GET /api/token-logo` on your backend fetches those bytes (https only,
+  image content types only, 200 KB cap, 24h cache, never spending a Nansen credit) and the
+  background hands them to the card. No CDN ever learns which token you are looking at.
 - **Local data:** everything Tripwire stores (cache, ledger, rules, check history) lives in
   `apps/web/.data/tripwire.db` (SQLite via `node:sqlite`), gitignored, never uploaded.
 

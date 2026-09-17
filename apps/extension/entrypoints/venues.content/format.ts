@@ -1,4 +1,5 @@
 import type { Target, Verdict } from "@tripwire/core";
+import type { TargetGap } from "../../lib/adapters/types";
 import { shortAddr } from "../../lib/ui/format";
 
 export function errorHeadline(status: number, error: string): string {
@@ -36,6 +37,29 @@ export function verdictHeadline(verdict: Verdict): string {
     default:
       return "Tripwire couldn't check this: no data";
   }
+}
+
+/**
+ * What the strip says when there is no target. Each of these is an answer about the page, not
+ * a report of a failure: Tripwire's coverage, the nature of a native coin, or a symbol Nansen
+ * could not place. Only a page with nothing selected at all gets the old line.
+ */
+export function gapHeadline(gap: TargetGap | null | undefined): string {
+  if (!gap) return "Tripwire couldn't check this: no target on this page";
+  switch (gap.kind) {
+    case "unsupported-chain":
+      return `Tripwire doesn't cover ${gap.label}`;
+    case "native-asset":
+      return `${gap.symbol} is the chain's native asset — Tripwire checks tokens`;
+    case "symbol":
+      return `Tripwire couldn't find ${gap.symbol} on Nansen`;
+  }
+}
+
+/** A gap's identity, so the change-detection loop treats two different gaps as two states. */
+export function gapKey(gap: TargetGap | null | undefined): string {
+  if (!gap) return "";
+  return gap.kind === "symbol" ? `symbol:${gap.symbol}:${gap.chainHint ?? ""}` : `${gap.kind}:${"label" in gap ? gap.label : gap.symbol}`;
 }
 
 export function targetTitle(target: Target | null): string {

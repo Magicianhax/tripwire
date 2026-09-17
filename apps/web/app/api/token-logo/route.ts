@@ -1,5 +1,5 @@
 import { isEvmAddress, isSolanaAddress, CHAINS } from "@tripwire/core";
-import { hostAllowed } from "@/lib/origin";
+import { hostAllowed, originAllowed } from "@/lib/origin";
 import { LOGO_TTL_MS, tokenLogo } from "@/lib/token-logo";
 
 export const runtime = "nodejs";
@@ -15,23 +15,32 @@ export const dynamic = "force-dynamic";
  * credits, writes nothing, and can only ever return bytes for a logo URL Nansen already gave
  * this backend. The worst a hostile page can learn by embedding it is that Tripwire's backend
  * is running on this machine, which any localhost page can already tell.
+ *
+ * It does answer with CORS headers for the extension's own origin: the background service
+ * worker fetches these bytes (a content script cannot — Chrome's Private Network Access rules
+ * refuse an https page reaching into loopback), and a backend on a port other than the one in
+ * `host_permissions` is a cross-origin fetch like any other. Without this, the logo silently
+ * failed whenever the user moved the backend off :3000.
  */
 export async function GET(req: Request): Promise<Response> {
   const url = new URL(req.url);
   if (!hostAllowed(req.headers.get("host") ?? url.host)) return new Response(null, { status: 403 });
+  const origin = req.headers.get("origin");
+  const cors: Record<string, string> = origin && originAllowed(origin) ? { "Access-Control-Allow-Origin": origin, Vary: "Origin" } : {};
 
   const chain = url.searchParams.get("chain") ?? "";
   const address = url.searchParams.get("address") ?? "";
   if (!(CHAINS as readonly string[]).includes(chain) || !(isEvmAddress(address) || isSolanaAddress(address))) {
-    return Response.json({ error: "invalid request", message: "chain and address are required" }, { status: 400 });
+    return Response.json({ error: "invalid request", message: "chain and address are required" }, { status: 400, headers: cors });
   }
 
   const result = await tokenLogo(chain, address);
-  if (!result.ok) return Response.json({ error: "no_logo", message: result.reason }, { status: result.status });
+  if (!result.ok) return Response.json({ error: "no_logo", message: result.reason }, { status: result.status, headers: cors });
 
   return new Response(new Uint8Array(result.body), {
     status: 200,
     headers: {
+      ...cors,
       "Content-Type": result.contentType,
       "Content-Length": String(result.body.byteLength),
       "Cache-Control": `public, max-age=${Math.floor(LOGO_TTL_MS / 1000)}, immutable`,

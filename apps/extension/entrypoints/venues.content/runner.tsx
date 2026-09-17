@@ -1,16 +1,16 @@
 import type { Target, Verdict } from "@tripwire/core";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
 import { createAnchorBinding } from "../../lib/adapters/anchor-binding";
-import type { VenueAdapter } from "../../lib/adapters/types";
+import type { TargetGap, VenueAdapter } from "../../lib/adapters/types";
 import { guard, type ApiResult } from "../../lib/api";
 import type { GuardResponse } from "../../lib/api-types";
 import { decideDisplay, nextAction } from "./display-state";
 import { hitRuleClause } from "../../lib/ui/panel-parts";
 import { createBlockBinding, createStripBinding, closeEvidenceDock, showChecking, showPrimaryDock } from "./displays";
-import { errorHeadline, guardHeadline } from "./format";
+import { errorHeadline, gapHeadline, guardHeadline } from "./format";
 import { isUnlocked, type RunnerContext } from "./runner-state";
 
-export { keyFor } from "./format";
+export { gapKey, keyFor } from "./format";
 
 /**
  * Owns every mounted UI element and blocking listener for the current venue page: at most one
@@ -120,7 +120,7 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
    * target)`). `key` must be that value -- the caller owns change detection and must not call
    * this for an unchanged target (use `resyncAnchor()` instead).
    */
-  async function render(adapter: VenueAdapter, target: Target | null, key: string): Promise<void> {
+  async function render(adapter: VenueAdapter, target: Target | null, key: string, gap: TargetGap | null = null): Promise<void> {
     rc.currentKey = key;
     // Tear the previous target's display and blocker down BEFORE any await: the old verdict
     // (a stale block, or a CLEAR for a token that's no longer selected) must never stay visible
@@ -128,7 +128,9 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     teardownMain();
 
     let verdict: Verdict = "UNCHECKED";
-    let headline = "Tripwire couldn't check this: no target on this page";
+    // No target is not automatically a failure: the adapter says whether the page points at a
+    // chain outside coverage, at a chain's own coin, or at nothing at all.
+    let headline = gapHeadline(gap);
     let chipData: GuardResponse | null = null;
 
     if (target) {

@@ -165,6 +165,7 @@ export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, repl
         title={title}
         name={lens?.name ? null : lens?.label?.text}
         address={lens?.address ?? (walletRef.kind === "evm" || walletRef.kind === "solana" ? walletRef.query : null)}
+        addressAction={lens?.name || lens?.label ? undefined : "Copy address"}
         chain={lens?.chainGuess ?? walletRef.chainHint ?? null}
         replay={replay}
         showToken={false}

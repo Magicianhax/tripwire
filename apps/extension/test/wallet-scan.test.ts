@@ -24,6 +24,11 @@ describe("scanForWallets", () => {
     expect(hits[0]!.slot.nextSibling!.textContent).toBe(" now");
   });
 
+  it("reports hits in document order, links and text together", () => {
+    document.body.innerHTML = `<p>first ${EVM}</p><a href="https://solscan.io/account/${SOL}">link</a><p>last vitalik.eth</p>`;
+    expect(scan().map((h) => h.ref.query)).toEqual([EVM, SOL, "vitalik.eth"]);
+  });
+
   it("marks an explorer link once, as the link, not again as its text", () => {
     document.body.innerHTML = `<a id="l" href="https://etherscan.io/address/${EVM}">${EVM}</a>`;
     const hits = scan();
@@ -74,7 +79,7 @@ describe("scanForWallets", () => {
   it("marks several addresses in one text node, left to right, at the right offsets", () => {
     document.body.innerHTML = `<p id="p">${EVM} beat ${SOL} today</p>`;
     const hits = scan();
-    expect(hits.map((h) => h.ref.query)).toEqual([SOL, EVM]); // split right-to-left
+    expect(hits.map((h) => h.ref.query)).toEqual([EVM, SOL]); // reported in document order
     expect(document.getElementById("p")!.textContent).toBe(`${EVM} beat ${SOL} today`);
     const slots = [...document.querySelectorAll(`[${SLOT_ATTR}]`)];
     expect(slots[0]!.previousSibling!.textContent!.endsWith(EVM)).toBe(true);

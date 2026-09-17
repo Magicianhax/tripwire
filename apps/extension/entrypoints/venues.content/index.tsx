@@ -1,11 +1,14 @@
 import "../../lib/ui/theme.css";
 
 import { defineContentScript } from "wxt/utils/define-content-script";
+import type { Chain, Target } from "@tripwire/core";
 import { findAdapter } from "../../lib/adapters/registry";
-import { health } from "../../lib/api";
+import type { TargetGap } from "../../lib/adapters/types";
+import { health, resolve } from "../../lib/api";
 import { createReplayFlag } from "../../lib/replay";
 import { TIER1_MATCHES, TIER2_MATCHES } from "../../lib/venues";
-import { createGuardRunner, keyFor } from "./runner";
+import { createResultCache } from "../../lib/x/cache";
+import { createGuardRunner, gapKey, keyFor } from "./runner";
 
 const DOM_DEBOUNCE_MS = 400;
 const URL_POLL_MS = 1000;
@@ -21,6 +24,9 @@ export default defineContentScript({
   cssInjectionMode: "ui",
   async main(ctx) {
     const runner = createGuardRunner(ctx, createReplayFlag(health));
+    // Symbol -> token, for the venues that keep their tokens out of the URL. `search/general`
+    // is free, and a failure evicts itself so a later tick retries.
+    const symbols = createResultCache<string, Awaited<ReturnType<typeof resolve>>>();
     let lastKey: string | null = null;
     let inFlight = false;
     let rerunPending = false;
@@ -44,8 +50,19 @@ export default defineContentScript({
           return;
         }
 
-        const target = adapter.readTarget(document, url);
-        const key = keyFor(adapter.id, target);
+        let target = adapter.readTarget(document, url);
+        // Only when the URL yielded nothing: what is the page actually pointing at? A symbol
+        // read off the swap form is resolved through the backend and guarded like any other
+        // token; a native coin or an uncovered chain is the answer itself.
+        let gap: TargetGap | null = target ? null : (adapter.readGap?.(document, url) ?? null);
+        if (!target && gap?.kind === "symbol") {
+          const resolved = await resolveSymbol(gap.symbol, gap.chainHint);
+          if (resolved) {
+            target = resolved;
+            gap = null;
+          }
+        }
+        const key = `${keyFor(adapter.id, target)}|${gapKey(gap)}`;
         // Unchanged target: the block overlay (if any) keeps itself positioned via its own
         // ResizeObserver/scroll listeners, independent of this loop -- but the venue's SPA can
         // still replace the anchor NODE itself (same Target, new DOM element) between ticks,
@@ -58,7 +75,7 @@ export default defineContentScript({
         }
 
         lastKey = key;
-        await runner.render(adapter, target, key);
+        await runner.render(adapter, target, key, gap);
       } finally {
         inFlight = false;
         if (rerunPending) {
@@ -66,6 +83,14 @@ export default defineContentScript({
           void check();
         }
       }
+    }
+
+    /** A symbol the venue named, turned into the token Nansen knows, or null. */
+    async function resolveSymbol(symbol: string, chainHint?: Chain): Promise<Target | null> {
+      const result = await symbols.get(`${symbol}|${chainHint ?? ""}`, () => resolve(symbol, chainHint));
+      if (!result.ok || !result.data.best) return null;
+      const best = result.data.best;
+      return { kind: "spot", chain: best.chain, tokenAddress: best.tokenAddress, symbol: best.symbol };
     }
 
     void check();

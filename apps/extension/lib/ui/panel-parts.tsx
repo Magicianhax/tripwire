@@ -136,7 +136,7 @@ export function HitList({ hits, max, className = "tw-hits", id }: { hits: HitDto
 /** The copyable short address, the one place the raw contract still belongs now that the header
  * names the token. Copy falls back silently: a clipboard the browser refuses is not an error
  * worth a message, and the address stays selectable. */
-export function AddressChip({ address }: { address: string }) {
+export function AddressChip({ address, label }: { address: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     if (!copied) return;
@@ -145,14 +145,19 @@ export function AddressChip({ address }: { address: string }) {
   }, [copied]);
   return (
     <span className="tw-addr">
-      {/* The short form truncates further on a tight header, so the full address stays available. */}
-      <span className="tw-addr-text" title={address}>
-        {shortAddr(address)}
-      </span>
+      {/* The short form truncates further on a tight header, so the full address stays
+          available. `label` replaces it entirely, for the wallet card: its heading is already
+          this address, and printing it twice says nothing the copy action doesn't. */}
+      {label ? null : (
+        <span className="tw-addr-text" title={address}>
+          {shortAddr(address)}
+        </span>
+      )}
       <button
         type="button"
         className="tw-addr-copy"
-        aria-label={copied ? "Address copied" : "Copy token address"}
+        aria-label={copied ? "Address copied" : (label ?? "Copy token address")}
+        title={label ? address : undefined}
         onClick={() => {
           void navigator.clipboard?.writeText(address).then(
             () => setCopied(true),
@@ -161,6 +166,7 @@ export function AddressChip({ address }: { address: string }) {
         }}
       >
         <Icon icon={copied ? Check : Copy} size={14} />
+        {label ? <span className="tw-addr-action">{copied ? "Copied" : label}</span> : null}
       </button>
     </span>
   );
@@ -232,6 +238,7 @@ export function CardHeader({
   title,
   name,
   address,
+  addressAction,
   since,
   replay,
   onClose,
@@ -246,6 +253,8 @@ export function CardHeader({
   name?: string | null;
   /** The contract address, shown short and copyable under the name. */
   address?: string | null;
+  /** Replaces the repeated address text with a labelled copy action (see AddressChip). */
+  addressAction?: string;
   /** The card's age: the post time on X, the check time on a venue ("checked 20s ago"). */
   since?: { iso: string; prefix?: string } | null;
   replay?: boolean;
@@ -271,7 +280,7 @@ export function CardHeader({
         </h2>
         <span className="tw-card-sub">
           <ChainLogo chain={chain} size={14} />
-          {address ? <AddressChip address={address} /> : null}
+          {address ? <AddressChip address={address} label={addressAction} /> : null}
           {since ? <Age iso={since.iso} prefix={since.prefix} /> : null}
         </span>
       </div>

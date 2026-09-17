@@ -1528,7 +1528,8 @@ input {
   align-items: center;
   gap: var(--tw-space-2);
   min-height: 32px;
-  padding: 0 var(--tw-space-1) 0 var(--tw-space-2);
+  /* Vertical padding, not a fixed height: a two-line reason makes the strip taller. */
+  padding: 3px var(--tw-space-1) 3px var(--tw-space-2);
   border: 1px solid var(--tw-line-strong);
   border-radius: var(--tw-radius-pill);
   background: var(--tw-panel);
@@ -1549,10 +1550,19 @@ input {
   min-width: 0;
 }
 
+/* The reason wraps to two lines before it is allowed to clip. A one-line ellipsis was cutting
+   real sentences ("Tripwire couldn't check this: n…") on a strip that had the width to say
+   them; the strip's own height grows instead, and the full text stays in `title`. Past two
+   lines it still clips, so a pathological reason can never take over the venue's card. */
 .tw-strip-finding {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
   color: var(--tw-text);
 }
 
@@ -2278,11 +2288,16 @@ div.tw-dock-chip {
   min-width: 0;
 }
 
-.tw-strip-text,
 .tw-chip-value {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* The strip's text column clips what its two-line finding does not, without re-imposing
+   `nowrap` on the finding itself. */
+.tw-strip-text {
+  overflow: hidden;
 }
 
 /* Under ~320px the strip stacks: the venue logo, verdict and Details stay on the first row and
@@ -2300,10 +2315,6 @@ div.tw-dock-chip {
 :host([data-narrow]) .tw-strip-text {
   order: 1;
   flex-basis: 100%;
-  white-space: normal;
-}
-
-:host([data-narrow]) .tw-strip-finding {
   white-space: normal;
 }
 
@@ -2406,4 +2417,29 @@ div.tw-dock-chip {
 .tw-token-image {
   border-radius: 6px;
   background: var(--tw-raised);
+}
+
+/* The wallet card's heading is already its address, so the sub-line offers the copy action by
+   name rather than printing the address a second time. The labelled form is a row, not the
+   24px icon square the token header uses. */
+.tw-addr-copy:has(.tw-addr-action) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-1);
+  width: auto;
+  padding: 0 6px;
+}
+
+.tw-addr-action {
+  font-family: var(--tw-font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tw-text-2);
+  white-space: nowrap;
+}
+
+.tw-addr-copy:hover .tw-addr-action,
+.tw-addr-copy:focus-visible .tw-addr-action {
+  color: var(--tw-text);
 }

@@ -3,7 +3,6 @@ import "../../lib/ui/theme.css";
 import { defineContentScript } from "wxt/utils/define-content-script";
 import type { WalletRef } from "@tripwire/core";
 import { health } from "../../lib/api";
-import { loadBackendOrigin } from "../../lib/backend-url";
 import { findAdapter } from "../../lib/adapters/registry";
 import { claimToken, isTokenClaimed } from "../../lib/claimed-tokens";
 import { createReplayFlag } from "../../lib/replay";
@@ -32,7 +31,6 @@ export default defineContentScript({
   cssInjectionMode: "ui",
   runAt: "document_idle",
   async main(ctx) {
-    await loadBackendOrigin();
     const replay = await createReplayFlag(health)();
 
     // A venue's own target token is a contract, not somebody's wallet: the strip, dock or block

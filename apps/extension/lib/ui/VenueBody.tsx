@@ -26,8 +26,14 @@ export function HyperliquidBody({ badge, head }: { badge: HyperliquidBody; head?
         items={[
           { label: "Account value", value: usd(badge.accountValueUsd) },
           { label: "Margin used", value: usd(badge.marginUsedUsd) },
-          { label: `Realized PnL ${badge.nansenPerp?.windowDays ?? 30}d`, value: usd(badge.nansenPerp?.realizedPnlUsd, true), sign: sign(badge.nansenPerp?.realizedPnlUsd) },
-          { label: "Win rate", value: rate(badge.nansenPerp?.winRate) },
+          // Nansen's perp PnL costs a credit, so the wallet lens does not ask for it. Two tiles
+          // reading "—" would be a worse answer than no tiles.
+          ...(badge.nansenPerp
+            ? [
+                { label: `Realized PnL ${badge.nansenPerp.windowDays}d`, value: usd(badge.nansenPerp.realizedPnlUsd, true), sign: sign(badge.nansenPerp.realizedPnlUsd) },
+                { label: "Win rate", value: rate(badge.nansenPerp.winRate) },
+              ]
+            : []),
         ]}
       />
       <Section title="Open positions">

@@ -42,6 +42,9 @@ test("captures", async ({ context }) => {
   // x-popover: the evidence card as it opens, with the token's own identity in the header.
   const card = await openCard(page);
   await expect(card.locator(".tw-card-symbol")).toHaveText("$WIF");
+  // The token's picture comes from the local proxy, which is fetching it from the CDN Nansen
+  // named the first time it is asked. Give it a moment so the capture isn't of the monogram.
+  await card.locator("img.tw-token-logo").waitFor({ state: "visible", timeout: 15_000 }).catch(() => {});
   // The finding's figure counts in; capture the settled text, not a frame of the animation.
   await card.locator(".tw-card-finding").evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
   await page.waitForTimeout(400);
@@ -84,5 +87,72 @@ test("captures", async ({ context }) => {
   await jumper.evaluate(() => (window as unknown as { setCardWidth(w: number): void }).setCardWidth(280));
   await jumper.waitForTimeout(300);
   await shot(jumper.locator(".card"), "strip-narrow");
+
+  // strip-jumper-btc: a destination outside coverage names the chain rather than failing.
+  await jumper.evaluate(() => (window as unknown as { setCardWidth(w: number): void }).setCardWidth(416));
+  await jumper.goto("https://jumper.xyz/?fromChain=1&toChain=20000000000001&toToken=bitcoin");
+  await expect(jumper.locator(".tw-strip-finding")).toHaveText("Tripwire doesn't cover Bitcoin", { timeout: 20_000 });
+  await jumper.waitForTimeout(200);
+  await shot(jumper.locator(".card"), "strip-jumper-btc");
   await jumper.close();
+
+  // strip-uniswap-native: the default swap page, whose URL names no token at all.
+  const uni = await context.newPage();
+  await putRules(uni, { preset: "balanced" });
+  await uni.setViewportSize({ width: 1280, height: 900 });
+  await uni.goto("https://app.uniswap.org/swap");
+  await expect(uni.locator(".tw-strip-finding")).toHaveText("ETH is the chain's native asset — Tripwire checks tokens", { timeout: 20_000 });
+  await uni.waitForTimeout(200);
+  await shot(uni.locator(".swap"), "strip-uniswap-native");
+  await uni.close();
+});
+
+test("wallet lens captures", async ({ context, extensionId }) => {
+  // wallet-marker: the Nansen mark sitting in a line of the host page's own text.
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 1000 });
+  await putRules(page, { preset: "balanced" });
+  await page.goto("https://dexscreener.com/wallets");
+  const marker = page.locator(`.tw-wallet-marker[aria-label*="0x7f"]`);
+  await expect(marker).toBeVisible({ timeout: 20_000 });
+  await shot(page.locator("#raw"), "wallet-marker");
+
+  // wallet-card-overview / -hyperliquid: the card the marker opens.
+  await marker.click();
+  const card = page.locator('.tw-pop[role="dialog"]');
+  await expect(card.locator(".tw-card-title")).toHaveText("0x7f…17d1", { timeout: 15_000 });
+  await card.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await page.waitForTimeout(300);
+  await shot(card, "wallet-card-overview");
+
+  await card.getByRole("tab", { name: "Hyperliquid" }).click();
+  await page.waitForTimeout(200);
+  await shot(card, "wallet-card-hyperliquid");
+  await page.close();
+
+  // enable-site: the popup's per-site consent block. The popup is opened as a page, so the
+  // active tab and the granted origins are stubbed to what they would be on a real site the
+  // user has not enabled yet, with one other site already on the list.
+  const popup = await context.newPage();
+  await popup.addInitScript(() => {
+    const chrome = (globalThis as unknown as { chrome: Record<string, unknown> }).chrome;
+    const tabs = chrome.tabs as { query: unknown };
+    tabs.query = async () => [{ url: "https://app.pendle.finance/trade/dashboard", active: true }];
+    const permissions = chrome.permissions as { getAll: unknown };
+    permissions.getAll = async () => ({ origins: ["http://127.0.0.1:3000/*", "https://debank.com/*"], permissions: [] });
+  });
+  await popup.setViewportSize({ width: 420, height: 1100 });
+  await popup.goto(`chrome-extension://${extensionId}/popup.html`);
+  // Two wallets already inspected, so the recent list is in the shot rather than absent.
+  await popup.evaluate(async (seen) => {
+    await (globalThis as unknown as { chrome: { storage: { local: { set(v: object): Promise<void> } } } }).chrome.storage.local.set({ recentWallets: seen });
+  }, [
+    { query: "vitalik.eth", address: "0x7fdafde5cfb5465924316eced2d3715494c517d1", label: "vitalik.eth", chain: "ethereum", seenAt: Date.now() },
+    { query: "0x7fdafde5cfb5465924316eced2d3715494c517d1", address: "0x7fdafde5cfb5465924316eced2d3715494c517d1", label: "0x7f…17d1", chain: "arbitrum", seenAt: Date.now() - 60_000 },
+  ]);
+  await popup.reload();
+  await expect(popup.locator(".tw-lens")).toBeVisible({ timeout: 15_000 });
+  await popup.waitForTimeout(300);
+  await shot(popup.locator(".tw-lens"), "enable-site");
+  await popup.close();
 });

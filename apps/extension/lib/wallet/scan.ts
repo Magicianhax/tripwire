@@ -61,9 +61,13 @@ let counter = 0;
 function makeSlot(doc: Document): HTMLElement {
   const slot = doc.createElement("span");
   slot.setAttribute(SLOT_ATTR, "");
-  // Inline and zero-metric until the marker mounts inside it, so a slot can never change the
-  // host's line height or push its layout around.
-  slot.style.display = "inline";
+  // The slot carries the inline layout, not the shadow host inside it: WXT resets every host
+  // with `:host { all: initial !important }`, which beats an inline style, and the container
+  // WXT puts inside the host is a block — enough to break the host page's line. A slot that is
+  // itself an inline flex box keeps the marker on the line the address ends on.
+  slot.style.display = "inline-flex";
+  slot.style.alignItems = "center";
+  slot.style.verticalAlign = "text-bottom";
   slot.style.whiteSpace = "nowrap";
   return slot;
 }
@@ -123,6 +127,10 @@ export function scanForWallets(root: ParentNode, opts: ScanOptions): WalletHit[]
     }
   }
 
+  // Links are found before text, and a text node is split right to left, so the raw hit order is
+  // neither. Document order is the contract the caller needs: it is what "oldest" means when the
+  // marker budget recycles, and what a keyboard user walks through.
+  hits.sort((a, b) => (a.slot.compareDocumentPosition(b.slot) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
   return hits;
 }
 

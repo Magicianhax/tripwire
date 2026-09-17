@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Wallet mentions (e2e stub)</title>
+    <style>
+      /* A dark research page of the kind people paste wallets into: a feed of short notes,
+         some with a raw address in the prose, some with an explorer link, some with a name.
+         The point of the stub is the shapes the detector has to survive, not the styling. */
+      body { font-family: system-ui, sans-serif; margin: 0; background: #0f1115; color: #e8ecf2; }
+      header { padding: 16px 24px; border-bottom: 1px solid #23262e; font-weight: 600; }
+      /* The venue dock is fixed top-right on this host; the feed starts below it. */
+      main { max-width: 860px; margin: 0 auto; padding: 120px 24px 24px; display: grid; gap: 16px; }
+      article { padding: 16px; border: 1px solid #23262e; border-radius: 12px; background: #151920; }
+      p { margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
+      a { color: #7fb2ff; }
+      code { font-family: ui-monospace, monospace; color: #9aa4b2; }
+      textarea, input { width: 100%; box-sizing: border-box; margin-top: 8px; padding: 8px; border: 1px solid #23262e; border-radius: 8px; background: #0f1115; color: inherit; }
+    </style>
+  </head>
+  <body>
+    <header>Wallet mentions</header>
+    <main>
+      <article id="raw">
+        <p>kept buying: 0x7fdafde5cfb5465924316eced2d3715494c517d1 and never flinched</p>
+      </article>
+
+      <article id="named">
+        <p>vitalik.eth moved again this morning</p>
+      </article>
+
+      <article id="linked">
+        <p>
+          receipts:
+          <a id="explorer" href="https://etherscan.io/address/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045">etherscan</a>
+        </p>
+      </article>
+
+      <article id="noise">
+        <!-- None of these may be marked: a transaction hash, a bare prefix, a Solidity file. -->
+        <p>
+          tx <code>0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1</code>, the 0x prefix itself, and
+          docs.ethereum.org
+        </p>
+      </article>
+
+      <article id="typing">
+        <!-- The user is writing, not sharing: neither of these may be marked. -->
+        <label for="draft">Draft</label>
+        <textarea id="draft" rows="2">0x7fdafde5cfb5465924316eced2d3715494c517d1</textarea>
+        <input id="search" value="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
+      </article>
+    </main>
+  </body>
+</html>

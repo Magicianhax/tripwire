@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Uniswap (e2e stub)</title>
+    <style>
+      /* The swap card as app.uniswap.org draws it, reduced to the parts Tripwire touches: the
+         Sell and Buy token selectors (both div[role=button], as on the real page) and the
+         primary action. The reported defect was the default page, which names no token in the
+         URL at all — so this stub deliberately has no query parameters. */
+      body { font-family: system-ui, sans-serif; margin: 0; background: #131313; color: #f9f9f9; }
+      header { display: flex; gap: 16px; align-items: center; padding: 12px 20px; }
+      main { display: flex; justify-content: center; padding-top: 160px; }
+      .swap { width: 480px; display: grid; gap: 4px; }
+      .field { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-radius: 20px; background: #1b1b1b; }
+      .field .side { color: #9b9b9b; font-size: 13px; }
+      .token { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: #2f2f2f; font-weight: 600; }
+      [data-testid="review-swap"] {
+        height: 56px;
+        margin-top: 8px;
+        border: none;
+        border-radius: 20px;
+        background: #fc72ff;
+        color: #131313;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div role="button" data-testid="nav-company-menu">Uniswap</div>
+      <div role="button" data-testid="Trade-tab">Trade</div>
+    </header>
+    <main>
+      <div class="swap">
+        <div class="field" role="button">
+          <span class="side">Sell</span>
+          <span class="token" role="button" data-testid="choose-input-token">WETH</span>
+        </div>
+        <div class="field" role="button">
+          <span class="side">Buy</span>
+          <span class="token" role="button" data-testid="choose-output-token">ETH</span>
+        </div>
+        <button type="button" data-testid="review-swap">Get started</button>
+      </div>
+    </main>
+    <script>
+      // The e2e drives the Buy selector the way the venue's own token picker would.
+      window.setBuyToken = (symbol) => {
+        document.querySelector('[data-testid="choose-output-token"]').textContent = symbol;
+      };
+    </script>
+  </body>
+</html>

@@ -27,6 +27,12 @@ vi.mock("lightweight-charts", () => ({
   LineStyle: { Solid: 0, Dotted: 1, Dashed: 2 },
 }));
 
+/** The background fetches the token's picture from the local backend and hands it back as a
+ * data URL (lib/token-logo.ts). Here it is the seam: the card must ask for the token it is
+ * showing, and must never name a third-party host itself. */
+const logoFor = vi.fn(async (_chain?: string | null, _address?: string | null): Promise<string | null> => null);
+vi.mock("../lib/token-logo", () => ({ tokenLogoDataUrl: (c?: string | null, a?: string | null) => logoFor(c, a) }));
+
 const { Panel } = await import("../lib/ui/Panel");
 const { SpotBody } = await import("../lib/ui/SpotBody");
 const { formatPrice, nearestPoint, PriceChart, toChartPoints } = await import("../lib/ui/PriceChart");
@@ -123,34 +129,36 @@ const response = (o: Partial<PostIntelResponse> = {}): PostIntelResponse => ({
 // --- A. Token identity in the header -------------------------------------------------------
 
 describe("the card header names the token, not the contract", () => {
-  it("shows the symbol, the name, the logo and the address on its own line", () => {
+  it("shows the symbol, the name and the address on its own line", () => {
     const c = render(<Panel data={response()} title="98sM…Mh5g" onClose={() => {}} chain="solana" address={WIF} />);
     expect(c.querySelector(".tw-card-symbol")?.textContent).toBe("$WIF");
     expect(c.querySelector(".tw-card-name")?.textContent?.trim()).toBe("dogwifhat");
     // The heading reads as one accessible name, so a screen reader gets both.
     expect(c.querySelector("h2")?.textContent).toBe("$WIF dogwifhat");
-    // The mark is served by the local backend, never fetched from Nansen's third-party logo CDN.
-    const logo = c.querySelector<HTMLImageElement>("img.tw-token-logo");
-    expect(logo?.getAttribute("src")).toBe(`http://127.0.0.1:3000/api/token-logo?chain=solana&address=${WIF}`);
-    expect(c.querySelector(".tw-token-logo.tw-monogram")).toBeNull();
     expect(c.querySelector(".tw-addr-text")?.textContent).toBe("EKpQ…zcjm");
     // The raw address never takes the headline slot any more.
     expect(c.querySelector(".tw-card-symbol")?.textContent).not.toContain("98sM");
   });
 
-  it("falls back to the title when Nansen has no identity for the token, and to a monogram when the logo does not load", () => {
+  it("asks the backend for the token's picture, and renders the bytes it gets back", async () => {
+    logoFor.mockResolvedValueOnce("data:image/jpeg;base64,AAAA");
+    const c = render(<Panel data={response()} title="98sM…Mh5g" onClose={() => {}} chain="solana" address={WIF} />);
+    expect(logoFor).toHaveBeenCalledWith("solana", WIF);
+    await act(async () => {});
+    const logo = c.querySelector<HTMLImageElement>("img.tw-token-logo")!;
+    // A data URL from our own backend: the page never names Nansen's third-party logo CDN.
+    expect(logo.getAttribute("src")).toBe("data:image/jpeg;base64,AAAA");
+    expect(c.querySelector(".tw-token-logo.tw-monogram")).toBeNull();
+  });
+
+  it("falls back to the title when Nansen has no identity, and to a monogram when there is no picture", async () => {
     const c = render(<Panel data={response({ panel: panel({ token: null, logoUrl: null }) })} title="98sM…Mh5g" onClose={() => {}} chain="solana" address={WIF} />);
     expect(c.querySelector(".tw-card-symbol")?.textContent).toBe("98sM…Mh5g");
     expect(c.querySelector(".tw-card-name")).toBeNull();
     expect(c.querySelector(".tw-addr-text")?.textContent).toBe("EKpQ…zcjm");
-    // A token the backend has no picture for answers 404, the host page's CSP may refuse the
-    // localhost origin outright, and the backend may not be running at all: every one of those
-    // arrives as the image's error event, and the header becomes a monogram instead.
-    const img = c.querySelector<HTMLImageElement>("img.tw-token-logo")!;
-    expect(img).not.toBeNull();
-    act(() => {
-      img.dispatchEvent(new Event("error"));
-    });
+    // No logo known, a backend that is not running, bytes that failed its image checks: all of
+    // them arrive as null, and the header is a monogram rather than a broken image.
+    await act(async () => {});
     expect(c.querySelector("img.tw-token-logo")).toBeNull();
     expect(c.querySelector(".tw-monogram")?.textContent).toBe("98");
   });

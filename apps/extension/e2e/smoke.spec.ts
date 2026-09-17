@@ -1,7 +1,7 @@
 import type { APIRequestContext, Page } from "@playwright/test";
 import { PRESETS } from "../../../packages/core/src/rules/presets";
 import { TRIPWIRE_EXTENSION_ID } from "../../../packages/core/src/constants";
-import { BACKEND, BONK, expect, test, WBTC_BASE, WIF } from "./fixtures";
+import { BACKEND, BONK, expect, LENS_WALLET, test, WBTC_BASE, WIF } from "./fixtures";
 
 const EXTENSION_ORIGIN = `chrome-extension://${TRIPWIRE_EXTENSION_ID}`;
 
@@ -369,5 +369,111 @@ test("@smoke Jumper: the strip fits its card at any width and never scrolls the 
   // The full sentence stays reachable even when the pill truncates it.
   const finding = strip.locator(".tw-strip-finding");
   expect(await finding.getAttribute("title")).toBe(await finding.textContent());
+  expect(consoleErrors).toEqual([]);
+});
+
+test("@smoke Wallet lens: markers appear where a wallet was shared, and the card opens on it", async ({ context, request, consoleErrors }) => {
+  await setPreset(request, "balanced");
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 1000 });
+  await page.goto("https://dexscreener.com/wallets");
+
+  const markers = page.locator(".tw-wallet-marker");
+  await expect(markers).toHaveCount(3, { timeout: 20_000 });
+
+  // One per place a wallet was shared: the raw address, the ENS name, the explorer link.
+  const labels = await markers.evaluateAll((els) => els.map((el) => el.getAttribute("aria-label")));
+  expect(labels).toEqual([
+    "Inspect wallet 0x7f…17d1 with Tripwire",
+    "Inspect wallet vitalik.eth with Tripwire",
+    "Inspect wallet 0xd8…6045 with Tripwire",
+  ]);
+
+  // The transaction hash, the bare `0x`, `docs.ethereum.org`, and both form fields: untouched.
+  const clean = await page.evaluate(() => ({
+    noise: document.querySelector("#noise")!.querySelectorAll("[data-tripwire-wallet]").length,
+    typing: document.querySelector("#typing")!.querySelectorAll("[data-tripwire-wallet]").length,
+    text: document.querySelector("#raw p")!.textContent,
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  expect(clean.noise).toBe(0);
+  expect(clean.typing).toBe(0);
+  // Splitting a text node must leave the sentence exactly as the page wrote it.
+  expect(clean.text).toBe(`kept buying: ${LENS_WALLET} and never flinched`);
+  expect(clean.overflow, "a marker never makes the host page scroll sideways").toBeLessThanOrEqual(0);
+
+  // The card opens beside the marker, on <body>, with the wallet's own identity.
+  const marker = page.locator('.tw-wallet-marker[aria-label*="0x7f"]');
+  await marker.click();
+  const card = page.locator('.tw-pop[role="dialog"]');
+  await expect(card).toBeVisible();
+  await expect(card.locator(".tw-card-title")).toHaveText("0x7f…17d1", { timeout: 15_000 });
+  await expect(card.getByRole("tab", { name: "Overview" })).toBeVisible();
+  await expect(card.locator(".tw-card-footer")).toContainText("credits");
+
+  // Hyperliquid shows the recorded position, and Polymarket its own tab.
+  await card.getByRole("tab", { name: "Hyperliquid" }).click();
+  const hl = card.getByRole("tabpanel").filter({ hasText: "Open positions" });
+  await expect(hl).toContainText("Account value");
+  await expect(hl.locator("table.tw-table tbody tr").first()).toBeVisible();
+  await expect(card.getByRole("tab", { name: "Polymarket" })).toBeVisible();
+
+  // Escape closes it and gives focus back to the marker that opened it.
+  await page.keyboard.press("Escape");
+  await expect(card).toHaveCount(0);
+  await expect(marker).toHaveAttribute("aria-expanded", "false");
+
+  // The ENS name resolves through the backend, not in the page.
+  await page.locator('.tw-wallet-marker[aria-label*="vitalik.eth"]').click();
+  await expect(page.locator(".tw-card-title")).toHaveText("vitalik.eth", { timeout: 15_000 });
+  await expect(page.locator(".tw-addr-text")).toHaveText("0x7f…17d1");
+
+  expect(consoleErrors).toEqual([]);
+});
+
+test("@smoke Strips say what is actually wrong, and wrap rather than clip", async ({ context, request, consoleErrors }) => {
+  await setPreset(request, "balanced");
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 900 });
+
+  // 1. A destination outside coverage names the chain instead of reporting a failure.
+  await page.goto("https://jumper.xyz/?fromChain=1&toChain=20000000000001&toToken=bitcoin");
+  const strip = page.locator(".tw-strip");
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("Tripwire doesn't cover Bitcoin", { timeout: 20_000 });
+  await expect(strip).toHaveAttribute("data-verdict", "UNCHECKED");
+  // Never a block: the Swap button still works.
+  await expect(page.locator(".tw-block")).toHaveCount(0);
+
+  // 3. Uniswap's default page names no token in its URL; the Buy selector says ETH.
+  await page.goto("https://app.uniswap.org/swap");
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("ETH is the chain's native asset — Tripwire checks tokens", { timeout: 20_000 });
+  await expect(strip).toHaveAttribute("data-verdict", "UNCHECKED");
+
+  // 3b. That reason is long, and it wraps to two lines instead of being cut off mid-word.
+  const wrap = await strip.locator(".tw-strip-finding").evaluate((el) => {
+    const style = getComputedStyle(el);
+    return {
+      text: el.textContent ?? "",
+      title: el.getAttribute("title") ?? "",
+      clamp: style.webkitLineClamp,
+      whiteSpace: style.whiteSpace,
+      lines: Math.round(el.scrollHeight / parseFloat(style.lineHeight)),
+      clippedSideways: el.scrollWidth > el.clientWidth + 1,
+    };
+  });
+  expect(wrap.clamp).toBe("2");
+  expect(wrap.whiteSpace).toBe("normal");
+  expect(wrap.title).toBe(wrap.text);
+  expect(wrap.text.length, "the reason is long enough that one line could not hold it").toBeGreaterThan(50);
+  expect(wrap.lines, "the reason uses both lines rather than being clipped to one").toBe(2);
+  expect(wrap.clippedSideways, "the reason wraps rather than running off the side").toBe(false);
+  // And the host page still never scrolls sideways because of us.
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
+
+  // 4. Pick a real token in the same form and it is checked, with no URL change at all.
+  await page.evaluate(() => (window as unknown as { setBuyToken(s: string): void }).setBuyToken("WIF"));
+  await expect(strip.locator(".tw-strip-finding")).not.toHaveText(/native asset/, { timeout: 20_000 });
+  await expect(page).toHaveURL("https://app.uniswap.org/swap");
+
   expect(consoleErrors).toEqual([]);
 });

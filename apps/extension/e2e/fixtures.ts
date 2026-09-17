@@ -12,6 +12,9 @@ export const WIF = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";
 export const BONK = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
 /** Base WBTC, the token from the jumper.xyz report. */
 export const WBTC_BASE = "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c";
+/** The wallet every wallet-lens fixture was recorded against, and the one replay resolves
+ * every ENS name to. */
+export const LENS_WALLET = "0x7fdafde5cfb5465924316eced2d3715494c517d1";
 
 type Fixtures = {
   context: BrowserContext;
@@ -37,6 +40,14 @@ export const test = base.extend<Fixtures>({
     );
     await context.route("https://jumper.xyz/**", (route) =>
       route.fulfill({ path: path.join(PAGES, "jumper.html"), contentType: "text/html; charset=utf-8" }),
+    );
+    await context.route("https://app.uniswap.org/**", (route) =>
+      route.fulfill({ path: path.join(PAGES, "uniswap.html"), contentType: "text/html; charset=utf-8" }),
+    );
+    // A page of wallet mentions, for the wallet lens. Served on a host the manifest already
+    // covers, so the run exercises the content script without granting an optional permission.
+    await context.route("https://dexscreener.com/**", (route) =>
+      route.fulfill({ path: path.join(PAGES, "wallets.html"), contentType: "text/html; charset=utf-8" }),
     );
     // Point the extension at the e2e backend before any page can call it (the popup's
     // "Backend URL" setting, stored where the background bridge reads it).
