@@ -1,4 +1,4 @@
-import { formatSignalValue } from "@tripwire/core";
+import { formatSignalValue, ruleClause } from "@tripwire/core";
 import type { HitDto } from "../api-types";
 import { usd } from "./format";
 
@@ -24,8 +24,21 @@ export function SegmentRow({ label, value, max }: { label: string; value: number
   );
 }
 
-/** The rules that fired: square bullet, sentence, bold mono value. Shared by Panel (all hits)
- * and BlockScreen (max 3 + "+N more"). */
+/** "rule: > $100K" for a hit that carries its rule's comparison, else null. */
+export function hitRuleClause(hit: HitDto): string | null {
+  return hit.op !== undefined && typeof hit.threshold === "number" ? ruleClause({ signalId: hit.signalId, op: hit.op, threshold: hit.threshold }) : null;
+}
+
+/** The finding as a sentence: the signal's label ("Fresh wallets are 82% of buying"), falling
+ * back to the rule text plus the formatted value when a label is missing. */
+function hitFinding(hit: HitDto): string {
+  if (hit.label) return hit.label;
+  return hit.value !== null ? `${hit.text} ${formatSignalValue(hit.signalId, hit.value)}` : hit.text;
+}
+
+/** The rules that fired: square bullet, the finding (signal label) as the sentence, and the
+ * rule's threshold as a secondary mono clause. Shared by Panel (all hits) and BlockScreen
+ * (max 3 + "+N more"). */
 export function HitList({ hits, max, className = "tw-hits" }: { hits: HitDto[]; max?: number; className?: string }) {
   if (hits.length === 0) return null;
   const shown = typeof max === "number" ? hits.slice(0, max) : hits;
@@ -37,9 +50,9 @@ export function HitList({ hits, max, className = "tw-hits" }: { hits: HitDto[]; 
           <em className="tw-hit-bullet" aria-hidden="true">
             ■
           </em>
-          <span>
-            {h.text}
-            {h.value !== null ? <b className="tw-mono"> {formatSignalValue(h.signalId, h.value)}</b> : null}
+          <span className="tw-hit-text">
+            <span className="tw-hit-finding">{hitFinding(h)}</span>
+            {hitRuleClause(h) ? <span className="tw-hit-rule tw-mono">{hitRuleClause(h)}</span> : null}
           </span>
         </li>
       ))}

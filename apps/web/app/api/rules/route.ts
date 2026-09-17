@@ -1,4 +1,4 @@
-import { PRESETS, RulesPutSchema, isWeakerPreset, weakenedRuleIds, type Rule } from "@tripwire/core";
+import { PRESETS, RulesPutSchema, isWeakerPreset, stripRuleVerb, weakenedRuleIds, type Rule } from "@tripwire/core";
 import { preflight, route } from "@/lib/http";
 import { getRules, recordSettingsChange, setRules, type RulesState } from "@/lib/store";
 import { storedThreshold } from "@/app/rules/rule-text";
@@ -13,7 +13,7 @@ export const GET = route(null, async () => getRules());
 // non-positive. Guard server-side too, not just in the editor, so a custom PUT with a
 // positive (or merely non-negated) value for these signals can't slip a broken rule in.
 function normalizeThresholds(rules: Rule[]): Rule[] {
-  return rules.map((r) => ({ ...r, threshold: storedThreshold(r.signal, r.threshold) }));
+  return rules.map((r) => ({ ...r, text: stripRuleVerb(r.text), threshold: storedThreshold(r.signal, r.threshold) }));
 }
 
 export const PUT = route(RulesPutSchema, async (_req, body) => {

@@ -33,7 +33,22 @@ export function evaluate(rules: Rule[], signals: Signal[], kind: TargetKind): Ev
   return { verdict, hits, unavailable };
 }
 
+const LEGACY_VERB = /^(block|warn) when\s+/i;
+
+/** Drops a leading "Block when"/"Warn when" from a rule template saved before the verb moved
+ * to the rule's action. */
+export function stripRuleVerb(text: string): string {
+  return text.replace(LEGACY_VERB, "");
+}
+
+/** The rule's condition with its threshold filled in, no verb: "fresh wallets are more than 70% of buying". */
 export function ruleSentence(rule: Rule, formatUsd: (n: number) => string): string {
-  const n = rule.text.includes("${n}") ? formatUsd(Math.abs(rule.threshold)) : String(rule.threshold);
-  return rule.text.replace("${n}", n).replace("{n}", n);
+  const text = stripRuleVerb(rule.text);
+  const n = text.includes("${n}") ? formatUsd(Math.abs(rule.threshold)) : String(rule.threshold);
+  return text.replace("${n}", n).replace("{n}", n);
+}
+
+/** The full rule as a sentence: "Block when fresh wallets are more than 50% of buying". */
+export function describeRule(rule: Rule, formatUsd: (n: number) => string): string {
+  return `${rule.action === "block" ? "Block" : "Warn"} when ${ruleSentence(rule, formatUsd)}`;
 }

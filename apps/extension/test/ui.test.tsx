@@ -6,6 +6,7 @@ import type { HitDto, PerpPanel, PostIntelResponse, SpotPanel } from "../lib/api
 import { BlockScreen } from "../lib/ui/BlockScreen";
 import { Chip } from "../lib/ui/Chip";
 import { deepActiveElement } from "../lib/ui/focus";
+import { HitList } from "../lib/ui/panel-parts";
 import { Panel } from "../lib/ui/Panel";
 import { PerpBody } from "../lib/ui/PerpBody";
 
@@ -440,8 +441,31 @@ describe("BlockScreen override pending/error (fix round 1/5)", () => {
   });
 });
 
-describe("HitList values", () => {
-  it("formats each hit value in its signal's unit, not always USD", () => {
+describe("HitList findings", () => {
+  it("shows the signal label as the sentence and the rule threshold as a formatted mono clause", () => {
+    const hit = (signalId: HitDto["signalId"], op: NonNullable<HitDto["op"]>, threshold: number, label: string): HitDto => ({
+      ruleId: signalId,
+      action: "block",
+      text: "rule template {n}",
+      signalId,
+      op,
+      threshold,
+      label,
+      value: 1,
+      evidence: [],
+    });
+    const { container, root } = mountNode(
+      <HitList hits={[hit("exit_pressure", "<", -100_000, "Smart money, whales & public figures net −$412K"), hit("fresh_buy_share", ">", 70, "Fresh wallets are 82% of buying")]} />,
+    );
+    const findings = [...container.querySelectorAll(".tw-hit-finding")].map((n) => n.textContent);
+    const rules = [...container.querySelectorAll(".tw-hit-rule")].map((n) => n.textContent);
+    expect(findings).toEqual(["Smart money, whales & public figures net −$412K", "Fresh wallets are 82% of buying"]);
+    expect(rules).toEqual(["rule: < −$100K", "rule: > 70%"]);
+    expect(container.textContent).not.toContain("rule template");
+    root.unmount();
+  });
+
+  it("falls back to the rule text plus the value in its signal's unit when a hit has no label", () => {
     const hit = (signalId: HitDto["signalId"], value: number): HitDto => ({ ruleId: signalId, action: "warn", text: signalId, signalId, label: "", value, evidence: [] });
     const { container, root } = mountNode(
       <Panel
@@ -457,8 +481,8 @@ describe("HitList values", () => {
         onClose={() => {}}
       />,
     );
-    const values = [...container.querySelectorAll(".tw-hit b")].map((b) => b.textContent?.trim());
-    expect(values).toEqual(["82%", "2", "−$150K", "$1.5M"]);
+    const values = [...container.querySelectorAll(".tw-hit-finding")].map((b) => b.textContent?.trim());
+    expect(values).toEqual(["fresh_buy_share 82%", "risk_high_count 2", "exit_pressure −$150K", "inside_liq_band $1.5M"]);
     root.unmount();
   });
 });

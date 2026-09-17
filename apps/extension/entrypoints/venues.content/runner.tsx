@@ -5,6 +5,7 @@ import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, type ApiResult } from "../../lib/api";
 import type { GuardResponse } from "../../lib/api-types";
 import { decideDisplay, nextAction } from "./display-state";
+import { hitRuleClause } from "../../lib/ui/panel-parts";
 import { createBlockBinding, createStripBinding, closeEvidenceDock, showChecking, showPrimaryDock } from "./displays";
 import { errorHeadline, guardHeadline } from "./format";
 import { isUnlocked, type RunnerContext } from "./runner-state";
@@ -109,7 +110,7 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     const { onBind, onUnbind } =
       decision === "block" && target && chipData
         ? createBlockBinding(rc, adapter, target, chipData, headline, key)
-        : createStripBinding(rc, adapter, target, verdict, headline, unlocked);
+        : createStripBinding(rc, adapter, target, verdict, headline, unlocked, chipData?.hits[0] ? hitRuleClause(chipData.hits[0]) : null);
     rc.anchorBinding = createAnchorBinding({ find, onBind, onUnbind });
     rc.anchorBinding.sync();
   }

@@ -369,10 +369,14 @@ main.tw-main {
 .tw-rule-sentence {
   flex: 1 1 320px;
   font-size: 0.875rem;
-  line-height: 1.45;
+  line-height: 2;
+}
+.tw-rule-row[data-enabled="false"] .tw-rule-sentence {
+  color: var(--tw-secondary);
 }
 .tw-rule-select {
-  flex-shrink: 0;
+  min-height: 28px;
+  margin-right: var(--tw-space-xs);
 }
 
 /* Form controls */
@@ -389,8 +393,11 @@ input[type="checkbox"] {
   color: var(--tw-body);
   border: 1px solid var(--tw-border);
   border-radius: var(--tw-radius-sm);
+  min-height: 28px;
   padding: 2px 6px;
-  width: 9ch;
+  width: 12ch;
+  text-align: right;
+  margin: 0 var(--tw-space-xs);
 }
 select {
   font-family: var(--tw-font-display);

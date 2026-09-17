@@ -22,6 +22,7 @@
   --tw-secondary: #8c8c8c;
   --tw-text: #ededed;
   --tw-border-neutral: #2a2a2a;
+  --tw-ink-muted-on-accent: #4a3e00;
 
   /* Radii */
   --tw-radius-sm: 3px;
@@ -324,7 +325,18 @@
 }
 
 .tw-hit-bullet {
+  font-style: normal;
   color: var(--tw-yellow);
+}
+
+.tw-hit-text {
+  display: grid;
+  gap: 1px;
+}
+
+.tw-hit-rule {
+  font-size: 0.6875rem;
+  color: var(--tw-secondary);
 }
 
 .tw-hit-more {
@@ -611,14 +623,14 @@
   font-weight: 700;
 }
 
-.tw-block-hits b {
-  font-family: var(--tw-font-mono);
-  font-weight: 700;
+.tw-block-hits .tw-hit-rule {
+  font-weight: 600;
+  color: var(--tw-ink-muted-on-accent);
 }
 
 .tw-block-more {
   grid-column: 2;
-  color: #4a3e00;
+  color: var(--tw-ink-muted-on-accent);
   font-size: 0.75rem;
 }
 
@@ -639,7 +651,7 @@
   font-family: var(--tw-font-mono);
   font-size: 0.6875rem;
   font-weight: 600;
-  color: #4a3e00;
+  color: var(--tw-ink-muted-on-accent);
   margin-bottom: 2px;
 }
 
@@ -736,6 +748,26 @@
 .tw-strip[data-verdict="CLEAR"] {
   background: var(--tw-surface-raised);
   color: var(--tw-success);
+}
+
+.tw-strip-text {
+  display: flex;
+  align-items: baseline;
+  gap: var(--tw-space-sm);
+  min-width: 0;
+}
+
+.tw-strip-finding {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tw-strip-rule {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 450;
+  color: var(--tw-secondary);
 }
 
 .tw-strip-details {

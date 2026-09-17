@@ -1,5 +1,7 @@
 import type { SignalId } from "./types";
 
+export type RuleOp = ">" | "<" | ">=" | "<=";
+
 /** Compact USD: -412345 -> "−$412K", 1250000 -> "+$1.25M" (sign only when signed=true). */
 export function usd(n: number | null | undefined, signed = false): string {
   if (n === null || n === undefined || !Number.isFinite(n)) return "—";
@@ -43,4 +45,10 @@ export function formatSignalValue(signalId: SignalId, value: number | null | und
     case "author_holds_token":
       return usd(value);
   }
+}
+
+/** The secondary clause under a fired rule's finding: "rule: > 70%", "rule: < −$100K".
+ * The finding itself (the signal's label) is the primary sentence. */
+export function ruleClause(hit: { signalId: SignalId; op: RuleOp; threshold: number }): string {
+  return `rule: ${hit.op} ${formatSignalValue(hit.signalId, hit.threshold)}`;
 }

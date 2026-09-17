@@ -141,11 +141,12 @@ export function createStripBinding(
   verdict: Verdict,
   headline: string,
   unlocked: boolean,
+  rule: string | null = null,
 ) {
   async function onBind(anchor: HTMLElement): Promise<void> {
     const text = unlocked ? `${headline} · unlocked for this session` : headline;
     const node = (
-      <Strip verdict={stripVerdict(verdict)} text={text} replay={rc.replay} onDetails={target ? () => void toggleEvidence(rc, adapter, target) : undefined} />
+      <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} onDetails={target ? () => void toggleEvidence(rc, adapter, target) : undefined} />
     );
     if (rc.mainMount) rc.mainMount.ui.remove();
     rc.mainMount = await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, node);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PRESETS } from "@tripwire/core";
-import { displayValue, isNegativeSignal, splitSentence, storedThreshold } from "@/app/rules/rule-text";
+import { displayValue, formatThresholdInput, isNegativeSignal, parseThresholdInput, splitSentence, storedThreshold } from "@/app/rules/rule-text";
 
 describe("splitSentence", () => {
   it("splits every rule's sentence template in every preset around exactly one placeholder", () => {
@@ -18,11 +18,11 @@ describe("splitSentence", () => {
   });
 
   it("marks a ${n} template as isUsd", () => {
-    expect(splitSentence("Block when x exceeds ${n}").isUsd).toBe(true);
+    expect(splitSentence("x exceeds ${n}").isUsd).toBe(true);
   });
 
   it("marks a {n} template as not isUsd", () => {
-    expect(splitSentence("Warn when x is more than {n}%").isUsd).toBe(false);
+    expect(splitSentence("x is more than {n}%").isUsd).toBe(false);
   });
 });
 
@@ -71,5 +71,20 @@ describe("storedThreshold", () => {
 
   it("stores a positive-signal rule's typed value unchanged", () => {
     expect(storedThreshold("fresh_buy_share", 70)).toBe(70);
+  });
+});
+
+describe("threshold input formatting", () => {
+  it("groups digits at rest", () => {
+    expect(formatThresholdInput(100_000)).toBe("100,000");
+    expect(formatThresholdInput(70)).toBe("70");
+  });
+
+  it("parses grouped, spaced or $-prefixed input and rejects junk", () => {
+    expect(parseThresholdInput("1,000,000")).toBe(1_000_000);
+    expect(parseThresholdInput("$ 25 000")).toBe(25_000);
+    expect(parseThresholdInput("")).toBeNull();
+    expect(parseThresholdInput("abc")).toBeNull();
+    expect(parseThresholdInput("-5")).toBeNull();
   });
 });

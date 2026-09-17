@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PRESETS, RuleSchema, type PresetName, type Rule, type Signal, type Target, type Verdict } from "@tripwire/core";
+import { PRESETS, RuleSchema, stripRuleVerb, type PresetName, type Rule, type Signal, type Target, type Verdict } from "@tripwire/core";
 import { getDb } from "./db";
 
 export type RulesState = { preset: PresetName | "custom"; rules: Rule[] };
@@ -23,7 +23,9 @@ export function getRules(): RulesState {
     return DEFAULT_RULES();
   }
   const parsed = StoredRulesSchema.safeParse(raw);
-  return parsed.success ? parsed.data : DEFAULT_RULES();
+  if (!parsed.success) return DEFAULT_RULES();
+  // Rules saved before the verb moved to `action` still start with "Block when"/"Warn when".
+  return { ...parsed.data, rules: parsed.data.rules.map((r) => ({ ...r, text: stripRuleVerb(r.text) })) };
 }
 
 export function setRules(state: RulesState) {

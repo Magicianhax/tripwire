@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { evaluate } from "../src/rules/evaluate";
+import { describeRule, evaluate, ruleSentence, stripRuleVerb } from "../src/rules/evaluate";
+import { usd } from "../src/format";
 import { PRESETS, type Rule } from "../src/rules/presets";
 import type { Signal } from "../src/types";
 
@@ -82,5 +83,27 @@ describe("presets", () => {
     const mild = [sig("exit_pressure", -60_000), sig("fresh_buy_share", 20), sig("sm_netflow_24h", 0), sig("risk_high_count", 0)];
     expect(evaluate(PRESETS.degen, mild, "spot").verdict).toBe("CLEAR");
     expect(evaluate(PRESETS.paranoid, mild, "spot").verdict).toBe("TRIPWIRE");
+  });
+});
+
+describe("rule sentences", () => {
+  it("preset templates carry no verb; the action supplies it", () => {
+    for (const rules of Object.values(PRESETS)) {
+      for (const r of rules) expect(r.text).not.toMatch(/^(block|warn)/i);
+    }
+  });
+
+  it("fills the threshold and prefixes the action verb in describeRule", () => {
+    const exit = PRESETS.balanced.find((r) => r.id === "spot-exit")!;
+    expect(ruleSentence(exit, usd)).toBe("smart money, whales & public figures dump more than $100K");
+    expect(describeRule(exit, usd)).toBe("Block when smart money, whales & public figures dump more than $100K");
+    const fresh = PRESETS.balanced.find((r) => r.id === "spot-fresh")!;
+    expect(describeRule(fresh, usd)).toBe("Warn when fresh wallets are more than 70% of buying");
+  });
+
+  it("strips a legacy verb from a rule saved before the change", () => {
+    expect(stripRuleVerb("Block when fresh wallets are more than {n}% of buying")).toBe("fresh wallets are more than {n}% of buying");
+    const legacy = { ...PRESETS.balanced[1]!, text: "Warn when fresh wallets are more than {n}% of buying" };
+    expect(describeRule(legacy, usd)).toBe("Warn when fresh wallets are more than 70% of buying");
   });
 });

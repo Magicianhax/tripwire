@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatSignalValue, usd } from "../src/format";
+import { formatSignalValue, ruleClause, usd } from "../src/format";
 
 describe("usd", () => {
   it("keeps the zeros of whole hundreds (150K is not 15K)", () => {
@@ -37,5 +37,14 @@ describe("formatSignalValue", () => {
     expect(formatSignalValue("fresh_buy_share", null)).toBe("—");
     expect(formatSignalValue("risk_high_count", null)).toBe("—");
     expect(formatSignalValue("exit_pressure", null)).toBe("—");
+  });
+});
+
+describe("ruleClause", () => {
+  it("formats the threshold in the signal's own unit, keeping the operator", () => {
+    expect(ruleClause({ signalId: "fresh_buy_share", op: ">", threshold: 70 })).toBe("rule: > 70%");
+    expect(ruleClause({ signalId: "exit_pressure", op: "<", threshold: -100_000 })).toBe("rule: < −$100K");
+    expect(ruleClause({ signalId: "risk_high_count", op: ">=", threshold: 2 })).toBe("rule: >= 2");
+    expect(ruleClause({ signalId: "inside_liq_band", op: ">", threshold: 1_000_000 })).toBe("rule: > $1M");
   });
 });

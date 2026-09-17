@@ -52,6 +52,10 @@ export type HitDto = {
   action: "warn" | "block";
   text: string;
   signalId: SignalId;
+  /** The fired rule's comparison, for the secondary "rule: > $100K" clause. Optional: an older
+   * backend doesn't send them, and the clause is simply omitted. */
+  op?: ">" | "<" | ">=" | "<=";
+  threshold?: number;
   label: string;
   value: number | null;
   evidence: Evidence[];

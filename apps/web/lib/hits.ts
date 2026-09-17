@@ -5,6 +5,8 @@ export type HitDto = {
   action: "warn" | "block";
   text: string;
   signalId: string;
+  op: RuleHit["rule"]["op"];
+  threshold: number;
   label: string;
   value: number | null;
   evidence: { endpoint: string; field: string; value: string }[];
@@ -17,6 +19,8 @@ export function toHits(hits: RuleHit[]): HitDto[] {
     action: h.rule.action,
     text: ruleSentence(h.rule, usd),
     signalId: h.signal.id,
+    op: h.rule.op,
+    threshold: h.rule.threshold,
     label: h.signal.label,
     value: h.signal.value,
     evidence: h.signal.evidence,

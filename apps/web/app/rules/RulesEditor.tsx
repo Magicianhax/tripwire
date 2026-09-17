@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { PresetName, Rule, TargetKind } from "@tripwire/core";
+import { usd, type PresetName, type Rule, type TargetKind } from "@tripwire/core";
 import type { RulesState } from "@/lib/store";
-import { displayValue, splitSentence, storedThreshold } from "./rule-text";
-import { isWeakerPreset, weakensRules } from "@tripwire/core";
+import { displayValue, formatThresholdInput, parseThresholdInput, splitSentence, storedThreshold } from "./rule-text";
+import { describeRule, isWeakerPreset, weakensRules } from "@tripwire/core";
 
 const PRESET_NAMES: PresetName[] = ["degen", "balanced", "paranoid"];
 const PRESET_LABEL: Record<PresetName, string> = { degen: "Degen", balanced: "Balanced", paranoid: "Paranoid" };
@@ -31,6 +31,31 @@ function WeakenConfirm({ onConfirm, onCancel }: { onConfirm: () => void; onCance
         Cancel
       </button>
     </div>
+  );
+}
+
+/** Threshold field: grouped digits ("100,000") at rest, the raw number while editing. Text input
+ * with a numeric keyboard, since a number input can't show grouping. */
+function ThresholdInput({ id, value, label, onChange }: { id: string; value: number; label: string; onChange: (n: number) => void }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  return (
+    <input
+      id={id}
+      className="tw-input-number"
+      type="text"
+      inputMode="numeric"
+      autoComplete="off"
+      spellCheck={false}
+      value={draft ?? formatThresholdInput(value)}
+      onFocus={() => setDraft(String(value))}
+      onBlur={() => setDraft(null)}
+      onChange={(e) => {
+        setDraft(e.target.value);
+        const parsed = parseThresholdInput(e.target.value);
+        if (parsed !== null) onChange(parsed);
+      }}
+      aria-label={label}
+    />
   );
 }
 
@@ -129,8 +154,9 @@ export function RulesEditor({ initial }: { initial: RulesState }) {
               const { before, after, isUsd } = splitSentence(rule.text);
               const shownValue = displayValue(rule);
               const inputId = `rule-${rule.id}`;
+              const described = describeRule(rule, usd);
               return (
-                <div className="tw-rule-row" key={rule.id}>
+                <div className="tw-rule-row" key={rule.id} data-enabled={rule.enabled}>
                   <label className="tw-rule-toggle" htmlFor={`${inputId}-enabled`}>
                     <input
                       id={`${inputId}-enabled`}
@@ -141,33 +167,25 @@ export function RulesEditor({ initial }: { initial: RulesState }) {
                     On
                   </label>
                   <span className="tw-rule-sentence">
-                    {before}
+                    <select
+                      className="tw-rule-select"
+                      value={rule.action}
+                      onChange={(e) => updateRule(rule.id, { action: e.target.value as Rule["action"] })}
+                      aria-label={`Action for: ${described}`}
+                    >
+                      <option value="block">Block</option>
+                      <option value="warn">Warn</option>
+                    </select>{" "}
+                    when {before}
                     {isUsd && "$"}
-                    <input
+                    <ThresholdInput
                       id={inputId}
-                      className="tw-input-number"
-                      type="number"
-                      step="1"
-                      min="0"
                       value={shownValue}
-                      onChange={(e) => {
-                        const parsed = Number(e.target.value);
-                        if (!Number.isFinite(parsed)) return;
-                        updateRule(rule.id, { threshold: storedThreshold(rule.signal, parsed) });
-                      }}
-                      aria-label={`Threshold for: ${rule.text}`}
+                      label={`Threshold for: ${described}`}
+                      onChange={(n) => updateRule(rule.id, { threshold: storedThreshold(rule.signal, n) })}
                     />
                     {after}
                   </span>
-                  <select
-                    className="tw-rule-select"
-                    value={rule.action}
-                    onChange={(e) => updateRule(rule.id, { action: e.target.value as Rule["action"] })}
-                    aria-label={`Action for: ${rule.text}`}
-                  >
-                    <option value="warn">warn</option>
-                    <option value="block">block</option>
-                  </select>
                 </div>
               );
             })}

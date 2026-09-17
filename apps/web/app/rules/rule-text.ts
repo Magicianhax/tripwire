@@ -34,3 +34,17 @@ export function storedThreshold(signal: SignalId, typedValue: number): number {
   if (!isNegativeSignal(signal)) return typedValue;
   return -Math.abs(typedValue) || 0;
 }
+
+/** The threshold field's resting text: whole numbers with grouping ("100,000"). */
+export function formatThresholdInput(value: number): string {
+  return Number.isFinite(value) ? value.toLocaleString("en-US", { maximumFractionDigits: 2 }) : "";
+}
+
+/** Parses what was typed into the threshold field, tolerating grouping commas, spaces and "$".
+ * Returns null for an empty or non-numeric draft (the stored value is left alone). */
+export function parseThresholdInput(text: string): number | null {
+  const cleaned = text.replace(/[,\s$_]/g, "");
+  if (cleaned === "" || cleaned === "-") return null;
+  const n = Number(cleaned);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}

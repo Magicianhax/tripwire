@@ -167,6 +167,7 @@ describe("guardHeadline", () => {
   it("prefers the top hit, then the backend's UNCHECKED reason, then the generic line", async () => {
     const { guardHeadline } = await import("../entrypoints/venues.content/format");
     expect(guardHeadline({ verdict: "TRIPWIRE", hits: [{ text: "Dumping" }], headline: null })).toBe("Dumping");
+    expect(guardHeadline({ verdict: "TRIPWIRE", hits: [{ text: "rule template", label: "Smart money net −$412K" }], headline: null })).toBe("Smart money net −$412K");
     expect(guardHeadline({ verdict: "UNCHECKED", hits: [], headline: "Pick a market" })).toBe("Tripwire couldn't check this: Pick a market");
     expect(guardHeadline({ verdict: "CLEAR", hits: [], headline: "ignored" })).toBe("No flags on this token");
     expect(guardHeadline({ verdict: "UNCHECKED", hits: [] })).toBe("Tripwire couldn't check this: no data");
