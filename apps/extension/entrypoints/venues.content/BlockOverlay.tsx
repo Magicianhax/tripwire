@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import type { TargetKind } from "@tripwire/core";
 import type { HitDto } from "../../lib/api-types";
 import { computeBlockRect, type Rect } from "../../lib/adapters/overlay";
@@ -33,7 +33,26 @@ export type BlockOverlayProps = {
 export function BlockOverlay({ anchorRect, kind, hits, phrase, onEvidence, onOverride, pending = false, error = null, replay }: BlockOverlayProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState(0);
-  const rect = computeBlockRect(anchorRect, undefined, contentHeight);
+  const [, remeasure] = useReducer((n: number) => n + 1, 0);
+  const rect = computeBlockRect(anchorRect, undefined, contentHeight, { width: window.innerWidth });
+
+  // Content can change height without a re-render (the packaged fonts finish loading after the
+  // first measure, so fallback-font wrapping left a dead band): re-measure when any part of
+  // the block resizes, and once fonts are ready.
+  useEffect(() => {
+    const block = frameRef.current?.querySelector<HTMLElement>(".tw-block");
+    if (!block) return;
+    let alive = true;
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(() => remeasure());
+    for (const part of block.querySelectorAll(".tw-block-band, .tw-block-hits, .tw-block-footer")) observer?.observe(part);
+    void document.fonts?.ready.then(() => {
+      if (alive) remeasure();
+    });
+    return () => {
+      alive = false;
+      observer?.disconnect();
+    };
+  }, []);
 
   // Measure after every render (hits, error line and fonts all change the height). The block
   // normally stretches to fill the frame (min-height:100%), so drop that for one synchronous

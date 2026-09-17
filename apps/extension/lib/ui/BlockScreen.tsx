@@ -173,11 +173,11 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, kind = "spot
           <p id={safeId} className="tw-block-safe">
             Not trading is the safe move.
           </p>
+          <label className="tw-block-prompt" htmlFor={inputId}>
+            Type <span className="tw-block-phrase">{phrase}</span> to trade anyway
+          </label>
           <div className="tw-block-input-row">
             <div className="tw-block-input-wrap">
-              <label htmlFor={inputId}>
-                Type <span className="tw-block-phrase">{phrase}</span> to trade anyway
-              </label>
               <input
                 id={inputId}
                 type="text"

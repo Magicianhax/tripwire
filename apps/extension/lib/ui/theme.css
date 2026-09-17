@@ -19,6 +19,11 @@
   --tw-bezel: rgba(143, 163, 191, 0.22);
   --tw-bezel-strong: rgba(143, 163, 191, 0.4);
   --tw-sheen: rgba(230, 237, 247, 0.22);
+  --tw-sheen-strong: rgba(230, 237, 247, 0.5);
+  /* Plate depth: a lit top edge and a hard drop below, so plates sit proud of the glass. */
+  --tw-plate-edge: rgba(255, 255, 255, 0.3);
+  --tw-plate-drop: rgba(2, 6, 16, 0.7);
+  --tw-scroll-edge: rgba(2, 6, 16, 0.95);
 
   /* Text */
   --tw-text: #e6edf7;
@@ -106,6 +111,26 @@
   color: var(--tw-text-2);
 }
 
+.tw-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tw-rule-word {
+  font-family: var(--tw-font-ui);
+}
+
+/* The comparison in a rule clause matches the clause's size. */
+.tw-hit-rule .tw-mono,
+.tw-strip-rule .tw-mono {
+  font-size: inherit;
+}
+
 .tw-icon {
   display: block;
   width: 16px;
@@ -132,6 +157,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
+  box-shadow: inset 0 1px 0 var(--tw-plate-edge), 0 1px 0 var(--tw-plate-drop);
 }
 
 .tw-plate[data-tone="warning"] {
@@ -274,7 +300,8 @@
   left: 16px;
   right: 16px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--tw-sheen) 30%, var(--tw-sheen) 70%, transparent);
+  z-index: 2;
+  background: linear-gradient(90deg, transparent, var(--tw-sheen-strong) 25%, var(--tw-sheen-strong) 75%, transparent);
   pointer-events: none;
 }
 
@@ -339,9 +366,10 @@
   align-items: center;
   gap: var(--tw-space-2);
   flex-shrink: 0;
-  min-height: 52px;
-  padding: var(--tw-space-3) var(--tw-space-2) var(--tw-space-3) var(--tw-space-4);
-  border-bottom: 1px solid var(--tw-bezel);
+  min-height: 50px;
+  padding: var(--tw-space-2) var(--tw-space-2) var(--tw-space-2) var(--tw-space-4);
+  border-bottom: 1px solid var(--tw-bezel-strong);
+  background: var(--tw-raised);
 }
 
 .tw-card-plate {
@@ -420,7 +448,7 @@
 
 .tw-card-finding {
   margin: 0;
-  padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-1);
+  padding: 10px var(--tw-space-4) 0;
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.4;
@@ -460,12 +488,19 @@
 }
 
 .tw-card-footer {
+  position: relative;
   flex-shrink: 0;
   display: grid;
   gap: 2px;
   padding: var(--tw-space-2) var(--tw-space-4) 10px;
   border-top: 1px solid var(--tw-bezel);
   background: var(--tw-ground);
+}
+
+/* Scroll edge: content continues under the footer. */
+.tw-card[data-more] .tw-card-footer {
+  border-top-color: var(--tw-bezel-strong);
+  box-shadow: 0 -12px 16px -8px var(--tw-scroll-edge);
 }
 
 .tw-card-footer .tw-meta {
@@ -490,7 +525,7 @@
 /* -------------------- Tabs -------------------- */
 
 .tw-tabs {
-  margin-top: var(--tw-space-3);
+  margin-top: var(--tw-space-2);
 }
 
 .tw-tablist {
@@ -507,7 +542,7 @@
 .tw-tab {
   appearance: none;
   position: relative;
-  min-height: 36px;
+  min-height: 34px;
   padding: 0 var(--tw-space-2);
   border: none;
   background: transparent;
@@ -547,8 +582,8 @@
 
 .tw-tabpanel {
   display: grid;
-  gap: var(--tw-space-4);
-  padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
+  gap: var(--tw-space-3);
+  padding: 10px var(--tw-space-4) var(--tw-space-3);
 }
 
 .tw-tabpanel[hidden] {
@@ -564,7 +599,7 @@
 
 .tw-section {
   display: grid;
-  gap: var(--tw-space-2);
+  gap: 6px;
 }
 
 .tw-section-title {
@@ -616,7 +651,7 @@
   grid-template-columns: 104px 1fr 76px;
   align-items: center;
   gap: var(--tw-space-3);
-  min-height: 30px;
+  min-height: 26px;
   border-bottom: 1px solid var(--tw-bezel);
 }
 
@@ -624,13 +659,42 @@
   border-bottom: none;
 }
 
+/* The rule's own measured value leads the group, set off by a stronger rule line. */
+.tw-seg[data-rule] {
+  border-bottom-color: var(--tw-bezel-strong);
+}
+
 .tw-seg-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.8125rem;
   color: var(--tw-text-2);
 }
 
 .tw-seg-value {
   text-align: right;
+  color: var(--tw-text);
+}
+
+/* A row that fed a fired rule is lit in that rule's lamp: mark, label, fill and value. */
+.tw-seg[data-lit="caution"],
+.tw-readouts > div[data-lit="caution"] {
+  --lit: var(--tw-caution);
+}
+
+.tw-seg[data-lit] .tw-seg-label,
+.tw-seg[data-lit] .tw-seg-value {
+  color: var(--lit, var(--tw-warning));
+  font-weight: 600;
+}
+
+.tw-seg[data-lit] .tw-seg-label::before {
+  content: "";
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--lit, var(--tw-warning));
 }
 
 .tw-gauge {
@@ -649,12 +713,16 @@
 
 .tw-gauge-fill[data-sign="neg"] {
   right: 50%;
-  background: var(--tw-warning);
+  background: var(--tw-text-2);
 }
 
 .tw-gauge-fill[data-sign="pos"] {
   left: 50%;
   background: var(--tw-text);
+}
+
+.tw-seg[data-lit] .tw-gauge-fill {
+  background: var(--lit, var(--tw-warning));
 }
 
 .tw-gauge-scale {
@@ -671,6 +739,16 @@
   stroke: var(--tw-text);
 }
 
+/* The fired rule's threshold: a caution tick standing proud of the track. */
+.tw-gauge-threshold {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--tw-caution);
+}
+
 .tw-legend {
   display: flex;
   flex-wrap: wrap;
@@ -679,11 +757,6 @@
   margin: 0;
   font-size: 0.75rem;
   color: var(--tw-text-2);
-}
-
-.tw-gauges + .tw-legend {
-  padding-left: 116px;
-  padding-right: 88px;
 }
 
 .tw-legend > span {
@@ -721,18 +794,27 @@
   border: 1px dashed var(--tw-text-2);
 }
 
+.tw-trace {
+  position: relative;
+}
+
+.tw-trace[data-marked] {
+  padding-bottom: 16px;
+}
+
 .tw-sparkline {
   display: block;
   width: 100%;
-  height: 72px;
+  height: 48px;
   border: 1px solid var(--tw-bezel);
   border-radius: var(--tw-radius-cell);
   background: var(--tw-ground);
 }
 
+/* The trace is information, not an alert: the secondary lamp tone. */
 .tw-spark-line {
   fill: none;
-  stroke: var(--tw-text);
+  stroke: var(--tw-text-2);
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
@@ -744,8 +826,27 @@
 
 .tw-spark-post {
   stroke: var(--tw-advisory);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+
+/* The post label sits directly under its marker. */
+.tw-trace-label {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  line-height: 16px;
+  color: var(--tw-advisory);
+  white-space: nowrap;
+}
+
+.tw-trace-label[data-edge="end"] {
+  transform: translateX(-100%);
+}
+
+.tw-trace-label[data-edge="start"] {
+  transform: none;
 }
 
 .tw-readouts {
@@ -759,8 +860,17 @@
 
 .tw-readouts > div {
   display: grid;
-  gap: 2px;
-  padding: 6px var(--tw-space-2);
+  gap: 1px;
+  padding: 5px var(--tw-space-2);
+}
+
+.tw-readouts > div[data-lit] {
+  box-shadow: inset 0 0 0 1px var(--lit, var(--tw-warning));
+}
+
+.tw-readouts > div[data-lit] dt,
+.tw-readouts > div[data-lit] dd {
+  color: var(--lit, var(--tw-warning));
 }
 
 .tw-readouts > div + div {
@@ -1067,7 +1177,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--tw-space-3);
+  gap: var(--tw-space-4);
   padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
 }
 
@@ -1135,10 +1245,10 @@
   min-width: 0;
 }
 
-.tw-block-input-row label {
+.tw-block-prompt {
   display: block;
-  margin-bottom: var(--tw-space-1);
-  font-size: 0.75rem;
+  margin-bottom: calc(var(--tw-space-1) - var(--tw-space-2));
+  font-size: 0.8125rem;
   font-weight: 500;
   line-height: 1.6;
   color: var(--tw-text-2);

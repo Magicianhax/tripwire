@@ -1,38 +1,71 @@
-import { useContext, useId, type ReactNode } from "react";
+import { useContext, useEffect, useId, useState, type ReactNode } from "react";
 import { formatSignalValue, ruleClause, type Verdict } from "@tripwire/core";
 import type { HitDto } from "../api-types";
-import { usd } from "./format";
+import { timeAgo, usd } from "./format";
 import { CloseIcon } from "./icons";
 import { Plate } from "./Plate";
 import { PopoverContext } from "./Popover";
 import { ReplayBadge } from "./ReplayBadge";
+import { decadeTicks, symlogFraction } from "./scales";
 
-/** Center-zero gauge on a tick scale: selling extends left of zero in warning red, buying
- * extends right in the text tone. Direction carries the sign, so colour is never the only cue. */
-export function CenterZeroBar({ value, max }: { value: number | null; max: number }) {
-  const v = value ?? 0;
-  const width = max > 0 ? Math.min(100, (Math.abs(v) / max) * 100) : 0;
+/** Center-zero gauge on a shared symmetric-log scale with decade ticks: selling extends left
+ * of zero, buying right, so direction carries the sign. A row whose rule fired is lit in the
+ * warning lamp (CSS, via the row's data-lit); a rule's threshold is drawn as its own tick. */
+export function CenterZeroBar({ value, max, threshold = null }: { value: number | null; max: number; threshold?: number | null }) {
+  const f = symlogFraction(value, max);
+  const x = (v: number) => 50 + symlogFraction(v, max) * 50;
   return (
     <div className="tw-gauge" aria-hidden="true">
-      <i className="tw-gauge-fill" data-sign={v < 0 ? "neg" : "pos"} style={{ width: `${width / 2}%` }} />
+      <i className="tw-gauge-fill" data-sign={f < 0 ? "neg" : "pos"} style={{ width: `${Math.abs(f) * 50}%` }} />
       <svg className="tw-gauge-scale" viewBox="0 0 100 10" preserveAspectRatio="none" focusable="false">
-        {[0, 25, 75, 100].map((x) => (
-          <line key={x} x1={x} x2={x} y1={0} y2={3} vectorEffect="non-scaling-stroke" />
+        {[0, 100, ...decadeTicks(max).flatMap((d) => [x(-d), x(d)])].map((tx, i) => (
+          <line key={i} x1={tx} x2={tx} y1={0} y2={3} vectorEffect="non-scaling-stroke" />
         ))}
         <line className="tw-gauge-zero" x1={50} x2={50} y1={0} y2={10} vectorEffect="non-scaling-stroke" />
       </svg>
+      {threshold !== null ? <i className="tw-gauge-threshold" style={{ left: `${x(threshold)}%` }} /> : null}
     </div>
   );
 }
 
-/** A labeled gauge row: label, center-zero gauge, right-aligned mono value. */
-export function SegmentRow({ label, value, max }: { label: string; value: number | null; max: number }) {
+/** A labeled gauge row: label, gauge, right-aligned mono value. `lit` marks a row that fed a
+ * rule which fired; `rule` marks the row that is itself the rule's measured value. */
+export function SegmentRow({
+  label,
+  value,
+  max,
+  lit = null,
+  rule = false,
+  threshold = null,
+}: {
+  label: string;
+  value: number | null;
+  max: number;
+  /** The lamp of the fired rule this row fed ("warning" for block rules, "caution" for warn). */
+  lit?: "warning" | "caution" | null;
+  rule?: boolean;
+  threshold?: number | null;
+}) {
   return (
-    <div className="tw-seg">
+    <div className="tw-seg" data-lit={lit ?? undefined} data-rule={rule ? "" : undefined}>
       <span className="tw-seg-label">{label}</span>
-      <CenterZeroBar value={value} max={max} />
-      <span className={`tw-seg-value tw-mono${value !== null && value < 0 ? " tw-neg" : ""}`}>{usd(value, true)}</span>
+      <CenterZeroBar value={value} max={max} threshold={threshold} />
+      <span className="tw-seg-value tw-mono">
+        {usd(value, true)}
+        {lit ? <span className="tw-sr-only"> (rule fired)</span> : null}
+      </span>
     </div>
+  );
+}
+
+/** "rule: > $100K": the word in the UI face, the comparison in mono. Text content unchanged. */
+export function RuleClause({ text, className }: { text: string; className: string }) {
+  const m = /^(rule:)\s(.*)$/.exec(text);
+  if (!m) return <span className={className}>{text}</span>;
+  return (
+    <span className={className}>
+      <span className="tw-rule-word">{m[1]}</span> <span className="tw-mono">{m[2]}</span>
+    </span>
   );
 }
 
@@ -79,7 +112,7 @@ export function HitList({ hits, max, className = "tw-hits", id }: { hits: HitDto
           <i className="tw-hit-mark" aria-hidden="true" />
           <span className="tw-hit-text">
             <span className="tw-hit-finding">{hitFinding(h)}</span>
-            {hitRuleClause(h) ? <span className="tw-hit-rule tw-mono">{hitRuleClause(h)}</span> : null}
+            {hitRuleClause(h) ? <RuleClause className="tw-hit-rule" text={hitRuleClause(h)!} /> : null}
           </span>
         </li>
       ))}
@@ -108,7 +141,34 @@ export function PanelFooter({ endpointCount, errors }: { endpointCount: number; 
 
 /** The card's header row: annunciator plate, title (the dialog's label and first focus stop),
  * optional age, Replay tag, close. Inside a Popover the close button closes through it. */
-export function CardHeader({ verdict, title, age, replay, onClose }: { verdict?: Verdict; title: string; age?: string | null; replay?: boolean; onClose?: () => void }) {
+/** Relative age of `iso`, re-rendered every 15s so a card left open doesn't go stale. */
+function Age({ iso, prefix }: { iso: string; prefix?: string }) {
+  const [, tick] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => tick((n) => n + 1), 15_000);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <time className="tw-card-age tw-mono" dateTime={iso}>
+      {prefix ? `${prefix} ${timeAgo(iso)}` : timeAgo(iso)}
+    </time>
+  );
+}
+
+export function CardHeader({
+  verdict,
+  title,
+  since,
+  replay,
+  onClose,
+}: {
+  verdict?: Verdict;
+  title: string;
+  /** The card's age: the post time on X, the check time on a venue ("checked 20s ago"). */
+  since?: { iso: string; prefix?: string } | null;
+  replay?: boolean;
+  onClose?: () => void;
+}) {
   const pop = useContext(PopoverContext);
   const ownId = useId();
   const headingId = pop?.headingId ?? ownId;
@@ -119,7 +179,7 @@ export function CardHeader({ verdict, title, age, replay, onClose }: { verdict?:
       <h2 id={headingId} className="tw-card-title" tabIndex={-1}>
         {title}
       </h2>
-      {age ? <span className="tw-card-age tw-mono">{age}</span> : null}
+      {since ? <Age iso={since.iso} prefix={since.prefix} /> : null}
       <ReplayBadge replay={replay} />
       {close ? (
         <button type="button" className="tw-card-close" aria-label="Close" onClick={close}>
@@ -131,10 +191,22 @@ export function CardHeader({ verdict, title, age, replay, onClose }: { verdict?:
 }
 
 /** A card that only carries a status line (loading or a failed evidence fetch). */
-export function CardMessage({ title, message, kind = "loading", replay }: { title: string; message: string; kind?: "loading" | "error"; replay?: boolean }) {
+export function CardMessage({
+  title,
+  message,
+  kind = "loading",
+  replay,
+  checkedAtIso,
+}: {
+  title: string;
+  message: string;
+  kind?: "loading" | "error";
+  replay?: boolean;
+  checkedAtIso?: string;
+}) {
   return (
     <section className="tw-card">
-      <CardHeader verdict={kind === "error" ? "UNCHECKED" : undefined} title={title} replay={replay} />
+      <CardHeader verdict={kind === "error" ? "UNCHECKED" : undefined} title={title} replay={replay} since={checkedAtIso ? { iso: checkedAtIso, prefix: "checked" } : null} />
       <p className={kind === "error" ? "tw-card-message tw-dock-error" : "tw-card-message tw-dock-loading"} role="status">
         {message}
       </p>

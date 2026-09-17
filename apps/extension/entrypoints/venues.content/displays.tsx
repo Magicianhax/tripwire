@@ -49,6 +49,7 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
   const openedForKey = rc.currentKey;
   const stillWanted = () => rc.evidenceOpening === opening && rc.currentKey === openedForKey;
   const result = await guard(target, adapter.id, "panel");
+  const checkedAtIso = new Date().toISOString();
   if (!stillWanted()) return; // closed, or the page moved on, while this was in flight
   // From the block screen the card opens beside the whole block (so it never hides the
   // warning, and clicks inside the block don't dismiss it); from a Strip, beside Details.
@@ -63,9 +64,9 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
       verdict={result.ok ? result.data.verdict : "UNCHECKED"}
     >
       {result.ok ? (
-        <Panel data={result.data} title={targetTitle(target)} onClose={() => closeEvidence(rc)} replay={rc.replay} initialTab={initialTab} />
+        <Panel data={result.data} title={targetTitle(target)} onClose={() => closeEvidence(rc)} replay={rc.replay} initialTab={initialTab} checkedAtIso={checkedAtIso} />
       ) : (
-        <CardMessage title={targetTitle(target)} kind="error" message={errorHeadline(result.status, result.error)} replay={rc.replay} />
+        <CardMessage title={targetTitle(target)} kind="error" message={errorHeadline(result.status, result.error)} replay={rc.replay} checkedAtIso={checkedAtIso} />
       )}
     </Popover>
   );
@@ -110,6 +111,7 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
   let collapsed = true;
   let panelData: GuardResponse | null = null;
   let panelError: string | null = null;
+  let checkedAtIso: string | undefined;
   const openedForKey = rc.currentKey;
 
   function node(): ReactNode {
@@ -119,13 +121,14 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
           <Panel
             data={panelData}
             title={targetTitle(target)}
+            checkedAtIso={checkedAtIso}
             onClose={() => {
               collapsed = true;
               rc.mainMount?.update(node());
             }}
           />
         ) : panelError ? (
-          <CardMessage title={targetTitle(target)} kind="error" message={panelError} />
+          <CardMessage title={targetTitle(target)} kind="error" message={panelError} checkedAtIso={checkedAtIso} />
         ) : (
           <CardMessage title={targetTitle(target)} message="Loading evidence…" />
         )}
@@ -138,6 +141,7 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
     rc.mainMount?.update(node());
     if (collapsed || panelData || panelError || !target) return;
     const result = await guard(target, adapter.id, "panel");
+    checkedAtIso = new Date().toISOString();
     if (rc.currentKey !== openedForKey) return;
     if (result.ok) panelData = result.data;
     else panelError = errorHeadline(result.status, result.error);

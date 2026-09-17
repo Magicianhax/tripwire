@@ -1,3 +1,4 @@
+import { RuleClause } from "./panel-parts";
 import { Plate } from "./Plate";
 import { ReplayBadge } from "./ReplayBadge";
 
@@ -20,7 +21,7 @@ export function Strip({ verdict, text, rule, onDetails, replay }: StripProps) {
       {verdict === "LOADING" ? <i className="tw-lamp" aria-hidden="true" /> : <Plate verdict={verdict} className="tw-strip-plate" />}
       <span className="tw-strip-text">
         <span className="tw-strip-finding">{text}</span>
-        {rule ? <span className="tw-strip-rule tw-mono">{rule}</span> : null}
+        {rule ? <RuleClause className="tw-strip-rule" text={rule} /> : null}
       </span>
       <ReplayBadge replay={replay} />
       {onDetails ? (

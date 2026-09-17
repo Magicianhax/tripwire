@@ -1,105 +1,105 @@
-import type { Candle, FlowRow } from "@tripwire/core";
+import type { Candle, FlowRow, Signal } from "@tripwire/core";
 import type { HitDto, SpotPanel } from "../api-types";
 import { shortAddr, usd } from "./format";
 import { Empty, HitList, Section, SegmentRow } from "./panel-parts";
+import { postIndex } from "./scales";
 import { Tabs, type TabDef } from "./Tabs";
 
 const W = 400;
-const H = 72;
+const H = 48;
 
-/** Close price over the window, with the post's time marked as an advisory (cyan) rule. */
-function Sparkline({ candles, postTimeIso }: { candles: Candle[] | null; postTimeIso: string | null }) {
+/** Close price over the window in the secondary tone, with the post's candle marked by an
+ * advisory (cyan) rule and its label set right under it. */
+function PriceTrace({ candles, postTimeIso }: { candles: Candle[] | null; postTimeIso: string | null }) {
   if (!candles || candles.length < 2) return null;
-  const closes = candles.map((c) => c.close);
+  const sorted = [...candles].sort((a, b) => new Date(a.interval_start).getTime() - new Date(b.interval_start).getTime());
+  const closes = sorted.map((c) => c.close);
   const min = Math.min(...closes);
   const max = Math.max(...closes);
   const range = max - min || 1;
-  const stepX = W / (candles.length - 1);
-  const pad = 6;
+  const stepX = W / (sorted.length - 1);
+  const pad = 4;
   const y = (close: number) => pad + (H - 2 * pad) * (1 - (close - min) / range);
-  const points = candles.map((c, i) => `${(i * stepX).toFixed(1)},${y(c.close).toFixed(1)}`).join(" ");
-
-  const first = candles[0];
-  const last = candles[candles.length - 1];
-  let markerX: number | null = null;
-  if (postTimeIso && first && last) {
-    const postTime = new Date(postTimeIso).getTime();
-    const firstTime = new Date(first.interval_start).getTime();
-    const lastTime = new Date(last.interval_start).getTime();
-    if (!Number.isNaN(postTime) && lastTime > firstTime && postTime >= firstTime && postTime <= lastTime) {
-      markerX = ((postTime - firstTime) / (lastTime - firstTime)) * W;
-    }
-  }
-  const change = first && last && first.close !== 0 ? ((last.close - first.close) / first.close) * 100 : null;
+  const points = sorted.map((c, i) => `${(i * stepX).toFixed(1)},${y(c.close).toFixed(1)}`).join(" ");
+  const index = postIndex(sorted, postTimeIso);
+  const markerPct = index === null ? null : (index / (sorted.length - 1)) * 100;
+  const first = sorted[0]!;
+  const last = sorted[sorted.length - 1]!;
+  const change = first.close !== 0 ? ((last.close - first.close) / first.close) * 100 : null;
 
   return (
-    <Section title="Price" aside={change !== null ? <span className={`tw-mono${change < 0 ? " tw-neg" : ""}`}>{`${change >= 0 ? "+" : "−"}${Math.abs(change).toFixed(1)}%`}</span> : null}>
-      <svg className="tw-sparkline" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={markerX !== null ? "Price over the window, post time marked" : "Price over the window"}>
-        <line className="tw-spark-base" x1={0} x2={W} y1={H - 0.5} y2={H - 0.5} vectorEffect="non-scaling-stroke" />
-        {markerX !== null ? <line className="tw-spark-post" x1={markerX} x2={markerX} y1={0} y2={H} vectorEffect="non-scaling-stroke" /> : null}
-        <polyline className="tw-spark-line" points={points} vectorEffect="non-scaling-stroke" />
-      </svg>
-      {markerX !== null ? (
-        <p className="tw-legend">
-          <span>
-            <i className="tw-key tw-key-post" aria-hidden="true" />
-            Post time
+    <Section title="Price" aside={change !== null ? <span className="tw-mono">{`${change >= 0 ? "+" : "−"}${Math.abs(change).toFixed(1)}%`}</span> : null}>
+      <div className="tw-trace" data-marked={markerPct !== null ? "" : undefined}>
+        <svg className="tw-sparkline" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={markerPct !== null ? "Price over the window, post time marked" : "Price over the window"}>
+          <line className="tw-spark-base" x1={0} x2={W} y1={H - 0.5} y2={H - 0.5} vectorEffect="non-scaling-stroke" />
+          <polyline className="tw-spark-line" points={points} vectorEffect="non-scaling-stroke" />
+          {index !== null ? <line className="tw-spark-post" x1={index * stepX} x2={index * stepX} y1={0} y2={H} vectorEffect="non-scaling-stroke" /> : null}
+        </svg>
+        {markerPct !== null ? (
+          <span className="tw-trace-label" style={{ left: `${markerPct}%` }} data-edge={markerPct > 85 ? "end" : markerPct < 15 ? "start" : undefined}>
+            Post
           </span>
-        </p>
-      ) : null}
+        ) : null}
+      </div>
     </Section>
   );
 }
 
-function flowMax(flow: FlowRow): number {
-  return Math.max(
-    1,
-    Math.abs(flow.smart_trader_net_flow_usd ?? 0),
-    Math.abs(flow.whale_net_flow_usd ?? 0),
-    Math.abs(flow.public_figure_net_flow_usd ?? 0),
-    Math.abs(flow.top_pnl_net_flow_usd ?? 0),
-    Math.abs(flow.fresh_wallets_net_flow_usd ?? 0),
-  );
-}
-
-function FlowTab({ panel }: { panel: SpotPanel }) {
+function FlowTab({ panel, hits, signals }: { panel: SpotPanel; hits: HitDto[]; signals: Signal[] }) {
   const flow: FlowRow | null = panel.sincePost?.flow ?? panel.flow;
   const flowWindow = panel.sincePost ? "since post" : panel.flowTimeframe;
   const netflow = panel.netflow;
   if (!flow && !netflow && !(panel.candles && panel.candles.length > 1)) return <Empty>No flow data came back for this token.</Empty>;
+
+  const hit = (id: HitDto["signalId"]) => hits.find((h) => h.signalId === id);
+  const exitHit = hit("exit_pressure");
+  const freshHit = hit("fresh_buy_share");
+  const netflowHit = hit("sm_netflow_24h");
+  const exit = signals.find((s) => s.id === "exit_pressure" && s.value !== null) ?? null;
+  const exitThreshold = exitHit && typeof exitHit.threshold === "number" ? exitHit.threshold : null;
+  // Rows that fed a fired rule light up: selling labeled wallets for exit pressure, fresh
+  // wallets for the fresh-buy share.
+  const lamp = (h: HitDto | undefined): "warning" | "caution" | null => (h ? (h.action === "block" ? "warning" : "caution") : null);
+  const exitLit = (v: number | null) => (v !== null && v < 0 ? lamp(exitHit) : null);
+
+  const rows = flow
+    ? [
+        { label: "Smart Traders", value: flow.smart_trader_net_flow_usd, lit: exitLit(flow.smart_trader_net_flow_usd) },
+        { label: "Whales", value: flow.whale_net_flow_usd, lit: exitLit(flow.whale_net_flow_usd) },
+        { label: "Public Figures", value: flow.public_figure_net_flow_usd, lit: exitLit(flow.public_figure_net_flow_usd) },
+        { label: "Top PnL", value: flow.top_pnl_net_flow_usd, lit: null },
+        { label: "Fresh wallets", value: flow.fresh_wallets_net_flow_usd, lit: lamp(freshHit) },
+      ]
+    : [];
+  const max = Math.max(1, ...rows.map((r) => Math.abs(r.value ?? 0)), Math.abs(exit?.value ?? 0), Math.abs(exitThreshold ?? 0));
+
   return (
     <>
       {flow ? (
-        <Section title="Net flow by wallet type" aside={<span className="tw-mono">{flowWindow}</span>}>
+        <Section title="Net flow by wallet type" aside={<span className="tw-mono">{`${flowWindow} · log scale`}</span>}>
           <div className="tw-gauges">
-            <SegmentRow label="Smart Traders" value={flow.smart_trader_net_flow_usd} max={flowMax(flow)} />
-            <SegmentRow label="Whales" value={flow.whale_net_flow_usd} max={flowMax(flow)} />
-            <SegmentRow label="Public Figures" value={flow.public_figure_net_flow_usd} max={flowMax(flow)} />
-            <SegmentRow label="Top PnL" value={flow.top_pnl_net_flow_usd} max={flowMax(flow)} />
-            <SegmentRow label="Fresh wallets" value={flow.fresh_wallets_net_flow_usd} max={flowMax(flow)} />
+            {exit ? <SegmentRow label="Exit pressure" value={exit.value} max={max} lit={lamp(exitHit)} rule threshold={exitThreshold} /> : null}
+            {rows.map((r) => (
+              <SegmentRow key={r.label} label={r.label} value={r.value} max={max} lit={r.lit} />
+            ))}
           </div>
-          <p className="tw-legend">
-            <span>Selling</span>
-            <span>0</span>
-            <span>Buying</span>
-          </p>
         </Section>
       ) : null}
-      <Sparkline candles={panel.candles} postTimeIso={panel.postTimeIso} />
+      <PriceTrace candles={panel.candles} postTimeIso={panel.postTimeIso} />
       {netflow ? (
         <Section title="Smart Money netflow">
           <dl className="tw-readouts">
             {(
               [
-                ["1h", netflow.h1],
-                ["24h", netflow.h24],
-                ["7d", netflow.d7],
-                ["30d", netflow.d30],
+                ["1h", netflow.h1, null],
+                ["24h", netflow.h24, lamp(netflowHit)],
+                ["7d", netflow.d7, null],
+                ["30d", netflow.d30, null],
               ] as const
-            ).map(([label, value]) => (
-              <div key={label}>
+            ).map(([label, value, lit]) => (
+              <div key={label} data-lit={lit ?? undefined}>
                 <dt>{label}</dt>
-                <dd className={`tw-mono${(value ?? 0) < 0 ? " tw-neg" : ""}`}>{usd(value, true)}</dd>
+                <dd className="tw-mono">{usd(value, true)}</dd>
               </div>
             ))}
           </dl>
@@ -109,13 +109,13 @@ function FlowTab({ panel }: { panel: SpotPanel }) {
   );
 }
 
-function WalletList({ rows }: { rows: { name: string | null; address: string; amount: number | null; sold?: boolean }[] }) {
+function WalletList({ rows }: { rows: { name: string | null; address: string; amount: number | null }[] }) {
   return (
     <ul className="tw-rows">
       {rows.map((r, i) => (
         <li key={i}>
           {r.name ? <span className="tw-row-name">{r.name}</span> : <span className="tw-row-name tw-mono tw-meta">{shortAddr(r.address)}</span>}
-          <span className={`tw-mono${r.sold ? " tw-neg" : ""}`}>{usd(r.amount)}</span>
+          <span className="tw-mono">{usd(r.amount)}</span>
         </li>
       ))}
     </ul>
@@ -130,7 +130,7 @@ function WalletsTab({ panel }: { panel: SpotPanel }) {
     <>
       {sellers.length > 0 ? (
         <Section title="Top sellers" aside="Sold">
-          <WalletList rows={sellers.map((w) => ({ name: w.address_label, address: w.address, amount: w.sold_volume_usd, sold: true }))} />
+          <WalletList rows={sellers.map((w) => ({ name: w.address_label, address: w.address, amount: w.sold_volume_usd }))} />
         </Section>
       ) : null}
       {buyers.length > 0 ? (
@@ -167,14 +167,14 @@ function RiskTab({ panel, hits }: { panel: SpotPanel; hits: HitDto[] }) {
   );
 }
 
-export function spotTabs(panel: SpotPanel, hits: HitDto[]): TabDef[] {
+export function spotTabs(panel: SpotPanel, hits: HitDto[], signals: Signal[] = []): TabDef[] {
   return [
-    { id: "flow", label: "Flow", content: <FlowTab panel={panel} /> },
+    { id: "flow", label: "Flow", content: <FlowTab panel={panel} hits={hits} signals={signals} /> },
     { id: "wallets", label: "Wallets", content: <WalletsTab panel={panel} /> },
     { id: "risk", label: "Risk", content: <RiskTab panel={panel} hits={hits} /> },
   ];
 }
 
-export function SpotBody({ panel, hits = [], initialTab }: { panel: SpotPanel; hits?: HitDto[]; initialTab?: string }) {
-  return <Tabs label="Evidence" tabs={spotTabs(panel, hits)} initial={initialTab} />;
+export function SpotBody({ panel, hits = [], signals = [], initialTab }: { panel: SpotPanel; hits?: HitDto[]; signals?: Signal[]; initialTab?: string }) {
+  return <Tabs label="Evidence" tabs={spotTabs(panel, hits, signals)} initial={initialTab} />;
 }
