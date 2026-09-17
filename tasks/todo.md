@@ -17,8 +17,8 @@ Worktree: `C:/work/Nansen/feat-tripwire` (branch `feat/tripwire`).
 - [x] T7 API routes: resolve, post-intel, guard, person-intel, rules, ledger, override, health (http.ts done; store.ts, routes, route tests)
 - [x] T8 Web pages in Hazard style: `/` status, `/rules` editor, `/ledger`, `/history`
 - [x] T9 Extension scaffold (WXT MV3 + React), background API bridge, popup
-- [ ] T10 UI kit in Shadow DOM: Chip, Panel (spot/perp/prediction), BlockScreen, Strip, Dock, mount
-- [ ] T11 X content script and tweet parser with fixture tests
+- [x] T10 UI kit in Shadow DOM: Chip, Panel (spot/perp/prediction), BlockScreen, Strip, Dock, mount
+- [x] T11 X content script and tweet parser with fixture tests
 - [ ] T12 Venue adapters (tier 1 + tier 2) and guard runner with URL/anchor tests
 - [ ] T13 README, `.env.example`, `docs/SPIKE.md`, record-fixtures docs, end-to-end smoke with the dev server
 - [ ] Verify: `pnpm verify` + both builds, quote last 20 lines
