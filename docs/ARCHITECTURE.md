@@ -41,12 +41,15 @@ flowchart LR
 ## Key invariants
 
 - The Nansen key never reaches the extension, logs, fixtures or git.
-- API routes reject browser origins other than the extension and local pages, so other websites can't spend credits.
+- API routes accept only the local pages and the pinned Tripwire extension ID (`TRIPWIRE_EXTENSION_ORIGIN` overrides), and every route refuses a Host other than 127.0.0.1/localhost on the backend port, so other websites and extensions can't spend credits or weaken rules.
+- Local pages can't be framed (`X-Frame-Options: DENY`, `frame-ancestors 'none'`).
 - A missing signal is `null` and never produces CLEAR (verdict UNCHECKED).
 - Tripwire never touches wallets, signing or transactions.
-- `TRIPWIRE_REPLAY=1` never calls the network, and the UI shows a REPLAY watermark.
+- A Polymarket target is checked only against an unambiguous Yes/No market and an outcome read from that market's trade form; otherwise UNCHECKED.
+- `TRIPWIRE_REPLAY=1` (`pnpm dev:replay`) never calls the network, and every web page and extension surface shows a REPLAY watermark.
 
 ## Verify
 
 - `pnpm verify` runs typecheck plus unit tests for all workspaces.
 - `pnpm -F extension build` and `pnpm -F web build` produce the artifacts.
+- `pnpm verify:e2e` (not part of `pnpm verify`) loads the built extension in Playwright's Chromium against a replay backend and stubbed X / Jupiter pages.

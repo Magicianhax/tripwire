@@ -14,7 +14,8 @@ A short GIF walkthrough, if added, lives in `docs/media/`.
 ## What it does
 
 - **On X:** every post that mentions a token gets a verdict chip (TRIPWIRE / CAUTION / CLEAR /
-  UNCHECKED), and a slide-out panel with buyer/seller flow, Smart Money netflow, risk
+  UNCHECKED; when a post has both a cashtag and a contract address, the address is checked),
+  and a slide-out panel with buyer/seller flow, Smart Money netflow, risk
   indicators and whether the post's author (matched by Nansen entity name) holds the token.
 - **On trading venues:** tier-1 venues (Jupiter, pump.fun, Uniswap, Jumper, Hyperliquid,
   Polymarket) get a block screen over the trade/buy/long/short/yes-no button when a rule
@@ -45,8 +46,11 @@ the Nansen API key never reaches the extension.
 7. Open x.com and search `$WIF`, or open
    https://jup.ag/swap/SOL-EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm.
 
-**Offline / no key:** `TRIPWIRE_REPLAY=1 pnpm -F web dev` serves recorded real responses
-(`fixtures/nansen/`) instead of calling Nansen. The UI shows a REPLAY watermark.
+**Offline / no key:** `pnpm dev:replay` (any shell) serves recorded real responses
+(`fixtures/nansen/`) instead of calling Nansen. By hand: `TRIPWIRE_REPLAY=1 pnpm -F web dev`
+(bash) or `$env:TRIPWIRE_REPLAY="1"; pnpm -F web dev` (PowerShell). A grey REPLAY watermark
+shows on every web page and on every extension surface (X chip and panel, strip, dock, block
+screen).
 
 ## How the verdict works
 
@@ -63,7 +67,7 @@ missing signal never counts toward CLEAR.
 | `author_holds_token` | Current USD value the matched entity (X post author) holds of the token | `profiler/address/current-balance` | 1 |
 | `sm_opposite_side_pct` | Share of Smart Money perp exposure on the side opposite the user's chosen long/short | `perp-screener` | 1 |
 | `inside_liq_band` | USD value of Smart Money positions that liquidate within +/-3% of mark price | `tgm/perp-positions` | 5 |
-| `smart_side_disagrees` | Share of proven-winner Polymarket money on the outcome opposite the user's pick | `prediction-market/top-holders`, `prediction-market/pnl-by-address` | 5 + 1 |
+| `smart_side_disagrees` | Share of proven-winner Polymarket money (Yes/No holders only) on the outcome opposite the user's pick | `prediction-market/top-holders`, `prediction-market/pnl-by-address` | 5 + up to 20 × 1 (one PnL call per top holder, each cached 24h) |
 
 Rules compare a signal's value against a threshold and either `warn` or `block`. Three
 presets ship in `packages/core/src/rules/presets.ts`:
@@ -81,18 +85,20 @@ presets ship in `packages/core/src/rules/presets.ts`:
 **Verdict:** `TRIPWIRE` (a `block` rule fired) outranks `CAUTION` (only `warn` rules fired),
 which outranks `UNCHECKED` (a rule's signal was unavailable, or no rule applies to this
 target kind), which outranks `CLEAR` (every applicable rule ran and none fired). A target
-Tripwire couldn't fully check is never reported as `CLEAR`.
+Tripwire couldn't fully check is never reported as `CLEAR`. An `UNCHECKED` result carries a short
+reason when there is one ("Nansen credit cap reached", "Pick a market", "Pick YES or NO"), shown
+on the chip and strip.
 
 ## Venues
 
 | Venue | Tier | URL pattern | What's read |
 |---|---|---|---|
-| Jupiter | 1 | `jup.ag/swap/<in>-<out>` or `?buy=` | spot, output mint (Solana) |
-| pump.fun | 1 | `pump.fun/coin/<mint>` | spot (Solana) |
+| Jupiter | 1 | `jup.ag/swap/<in>-<out>`, or `?sell=&buy=` / `?inputMint=&outputMint=` on `/swap` or the root page | spot, output mint (Solana); anchor: the exact "Swap" / "Place order" button |
+| pump.fun | 1 | `pump.fun/coin/<mint>` | spot (Solana); anchor: "Place trade", else an exact "Buy" in the trade form (token-card quick-buys ignored) |
 | Uniswap | 1 | `app.uniswap.org?outputCurrency=&chain=` | spot (EVM); no `chain` param -> null target, UNCHECKED dock (no chain to guess) |
-| Jumper | 1 | `jumper.exchange?toChain=&toToken=` | spot (EVM or Solana, by chain id) |
-| Hyperliquid | 1 | `app.hyperliquid.xyz/trade/<COIN>` | perp, coin + long/short side read from the DOM toggle; HIP-3 non-crypto markets (e.g. `/trade/xyz:TSLA`) -> null target, UNCHECKED dock |
-| Polymarket | 1 | `polymarket.com/event/<event>[/<market>]` | prediction, market slug + yes/no outcome read from the DOM |
+| Jumper | 1 | `jumper.exchange?toChain=&toToken=` | spot (EVM or Solana, by chain id); anchor: a whole-label Exchange/Swap/Bridge/Review button, never nav or tab items |
+| Hyperliquid | 1 | `app.hyperliquid.xyz/trade/<COIN>` | perp, coin + long/short side read from the selected side toggle; anchor: the order form's submit, never the side toggles; HIP-3 non-crypto markets (e.g. `/trade/xyz:TSLA`) -> null target, UNCHECKED dock |
+| Polymarket | 1 | `polymarket.com/event/<event>[/<market>]` | prediction; checked only when the URL names a market or the event has exactly one open market ("Pick a market" otherwise), the market's outcomes are exactly Yes/No, and the outcome is read from the trade form that owns the button ("Pick YES or NO" otherwise) |
 | Raydium | 2 | `raydium.io?outputMint=` | spot (Solana), dock only |
 | Aerodrome | 2 | `aerodrome.finance?to=` | spot (Base), dock only |
 | PancakeSwap | 2 | `pancakeswap.finance?outputCurrency=&chain=` | spot (EVM), dock only; no `chain` param -> null target, UNCHECKED dock |
@@ -144,7 +150,9 @@ and shown at `/ledger` — the buildathon's evidence of real, repeated Nansen in
 a handful of demo calls.
 
 Each endpoint wrapper in `apps/web/lib/nansen/endpoints.ts` sets its own cache TTL, so repeat
-checks on the same token/coin/market don't re-spend credits inside the window:
+checks on the same token/coin/market don't re-spend credits inside the window. Dated request
+bodies round their `to` down to the TTL (and derive `from` from it), so the cache key holds for
+the whole window:
 
 | Endpoint | TTL |
 |---|---|
@@ -163,9 +171,15 @@ checks on the same token/coin/market don't re-spend credits inside the window:
 | `prediction-market/pnl-by-address` | 24 hours |
 | `prediction-market/trades-by-market` | 2 min |
 
-`NANSEN_DAILY_CREDIT_CAP` (default 3000, `apps/web/.env.local`) is a hard daily spend cap; a
-call that would exceed it returns stale cache if there is one, otherwise HTTP 429 and the UI
-shows UNCHECKED with "Nansen credit cap reached" rather than guessing.
+Polymarket slug lookups (Gamma API, no credits) cache a found market for 1 hour and a
+not-found or ambiguous event for 5 minutes; failed lookups are never cached.
+
+`NANSEN_DAILY_CREDIT_CAP` (default 3000, `apps/web/.env.local`) is a hard daily spend cap. A
+call that would exceed it returns stale cache if there is one. Otherwise that data is missing:
+`/api/guard` and `/api/post-intel` still answer 200 with verdict `UNCHECKED` and headline
+"Nansen credit cap reached" (never a block, never CLEAR), and the chip/strip show that
+headline. Routes with nothing to fall back on (`/api/resolve`, `/api/person-intel`) answer
+HTTP 429 `{ error: "budget" }`, which the extension also shows as "Nansen credit cap reached".
 
 `node scripts/record-fixtures.mjs` re-records the fixtures in `fixtures/nansen/` from live
 Nansen calls (needs a working key; costs credits — see the header comment in the script
@@ -187,7 +201,11 @@ before running it).
 - Per package: `pnpm -F @tripwire/core test`, `pnpm -F web test`, `pnpm -F extension test`
   (or `typecheck` in place of `test`).
 - `pnpm -F web build` / `pnpm -F extension build` — production builds.
-- `TRIPWIRE_REPLAY=1 pnpm -F web dev` — replay mode, no network calls, no key needed.
+- `pnpm dev:replay` — replay mode on any shell (wraps `TRIPWIRE_REPLAY=1 pnpm -F web dev`),
+  no network calls, no key needed.
+- `pnpm verify:e2e` — Playwright smoke: the built extension in Chromium against a replay
+  backend and stubbed X / Jupiter pages (not part of `pnpm verify`; needs port 3000 free and
+  `pnpm exec playwright install chromium` once).
 - `node scripts/record-fixtures.mjs` — re-record fixtures from live Nansen calls (costs
   credits).
 
@@ -198,6 +216,7 @@ before running it).
 | Chip or dock says "backend offline" | `apps/web` isn't running, or the extension's configured backend URL doesn't match it | Run `pnpm -F web dev`; check the URL in the extension popup (default `http://127.0.0.1:3000`) |
 | "Nansen credit cap reached" | `NANSEN_DAILY_CREDIT_CAP` hit for the UTC day | Raise the cap in `apps/web/.env.local`, or wait for the next UTC day; cached results still serve |
 | A tier-1 venue shows a floating dock instead of a block screen | The venue changed its markup and the adapter's `anchor()` can no longer find the trade button | Tripwire never blocks blind — it falls back to a docked panel rather than guess at a button; file/fix the adapter in `apps/extension/lib/adapters/` |
+| Every API call answers 403 "origin not allowed" | The extension was loaded with a different key (a fork), so its ID isn't the pinned one | Set `TRIPWIRE_EXTENSION_ORIGIN=chrome-extension://<your id>` for `apps/web` |
 | No chip appears on X posts | X changed its DOM structure and the content-script parser no longer matches | Check `apps/extension/entrypoints/x.content/` against the fixture tests in `apps/extension/test/` |
 
 ## Security and privacy
@@ -205,9 +224,21 @@ before running it).
 - **Key handling:** `NANSEN_API_KEY` is read only by `apps/web/lib/nansen/key.ts`, used only
   as the `apikey` header to `api.nansen.ai`, and never sent to the extension, logged, or
   written to a fixture.
-- **Origin allowlist:** `apps/web/lib/http.ts` only serves `http://127.0.0.1:3000`,
-  `http://localhost:3000`, and a `chrome-extension://` origin, so another open tab can't spend
-  the user's Nansen credits by calling the local backend.
+- **Origin allowlist:** `apps/web/lib/origin.ts` only serves the local pages
+  (`http://127.0.0.1:3000`, `http://localhost:3000`) and the Tripwire extension itself. The
+  extension ID is pinned by the public `key` in `apps/extension/wxt.config.ts`
+  (`TRIPWIRE_EXTENSION_ID` in `packages/core/src/constants.ts`); forks set
+  `TRIPWIRE_EXTENSION_ORIGIN`. Other websites and other installed extensions get 403, so they
+  can't spend the user's Nansen credits or change their rules. A request without an Origin is
+  allowed only from non-browser clients or same-origin/user-initiated requests
+  (`Sec-Fetch-Site`).
+- **Host allowlist:** every page and API route (`apps/web/proxy.ts`) refuses a Host other than
+  `127.0.0.1` / `localhost` on the backend port (`TRIPWIRE_PORT`, default 3000), which defeats
+  DNS rebinding.
+- **No framing:** every response sends `X-Frame-Options: DENY`, `frame-ancestors 'none'`,
+  `Referrer-Policy: no-referrer` and `nosniff`. Lowering the preset or removing a block rule in
+  `/rules` asks for an inline confirm.
+- **Extension messaging:** the background worker only answers messages from its own extension.
 - **No page HTML injection:** venue adapters and the X content script read only
   `textContent`/attributes from the host page, never `innerHTML`, and never write arbitrary
   HTML into it.

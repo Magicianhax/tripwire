@@ -8,6 +8,7 @@
   "packageManager": "pnpm@11.15.1",
   "scripts": {
     "dev": "pnpm -r --parallel --filter web --filter extension dev",
+    "dev:replay": "node scripts/dev-replay.mjs",
     "test": "pnpm -r test",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
