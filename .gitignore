@@ -1,0 +1,7 @@
+.superpowers/
+node_modules/
+.env*.local
+.env
+*.db
+.output/
+.next/

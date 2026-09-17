@@ -1,0 +1,96 @@
+Meridian Buildathon - Sep 14-27
+
+Build With Nansen API.
+Win $10,000 USDC.
+Two weeks to build anything using Nansen API.
+Ship a working demo and get a shot at $10K.
+
+Get Started ->
+
+What to Build
+
+Build whatever you want. 
+Ship something real.
+Use any endpoint, build any tool. The stack and use case are yours to decide. Here are a few ideas:
+
+
+SM Shell Terminal
+Terminal that tracks live token flow across chains.
+
+Nansen Aquarium
+Turns wallet activity into bioluminescent sea creatures.
+
+Thesis Desk
+Write a trade thesis, it interrogates it against live data.
+
+View All Endpoints ->
+
+
+What You Can Win
+
+Best builders take it home.
+🥇
+1st Place
+Win $10,000 USDC
+
+🥈
+2nd Place
+AirPods Max + Ledger + Keychron Q Pro
+
+🥉
+3rd Place
+Sony WH-1000XM5 + Ledger
+
+🏅
+Honorable Mention
+100,000 Nansen API Credits each
+
+
+How We Judge
+
+Four things the judges care about.
+Creativity beats complexity. A simple tool that runs beats an impressive one that doesn't.
+
+Data Integration
+
+25%
+
+Nansen data drives the logic - not just appears on screen.
+The deeper the integration, the stronger the score.
+
+Creativity & Originality
+
+25%
+
+A use case nobody thought to build.
+We've seen dashboards. Show us something we haven't.
+
+Functionality & Workability
+
+25%
+
+Live data loads. End to end. No crashes.
+If it breaks in the recording, it doesn't qualify.
+
+Documentation & Submission
+
+25%
+
+Clean README. Followable recording. No narration needed. Another builder can run it in under 10 minutes.
+
+How to Apply
+
+Four steps to enter
+No application. No team required. Just build and ship.
+
+Create an API key
+Create your key at https://app.nansen.ai/api. Free to start.
+
+Make 1,000 API calls
+Use any endpoint. Prove you've used the Nansen API in your build.
+
+Post your demo on X
+Tag @nansen_ai on a social post with a recording that shows what you built.
+
+Submit your entry
+Drop your email, X post link and GitHub repo in the form below.
