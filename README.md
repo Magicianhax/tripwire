@@ -89,15 +89,15 @@ Tripwire couldn't fully check is never reported as `CLEAR`.
 |---|---|---|---|
 | Jupiter | 1 | `jup.ag/swap/<in>-<out>` or `?buy=` | spot, output mint (Solana) |
 | pump.fun | 1 | `pump.fun/coin/<mint>` | spot (Solana) |
-| Uniswap | 1 | `app.uniswap.org?outputCurrency=&chain=` | spot (EVM; no `chain` defaults to ethereum) |
+| Uniswap | 1 | `app.uniswap.org?outputCurrency=&chain=` | spot (EVM); no `chain` param -> null target, UNCHECKED dock (no chain to guess) |
 | Jumper | 1 | `jumper.exchange?toChain=&toToken=` | spot (EVM or Solana, by chain id) |
-| Hyperliquid | 1 | `app.hyperliquid.xyz/trade/<COIN>` | perp, coin + long/short side read from the DOM toggle |
+| Hyperliquid | 1 | `app.hyperliquid.xyz/trade/<COIN>` | perp, coin + long/short side read from the DOM toggle; HIP-3 non-crypto markets (e.g. `/trade/xyz:TSLA`) -> null target, UNCHECKED dock |
 | Polymarket | 1 | `polymarket.com/event/<event>[/<market>]` | prediction, market slug + yes/no outcome read from the DOM |
 | Raydium | 2 | `raydium.io?outputMint=` | spot (Solana), dock only |
 | Aerodrome | 2 | `aerodrome.finance?to=` | spot (Base), dock only |
-| PancakeSwap | 2 | `pancakeswap.finance?outputCurrency=&chain=` | spot (EVM; no `chain` defaults to bnb), dock only |
+| PancakeSwap | 2 | `pancakeswap.finance?outputCurrency=&chain=` | spot (EVM), dock only; no `chain` param -> null target, UNCHECKED dock |
 | 1inch | 2 | `app.1inch.io#/<chainId>/simple/swap/<from>/<to>` | spot (EVM), dock only |
-| Matcha | 2 | `matcha.xyz?buyAddress=&chainId=` | spot (EVM; no `chainId` defaults to ethereum), dock only |
+| Matcha | 2 | `matcha.xyz?buyAddress=&chainId=` | spot (EVM), dock only; no `chainId` param -> null target, UNCHECKED dock |
 | CoW Swap | 2 | `swap.cow.fi#/<chainId>/swap/<sell>/<buy>` | spot (EVM), dock only |
 | Axiom | 2 | `axiom.trade/...` | spot, first address found in the path, dock only |
 | Photon | 2 | `photon-sol.tinyastro.io/...` | spot, first address found in the path, dock only |
