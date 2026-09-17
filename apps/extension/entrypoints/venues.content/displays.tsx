@@ -5,7 +5,7 @@ import type { VenueAdapter } from "../../lib/adapters/types";
 import { guard, override } from "../../lib/api";
 import type { GuardResponse } from "../../lib/api-types";
 import { Dock } from "../../lib/ui/Dock";
-import { mountReact } from "../../lib/ui/mount";
+import { mountIfCurrent, mountReact } from "../../lib/ui/mount";
 import { Panel } from "../../lib/ui/Panel";
 import { Strip } from "../../lib/ui/Strip";
 import { BlockOverlay } from "./BlockOverlay";
@@ -152,7 +152,14 @@ export function createStripBinding(
       <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} onDetails={target ? () => void toggleEvidence(rc, adapter, target) : undefined} />
     );
     if (rc.mainMount) rc.mainMount.ui.remove();
-    rc.mainMount = await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, node);
+    // Guards the residual A2 race: `sync()` (runner.tsx) calls this without awaiting it, so a
+    // target change can land in `rc.currentKey` before `mountReact()` below resolves. Capture
+    // the key now; if it no longer matches once the mount is ready, the mount is for a
+    // superseded target -- drop it instead of overwriting whatever the newer render set.
+    const key = rc.currentKey;
+    if (key === null) return;
+    const mount = await mountIfCurrent(() => rc.currentKey, key, () => mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, node));
+    if (mount) rc.mainMount = mount;
   }
 
   function onUnbind(): void {
@@ -191,8 +198,18 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
         onOverride={() => void doOverride()}
       />
     );
-    if (rc.mainMount) rc.mainMount.update(node);
-    else rc.mainMount = await mountReact(rc.ctx, { position: "modal", zIndex: MODAL_Z_INDEX }, node);
+    if (rc.mainMount) {
+      rc.mainMount.update(node);
+      return;
+    }
+    // Same A2 guard as Strip's onBind above: capture the render key before the await, drop the
+    // mount if a target change superseded it while `mountReact()` was resolving. (Named
+    // `renderKey` to avoid shadowing the outer `key` param, the session key this binding was
+    // created for.)
+    const renderKey = rc.currentKey;
+    if (renderKey === null) return;
+    const mount = await mountIfCurrent(() => rc.currentKey, renderKey, () => mountReact(rc.ctx, { position: "modal", zIndex: MODAL_Z_INDEX }, node));
+    if (mount) rc.mainMount = mount;
   }
 
   async function doOverride(): Promise<void> {

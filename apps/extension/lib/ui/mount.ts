@@ -63,3 +63,25 @@ export async function mountReact(ctx: ContentScriptContext, opts: MountReactOpti
     },
   };
 }
+
+/**
+ * Guards an async mount against a target/session change that lands while `mountFn()` is still
+ * in flight (the residual A2 race: `onBind`/`renderFrame` in venues.content/displays.tsx call
+ * `mountReact()` without the caller awaiting the outer `sync()`, so a page can move on to a new
+ * target before the mount resolves). `key` is the render key captured at the start of the
+ * caller; if `getKey()` no longer matches it once `mountFn()` resolves, the just-created mount
+ * is removed immediately and `null` is returned so the caller never assigns it as the current
+ * mount.
+ */
+export async function mountIfCurrent<M extends { ui: { remove(): void } }>(
+  getKey: () => string | null,
+  key: string,
+  mountFn: () => Promise<M>,
+): Promise<M | null> {
+  const mount = await mountFn();
+  if (getKey() !== key) {
+    mount.ui.remove();
+    return null;
+  }
+  return mount;
+}

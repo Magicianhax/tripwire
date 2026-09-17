@@ -13,7 +13,7 @@ vi.hoisted(() => {
   };
 });
 
-const { mountReact } = await import("../lib/ui/mount");
+const { mountReact, mountIfCurrent } = await import("../lib/ui/mount");
 
 /** Just enough of WXT's ContentScriptContext for createShadowRootUi: no CSS injection (the
  * entry stylesheet fetch needs a real extension runtime) and a no-op invalidation hook. */
@@ -89,5 +89,35 @@ describe("mountReact", () => {
     // landing after removal must never throw or attempt to render on the unmounted root.
     expect(() => mount.update(<span>late update</span>)).not.toThrow();
     expect(host.shadowRoot?.textContent ?? "").not.toContain("late update");
+  });
+});
+
+describe("mountIfCurrent", () => {
+  it("assigns the mount when the key is still current once mountFn resolves", async () => {
+    const removeCalls: string[] = [];
+    const fakeMount = { ui: { remove: () => removeCalls.push("removed") } };
+    const result = await mountIfCurrent(
+      () => "key-a",
+      "key-a",
+      async () => fakeMount,
+    );
+    expect(result).toBe(fakeMount);
+    expect(removeCalls).toEqual([]);
+  });
+
+  it("removes and drops a stale mount when the key changed while mountFn was in flight", async () => {
+    let currentKey = "key-a";
+    const removeCalls: string[] = [];
+    const fakeMount = { ui: { remove: () => removeCalls.push("removed") } };
+    const result = await mountIfCurrent(
+      () => currentKey,
+      "key-a",
+      async () => {
+        currentKey = "key-b"; // the page moved on to a new target while this mount was mounting
+        return fakeMount;
+      },
+    );
+    expect(result).toBeNull();
+    expect(removeCalls).toEqual(["removed"]);
   });
 });
