@@ -12,6 +12,7 @@
     "test": "pnpm -r test",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
-    "verify": "pnpm -r typecheck && pnpm -r test"
+    "verify": "pnpm -r typecheck && pnpm -r test",
+    "verify:e2e": "pnpm -F extension build && pnpm -F web build && pnpm -F extension exec playwright test -c e2e/playwright.config.ts"
   }
 }

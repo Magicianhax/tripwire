@@ -37,8 +37,8 @@ jobs:
       - run: pnpm verify
 
   verify-e2e:
-    # Playwright @smoke + @axe-core/playwright. Runs in CI only; never in the Stop hook.
-    if: ${{ github.event_name == 'pull_request' && hashFiles('playwright.config.*') != '' }}
+    # Playwright @smoke (apps/extension/e2e). Runs in CI only; never in the Stop hook.
+    if: ${{ github.event_name == 'pull_request' && hashFiles('apps/extension/e2e/playwright.config.ts') != '' }}
     needs: verify-node
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -50,11 +50,11 @@ jobs:
           node-version-file: package.json
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm -F extension exec playwright install --with-deps chromium
       - run: pnpm verify:e2e
       - if: failure()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: playwright-report
-          path: playwright-report/
+          path: apps/extension/test-results/
           retention-days: 7

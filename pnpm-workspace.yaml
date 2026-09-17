@@ -1,3 +1,8 @@
 packages:
   - "packages/*"
   - "apps/*"
+
+# One Playwright for the whole workspace (next lists it as an optional peer). 1.62.1 matches the
+# Chromium build (rev 1234) the e2e smoke runs on.
+overrides:
+  "@playwright/test": 1.62.1

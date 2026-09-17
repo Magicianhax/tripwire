@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Jupiter (e2e stub)</title>
+    <style>
+      body { font-family: sans-serif; margin: 0; }
+      header { display: flex; gap: 12px; align-items: center; padding: 12px; }
+      main { margin: 420px auto 0; width: 360px; }
+      form { display: flex; flex-direction: column; gap: 8px; }
+      #swap { height: 48px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button id="token-picker" type="button">Select token</button>
+      <span id="picker-clicks">0</span>
+    </header>
+    <main>
+      <form onsubmit="return false">
+        <label>You pay <input id="amount" placeholder="0.00" /></label>
+        <button id="swap" type="button">Swap</button>
+      </form>
+    </main>
+    <script>
+      window.swapClicks = 0;
+      let pickerClicks = 0;
+      document.getElementById("swap").addEventListener("click", () => {
+        window.swapClicks += 1;
+      });
+      document.getElementById("token-picker").addEventListener("click", () => {
+        pickerClicks += 1;
+        document.getElementById("picker-clicks").textContent = String(pickerClicks);
+      });
+    </script>
+  </body>
+</html>
