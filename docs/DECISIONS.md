@@ -45,3 +45,18 @@ Append-only. Never edit or delete an entry; supersede it with a new one.
 **Context:** The user asked for no terminal or retro look, no editorial look and no AI-generated look, then delegated the choice ("do it all").
 **Decision:** Safety yellow on ink, used only for CAUTION and TRIPWIRE. Condensed display type, mono readouts, hazard-stripe block screen. Tokens are in `DESIGN.md`.
 **Consequences:** CLEAR and neutral states stay quiet so yellow keeps its meaning.
+
+## ADR-0008 Spec items deferred for the buildathon cut (2026-09-17)
+**Status:** accepted
+**Context:** The final whole-branch review found spec features that no task built and no decision recorded. The deadline is 2026-09-27, and demo-critical correctness and security fixes come first.
+**Decision:** Deferred, not built in v1:
+- the rules editor "would have changed N of last checks" preview
+- the `/history` price-move-since column
+- the X cashtag "N matches" switcher and profile-page person card (person intel shows only inside the post panel)
+- `adapter_miss` logging
+- live HTML snapshots per venue (adapter tests use hand-built markup plus a Playwright smoke against routed fixture pages)
+- the "Budget reached, showing cached data from HH:MM" stale label (budget exhaustion shows UNCHECKED "Nansen credit cap reached")
+- per-minute and per-endpoint rate-limit buckets (a 10 rps token bucket plus 429 retry covers the Pro plan)
+
+The default daily credit cap is 3000, not the spec's 300. The Pro plan has ~128k credits, and demo recording plus the 1,000-call goal need headroom.
+**Consequences:** README and PRODUCT describe only built behavior. Each item can be added later without schema changes.
