@@ -1,0 +1,49 @@
+{
+  "pagination": {
+    "page": 1,
+    "per_page": 1,
+    "is_last_page": true
+  },
+  "top5_tokens": [
+    {
+      "realized_pnl": 27931.236544071315,
+      "realized_roi": 0.007135506590688767,
+      "token_address": "0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2",
+      "token_symbol": "LIT",
+      "chain": "ethereum"
+    },
+    {
+      "realized_pnl": 98.72295879205817,
+      "realized_roi": 0.2353263712044233,
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "chain": "ethereum"
+    },
+    {
+      "realized_pnl": 61.00429629696976,
+      "realized_roi": 0.0013366276580447267,
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "chain": "base"
+    },
+    {
+      "realized_pnl": -197.75412104410495,
+      "realized_roi": -0.5706071177641656,
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "chain": "arbitrum"
+    },
+    {
+      "realized_pnl": -8432.272360274535,
+      "realized_roi": -0.001943508920539621,
+      "token_address": "0x000ae314e2a2172a039b26378814c252734f556a",
+      "token_symbol": "ASTER",
+      "chain": "bsc"
+    }
+  ],
+  "traded_token_count": 10,
+  "traded_times": 160,
+  "realized_pnl_usd": 19460.9373178417,
+  "realized_pnl_percent": 0.0023448346036279554,
+  "win_rate": 0.8
+}

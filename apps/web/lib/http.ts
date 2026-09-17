@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BudgetExceeded, NansenError } from "./nansen/client";
+import { BudgetExceeded, NansenError, PremiumDisabled } from "./nansen/client";
 import { originAllowed, requestAllowed } from "./origin";
 
 export { originAllowed } from "./origin";
@@ -45,6 +45,7 @@ export function route<S extends z.ZodType>(schema: S | null, fn: (req: Request, 
     try {
       return json(req, await fn(req, body as z.infer<S>));
     } catch (e) {
+      if (e instanceof PremiumDisabled) return json(req, { error: "premium_disabled", message: e.message }, 403);
       if (e instanceof BudgetExceeded) return json(req, { error: "budget", message: e.message }, 429);
       if (e instanceof NansenError) return json(req, { error: "nansen", status: e.status, message: e.message }, 502);
       console.error("[tripwire]", e);

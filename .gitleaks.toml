@@ -49,7 +49,18 @@ description = "RPC URL embedding a provider key"
 regex = '''https?://[a-z0-9.-]+\.(alchemy|infura|quicknode|helius|ankr)[a-z./-]*/(v2|v3|rpc)?/?[A-Za-z0-9_-]{24,}'''
 keywords = ["alchemy", "infura", "quicknode", "helius", "ankr"]
 
-[allowlist]
+[[allowlists]]
 description = "Global allowlist"
 paths = ['''(^|/)\.gitleaks\.toml$''', '''(^|/)node_modules/''', '''(^|/)\.git/''']
 regexes = ['''0x0{64}''', '''0xf{64}''']
+
+# Recorded Nansen fixtures list the public ERC-20 contract a wallet holds under a field
+# literally named `token_address`, which trips the default generic-api-key rule on the word
+# "token". A contract address is public by definition and authenticates nothing. Scoped to the
+# replay fixtures and to that exact field so it cannot hide a key anywhere else.
+[[allowlists]]
+description = "Public token contract addresses in recorded fixtures"
+condition = "AND"
+paths = ['''fixtures/.*\.json$''']
+regexTarget = "line"
+regexes = ['''"token_address"\s*:\s*"0x[0-9a-fA-F]{40}"''']

@@ -119,11 +119,18 @@ type ClearinghouseState = {
 };
 type UserFill = { coin: string; px: string; sz: string; time: number; dir: string; closedPnl: string };
 
-async function hyperliquidBadge(link: WalletLink): Promise<HyperliquidBadge> {
+/**
+ * One address's Hyperliquid account, without any claim about who owns it. The author badge adds
+ * the link it came from; the wallet lens passes the address the user clicked and skips the
+ * Nansen perp summary, which is the only part of this that costs a credit.
+ */
+export async function hyperliquidProfile(address: string, opts: { nansenPerp?: boolean } = {}): Promise<Omit<HyperliquidBadge, "link">> {
   const [state, fills, perp] = await Promise.all([
-    settle(hyperliquidInfo<ClearinghouseState>("clearinghouseState", link.address), (d) => d),
-    settle(hyperliquidInfo<UserFill[]>("userFills", link.address), (d) => (Array.isArray(d) ? d : null)),
-    settle(nansen.perpPnlSummary(link.address), (d) => d.data),
+    settle(hyperliquidInfo<ClearinghouseState>("clearinghouseState", address), (d) => d),
+    settle(hyperliquidInfo<UserFill[]>("userFills", address), (d) => (Array.isArray(d) ? d : null)),
+    opts.nansenPerp === false
+      ? Promise.resolve({ value: null, error: null, cached: false, stale: false })
+      : settle(nansen.perpPnlSummary(address), (d) => d.data),
   ]);
 
   const positions = state.value
@@ -148,7 +155,6 @@ async function hyperliquidBadge(link: WalletLink): Promise<HyperliquidBadge> {
 
   const all = fills.value ? [...fills.value].sort((a, b) => b.time - a.time) : null;
   return {
-    link: linkRef(link),
     accountValueUsd: num(state.value?.marginSummary?.accountValue),
     marginUsedUsd: num(state.value?.marginSummary?.totalMarginUsed),
     positions,
@@ -160,16 +166,18 @@ async function hyperliquidBadge(link: WalletLink): Promise<HyperliquidBadge> {
   };
 }
 
-async function polymarketBadge(link: WalletLink): Promise<PolymarketBadge> {
+const hyperliquidBadge = async (link: WalletLink): Promise<HyperliquidBadge> => ({ link: linkRef(link), ...(await hyperliquidProfile(link.address)) });
+
+/** One address's Polymarket record. Three Nansen calls, 1 credit each. */
+export async function polymarketProfile(addressInput: string): Promise<Omit<PolymarketBadge, "link">> {
   const [summary, markets, trades] = await Promise.all([
-    settle(nansen.pmAddressSummary(link.address), (d) => d.data?.[0] ?? null),
-    settle(nansen.pmMarketsByAddress(link.address), (d) => d.data ?? []),
-    settle(nansen.pmTradesByAddress(link.address), (d) => d.data ?? []),
+    settle(nansen.pmAddressSummary(addressInput), (d) => d.data?.[0] ?? null),
+    settle(nansen.pmMarketsByAddress(addressInput), (d) => d.data ?? []),
+    settle(nansen.pmTradesByAddress(addressInput), (d) => d.data ?? []),
   ]);
   const s = summary.value;
-  const address = link.address.toLowerCase();
+  const address = addressInput.toLowerCase();
   return {
-    link: linkRef(link),
     totalPnlUsd: num(s?.total_pnl_usd),
     realizedPnlUsd: num(s?.realized_pnl_usd),
     unrealizedPnlUsd: num(s?.unrealized_pnl_usd),
@@ -204,6 +212,8 @@ async function polymarketBadge(link: WalletLink): Promise<PolymarketBadge> {
     errors: errorsOf(summary, markets, trades),
   };
 }
+
+const polymarketBadge = async (link: WalletLink): Promise<PolymarketBadge> => ({ link: linkRef(link), ...(await polymarketProfile(link.address)) });
 
 export async function buildAuthorBadges(input: { handle: string; displayName: string }): Promise<AuthorBadges> {
   const out: AuthorBadges = { handle: normalizeHandle(input.handle), errors: [] };

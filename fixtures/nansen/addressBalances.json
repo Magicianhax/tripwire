@@ -1,0 +1,259 @@
+{
+  "pagination": {
+    "page": 1,
+    "per_page": 200,
+    "is_last_page": true
+  },
+  "data": [
+    {
+      "chain": "hyperevm",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "HYPE",
+      "token_name": "HYPE",
+      "token_amount": 248.50743255178955,
+      "price_usd": 82.5696755745221,
+      "value_usd": 20519.178083658695
+    },
+    {
+      "chain": "hyperevm",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+      "token_symbol": "USDC",
+      "token_name": "USDC",
+      "token_amount": 3577.0021,
+      "price_usd": 1.00008669908549,
+      "value_usd": 3577.312222810866
+    },
+    {
+      "chain": "arbitrum",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum",
+      "token_amount": 0.93527663047435,
+      "price_usd": 2451.0437181875986,
+      "value_usd": 2292.4039098918192
+    },
+    {
+      "chain": "bnb",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x55d398326f99059ff775485246999027b3197955",
+      "token_symbol": "USDT",
+      "token_name": "Tether USD",
+      "token_amount": 1171.6020883482163,
+      "price_usd": 0.998866122159402,
+      "value_usd": 1170.2736347022399
+    },
+    {
+      "chain": "ethereum",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 539.382456,
+      "price_usd": 1.0010710117991,
+      "value_usd": 539.9601409746035
+    },
+    {
+      "chain": "base",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 470.001299,
+      "price_usd": 1.00110711964371,
+      "value_usd": 470.5216466706921
+    },
+    {
+      "chain": "base",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum",
+      "token_amount": 0.1499899471984348,
+      "price_usd": 2451.0437181875986,
+      "value_usd": 367.6319178720133
+    },
+    {
+      "chain": "bnb",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "BNB",
+      "token_name": "BinanceCoin",
+      "token_amount": 0.4997148716059022,
+      "price_usd": 729.2247687275855,
+      "value_usd": 364.4044616765491
+    },
+    {
+      "chain": "ethereum",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ethereum",
+      "token_amount": 0.06445795376750764,
+      "price_usd": 2451.0437181875986,
+      "value_usd": 157.98926266907625
+    },
+    {
+      "chain": "bnb",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x000ae314e2a2172a039b26378814c252734f556a",
+      "token_symbol": "ASTER",
+      "token_name": "Aster",
+      "token_amount": 104.5703074274596,
+      "price_usd": 0.74102459645928,
+      "value_usd": 77.48916986305609
+    },
+    {
+      "chain": "arbitrum",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "token_symbol": "USDC",
+      "token_name": "USD Coin",
+      "token_amount": 13.610344,
+      "price_usd": 1.00108798114732,
+      "value_usd": 13.625151797680537
+    },
+    {
+      "chain": "robinhood",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "ETH",
+      "token_name": "Ether",
+      "token_amount": 0.004406085237382,
+      "price_usd": 2451.0437181875986,
+      "value_usd": 10.799507542884266
+    },
+    {
+      "chain": "sonic",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "S",
+      "token_name": "Sonic",
+      "token_amount": 371.382749,
+      "price_usd": 0.02687040442066977,
+      "value_usd": 9.979204660490092
+    },
+    {
+      "chain": "ethereum",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "token_symbol": "USDT",
+      "token_name": "Tether USD",
+      "token_amount": 8.983139,
+      "price_usd": 0.994981778312584,
+      "value_usd": 8.938059617049127
+    },
+    {
+      "chain": "ethereum",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x487d62468282bd04ddf976631c23128a425555ee",
+      "token_symbol": "UPC",
+      "token_name": "UPCX",
+      "token_amount": 1,
+      "price_usd": 0.118581022982371,
+      "value_usd": 0.118581022982371
+    },
+    {
+      "chain": "polygon",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "POL",
+      "token_name": "Polygon Ecosystem Token",
+      "token_amount": 1,
+      "price_usd": 0.09873590205644836,
+      "value_usd": 0.09873590205644836
+    },
+    {
+      "chain": "monad",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "token_symbol": "MON",
+      "token_name": "Monad",
+      "token_amount": 1,
+      "price_usd": 0.0229149098258166,
+      "value_usd": 0.0229149098258166
+    },
+    {
+      "chain": "base",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x07d15798a67253d76cea61f0ea6f57aedc59dffb",
+      "token_symbol": "BASED",
+      "token_name": "Based Coin",
+      "token_amount": 375,
+      "price_usd": 0.00000617493733727244,
+      "value_usd": 0.002315601501477165
+    },
+    {
+      "chain": "ethereum",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x2b591e99afe9f32eaa6214f7b7629768c40eeb39",
+      "token_symbol": "HEX",
+      "token_name": "HEX",
+      "token_amount": 1,
+      "price_usd": 0.0011320409688957,
+      "value_usd": 0.0011320409688957
+    },
+    {
+      "chain": "hyperevm",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xf2e6a23b1aa09565fdb3a77af7772709de3f4f95",
+      "token_symbol": "LILLY",
+      "token_name": "Lilly",
+      "token_amount": 1,
+      "price_usd": 0.00014281944824367861,
+      "value_usd": 0.00014281944824367861
+    },
+    {
+      "chain": "bnb",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x2b74ac567edaa7a65237b4f92042667e784439d3",
+      "token_symbol": "🌱 无头苍蝇",
+      "token_name": "🌱 无头苍蝇",
+      "token_amount": 8,
+      "price_usd": 0.0000172430808703875,
+      "value_usd": 0.0001379446469631
+    },
+    {
+      "chain": "bnb",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x45056c2627c9e60753aeef604ee9575709f8e88f",
+      "token_symbol": "🌱 果蝇人生",
+      "token_name": "🌱 果蝇人生",
+      "token_amount": 7,
+      "price_usd": 0.00000978719087709476,
+      "value_usd": 0.00006851033613966331
+    },
+    {
+      "chain": "ethereum",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x92d6c1e31e14520e676a687f0a93788b716beff5",
+      "token_symbol": "DYDX",
+      "token_name": "dYdX",
+      "token_amount": 0.00054776109626534,
+      "price_usd": 0.0263634344989872,
+      "value_usd": 0.000014440863782484713
+    },
+    {
+      "chain": "base",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452",
+      "token_symbol": "WSTETH",
+      "token_name": "Wrapped liquid staked Ether 2.0",
+      "token_amount": 1.7021e-9,
+      "price_usd": 3050.21801771568,
+      "value_usd": 0.000005191776087953859
+    },
+    {
+      "chain": "bnb",
+      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+      "token_address": "0x619940c0f69f1612245f94b7659403623239fb20",
+      "token_symbol": "MSVP",
+      "token_name": "MetaSoilVerseProtocol",
+      "token_amount": 0.0951140865488958,
+      "price_usd": 0.000023170862783144,
+      "value_usd": 0.0000022038754481685473
+    }
+  ]
+}

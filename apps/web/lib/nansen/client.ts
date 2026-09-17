@@ -10,6 +10,14 @@ export class BudgetExceeded extends Error {
     super("Daily Nansen credit cap reached");
   }
 }
+/** A premium endpoint was asked for while `NANSEN_ALLOW_PREMIUM` is off. Lives here, next to
+ * the budget cap, because both are spend policy rather than a transport failure. */
+export class PremiumDisabled extends Error {
+  constructor(endpoint: string, credits: number) {
+    super(`${endpoint} costs ${credits} Nansen credits and is off. Set NANSEN_ALLOW_PREMIUM=1 on the backend to allow it.`);
+  }
+}
+
 export class NansenError extends Error {
   constructor(
     public status: number,
@@ -114,6 +122,24 @@ function readFixture<T>(name: string): T {
   const file = path.join(dir, `${name}.json`);
   if (!fs.existsSync(file)) throw new NansenError(404, `No replay fixture for ${name}`);
   return JSON.parse(fs.readFileSync(file, "utf8")) as T;
+}
+
+/**
+ * A cache-only read of a call that has already been made. Never reaches the network and never
+ * spends a credit: the token-logo proxy serves a picture for a token the card is already
+ * showing, and a picture is not worth a Nansen call of its own. Replay answers from the fixture,
+ * as everywhere else.
+ */
+export function nansenPeek<T>(opts: Omit<CallOpts, "ttlMs">): T | null {
+  if (isReplay()) {
+    try {
+      return readFixture<T>(opts.name);
+    } catch {
+      return null;
+    }
+  }
+  const hit = readCache(`${opts.path}|${stableStringify(opts.body)}`);
+  return hit && hit.expiresAt > Date.now() ? (hit.value as T) : null;
 }
 
 export async function nansenPost<T>(opts: CallOpts): Promise<NansenResult<T>> {

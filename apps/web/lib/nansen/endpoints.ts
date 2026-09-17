@@ -76,6 +76,32 @@ export type PmAddressMarket = {
   total_pnl_usd: number | null;
   market_resolved: boolean | null;
 };
+/** Wallet lens: how long each block of a wallet's profile stays fresh. */
+export const WALLET_BALANCE_TTL = 30 * MIN;
+export const WALLET_POSITIONS_TTL = 10 * MIN;
+export const WALLET_PNL_WINDOW_DAYS = 90;
+/** `profiler/labels` costs 100 credits, so an answer is kept for a day. */
+export const WALLET_LABELS_TTL = 24 * HOUR;
+
+export type AddressBalanceRow = {
+  chain: string;
+  token_address: string;
+  token_symbol: string;
+  token_name?: string | null;
+  token_amount?: number | null;
+  price_usd?: number | null;
+  value_usd: number | null;
+};
+/** `profiler/address/pnl-summary` answers flat for an address (measured), unlike the entity form. */
+export type AddressPnlSummary = {
+  realized_pnl_usd: number | null;
+  realized_pnl_percent?: number | null;
+  win_rate: number | null;
+  traded_times?: number | null;
+  traded_token_count?: number | null;
+};
+export type AddressLabelsResponse = { labels?: string[] | null; entity?: string | null } | Record<string, unknown>;
+
 export type PmAddressTrade = {
   timestamp: string;
   taker_action: string | null;
@@ -153,6 +179,40 @@ export const nansen = {
       path: "profiler/address/current-balance",
       body: { entity_name, chain: "all", hide_spam_token: true, pagination: { page: 1, per_page: 200 } },
       ttlMs: 30 * MIN,
+    }),
+
+  /** Wallet lens: one address's holdings across every chain (1 credit). */
+  addressBalances: (address: string) =>
+    nansenPost<Paged<AddressBalanceRow>>({
+      name: "addressBalances",
+      path: "profiler/address/current-balance",
+      body: { address, chain: "all", hide_spam_token: true, pagination: { page: 1, per_page: 200 } },
+      ttlMs: WALLET_BALANCE_TTL,
+    }),
+
+  /** Wallet lens: realized PnL and win rate for one address over 90 days (1 credit). */
+  addressPnlSummary: (address: string) => {
+    const to = bucketNow(WALLET_BALANCE_TTL);
+    const from = new Date(to.getTime() - WALLET_PNL_WINDOW_DAYS * DAY);
+    return nansenPost<AddressPnlSummary>({
+      name: "addressPnlSummary",
+      path: "profiler/address/pnl-summary",
+      body: { address, chain: "all", date: { from: isoNoMs(from), to: isoNoMs(to) } },
+      ttlMs: WALLET_BALANCE_TTL,
+    });
+  },
+
+  /**
+   * Wallet lens: Nansen's own labels for an address. **100 credits.** Never called on its own;
+   * only `POST /api/wallet/labels`, behind the `NANSEN_ALLOW_PREMIUM` gate and a button that
+   * states the price, reaches it.
+   */
+  addressLabels: (address: string) =>
+    nansenPost<{ data?: AddressLabelsResponse[] | null } | AddressLabelsResponse>({
+      name: "addressLabels",
+      path: "profiler/labels",
+      body: { address },
+      ttlMs: WALLET_LABELS_TTL,
     }),
 
   perpScreener: (token_symbol: string) => {
