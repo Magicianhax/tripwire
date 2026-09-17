@@ -2,6 +2,8 @@ import { getRules, recentChecks, recentOverrides, recentSettingsChanges } from "
 import { Time } from "../_components/Time";
 import { VerdictChip } from "../_components/VerdictChip";
 import { PRESET_LABEL, ruleDescriptions, rulesForPreset } from "../_lib/rule-names";
+import { ArrowRight } from "lucide-react";
+import { Venue } from "../_components/Brand";
 import { TargetLabel } from "../_components/TargetLabel";
 
 export const dynamic = "force-dynamic";
@@ -51,7 +53,9 @@ export default function HistoryPage() {
                     <td>
                       <Time ts={o.ts} />
                     </td>
-                    <td className="tw-nowrap">{o.venue}</td>
+                    <td className="tw-nowrap">
+                      <Venue id={o.venue} />
+                    </td>
                     <td className="tw-nowrap"><TargetLabel json={o.target} /></td>
                     <td>
                       <VerdictChip verdict={o.verdict} />
@@ -88,7 +92,12 @@ export default function HistoryPage() {
                       <Time ts={c.ts} />
                     </td>
                     <td className="tw-nowrap">
-                      {PRESET_LABEL[c.from_preset] ?? c.from_preset} → {PRESET_LABEL[c.to_preset] ?? c.to_preset}
+                      <span className="tw-preset-change">
+                        {PRESET_LABEL[c.from_preset] ?? c.from_preset}
+                        <ArrowRight size={14} strokeWidth={1.5} absoluteStrokeWidth aria-hidden="true" />
+                        <span className="tw-sr-only">to</span>
+                        {PRESET_LABEL[c.to_preset] ?? c.to_preset}
+                      </span>
                     </td>
                     <td>
                       <RuleLines lines={ruleDescriptions(c.rule_ids, rulesForPreset(c.from_preset, currentRules))} />
@@ -122,7 +131,9 @@ export default function HistoryPage() {
                     <td>
                       <Time ts={c.ts} />
                     </td>
-                    <td className="tw-nowrap">{c.venue}</td>
+                    <td className="tw-nowrap">
+                      <Venue id={c.venue} />
+                    </td>
                     <td className="tw-nowrap"><TargetLabel json={c.target} /></td>
                     <td>
                       <VerdictChip verdict={c.verdict} />

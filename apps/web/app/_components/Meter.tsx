@@ -1,7 +1,8 @@
 import { meterFill, meterTicks } from "../_lib/meter";
 
-/** A tick-scale gauge: ground-glass track with quarter ticks and mono scale figures. At zero a
- * lit needle sits on the zero tick, so an empty meter reads as "zero", not as a missing bar. */
+/** A tick-scale meter: a thin mint bar on a hairline track with quarter ticks and tabular scale
+ * figures. At zero a needle sits on the zero tick, so an empty meter reads as "zero", not as a
+ * missing bar. */
 export function Meter({ label, value, max }: { label: string; value: number; max: number }) {
   const { pct, zero } = meterFill(value, max);
   const ticks = meterTicks(max);
@@ -24,7 +25,7 @@ export function Meter({ label, value, max }: { label: string; value: number; max
       </div>
       <div className="tw-meter-scale" aria-hidden="true">
         {ticks.map((t, i) => (
-          <span key={t} className="tw-data" style={{ left: `${(i / (ticks.length - 1)) * 100}%` }} data-edge={i === 0 ? "start" : i === ticks.length - 1 ? "end" : undefined}>
+          <span key={t} className="tw-num-fig" style={{ left: `${(i / (ticks.length - 1)) * 100}%` }} data-edge={i === 0 ? "start" : i === ticks.length - 1 ? "end" : undefined}>
             {t.toLocaleString("en-US")}
           </span>
         ))}

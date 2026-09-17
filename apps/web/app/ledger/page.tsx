@@ -18,21 +18,21 @@ export default function LedgerPage() {
         <div className="tw-stat-row">
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Calls</span>
-            <span className="tw-data tw-stat-value">
+            <span className="tw-num-fig tw-stat-value">
               {s.totalCalls} / {1000}
             </span>
           </div>
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Successful calls</span>
-            <span className="tw-data tw-stat-value">{s.successfulCalls}</span>
+            <span className="tw-num-fig tw-stat-value">{s.successfulCalls}</span>
           </div>
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Credits today</span>
-            <span className="tw-data tw-stat-value">{s.creditsToday}</span>
+            <span className="tw-num-fig tw-stat-value">{s.creditsToday}</span>
           </div>
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Credits total</span>
-            <span className="tw-data tw-stat-value">{s.creditsTotal}</span>
+            <span className="tw-num-fig tw-stat-value">{s.creditsTotal}</span>
           </div>
         </div>
       </section>

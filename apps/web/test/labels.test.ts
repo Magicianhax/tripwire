@@ -3,21 +3,23 @@ import { meterFill, meterTicks } from "../app/_lib/meter";
 import { targetParts } from "../app/_lib/target-label";
 
 describe("targetParts", () => {
-  it("sets addresses in mono and words (chain, side, outcome) in the UI face", () => {
+  it("sets addresses in mono, words in the UI face, and names the chain for its logo", () => {
     expect(targetParts({ kind: "spot", chain: "solana", tokenAddress: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm" })).toEqual([
       { text: "EKpQ…zcjm", mono: true },
-      { text: " · solana", mono: false },
+      { text: " on ", mono: false },
+      { text: "Solana", mono: false, chain: "solana" },
     ]);
     expect(targetParts({ kind: "spot", chain: "base", tokenAddress: "0xabc", symbol: "WIF" })).toEqual([
       { text: "WIF", mono: false },
-      { text: " · base", mono: false },
+      { text: " on ", mono: false },
+      { text: "Base", mono: false, chain: "base" },
     ]);
     expect(targetParts({ kind: "perp", coin: "ETH", side: "long" })).toEqual([{ text: "ETH long", mono: false }]);
   });
 
   it("joins back to the plain label", () => {
     const parts = targetParts({ kind: "prediction", slug: "will-it-rain", outcome: "Yes" } as never);
-    expect(parts.map((p) => p.text).join("")).toBe("will-it-rain · Yes");
+    expect(parts.map((p) => p.text).join("")).toBe("will-it-rain, Yes");
   });
 });
 

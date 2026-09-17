@@ -1,34 +1,34 @@
-/* Tripwire local pages: the Glass Cockpit world. Deep instrument-blue glass, hairline bezels,
-   crew-alerting lamps (warning red, caution amber, advisory cyan, normal green). */
+/* Tripwire local pages in Nansen's world: near-black ground, mint signal, red and amber alerts,
+   Inter for UI and figures, Sora for headings, 16px pills, 12px cards, 8px tiles. Tokens match
+   apps/extension/lib/ui/theme.css. */
 :root {
-  /* glass */
-  --tw-ground: #0a1020;
-  --tw-panel: #111a2e;
-  --tw-raised: #1b2740;
-  --tw-bezel: rgba(143, 163, 191, 0.22);
-  --tw-bezel-strong: rgba(143, 163, 191, 0.4);
-  --tw-sheen: rgba(230, 237, 247, 0.22);
+  /* ground */
+  --tw-ground: #06080b;
+  --tw-panel: #0b1016;
+  --tw-raised: #111821;
+  --tw-line: rgba(255, 255, 255, 0.08);
+  --tw-line-strong: rgba(255, 255, 255, 0.16);
+  --tw-glow: #061a1f;
 
   /* text */
-  --tw-text: #e6edf7;
-  --tw-text-2: #8fa3bf;
-  --tw-ink: #0a1020;
+  --tw-text: #ffffff;
+  --tw-text-2: rgba(255, 255, 255, 0.6);
+  --tw-text-3: rgba(255, 255, 255, 0.4);
+  --tw-ink: #03140d;
 
-  /* lamps */
-  --tw-warning: #ff4d4f;
-  --tw-warning-dim: rgba(255, 77, 79, 0.14);
-  --tw-caution: #ffb020;
-  --tw-caution-dim: rgba(255, 176, 32, 0.14);
-  --tw-advisory: #22d3ee;
-  --tw-advisory-dim: rgba(34, 211, 238, 0.12);
-  --tw-advisory-select: rgba(34, 211, 238, 0.32);
-  --tw-normal: #34d399;
-  --tw-normal-dim: rgba(52, 211, 153, 0.12);
+  /* signal */
+  --tw-mint: #00ffa7;
+  --tw-mint-dim: rgba(0, 255, 167, 0.12);
+  --tw-mint-line: rgba(0, 255, 167, 0.4);
+  --tw-red: #ff5a6e;
+  --tw-red-dim: rgba(255, 90, 110, 0.12);
+  --tw-amber: #f5b83d;
+  --tw-amber-dim: rgba(245, 184, 61, 0.12);
 
   /* shape */
-  --tw-radius-panel: 8px;
-  --tw-radius-plate: 4px;
-  --tw-radius-cell: 2px;
+  --tw-radius-pill: 16px;
+  --tw-radius-card: 12px;
+  --tw-radius-tile: 8px;
 
   /* space */
   --tw-space-1: 4px;
@@ -39,8 +39,8 @@
   --tw-space-6: 40px;
 
   /* type */
-  --tw-font-ui: "Barlow", system-ui, sans-serif;
-  --tw-font-plate: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+  --tw-font-ui: "Inter", system-ui, sans-serif;
+  --tw-font-display: "Sora", "Inter", system-ui, sans-serif;
   --tw-font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
@@ -51,7 +51,7 @@
 html {
   color-scheme: dark;
   background: var(--tw-ground);
-  scrollbar-color: var(--tw-bezel-strong) var(--tw-ground);
+  scrollbar-color: var(--tw-line-strong) var(--tw-ground);
 }
 
 body {
@@ -62,23 +62,56 @@ body {
   font-size: 0.9375rem;
   font-weight: 400;
   line-height: 1.5;
+  font-feature-settings: "tnum";
   -webkit-font-smoothing: antialiased;
 }
 
 a {
-  color: var(--tw-advisory);
+  color: var(--tw-mint);
   text-underline-offset: 3px;
 }
 
-/* Focus rings are advisory cyan on the dark glass. */
+/* Focus rings: 2px mint on the dark ground. */
 :focus-visible {
-  outline: 2px solid var(--tw-advisory);
+  outline: 2px solid var(--tw-mint);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: var(--tw-advisory-select);
+  background: var(--tw-mint-dim);
   color: var(--tw-text);
+}
+
+svg.lucide {
+  display: block;
+  flex-shrink: 0;
+}
+
+.tw-logo {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+.tw-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tw-spin {
+  animation: tw-spin 900ms linear infinite;
+}
+
+@keyframes tw-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -92,11 +125,11 @@ a {
 /* Typography */
 .tw-display {
   margin: 0;
-  font-family: var(--tw-font-plate);
-  font-weight: 700;
-  font-size: 2.5rem;
-  line-height: 1;
-  letter-spacing: 0.01em;
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 .tw-h2 {
@@ -104,25 +137,29 @@ a {
   align-items: baseline;
   gap: var(--tw-space-3);
   margin: 0 0 var(--tw-space-3);
-  font-family: var(--tw-font-plate);
+  font-family: var(--tw-font-display);
   font-weight: 600;
-  font-size: 1.375rem;
-  line-height: 1.1;
-  letter-spacing: 0.01em;
+  font-size: 1.125rem;
+  line-height: 1.3;
 }
 .tw-label {
-  font-family: var(--tw-font-plate);
-  font-weight: 600;
-  font-size: 0.875rem;
-  line-height: 1.2;
-  letter-spacing: 0.02em;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
   color: var(--tw-text-2);
 }
+/* Addresses and hashes only. */
 .tw-data {
   font-family: var(--tw-font-mono);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums slashed-zero;
 }
+/* Figures: the UI face with tabular numerals. */
+.tw-num-fig {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
 /* Layout */
 .tw-container {
   max-width: 1200px;
@@ -135,14 +172,13 @@ a {
   }
 }
 
-/* Nav: an instrument bar with a glass sheen on its bottom edge. */
+/* Nav: a quiet bar on the ground. */
 .tw-nav {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--tw-panel);
-  border-bottom: 1px solid var(--tw-bezel-strong);
-  box-shadow: inset 0 -1px 0 var(--tw-sheen);
+  background: var(--tw-ground);
+  border-bottom: 1px solid var(--tw-line);
 }
 /* padding-block only: the inline gutter comes from .tw-container, so the nav lines up with
    the page content. */
@@ -152,7 +188,7 @@ a {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0 var(--tw-space-5);
-  min-height: 56px;
+  min-height: 64px;
 }
 .tw-nav-brand {
   display: flex;
@@ -160,11 +196,10 @@ a {
   gap: var(--tw-space-3);
 }
 .tw-wordmark {
-  font-family: var(--tw-font-plate);
+  font-family: var(--tw-font-display);
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   line-height: 1;
-  letter-spacing: 0.1em;
   color: var(--tw-text);
   text-decoration: none;
 }
@@ -176,48 +211,34 @@ a {
   padding: 0;
 }
 .tw-nav-link {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  min-height: 56px;
-  padding: 0 var(--tw-space-3);
-  font-family: var(--tw-font-plate);
-  font-weight: 600;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--tw-radius-pill);
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--tw-text-2);
   text-decoration: none;
 }
 @media (hover: hover) {
   .tw-nav-link:hover {
     color: var(--tw-text);
+    background: var(--tw-raised);
   }
 }
 .tw-nav-link[aria-current="page"] {
-  color: var(--tw-text);
-}
-.tw-nav-link[aria-current="page"]::after {
-  content: "";
-  position: absolute;
-  left: var(--tw-space-3);
-  right: var(--tw-space-3);
-  bottom: 0;
-  height: 2px;
-  background: var(--tw-advisory);
-}
-.tw-nav-link:focus-visible {
-  outline-offset: -6px;
-  border-radius: var(--tw-radius-plate);
+  color: var(--tw-mint);
+  background: var(--tw-mint-dim);
 }
 @media (max-width: 600px) {
   .tw-nav-row {
-    padding-top: var(--tw-space-3);
+    padding: var(--tw-space-3) 0;
   }
   .tw-nav-links {
-    margin-left: calc(-1 * var(--tw-space-3));
-  }
-  .tw-nav-link {
-    min-height: 44px;
+    margin-left: -14px;
+    flex-wrap: wrap;
   }
 }
 
@@ -225,19 +246,35 @@ main.tw-main {
   padding: var(--tw-space-6) 0 64px;
 }
 
+.tw-footer {
+  border-top: 1px solid var(--tw-line);
+}
+.tw-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 56px;
+  font-size: 0.8125rem;
+  color: var(--tw-text-2);
+}
+.tw-powered-name {
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  color: var(--tw-text);
+}
+
 .tw-section {
   margin-bottom: var(--tw-space-6);
 }
 
-/* Readout strip: labelled instrument cells divided by hairlines. */
+/* Stat tiles in one card, divided by hairlines. */
 .tw-stat-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   margin-bottom: var(--tw-space-4);
   background: var(--tw-panel);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-panel);
-  box-shadow: inset 0 1px 0 var(--tw-sheen);
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-card);
   overflow: hidden;
 }
 .tw-stat {
@@ -245,8 +282,8 @@ main.tw-main {
   align-content: start;
   gap: var(--tw-space-2);
   min-width: 0;
-  padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
-  border-right: 1px solid var(--tw-bezel);
+  padding: var(--tw-space-4);
+  border-right: 1px solid var(--tw-line);
   margin-right: -1px;
 }
 .tw-stat-label {
@@ -258,68 +295,70 @@ main.tw-main {
   font-weight: 500;
   overflow-wrap: anywhere;
 }
-/* Every numeric readout in a strip reads at one mono size: no hero-metric jump. */
-.tw-stat-value.tw-data {
+/* Every numeric readout in a strip reads at one size: no hero-metric jump. */
+.tw-stat-value.tw-num-fig {
   font-size: 1.375rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.2;
 }
 
-/* Replay tag: advisory, never an alert. */
+/* Replay tag: quiet, never an alert. */
 .tw-replay-badge {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   height: 22px;
-  padding: 0 var(--tw-space-2);
-  border: 1px solid var(--tw-advisory);
-  border-radius: var(--tw-radius-cell);
-  background: var(--tw-advisory-dim);
-  color: var(--tw-advisory);
-  font-family: var(--tw-font-plate);
-  font-weight: 600;
-  font-size: 0.8125rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  padding: 0 10px 0 8px;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  color: var(--tw-text-2);
+  font-weight: 500;
+  font-size: 0.75rem;
 }
 
-/* Verdict plate: the extension's annunciator. Tone and mark come from verdictPlate(). */
+/* Verdict pill: the extension's. Tone and fill come from verdictPlate(). */
 .tw-chip {
-  --lamp: var(--tw-text-2);
-  --lamp-dim: var(--tw-raised);
+  --tone: var(--tw-text-2);
+  --tone-dim: var(--tw-raised);
+  --tone-line: var(--tw-line-strong);
   display: inline-flex;
   align-items: center;
-  height: 22px;
-  padding: 0 var(--tw-space-2);
-  border: 1px solid var(--lamp);
-  border-radius: var(--tw-radius-cell);
-  font-family: var(--tw-font-plate);
-  font-weight: 700;
-  font-size: 0.8125rem;
+  gap: 4px;
+  height: 24px;
+  padding: 0 10px 0 7px;
+  border: 1px solid var(--tone-line);
+  border-radius: var(--tw-radius-pill);
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
   line-height: 1;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
   vertical-align: middle;
 }
 .tw-chip[data-tone="warning"] {
-  --lamp: var(--tw-warning);
-  --lamp-dim: var(--tw-warning-dim);
+  --tone: var(--tw-red);
+  --tone-dim: var(--tw-red-dim);
+  --tone-line: var(--tw-red);
 }
 .tw-chip[data-tone="caution"] {
-  --lamp: var(--tw-caution);
-  --lamp-dim: var(--tw-caution-dim);
+  --tone: var(--tw-amber);
+  --tone-dim: var(--tw-amber-dim);
+  --tone-line: var(--tw-amber);
 }
 .tw-chip[data-tone="normal"] {
-  --lamp: var(--tw-normal);
-  --lamp-dim: var(--tw-normal-dim);
+  --tone: var(--tw-mint);
+  --tone-dim: var(--tw-mint-dim);
+  --tone-line: var(--tw-mint-line);
 }
 .tw-chip[data-mark="filled"] {
-  background: var(--lamp);
+  background: var(--tone);
   color: var(--tw-ink);
 }
 .tw-chip[data-mark="outlined"] {
-  background: var(--lamp-dim);
-  color: var(--lamp);
+  background: var(--tone-dim);
+  color: var(--tone);
 }
 .tw-chip[data-mark="dashed"] {
   border-style: dashed;
@@ -327,16 +366,33 @@ main.tw-main {
   color: var(--tw-text-2);
 }
 .tw-chip-danger-text {
-  color: var(--tw-warning);
+  color: var(--tw-red);
 }
 
-/* Tables sit in a glass panel: dense rows, hairline rules, mono numbers. */
+/* Venues and targets: logo plus name. */
+.tw-venue,
+.tw-target,
+.tw-target-chain,
+.tw-preset-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+.tw-target {
+  gap: 0;
+}
+.tw-target-chain {
+  gap: 4px;
+  color: var(--tw-text-2);
+}
+
+/* Tables like Nansen's: dense rows on the panel, hairline rules, tabular figures. */
 .tw-table-wrap {
   overflow-x: auto;
   background: var(--tw-panel);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-panel);
-  box-shadow: inset 0 1px 0 var(--tw-sheen);
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-card);
   scrollbar-width: thin;
 }
 .tw-table {
@@ -351,17 +407,15 @@ main.tw-main {
 .tw-table th {
   padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-2);
   text-align: left;
-  font-family: var(--tw-font-plate);
-  font-weight: 600;
-  font-size: 0.875rem;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  font-size: 0.8125rem;
   color: var(--tw-text-2);
-  border-bottom: 1px solid var(--tw-bezel-strong);
+  border-bottom: 1px solid var(--tw-line);
   white-space: nowrap;
 }
 .tw-table td {
-  padding: var(--tw-space-2) var(--tw-space-4);
-  border-bottom: 1px solid var(--tw-bezel);
+  padding: 10px var(--tw-space-4);
+  border-bottom: 1px solid var(--tw-line);
   vertical-align: middle;
 }
 @media (hover: hover) {
@@ -371,12 +425,8 @@ main.tw-main {
 }
 .tw-table td.tw-num,
 .tw-table th.tw-num {
-  font-family: var(--tw-font-mono);
-  font-variant-numeric: tabular-nums slashed-zero;
+  font-variant-numeric: tabular-nums;
   text-align: right;
-}
-.tw-table th.tw-num {
-  font-family: var(--tw-font-plate);
 }
 .tw-table tbody tr:last-child td {
   border-bottom: none;
@@ -397,8 +447,8 @@ main.tw-main {
   padding: var(--tw-space-4);
   color: var(--tw-text-2);
   background: var(--tw-panel);
-  border: 1px dashed var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-panel);
+  border: 1px dashed var(--tw-line-strong);
+  border-radius: var(--tw-radius-card);
 }
 
 /* Two-column grid, ledger only */
@@ -413,44 +463,47 @@ main.tw-main {
   }
 }
 
-/* Tick-scale meter: ground-glass track, quarter ticks, mono scale figures. */
+/* Tick-scale meter: a 4px mint bar on a hairline track, quarter ticks, tabular scale figures. */
 .tw-meter {
   margin-top: var(--tw-space-2);
 }
 .tw-meter-track {
   position: relative;
-  height: 12px;
-  background: var(--tw-ground);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-cell);
+  height: 4px;
+  margin: 4px 0;
+  border-radius: 2px;
+  background: var(--tw-line-strong);
 }
 .tw-meter-fill {
   position: absolute;
-  top: 2px;
-  bottom: 2px;
+  top: 0;
+  bottom: 0;
   left: 0;
-  background: var(--tw-advisory);
+  border-radius: 2px;
+  background: var(--tw-mint);
 }
 .tw-meter-tick {
   position: absolute;
-  top: -1px;
+  top: -2px;
   width: 1px;
-  height: 5px;
+  height: 8px;
   margin-left: -0.5px;
-  background: var(--tw-text-2);
+  background: var(--tw-text-3);
 }
 .tw-meter-tick[data-major] {
+  top: -4px;
   height: 12px;
 }
-/* Zero state: a lit needle standing on the zero tick. */
+/* Zero state: a needle standing on the zero tick. */
 .tw-meter-track[data-zero]::before {
   content: "";
   position: absolute;
-  top: -4px;
-  bottom: -4px;
+  top: -5px;
+  bottom: -5px;
   left: -1px;
-  width: 3px;
-  background: var(--tw-advisory);
+  width: 2px;
+  border-radius: 1px;
+  background: var(--tw-mint);
 }
 .tw-meter-scale {
   position: relative;
@@ -471,27 +524,26 @@ main.tw-main {
   transform: translateX(-100%);
 }
 
-/* Segmented control: the selected preset gets a lit advisory bezel. */
+/* Segmented control: a pill track; the selected preset is mint. */
 .tw-segmented {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 2px;
-  padding: 2px;
+  padding: 3px;
   background: var(--tw-panel);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-plate);
+  border: 1px solid var(--tw-line);
+  border-radius: 20px;
 }
 .tw-segment {
-  min-height: 36px;
+  min-height: 34px;
   padding: 0 var(--tw-space-5);
-  font-family: var(--tw-font-plate);
-  font-weight: 600;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
+  font-family: var(--tw-font-ui);
+  font-weight: 500;
+  font-size: 0.875rem;
   color: var(--tw-text-2);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--tw-radius-cell);
+  border-radius: var(--tw-radius-pill);
   cursor: pointer;
 }
 @media (hover: hover) {
@@ -501,10 +553,10 @@ main.tw-main {
   }
 }
 .tw-segment[aria-pressed="true"] {
-  color: var(--tw-text);
-  background: var(--tw-raised);
-  border-color: var(--tw-advisory);
-  box-shadow: inset 0 1px 0 var(--tw-sheen);
+  color: var(--tw-mint);
+  background: var(--tw-mint-dim);
+  border-color: var(--tw-mint-line);
+  font-weight: 600;
 }
 .tw-segment:disabled {
   cursor: default;
@@ -513,15 +565,14 @@ main.tw-main {
   outline-offset: 1px;
 }
 
-/* Rule groups: a glass panel of rows. */
+/* Rule groups: a card of rows. */
 .tw-rule-group {
   margin-bottom: var(--tw-space-5);
 }
 .tw-rule-rows {
   background: var(--tw-panel);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-panel);
-  box-shadow: inset 0 1px 0 var(--tw-sheen);
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-card);
 }
 .tw-rule-row {
   display: flex;
@@ -529,7 +580,7 @@ main.tw-main {
   align-items: center;
   gap: var(--tw-space-2) var(--tw-space-4);
   padding: var(--tw-space-3) var(--tw-space-4);
-  border-bottom: 1px solid var(--tw-bezel);
+  border-bottom: 1px solid var(--tw-line);
 }
 .tw-rule-row:last-child {
   border-bottom: none;
@@ -541,9 +592,8 @@ main.tw-main {
   min-height: 32px;
   gap: var(--tw-space-2);
   cursor: pointer;
-  font-family: var(--tw-font-plate);
-  font-weight: 600;
-  font-size: 0.9375rem;
+  font-weight: 500;
+  font-size: 0.875rem;
   color: var(--tw-text-2);
 }
 .tw-rule-sentence {
@@ -560,41 +610,41 @@ main.tw-main {
 
 /* Form controls */
 input[type="checkbox"] {
-  accent-color: var(--tw-advisory);
+  accent-color: var(--tw-mint);
   width: 18px;
   height: 18px;
   margin: 3px;
 }
 .tw-input-number {
   width: 12ch;
-  min-height: 32px;
+  min-height: 34px;
   margin: 0 var(--tw-space-1);
-  padding: 2px var(--tw-space-2);
-  font-family: var(--tw-font-mono);
-  font-variant-numeric: tabular-nums slashed-zero;
+  padding: 2px var(--tw-space-3);
+  font-family: var(--tw-font-ui);
+  font-variant-numeric: tabular-nums;
   font-size: 0.875rem;
   text-align: right;
   color: var(--tw-text);
-  caret-color: var(--tw-advisory);
+  caret-color: var(--tw-mint);
   background: var(--tw-ground);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-plate);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-tile);
 }
 select {
-  min-height: 32px;
+  min-height: 34px;
   padding: 0 var(--tw-space-2);
-  font-family: var(--tw-font-plate);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-family: var(--tw-font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--tw-text);
   background: var(--tw-ground);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-plate);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-tile);
 }
 .tw-input-number:focus-visible,
 select:focus-visible {
   outline-offset: 1px;
-  border-color: var(--tw-advisory);
+  border-color: transparent;
 }
 .tw-save-row {
   display: flex;
@@ -602,28 +652,28 @@ select:focus-visible {
   gap: var(--tw-space-4);
   margin-top: var(--tw-space-5);
 }
+/* Primary action: Nansen's mint pill with dark ink. */
 .tw-button {
   min-height: 40px;
   padding: 0 var(--tw-space-5);
-  font-family: var(--tw-font-plate);
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.04em;
+  font-family: var(--tw-font-ui);
+  font-weight: 600;
+  font-size: 0.9375rem;
   color: var(--tw-ink);
-  background: var(--tw-advisory);
-  border: 1px solid var(--tw-advisory);
-  border-radius: var(--tw-radius-plate);
+  background: var(--tw-mint);
+  border: 1px solid var(--tw-mint);
+  border-radius: var(--tw-radius-pill);
   cursor: pointer;
 }
 @media (hover: hover) {
   .tw-button:not(:disabled):hover {
-    filter: brightness(1.1);
+    filter: brightness(1.08);
   }
 }
 .tw-button:disabled {
   color: var(--tw-text-2);
   background: var(--tw-raised);
-  border: 1px dashed var(--tw-bezel-strong);
+  border: 1px dashed var(--tw-line-strong);
   cursor: default;
 }
 .tw-confirm-row {
@@ -633,9 +683,12 @@ select:focus-visible {
   gap: var(--tw-space-2) var(--tw-space-3);
   margin-top: var(--tw-space-3);
   padding: var(--tw-space-3) var(--tw-space-4);
-  border: 1px solid var(--tw-caution);
-  border-radius: var(--tw-radius-plate);
-  background: var(--tw-caution-dim);
+  border: 1px solid var(--tw-amber);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-amber-dim);
+}
+.tw-confirm-icon {
+  color: var(--tw-amber);
 }
 .tw-confirm-text {
   margin: 0;
@@ -647,26 +700,29 @@ select:focus-visible {
 .tw-button-danger {
   min-height: 36px;
   color: var(--tw-ink);
-  background: var(--tw-caution);
-  border-color: var(--tw-caution);
+  background: var(--tw-amber);
+  border-color: var(--tw-amber);
 }
 .tw-button-quiet {
   min-height: 36px;
   color: var(--tw-text);
   background: transparent;
-  border-color: var(--tw-bezel-strong);
+  border-color: var(--tw-line-strong);
 }
 .tw-status-message {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--tw-text-2);
 }
 .tw-status-message[data-kind="error"] {
-  color: var(--tw-warning);
+  color: var(--tw-red);
 }
 .tw-status-message[data-kind="saved"] {
-  color: var(--tw-normal);
+  color: var(--tw-mint);
 }
 
 .tw-install-steps {
@@ -677,19 +733,17 @@ select:focus-visible {
   font-size: 0.9375rem;
   line-height: 1.6;
   background: var(--tw-panel);
-  border: 1px solid var(--tw-bezel-strong);
-  border-radius: var(--tw-radius-panel);
-  box-shadow: inset 0 1px 0 var(--tw-sheen);
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-card);
 }
 .tw-install-steps li::marker {
-  font-family: var(--tw-font-mono);
+  font-variant-numeric: tabular-nums;
   color: var(--tw-text-2);
 }
 .tw-install-steps code {
   font-family: var(--tw-font-mono);
   font-size: 0.8125rem;
   padding: 1px 6px;
-  background: var(--tw-ground);
-  border: 1px solid var(--tw-bezel);
-  border-radius: var(--tw-radius-cell);
+  background: var(--tw-raised);
+  border-radius: 6px;
 }

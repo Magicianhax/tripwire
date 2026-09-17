@@ -5,6 +5,7 @@ import { Meter } from "./_components/Meter";
 import { TargetLabel } from "./_components/TargetLabel";
 import { Time } from "./_components/Time";
 import { VerdictChip } from "./_components/VerdictChip";
+import { Venue } from "./_components/Brand";
 
 export const dynamic = "force-dynamic";
 
@@ -50,14 +51,14 @@ export default function StatusPage() {
         <div className="tw-stat-row">
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Credits today</span>
-            <span className="tw-data tw-stat-value">
+            <span className="tw-num-fig tw-stat-value">
               {credits} / {DAILY_CAP}
             </span>
             <Meter label={`Nansen credits used today: ${credits} of the ${DAILY_CAP} cap`} value={credits} max={DAILY_CAP} />
           </div>
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Calls total</span>
-            <span className="tw-data tw-stat-value">
+            <span className="tw-num-fig tw-stat-value">
               {totalCalls} / {BUILDATHON_GOAL}
             </span>
             <Meter label={`Calls toward the buildathon goal: ${totalCalls} of ${BUILDATHON_GOAL}, ${goalPct}%`} value={totalCalls} max={BUILDATHON_GOAL} />
@@ -102,7 +103,9 @@ export default function StatusPage() {
                     <td>
                       <Time ts={c.ts} />
                     </td>
-                    <td className="tw-nowrap">{c.venue}</td>
+                    <td className="tw-nowrap">
+                      <Venue id={c.venue} />
+                    </td>
                     <td className="tw-nowrap"><TargetLabel json={c.target} /></td>
                     <td>
                       <VerdictChip verdict={c.verdict} />

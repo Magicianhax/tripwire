@@ -1,4 +1,4 @@
-import type { Target } from "@tripwire/core";
+import { chainLogo, type Target } from "@tripwire/core";
 
 /** first4…last4, matching the extension's compact address display. */
 function shortAddress(addr: string): string {
@@ -11,24 +11,29 @@ export function targetLabel(t: Target): string {
   switch (t.kind) {
     case "spot": {
       const base = t.symbol ?? shortAddress(t.tokenAddress);
-      return `${base} · ${t.chain}`;
+      return `${base} on ${chainLogo(t.chain)?.name ?? t.chain}`;
     }
     case "perp":
       return t.side ? `${t.coin} ${t.side}` : t.coin;
     case "prediction": {
       const slug = t.slug.length > 40 ? `${t.slug.slice(0, 40)}…` : t.slug;
-      return t.outcome ? `${slug} · ${t.outcome}` : slug;
+      return t.outcome ? `${slug}, ${t.outcome}` : slug;
     }
   }
 }
 
-export type LabelPart = { text: string; mono: boolean };
+export type LabelPart = { text: string; mono: boolean; chain?: string };
 
 /** The same label split by face: addresses in mono, words (symbols, chains, sides, slugs) in the
- * UI face. Joining the parts' text gives `targetLabel`. */
+ * UI face; the chain part names its chain so it can carry the chain logo. Joining the parts'
+ * text gives `targetLabel`. */
 export function targetParts(t: Target): LabelPart[] {
   if (t.kind === "spot") {
-    return [t.symbol ? { text: t.symbol, mono: false } : { text: shortAddress(t.tokenAddress), mono: true }, { text: ` · ${t.chain}`, mono: false }];
+    return [
+      t.symbol ? { text: t.symbol, mono: false } : { text: shortAddress(t.tokenAddress), mono: true },
+      { text: " on ", mono: false },
+      { text: chainLogo(t.chain)?.name ?? t.chain, mono: false, chain: t.chain },
+    ];
   }
   return [{ text: targetLabel(t), mono: false }];
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check, CircleAlert, LoaderCircle, TriangleAlert } from "lucide-react";
 import { usd, type PresetName, type Rule, type TargetKind } from "@tripwire/core";
 import type { RulesState } from "@/lib/store";
 import { displayValue, formatThresholdInput, parseThresholdInput, splitSentence, storedThreshold } from "./rule-text";
@@ -23,6 +24,7 @@ type PutBody = { preset: PresetName } | { rules: Rule[] };
 function WeakenConfirm({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
     <div className="tw-confirm-row" role="alert">
+      <TriangleAlert className="tw-confirm-icon" size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden="true" />
       <p className="tw-confirm-text">Weaken protection? This lowers or removes blocks.</p>
       <button type="button" className="tw-button tw-button-danger" onClick={onConfirm}>
         Confirm
@@ -205,9 +207,24 @@ export function RulesEditor({ initial }: { initial: RulesState }) {
           aria-live="polite"
           data-kind={status.kind === "error" ? "error" : status.kind === "saved" ? "saved" : undefined}
         >
-          {status.kind === "saving" && "Saving…"}
-          {status.kind === "saved" && "Saved"}
-          {status.kind === "error" && (status.message ?? "Something went wrong.")}
+          {status.kind === "saving" && (
+            <>
+              <LoaderCircle className="tw-spin" size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden="true" />
+              Saving…
+            </>
+          )}
+          {status.kind === "saved" && (
+            <>
+              <Check size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden="true" />
+              Saved
+            </>
+          )}
+          {status.kind === "error" && (
+            <>
+              <CircleAlert size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden="true" />
+              {status.message ?? "Something went wrong."}
+            </>
+          )}
         </p>
       </div>
       {pendingWeaken && "rules" in pendingWeaken ? (
