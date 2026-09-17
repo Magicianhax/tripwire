@@ -76,4 +76,18 @@ describe("mountReact", () => {
     expect(shadowCss.length).toBeLessThan(40_000);
     for (const m of mounts) m.ui.remove();
   });
+
+  it("update() after the mount is removed is a no-op (React #409 guard)", async () => {
+    let mount!: Awaited<ReturnType<typeof mountReact>>;
+    await act(async () => {
+      mount = await mountReact(fakeCtx(), { position: "inline" }, <span>chip</span>);
+    });
+    const host = mount.ui.shadowHost;
+    mount.ui.remove();
+    expect(host.isConnected).toBe(false);
+    // A pending async result (e.g. getChipIntel resolving after a detached-tweet sweep)
+    // landing after removal must never throw or attempt to render on the unmounted root.
+    expect(() => mount.update(<span>late update</span>)).not.toThrow();
+    expect(host.shadowRoot?.textContent ?? "").not.toContain("late update");
+  });
 });

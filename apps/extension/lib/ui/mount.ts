@@ -23,6 +23,13 @@ export type MountReactOptions =
  */
 export async function mountReact(ctx: ContentScriptContext, opts: MountReactOptions, node: ReactNode) {
   let root: Root | undefined;
+  // Set by onRemove, which WXT calls synchronously from `ui.remove()`. Guards `update()`
+  // against firing after removal: a caller can still hold this mount object (e.g. a chip whose
+  // `getChipIntel` was still pending when the tweet's article scrolled out and got swept) and
+  // call `update()` once its async work resolves -- without this flag that would call
+  // `root.render()` on an already-unmounted root, which React reports as an unhandled
+  // rejection ("Cannot update an unmounted root").
+  let removed = false;
   // Once per document, not per mount: see lib/ui/fonts.ts.
   ensureFontFaces(document, (publicPath) => browser.runtime.getURL(publicPath as "/"));
 
@@ -35,6 +42,7 @@ export async function mountReact(ctx: ContentScriptContext, opts: MountReactOpti
       return root;
     },
     onRemove(mountedRoot) {
+      removed = true;
       mountedRoot?.unmount();
     },
   });
@@ -50,6 +58,7 @@ export async function mountReact(ctx: ContentScriptContext, opts: MountReactOpti
   return {
     ui,
     update(next: ReactNode) {
+      if (removed) return; // no-op after this mount's shadow root was removed
       root?.render(next);
     },
   };
