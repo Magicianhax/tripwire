@@ -20,9 +20,9 @@ export type BlockOverlayProps = {
  * The BlockScreen's positioning frame: an invisible, full-viewport `pointer-events:none`
  * layer (so nothing outside the block rect is ever unclickable) with one `pointer-events:auto`
  * child sized to the anchor's rect (`computeBlockRect`, from `lib/adapters/overlay.ts`).
- * Mounted via `mountReact(ctx, { position: "modal" }, …)`, whose "modal" positioning already
- * makes the shadow-root container `position:fixed; inset:0` -- this component's own `fixed`
- * children are viewport-relative on top of that.
+ * Mounted via `mountReact(ctx, { position: "modal" }, …)`, whose "modal" positioning makes the
+ * shadow-root container `position:fixed; inset:0`; `mountReact` sets that container to
+ * `pointer-events:none` too, so only the block rectangle below is ever hit-testable.
  */
 export function BlockOverlay({ rect, hits, phrase, onEvidence, onOverride, pending = false, error = null }: BlockOverlayProps) {
   return (

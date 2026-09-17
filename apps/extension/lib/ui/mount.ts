@@ -36,6 +36,12 @@ export async function mountReact(ctx: ContentScriptContext, opts: MountReactOpti
   });
 
   ui.mount();
+  if (opts.position !== "inline") {
+    // WXT positions a modal/overlay container `fixed; inset:0` over the whole viewport. It must
+    // be click-through: only the children that opt back in (`pointer-events:auto`, e.g. the
+    // block rectangle) may take pointer events, so the rest of the venue page stays usable.
+    ui.uiContainer.style.pointerEvents = "none";
+  }
 
   return {
     ui,
