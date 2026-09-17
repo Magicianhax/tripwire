@@ -11,6 +11,14 @@ export type BlockScreenProps = {
   /** Focus the override input on mount, unless a host-page field already has focus.
    * Default true; the runner can pass false to suppress (e.g. it manages focus itself). */
   autoFocus?: boolean;
+  /** True while an `override()` call is in flight. Disables the Override button (in addition
+   * to the phrase-match check) so a slow network round-trip can't be raced by repeat clicks.
+   * Default false. */
+  pending?: boolean;
+  /** A message from the runner's last FAILED override attempt (e.g. "Override not recorded:
+   * backend offline. Still blocked."). Rendered as a `role="status"` line so it's announced;
+   * the trade stays blocked. Default null (nothing rendered). */
+  error?: string | null;
 };
 
 const MAX_HITS = 3;
@@ -30,11 +38,12 @@ const MAX_HITS = 3;
  * convenience popover: closing it on Escape would defeat its purpose, so no keydown handler
  * here ever calls anything on "Escape" — that key is a deliberate no-op.
  */
-export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = true }: BlockScreenProps) {
+export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = true, pending = false, error = null }: BlockScreenProps) {
   const [input, setInput] = useState("");
   const headingId = useId();
   const inputId = `${headingId}-override-input`;
   const matches = input.trim() === phrase;
+  const overrideDisabled = !matches || pending;
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +65,7 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
   }, []);
 
   function tryOverride() {
-    if (input.trim() === phrase) onOverride();
+    if (input.trim() === phrase && !pending) onOverride();
   }
 
   function handleRootKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
@@ -112,10 +121,15 @@ export function BlockScreen({ hits, phrase, onEvidence, onOverride, autoFocus = 
                 }}
               />
             </div>
-            <button type="button" className="tw-block-override-btn" disabled={!matches} onClick={tryOverride}>
-              Override
+            <button type="button" className="tw-block-override-btn" disabled={overrideDisabled} onClick={tryOverride}>
+              {pending ? "Overriding…" : "Override"}
             </button>
           </div>
+          {error ? (
+            <p className="tw-block-error" role="status">
+              {error}
+            </p>
+          ) : null}
           <button type="button" className="tw-block-evidence" onClick={onEvidence}>
             Evidence →
           </button>

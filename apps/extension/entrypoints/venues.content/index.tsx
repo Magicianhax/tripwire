@@ -47,9 +47,16 @@ export default defineContentScript({
 
         const target = adapter.readTarget(document, url);
         const key = keyFor(adapter.id, target);
-        // Unchanged target: no-op. The block overlay (if any) keeps itself positioned via its
-        // own ResizeObserver/scroll listeners, independent of this loop.
-        if (key === lastKey) return;
+        // Unchanged target: the block overlay (if any) keeps itself positioned via its own
+        // ResizeObserver/scroll listeners, independent of this loop -- but the venue's SPA can
+        // still replace the anchor NODE itself (same Target, new DOM element) between ticks,
+        // which those listeners don't catch (they're bound to the old node). resyncAnchor()
+        // re-queries adapter.anchor(document) and rebinds the blocker/overlay onto whatever
+        // node is live now, or falls back to the Dock if none is found.
+        if (key === lastKey) {
+          await runner.resyncAnchor();
+          return;
+        }
 
         lastKey = key;
         await runner.render(adapter, target, key);

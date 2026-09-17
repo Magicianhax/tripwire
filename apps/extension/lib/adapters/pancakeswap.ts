@@ -3,7 +3,8 @@ import { evmTarget, UNISWAP_CHAIN_NAMES } from "./chains";
 import { OVERRIDE_PHRASES, type VenueAdapter } from "./types";
 
 /** Tier 2, URL-only spot, dock only: `pancakeswap.finance/...?outputCurrency=<address>` ->
- * spot. No `chain` param defaults to PancakeSwap's home chain, bnb. */
+ * spot. Requires `chain` (controller ruling, task-12 fix round 1: a missing/unknown chain ->
+ * null/UNCHECKED dock, never a defaulted chain). */
 export const pancakeswapAdapter: VenueAdapter = {
   id: "pancakeswap",
   tier: 2,
@@ -14,7 +15,8 @@ export const pancakeswapAdapter: VenueAdapter = {
     const address = url.searchParams.get("outputCurrency");
     if (!address) return null;
     const chainParam = url.searchParams.get("chain");
-    const chain = chainParam ? UNISWAP_CHAIN_NAMES[chainParam] : "bnb";
+    if (!chainParam) return null;
+    const chain = UNISWAP_CHAIN_NAMES[chainParam];
     if (!chain) return null;
     return evmTarget(chain, address);
   },

@@ -679,6 +679,14 @@
   justify-self: start;
 }
 
+.tw-block-error {
+  margin: 0;
+  font-family: var(--tw-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--tw-ink);
+}
+
 /* -------------------- Strip -------------------- */
 
 .tw-strip {

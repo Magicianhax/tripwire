@@ -369,3 +369,73 @@ describe("PerpBody liquidation ladder", () => {
     root.unmount();
   });
 });
+
+describe("BlockScreen override pending/error (fix round 1/5)", () => {
+  it("disables Override while pending, even with an exact phrase match, and shows 'Overriding…'", () => {
+    const onOverride = vi.fn();
+    const { container, root } = mountNode(
+      <BlockScreen hits={[makeHit(1)]} phrase="I AM EXIT LIQUIDITY" onEvidence={() => {}} onOverride={onOverride} pending />,
+    );
+    const input = container.querySelector("input") as HTMLInputElement;
+    const button = container.querySelector(".tw-block-override-btn") as HTMLButtonElement;
+
+    act(() => {
+      setInputValue(input, "I AM EXIT LIQUIDITY");
+    });
+    expect(button.disabled).toBe(true);
+    expect(button.textContent).toBe("Overriding…");
+
+    act(() => {
+      button.click();
+    });
+    expect(onOverride).not.toHaveBeenCalled();
+
+    root.unmount();
+  });
+
+  it("ignores Enter-in-input while pending too (not just the button's disabled attribute)", () => {
+    const onOverride = vi.fn();
+    const { container, root } = mountNode(
+      <BlockScreen hits={[makeHit(1)]} phrase="I AM EXIT LIQUIDITY" onEvidence={() => {}} onOverride={onOverride} pending />,
+    );
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    act(() => {
+      setInputValue(input, "I AM EXIT LIQUIDITY");
+    });
+    act(() => {
+      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    });
+    expect(onOverride).not.toHaveBeenCalled();
+
+    root.unmount();
+  });
+
+  it("renders the failure message as role=status and leaves Override enabled again (not pending)", () => {
+    const { container, root } = mountNode(
+      <BlockScreen
+        hits={[makeHit(1)]}
+        phrase="I AM EXIT LIQUIDITY"
+        onEvidence={() => {}}
+        onOverride={() => {}}
+        error="Override not recorded: backend offline. Still blocked."
+      />,
+    );
+    const status = container.querySelector('.tw-block-error[role="status"]');
+    expect(status?.textContent).toBe("Override not recorded: backend offline. Still blocked.");
+
+    const button = container.querySelector(".tw-block-override-btn") as HTMLButtonElement;
+    expect(button.disabled).toBe(true); // still true: the phrase input is empty, independent of `error`
+    expect(button.textContent).toBe("Override");
+
+    root.unmount();
+  });
+
+  it("renders no error line when `error` is null/omitted", () => {
+    const { container, root } = mountNode(
+      <BlockScreen hits={[makeHit(1)]} phrase="I AM EXIT LIQUIDITY" onEvidence={() => {}} onOverride={() => {}} />,
+    );
+    expect(container.querySelector(".tw-block-error")).toBeNull();
+    root.unmount();
+  });
+});

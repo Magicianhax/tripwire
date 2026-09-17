@@ -1,0 +1,58 @@
+import type { Target, Verdict } from "@tripwire/core";
+import type { ContentScriptContext } from "wxt/utils/content-script-context";
+import type { createAnchorBinding } from "../../lib/adapters/anchor-binding";
+import type { GuardResponse } from "../../lib/api-types";
+import type { VenueAdapter } from "../../lib/adapters/types";
+import type { mountReact } from "../../lib/ui/mount";
+
+export type Mount = Awaited<ReturnType<typeof mountReact>>;
+export type AnchorBinding = ReturnType<typeof createAnchorBinding>;
+
+/** Everything needed to re-route a still-visible verdict (block/strip) once its anchor node is
+ * gone entirely -- see `resyncAnchor()` in `runner.tsx`. */
+export type ActiveSession = {
+  adapter: VenueAdapter;
+  target: Target | null;
+  key: string;
+  verdict: Verdict;
+  headline: string;
+  chipData: GuardResponse | null;
+};
+
+/**
+ * One venue-page session's shared mutable state, plus the couple of cross-cutting
+ * dependencies the display factories in `displays.tsx` need (`ctx`, the unlock maps, and a
+ * callback into `runner.tsx`'s `render_` for the doOverride -> re-render path). A single plain
+ * object (mutated in place), not individually closured `let`s, so `runner.tsx` and
+ * `displays.tsx` can share ownership of "at most one primary display is ever mounted at once"
+ * without a getter/setter per field.
+ */
+export type RunnerContext = {
+  ctx: ContentScriptContext;
+  mainMount: Mount | null;
+  evidenceMount: Mount | null;
+  blocker: { release(): void } | null;
+  resizeObserver: ResizeObserver | null;
+  repositionCleanup: (() => void) | null;
+  anchorBinding: AnchorBinding | null;
+  activeSession: ActiveSession | null;
+  currentKey: string | null;
+  unlocks: Map<string, number>;
+  unlockTimers: Map<string, ReturnType<typeof setTimeout>>;
+  /** `runner.tsx`'s `render_`: routes an already-resolved verdict/headline (no network call)
+   * to the right display. A field (not an import) to avoid a circular module dependency
+   * between `runner.tsx` and `displays.tsx`. */
+  renderResolved: (
+    adapter: VenueAdapter,
+    target: Target | null,
+    key: string,
+    verdict: Verdict,
+    headline: string,
+    chipData: GuardResponse | null,
+  ) => Promise<void>;
+};
+
+export function isUnlocked(rc: RunnerContext, key: string): boolean {
+  const expiry = rc.unlocks.get(key);
+  return expiry !== undefined && expiry > Date.now();
+}

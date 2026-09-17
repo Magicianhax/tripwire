@@ -7,6 +7,15 @@ export function errorHeadline(status: number, error: string): string {
   return `Tripwire couldn't check this: ${error || "check failed"}`;
 }
 
+/** BlockScreen's `error` prop text after a failed `override()` call. The trade stays blocked
+ * -- this is purely informational (fix round 1/5: override failures previously had no
+ * user-visible feedback). */
+export function overrideFailureText(status: number, error: string): string {
+  if (status === 0) return "Override not recorded: backend offline. Still blocked.";
+  if (status === 429) return "Override not recorded: Nansen credit cap reached. Still blocked.";
+  return `Override not recorded: ${error || "request failed"}. Still blocked.`;
+}
+
 export function verdictHeadline(verdict: Verdict): string {
   switch (verdict) {
     case "CLEAR":

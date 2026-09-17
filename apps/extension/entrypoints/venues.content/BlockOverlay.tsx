@@ -8,6 +8,12 @@ export type BlockOverlayProps = {
   phrase: string;
   onEvidence: () => void;
   onOverride: () => void;
+  /** True while an override() call is in flight -- disables BlockScreen's Override button so
+   * rapid repeat clicks can't fire duplicate override() calls. */
+  pending?: boolean;
+  /** The last failed override attempt's message, or null. Rendered by BlockScreen; the trade
+   * stays blocked regardless. */
+  error?: string | null;
 };
 
 /**
@@ -18,7 +24,7 @@ export type BlockOverlayProps = {
  * makes the shadow-root container `position:fixed; inset:0` -- this component's own `fixed`
  * children are viewport-relative on top of that.
  */
-export function BlockOverlay({ rect, hits, phrase, onEvidence, onOverride }: BlockOverlayProps) {
+export function BlockOverlay({ rect, hits, phrase, onEvidence, onOverride, pending = false, error = null }: BlockOverlayProps) {
   return (
     <div style={{ position: "fixed", inset: 0, pointerEvents: "none" }}>
       <div
@@ -31,7 +37,7 @@ export function BlockOverlay({ rect, hits, phrase, onEvidence, onOverride }: Blo
           pointerEvents: "auto",
         }}
       >
-        <BlockScreen hits={hits} phrase={phrase} onEvidence={onEvidence} onOverride={onOverride} />
+        <BlockScreen hits={hits} phrase={phrase} onEvidence={onEvidence} onOverride={onOverride} pending={pending} error={error} />
       </div>
     </div>
   );

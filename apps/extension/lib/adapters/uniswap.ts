@@ -16,9 +16,11 @@ export const uniswapAdapter: VenueAdapter = {
     const address = url.searchParams.get("outputCurrency");
     if (!address) return null;
     const chainParam = url.searchParams.get("chain");
-    // No `chain` param defaults to Uniswap's own default network, mainnet/ethereum.
-    const chain = chainParam ? UNISWAP_CHAIN_NAMES[chainParam] : "ethereum";
-    if (!chain) return null; // unknown chain -> UNCHECKED dock is fine
+    // Controller ruling (task-12 fix round 1): a missing/unknown `chain` param -> null
+    // (UNCHECKED dock), never a defaulted chain.
+    if (!chainParam) return null;
+    const chain = UNISWAP_CHAIN_NAMES[chainParam];
+    if (!chain) return null;
     return evmTarget(chain, address);
   },
   anchor(doc) {

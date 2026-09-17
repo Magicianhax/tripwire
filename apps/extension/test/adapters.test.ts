@@ -9,6 +9,7 @@ import { gmgnAdapter } from "../lib/adapters/gmgn";
 import { hyperliquidAdapter } from "../lib/adapters/hyperliquid";
 import { jumperAdapter } from "../lib/adapters/jumper";
 import { jupiterAdapter } from "../lib/adapters/jupiter";
+import { matchaAdapter } from "../lib/adapters/matcha";
 import { oneinchAdapter } from "../lib/adapters/oneinch";
 import { pancakeswapAdapter } from "../lib/adapters/pancakeswap";
 import { polymarketAdapter } from "../lib/adapters/polymarket";
@@ -80,7 +81,15 @@ describe("uniswap", () => {
   });
 
   it("native ETH -> null (we don't guard natives)", () => {
-    expect(read(uniswapAdapter, "https://app.uniswap.org/swap?outputCurrency=ETH")).toBeNull();
+    expect(read(uniswapAdapter, "https://app.uniswap.org/swap?chain=ethereum&outputCurrency=ETH")).toBeNull();
+  });
+
+  it("missing chain param -> null (controller ruling: no defaulted chain)", () => {
+    expect(read(uniswapAdapter, `https://app.uniswap.org/swap?outputCurrency=${EVM_ADDR}`)).toBeNull();
+  });
+
+  it("unknown chain param -> null", () => {
+    expect(read(uniswapAdapter, `https://app.uniswap.org/swap?chain=not-a-chain&outputCurrency=${EVM_ADDR}`)).toBeNull();
   });
 
   it("does not match other hosts", () => {
@@ -217,12 +226,30 @@ describe("tier 2: aerodrome / pancakeswap", () => {
     });
   });
 
-  it("pancakeswap reads ?outputCurrency= -> spot bnb (default chain)", () => {
-    expect(read(pancakeswapAdapter, `https://pancakeswap.finance/swap?outputCurrency=${EVM_ADDR}`)).toEqual({
+  it("pancakeswap reads ?outputCurrency=&chain= -> spot", () => {
+    expect(read(pancakeswapAdapter, `https://pancakeswap.finance/swap?chain=bnb&outputCurrency=${EVM_ADDR}`)).toEqual({
       kind: "spot",
       chain: "bnb",
       tokenAddress: EVM_ADDR,
     });
+  });
+
+  it("pancakeswap: missing chain param -> null (controller ruling: no defaulted chain)", () => {
+    expect(read(pancakeswapAdapter, `https://pancakeswap.finance/swap?outputCurrency=${EVM_ADDR}`)).toBeNull();
+  });
+});
+
+describe("tier 2: matcha", () => {
+  it("reads ?buyAddress=&chainId= -> spot", () => {
+    expect(read(matchaAdapter, `https://matcha.xyz/swap?chainId=1&buyAddress=${EVM_ADDR}`)).toEqual({
+      kind: "spot",
+      chain: "ethereum",
+      tokenAddress: EVM_ADDR,
+    });
+  });
+
+  it("missing chainId param -> null (controller ruling: no defaulted chain)", () => {
+    expect(read(matchaAdapter, `https://matcha.xyz/swap?buyAddress=${EVM_ADDR}`)).toBeNull();
   });
 });
 
