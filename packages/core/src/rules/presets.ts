@@ -28,7 +28,7 @@ export const PRESETS: Record<PresetName, Rule[]> = {
   degen: [
     r("spot-exit", "spot", "exit_pressure", "<", -500_000, "block", "Block when smart money, whales & public figures dump more than ${n}"),
     r("spot-fresh", "spot", "fresh_buy_share", ">", 90, "warn", "Warn when fresh wallets are more than {n}% of buying"),
-    r("spot-sm24", "spot", "sm_netflow_24h", "<", -250_000, "warn", "Warn when Smart Money 24h netflow is below ${n}"),
+    r("spot-sm24", "spot", "sm_netflow_24h", "<", -250_000, "warn", "Warn when Smart Money 24h net outflow exceeds ${n}"),
     r("spot-risk", "spot", "risk_high_count", ">=", 3, "block", "Block when {n}+ Nansen risk indicators are high"),
     r("perp-opp", "perp", "sm_opposite_side_pct", ">", 85, "block", "Block when more than {n}% of Smart Money is on the other side"),
     r("perp-liq", "perp", "inside_liq_band", ">", 5_000_000, "warn", "Warn when more than ${n} of Smart Money liquidates near price"),
@@ -37,7 +37,7 @@ export const PRESETS: Record<PresetName, Rule[]> = {
   balanced: [
     r("spot-exit", "spot", "exit_pressure", "<", -100_000, "block", "Block when smart money, whales & public figures dump more than ${n}"),
     r("spot-fresh", "spot", "fresh_buy_share", ">", 70, "warn", "Warn when fresh wallets are more than {n}% of buying"),
-    r("spot-sm24", "spot", "sm_netflow_24h", "<", -50_000, "warn", "Warn when Smart Money 24h netflow is below ${n}"),
+    r("spot-sm24", "spot", "sm_netflow_24h", "<", -50_000, "warn", "Warn when Smart Money 24h net outflow exceeds ${n}"),
     r("spot-risk", "spot", "risk_high_count", ">=", 2, "block", "Block when {n}+ Nansen risk indicators are high"),
     r("perp-opp", "perp", "sm_opposite_side_pct", ">", 70, "block", "Block when more than {n}% of Smart Money is on the other side"),
     r("perp-liq", "perp", "inside_liq_band", ">", 1_000_000, "warn", "Warn when more than ${n} of Smart Money liquidates near price"),
@@ -46,7 +46,7 @@ export const PRESETS: Record<PresetName, Rule[]> = {
   paranoid: [
     r("spot-exit", "spot", "exit_pressure", "<", -25_000, "block", "Block when smart money, whales & public figures dump more than ${n}"),
     r("spot-fresh", "spot", "fresh_buy_share", ">", 50, "block", "Block when fresh wallets are more than {n}% of buying"),
-    r("spot-sm24", "spot", "sm_netflow_24h", "<", 0, "block", "Block when Smart Money 24h netflow is below ${n}"),
+    r("spot-sm24", "spot", "sm_netflow_24h", "<", 0, "block", "Block when Smart Money 24h net outflow exceeds ${n}"),
     r("spot-risk", "spot", "risk_high_count", ">=", 1, "block", "Block when {n}+ Nansen risk indicators are high"),
     r("perp-opp", "perp", "sm_opposite_side_pct", ">", 55, "block", "Block when more than {n}% of Smart Money is on the other side"),
     r("perp-liq", "perp", "inside_liq_band", ">", 250_000, "block", "Block when more than ${n} of Smart Money liquidates near price"),

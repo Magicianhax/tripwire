@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { PresetName, Rule, SignalId, TargetKind } from "@tripwire/core";
+import type { PresetName, Rule, TargetKind } from "@tripwire/core";
 import type { RulesState } from "@/lib/store";
+import { displayValue, splitSentence, storedThreshold } from "./rule-text";
 
 const PRESET_NAMES: PresetName[] = ["degen", "balanced", "paranoid"];
 const PRESET_LABEL: Record<PresetName, string> = { degen: "Degen", balanced: "Balanced", paranoid: "Paranoid" };
@@ -12,19 +13,6 @@ const GROUPS: { kind: TargetKind; label: string }[] = [
   { kind: "perp", label: "Perps" },
   { kind: "prediction", label: "Prediction markets" },
 ];
-
-// exit_pressure and sm_netflow_24h are always expressed as a negative threshold; the
-// editor shows the magnitude and re-applies the sign on save.
-const NEGATIVE_SIGNALS: SignalId[] = ["exit_pressure", "sm_netflow_24h"];
-const isNegativeSignal = (signal: SignalId) => NEGATIVE_SIGNALS.includes(signal);
-
-function splitSentence(text: string): { before: string; after: string; isUsd: boolean } {
-  const isUsd = text.includes("${n}");
-  const token = isUsd ? "${n}" : "{n}";
-  const idx = text.indexOf(token);
-  if (idx === -1) return { before: text, after: "", isUsd: false };
-  return { before: text.slice(0, idx), after: text.slice(idx + token.length), isUsd };
-}
 
 type Status = { kind: "idle" | "saving" | "saved" | "error"; message?: string };
 
@@ -97,8 +85,7 @@ export function RulesEditor({ initial }: { initial: RulesState }) {
             <h2 className="tw-h2">{g.label}</h2>
             {groupRules.map((rule) => {
               const { before, after, isUsd } = splitSentence(rule.text);
-              const negative = isNegativeSignal(rule.signal);
-              const displayValue = negative ? Math.abs(rule.threshold) : rule.threshold;
+              const shownValue = displayValue(rule);
               const inputId = `rule-${rule.id}`;
               return (
                 <div className="tw-rule-row" key={rule.id}>
@@ -118,11 +105,13 @@ export function RulesEditor({ initial }: { initial: RulesState }) {
                       id={inputId}
                       className="tw-input-number"
                       type="number"
-                      value={displayValue}
+                      step="1"
+                      min="0"
+                      value={shownValue}
                       onChange={(e) => {
                         const parsed = Number(e.target.value);
                         if (!Number.isFinite(parsed)) return;
-                        updateRule(rule.id, { threshold: negative ? -Math.abs(parsed) : parsed });
+                        updateRule(rule.id, { threshold: storedThreshold(rule.signal, parsed) });
                       }}
                       aria-label={`Threshold for: ${rule.text}`}
                     />

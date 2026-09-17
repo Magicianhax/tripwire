@@ -11,6 +11,7 @@ import { POST as postIntelPOST } from "@/app/api/post-intel/route";
 import { POST as guardPOST } from "@/app/api/guard/route";
 import { POST as personIntelPOST } from "@/app/api/person-intel/route";
 import { GET as rulesGET, PUT as rulesPUT } from "@/app/api/rules/route";
+import { PRESETS } from "@tripwire/core";
 import { GET as ledgerGET } from "@/app/api/ledger/route";
 import { POST as overridePOST } from "@/app/api/override/route";
 
@@ -150,6 +151,17 @@ describe("/api/rules", () => {
     expect(body.preset).toBe("paranoid");
     expect(Array.isArray(body.rules)).toBe(true);
     expect(body.rules.length).toBeGreaterThan(0);
+  });
+
+  it("normalizes a positive sm_netflow_24h threshold to negative on PUT custom rules", async () => {
+    const rules = PRESETS.balanced.map((r) => (r.signal === "sm_netflow_24h" ? { ...r, threshold: 50_000 } : r));
+    const put = await rulesPUT(req("/api/rules", { method: "PUT", body: { rules } }));
+    expect(put.status).toBe(200);
+    const get = await rulesGET(req("/api/rules"));
+    const body = await get.json();
+    expect(body.preset).toBe("custom");
+    const sm24 = body.rules.find((r: { signal: string }) => r.signal === "sm_netflow_24h");
+    expect(sm24.threshold).toBe(-50_000);
   });
 });
 
