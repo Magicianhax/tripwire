@@ -22,7 +22,7 @@ export function CenterZeroBar({ value, max, threshold = null }: { value: number 
         {decadeTicks(max)
           .flatMap((d) => [x(-d), x(d)])
           .map((tx, i) => (
-            <line key={i} x1={tx} x2={tx} y1={0} y2={10} vectorEffect="non-scaling-stroke" />
+            <line key={i} x1={tx} x2={tx} y1={2} y2={8} vectorEffect="non-scaling-stroke" />
           ))}
       </svg>
       <i className="tw-gauge-track" />

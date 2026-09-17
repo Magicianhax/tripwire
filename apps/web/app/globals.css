@@ -234,7 +234,7 @@ svg.lucide {
 }
 @media (max-width: 600px) {
   .tw-nav-row {
-    padding: var(--tw-space-3) 0;
+    padding-block: var(--tw-space-3);
   }
   .tw-nav-links {
     margin-left: -14px;
@@ -380,7 +380,11 @@ main.tw-main {
   vertical-align: middle;
 }
 .tw-target {
-  gap: 0;
+  display: inline;
+  white-space: nowrap;
+}
+.tw-target > span {
+  vertical-align: middle;
 }
 .tw-target-chain {
   gap: 4px;
