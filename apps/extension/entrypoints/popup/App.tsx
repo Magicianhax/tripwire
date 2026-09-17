@@ -102,12 +102,17 @@ export default function App() {
 
   return (
     <div className="tw-popup">
-      <h1 className="tw-wordmark">TRIPWIRE</h1>
-      <p className="tw-status" data-state={statusState} role="status" aria-live="polite">
-        {statusText}
-      </p>
+      <header className="tw-popup-head">
+        <h1 className="tw-wordmark">TRIPWIRE</h1>
+        <p className="tw-status" data-state={statusState} role="status" aria-live="polite">
+          {statusText}
+        </p>
+      </header>
 
-      <div className="tw-segmented" role="group" aria-label="Rules preset" aria-busy={rules === null || saving}>
+      <p className="tw-field-label" id="tw-preset-label">
+        Rules preset
+      </p>
+      <div className="tw-segmented" role="group" aria-labelledby="tw-preset-label" aria-busy={rules === null || saving}>
         {PRESETS.map((p) => (
           <button key={p} type="button" aria-pressed={preset === p} disabled={rules === null || saving} onClick={() => choosePreset(p)}>
             {PRESET_LABELS[p]}

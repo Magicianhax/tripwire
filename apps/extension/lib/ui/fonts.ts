@@ -10,13 +10,12 @@
  */
 
 export type FontFile = {
-  family: "Tripwire Archivo" | "Tripwire Mono";
+  family: "Tripwire Barlow" | "Tripwire Barlow Condensed" | "Tripwire Mono";
   /** npm package that ships the file, and the file name inside its `files/` dir. */
-  pkg: "@fontsource-variable/archivo" | "@fontsource/jetbrains-mono";
+  pkg: "@fontsource/barlow" | "@fontsource/barlow-condensed" | "@fontsource/jetbrains-mono";
   file: string;
   weight: string;
-  stretch?: string;
-  format: "woff2" | "woff2-variations";
+  format: "woff2";
   unicodeRange: string;
 };
 
@@ -25,32 +24,32 @@ const LATIN =
 const LATIN_EXT =
   "U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF";
 
-const archivo = (subset: string, unicodeRange: string): FontFile => ({
-  family: "Tripwire Archivo",
-  pkg: "@fontsource-variable/archivo",
-  file: `archivo-${subset}-standard-normal.woff2`,
-  weight: "100 900",
-  stretch: "62% 125%",
-  format: "woff2-variations",
-  unicodeRange,
-});
+type Pkg = FontFile["pkg"];
+const FAMILY: Record<Pkg, { family: FontFile["family"]; prefix: string }> = {
+  "@fontsource/barlow": { family: "Tripwire Barlow", prefix: "barlow" },
+  "@fontsource/barlow-condensed": { family: "Tripwire Barlow Condensed", prefix: "barlow-condensed" },
+  "@fontsource/jetbrains-mono": { family: "Tripwire Mono", prefix: "jetbrains-mono" },
+};
 
-const mono = (subset: string, weight: "400" | "700", unicodeRange: string): FontFile => ({
-  family: "Tripwire Mono",
-  pkg: "@fontsource/jetbrains-mono",
-  file: `jetbrains-mono-${subset}-${weight}-normal.woff2`,
-  weight,
-  format: "woff2",
-  unicodeRange,
-});
+/** Both latin subsets of each weight: the unicode-range keeps latin-ext from loading unless a
+ * character needs it. */
+function weights(pkg: Pkg, list: string[]): FontFile[] {
+  const { family, prefix } = FAMILY[pkg];
+  return list.flatMap((weight) =>
+    (
+      [
+        ["latin-ext", LATIN_EXT],
+        ["latin", LATIN],
+      ] as const
+    ).map(([subset, unicodeRange]) => ({ family, pkg, file: `${prefix}-${subset}-${weight}-normal.woff2`, weight, format: "woff2" as const, unicodeRange })),
+  );
+}
 
+/** Barlow for UI text, Barlow Condensed for annunciator words, JetBrains Mono for numbers. */
 export const FONT_FILES: FontFile[] = [
-  archivo("latin-ext", LATIN_EXT),
-  archivo("latin", LATIN),
-  mono("latin-ext", "400", LATIN_EXT),
-  mono("latin", "400", LATIN),
-  mono("latin-ext", "700", LATIN_EXT),
-  mono("latin", "700", LATIN),
+  ...weights("@fontsource/barlow", ["400", "500", "600", "700"]),
+  ...weights("@fontsource/barlow-condensed", ["600", "700"]),
+  ...weights("@fontsource/jetbrains-mono", ["400", "700"]),
 ];
 
 /** Published path of a font inside the extension (and its web_accessible_resources pattern). */
@@ -61,7 +60,6 @@ export function fontFaceCss(urlFor: (publicPath: string) => string): string {
     [
       "@font-face{",
       `font-family:"${f.family}";font-style:normal;font-display:swap;font-weight:${f.weight};`,
-      f.stretch ? `font-stretch:${f.stretch};` : "",
       `src:url("${urlFor(`/${FONT_DIR}/${f.file}`)}") format("${f.format}");`,
       `unicode-range:${f.unicodeRange};}`,
     ].join(""),

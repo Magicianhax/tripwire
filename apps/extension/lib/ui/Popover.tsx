@@ -88,7 +88,7 @@ export function Popover({ anchor, onClose, returnFocus, sheetBelow, closeWhenAnc
 
     if (p.sheet) {
       el.dataset.sheet = "";
-      el.style.top = el.style.left = el.style.width = el.style.transformOrigin = "";
+      el.style.top = el.style.left = el.style.right = el.style.width = el.style.transformOrigin = "";
       el.style.maxHeight = `${popoverMaxHeight(viewport.height)}px`;
       return;
     }
@@ -96,6 +96,7 @@ export function Popover({ anchor, onClose, returnFocus, sheetBelow, closeWhenAnc
     el.dataset.side = p.side;
     el.style.top = `${Math.round(p.top)}px`;
     el.style.left = `${Math.round(p.left)}px`;
+    el.style.right = "auto";
     el.style.width = `${p.width}px`;
     el.style.maxHeight = `${p.maxHeight}px`;
     el.style.transformOrigin = `${Math.round(p.originX)}px ${Math.round(p.originY)}px`;

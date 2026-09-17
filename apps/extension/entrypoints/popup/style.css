@@ -1,18 +1,30 @@
+/* Tripwire popup: the Glass Cockpit world at toolbar-popup size. */
 :root {
-  --tw-ink: #0b0b0b;
-  --tw-surface-raised: #161616;
-  --tw-yellow: #ffd400;
-  --tw-success: #3fbf7f;
-  --tw-danger: #ff5a36;
-  --tw-secondary: #8c8c8c;
-  --tw-text: #ededed;
-  --tw-border-neutral: #2a2a2a;
-  --tw-radius-sm: 3px;
-  --tw-radius-md: 6px;
-  --tw-space-xs: 4px;
-  --tw-space-sm: 8px;
-  --tw-space-md: 12px;
-  --tw-space-lg: 20px;
+  --tw-ground: #0a1020;
+  --tw-panel: #111a2e;
+  --tw-raised: #1b2740;
+  --tw-bezel: rgba(143, 163, 191, 0.22);
+  --tw-bezel-strong: rgba(143, 163, 191, 0.4);
+  --tw-sheen: rgba(230, 237, 247, 0.22);
+  --tw-text: #e6edf7;
+  --tw-text-2: #8fa3bf;
+  --tw-ink: #0a1020;
+  --tw-warning: #ff4d4f;
+  --tw-caution: #ffb020;
+  --tw-caution-dim: rgba(255, 176, 32, 0.14);
+  --tw-advisory: #22d3ee;
+  --tw-advisory-select: rgba(34, 211, 238, 0.32);
+  --tw-normal: #34d399;
+  --tw-radius-panel: 8px;
+  --tw-radius-plate: 4px;
+  --tw-radius-cell: 2px;
+  --tw-space-1: 4px;
+  --tw-space-2: 8px;
+  --tw-space-3: 12px;
+  --tw-space-4: 16px;
+  --tw-font-ui: "Barlow", system-ui, sans-serif;
+  --tw-font-plate: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+  --tw-font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 * {
@@ -27,202 +39,268 @@ body {
 }
 
 body {
-  width: 320px;
-  background: var(--tw-ink);
+  width: 360px;
+  background: var(--tw-ground);
   color: var(--tw-text);
-  font-family: "Archivo Variable", "Archivo", system-ui, sans-serif;
+  font-family: var(--tw-font-ui);
   font-size: 0.875rem;
   line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--tw-advisory-select);
 }
 
 .tw-popup {
   display: flex;
   flex-direction: column;
-  gap: var(--tw-space-md);
-  padding: var(--tw-space-lg) var(--tw-space-md) var(--tw-space-md);
+  gap: var(--tw-space-3);
+  padding: var(--tw-space-4);
+}
+
+.tw-popup-head {
+  display: grid;
+  gap: var(--tw-space-2);
+  padding-bottom: var(--tw-space-3);
+  border-bottom: 1px solid var(--tw-bezel);
 }
 
 .tw-wordmark {
   margin: 0;
-  font-family: "Archivo Variable", "Archivo", system-ui, sans-serif;
-  font-weight: 900;
-  font-stretch: 70%;
-  font-size: 1.375rem;
+  font-family: var(--tw-font-plate);
+  font-weight: 700;
+  font-size: 1.5rem;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.1em;
 }
 
+/* Status: a lamp plus the line. The lamp shape carries the state without colour too. */
 .tw-status {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-2);
   margin: 0;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 500;
   line-height: 1.3;
-  color: var(--tw-secondary);
+  color: var(--tw-text-2);
+}
+
+.tw-status::before {
+  content: "";
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border: 1px dashed var(--tw-text-2);
+  border-radius: var(--tw-radius-cell);
 }
 
 .tw-status[data-state="connected"] {
-  color: var(--tw-success);
+  color: var(--tw-text);
+}
+.tw-status[data-state="connected"]::before {
+  border: 1px solid var(--tw-normal);
+  background: var(--tw-normal);
 }
 
-.tw-status[data-state="offline"],
+.tw-status[data-state="offline"] {
+  color: var(--tw-warning);
+}
+.tw-status[data-state="offline"]::before {
+  border: 1px solid var(--tw-warning);
+  background: var(--tw-warning);
+}
+
 .tw-status[data-state="not-ready"] {
-  color: var(--tw-danger);
+  color: var(--tw-caution);
+}
+.tw-status[data-state="not-ready"]::before {
+  border: 1px solid var(--tw-caution);
+}
+
+.tw-field-label,
+.tw-field label {
+  margin: 0;
+  font-family: var(--tw-font-plate);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--tw-text-2);
+}
+
+.tw-field-label {
+  margin-bottom: calc(var(--tw-space-1) - var(--tw-space-3));
 }
 
 .tw-segmented {
   display: flex;
-  border: 1px solid var(--tw-border-neutral);
-  border-radius: var(--tw-radius-sm);
-  overflow: hidden;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-plate);
+  background: var(--tw-panel);
 }
 
 .tw-segmented button {
   flex: 1;
   appearance: none;
-  border: none;
+  min-height: 32px;
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-cell);
   background: transparent;
-  color: var(--tw-text);
-  font-family: inherit;
-  font-size: 0.75rem;
+  color: var(--tw-text-2);
+  font-family: var(--tw-font-plate);
+  font-size: 0.9375rem;
   font-weight: 600;
-  padding: var(--tw-space-sm) var(--tw-space-xs);
+  letter-spacing: 0.02em;
   cursor: pointer;
 }
 
-.tw-segmented button + button {
-  border-left: 1px solid var(--tw-border-neutral);
+@media (hover: hover) {
+  .tw-segmented button:not(:disabled):not([aria-pressed="true"]):hover {
+    color: var(--tw-text);
+    background: var(--tw-raised);
+  }
 }
 
 .tw-segmented button:disabled {
   cursor: default;
-  color: var(--tw-secondary);
 }
 
+/* Selected preset: a lit advisory bezel, not just a lighter fill. */
 .tw-segmented button[aria-pressed="true"] {
-  background: var(--tw-surface-raised);
+  border-color: var(--tw-advisory);
+  background: var(--tw-raised);
+  color: var(--tw-text);
+  box-shadow: inset 0 1px 0 var(--tw-sheen);
 }
 
-/* Focus rings: #EDEDED on ink, never yellow (reserved for danger). */
 .tw-segmented button:focus-visible {
-  outline: 2px solid var(--tw-text);
-  outline-offset: -2px;
+  outline: 2px solid var(--tw-advisory);
+  outline-offset: 1px;
 }
 
-/* Weaken confirm: a full 1.5px yellow border (DESIGN.md danger surface), not a side stripe. */
+/* Weaken confirm: a caution panel with a full 1px bezel. */
 .tw-confirm-row {
   display: grid;
-  gap: var(--tw-space-sm);
-  padding: var(--tw-space-sm) var(--tw-space-md);
-  border: 1.5px solid var(--tw-yellow);
-  border-radius: var(--tw-radius-sm);
-  background: var(--tw-ink);
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-3);
+  border: 1px solid var(--tw-caution);
+  border-radius: var(--tw-radius-plate);
+  background: var(--tw-caution-dim);
 }
 
 .tw-confirm-text {
   margin: 0;
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--tw-yellow);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--tw-text);
 }
 
 .tw-confirm-actions {
   display: flex;
-  gap: var(--tw-space-sm);
+  gap: var(--tw-space-2);
 }
 
 .tw-button-danger,
 .tw-button-quiet {
   appearance: none;
-  min-height: 28px;
-  padding: 0 var(--tw-space-md);
-  border-radius: var(--tw-radius-sm);
-  font-family: inherit;
-  font-size: 0.75rem;
+  min-height: 32px;
+  padding: 0 var(--tw-space-3);
+  border-radius: var(--tw-radius-plate);
+  font-family: var(--tw-font-plate);
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
 }
 
 .tw-button-danger {
-  border: 1.5px solid var(--tw-yellow);
-  background: var(--tw-yellow);
+  border: 1px solid var(--tw-caution);
+  background: var(--tw-caution);
   color: var(--tw-ink);
 }
 
 .tw-button-quiet {
-  border: 1px solid var(--tw-border-neutral);
+  border: 1px solid var(--tw-bezel-strong);
   background: transparent;
   color: var(--tw-text);
 }
 
-.tw-button-danger:focus-visible {
-  outline: 2px solid var(--tw-text);
-  outline-offset: 2px;
-}
-
+.tw-button-danger:focus-visible,
 .tw-button-quiet:focus-visible {
-  outline: 2px solid var(--tw-text);
+  outline: 2px solid var(--tw-advisory);
   outline-offset: 2px;
 }
 
 .tw-links {
-  display: flex;
-  gap: var(--tw-space-md);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--tw-space-2);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .tw-links a {
-  color: var(--tw-text);
-  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  border: 1px solid var(--tw-bezel);
+  border-radius: var(--tw-radius-plate);
+  background: var(--tw-panel);
+  color: var(--tw-advisory);
+  font-family: var(--tw-font-plate);
+  font-size: 0.9375rem;
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px solid var(--tw-border-neutral);
 }
 
-.tw-links a:hover {
-  border-bottom-color: var(--tw-text);
+@media (hover: hover) {
+  .tw-links a:hover {
+    border-color: var(--tw-advisory);
+  }
 }
 
 .tw-links a:focus-visible {
-  outline: 2px solid var(--tw-text);
+  outline: 2px solid var(--tw-advisory);
   outline-offset: 2px;
-  border-bottom-color: var(--tw-text);
 }
 
 .tw-field {
   display: flex;
   flex-direction: column;
-  gap: var(--tw-space-xs);
-}
-
-.tw-field label {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: var(--tw-secondary);
+  gap: var(--tw-space-1);
+  padding-top: var(--tw-space-3);
+  border-top: 1px solid var(--tw-bezel);
 }
 
 .tw-field input {
-  background: var(--tw-surface-raised);
-  border: 1px solid var(--tw-border-neutral);
-  border-radius: var(--tw-radius-sm);
+  min-height: 32px;
+  padding: 0 var(--tw-space-2);
+  background: var(--tw-panel);
+  border: 1px solid var(--tw-bezel-strong);
+  border-radius: var(--tw-radius-plate);
   color: var(--tw-text);
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.75rem;
-  padding: var(--tw-space-sm);
+  caret-color: var(--tw-advisory);
+  font-family: var(--tw-font-mono);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums slashed-zero;
 }
 
 .tw-field input:focus-visible {
-  outline: 2px solid var(--tw-text);
-  outline-offset: 2px;
+  outline: 2px solid var(--tw-advisory);
+  outline-offset: 1px;
+  border-color: var(--tw-advisory);
 }
 
 .tw-field-hint {
   margin: 0;
-  font-size: 0.6875rem;
-  color: var(--tw-danger);
   min-height: 1em;
+  font-size: 0.75rem;
+  color: var(--tw-caution);
 }
 
 @media (prefers-reduced-motion: reduce) {

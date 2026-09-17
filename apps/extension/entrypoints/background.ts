@@ -11,10 +11,10 @@ async function getBackendUrl(): Promise<string> {
 
 async function setBadge(status: number): Promise<void> {
   if (status === 0) {
-    await browser.action.setBadgeBackgroundColor({ color: "#FFD400" });
+    await browser.action.setBadgeBackgroundColor({ color: "#FFB020" });
     await browser.action.setBadgeText({ text: "!" });
     if (browser.action.setBadgeTextColor) {
-      await browser.action.setBadgeTextColor({ color: "#0B0B0B" });
+      await browser.action.setBadgeTextColor({ color: "#0A1020" });
     }
   } else {
     await browser.action.setBadgeText({ text: "" });

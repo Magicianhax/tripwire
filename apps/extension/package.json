@@ -12,7 +12,8 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
-    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource/barlow": "^5.3.0",
+    "@fontsource/barlow-condensed": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@tripwire/core": "workspace:*",
     "@wxt-dev/module-react": "^1.2.2",
