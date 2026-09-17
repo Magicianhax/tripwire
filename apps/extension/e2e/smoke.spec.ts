@@ -41,17 +41,58 @@ test("@smoke extension loads with the pinned ID and its popup reaches the backen
   expect(consoleErrors).toEqual([]);
 });
 
-test("@smoke X: the contract-address tweet gets a verdict chip, and clicking it opens the panel", async ({ context, consoleErrors }) => {
+test("@smoke X: the chip opens a floating evidence card on <body>, beside the chip, not inside the post", async ({ context, consoleErrors }) => {
   const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("https://x.com/home");
   const chip = page.locator(".tw-chip");
   await expect(chip.locator(".tw-chip-key")).toHaveText(/^(TRIPWIRE|CAUTION|Clear|Unchecked)$/, { timeout: 10_000 });
   await expect(chip).toHaveCount(1); // the plain-text tweet gets no chip
   await expect(chip.locator(".tw-replay-badge")).toHaveText("Replay");
+  const articleHeight = await page.locator("article").first().evaluate((el) => el.getBoundingClientRect().height);
 
   await chip.click();
-  await expect(page.locator(".tw-panel")).toBeVisible();
+  const card = page.locator('.tw-pop[role="dialog"]');
+  await expect(card).toBeVisible();
   await expect(chip).toHaveAttribute("aria-expanded", "true");
+  await expect(card).toHaveAttribute("aria-modal", "false");
+  // Let the 160ms scale-in settle before measuring geometry.
+  await card.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+
+  // Its shadow host hangs off <body>; the tweet itself neither contains it nor grows.
+  const placement = await card.evaluate((el) => {
+    const host = (el.getRootNode() as ShadowRoot).host;
+    return { parentIsBody: host.parentElement === document.body, insideArticle: !!host.closest("article") };
+  });
+  expect(placement).toEqual({ parentIsBody: true, insideArticle: false });
+  expect(await page.locator("article").first().evaluate((el) => el.getBoundingClientRect().height)).toBe(articleHeight);
+
+  // Beside the chip (below it here), inside the viewport with a 16px margin, 440px wide.
+  const chipBox = (await chip.boundingBox())!;
+  const cardBox = (await card.boundingBox())!;
+  expect(cardBox.y).toBeGreaterThanOrEqual(chipBox.y + chipBox.height);
+  expect(cardBox.x).toBeGreaterThanOrEqual(16);
+  expect(cardBox.x + cardBox.width).toBeLessThanOrEqual(1280 - 16);
+  expect(Math.round(cardBox.width)).toBe(440);
+
+  // Focus lands on the heading; evidence tabs are keyboard operable.
+  await expect(card.locator("h2")).toBeFocused();
+  await expect(card.getByRole("tab")).toHaveText(["Flow", "Wallets", "Risk"]);
+  await card.getByRole("tab", { name: "Flow" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(card.getByRole("tab", { name: "Wallets" })).toHaveAttribute("aria-selected", "true");
+
+  // Escape closes it and gives focus back to the chip.
+  await page.keyboard.press("Escape");
+  await expect(card).toHaveCount(0);
+  await expect(chip).toHaveAttribute("aria-expanded", "false");
+  await expect(chip).toBeFocused();
+
+  // Reopen, then an outside click closes it.
+  await chip.click();
+  await expect(card).toBeVisible();
+  await page.mouse.click(1200, 700);
+  await expect(card).toHaveCount(0);
   expect(consoleErrors).toEqual([]);
 });
 
@@ -74,6 +115,22 @@ test("@smoke Jupiter: a TRIPWIRE blocks Swap but the rest of the page stays clic
     return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.id ?? null;
   });
   expect(topElement).toBe("token-picker");
+  expect(consoleErrors).toEqual([]);
+});
+
+test("@smoke Jupiter: the block screen's evidence opens as a card on the Wallets tab, and Swap stays blocked", async ({ context, request, consoleErrors }) => {
+  const page = await context.newPage();
+  await openBlockedJupiter(page, request);
+  await page.locator(".tw-block-evidence").click();
+  const card = page.locator('.tw-pop[role="dialog"]');
+  await expect(card).toBeVisible();
+  await expect(card.getByRole("tab", { name: "Wallets" })).toHaveAttribute("aria-selected", "true");
+  await page.locator("#swap").dispatchEvent("click");
+  expect(await page.evaluate(() => (window as unknown as { swapClicks: number }).swapClicks)).toBe(0);
+  await page.keyboard.press("Escape");
+  await expect(card).toHaveCount(0);
+  await expect(page.locator(".tw-block")).toBeVisible();
+  await expect(page.locator(".tw-block-evidence")).toBeFocused();
   expect(consoleErrors).toEqual([]);
 });
 

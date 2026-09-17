@@ -1,12 +1,13 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { test as base, chromium, type BrowserContext, type Page } from "@playwright/test";
+import { E2E_PORT } from "./port";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const EXTENSION_DIR = path.resolve(here, "..", ".output", "chrome-mv3");
 const PAGES = path.join(here, "pages");
 
-export const BACKEND = "http://127.0.0.1:3000";
+export const BACKEND = `http://127.0.0.1:${E2E_PORT}`;
 export const WIF = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";
 export const BONK = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
 
@@ -32,6 +33,13 @@ export const test = base.extend<Fixtures>({
     await context.route("https://jup.ag/**", (route) =>
       route.fulfill({ path: path.join(PAGES, "jupiter.html"), contentType: "text/html; charset=utf-8" }),
     );
+    // Point the extension at the e2e backend before any page can call it (the popup's
+    // "Backend URL" setting, stored where the background bridge reads it).
+    let [worker] = context.serviceWorkers();
+    worker ??= await context.waitForEvent("serviceworker");
+    await worker.evaluate(async (backendUrl) => {
+      await (globalThis as unknown as { chrome: { storage: { local: { set(v: object): Promise<void> } } } }).chrome.storage.local.set({ backendUrl });
+    }, BACKEND);
     await use(context);
     await context.close();
   },
