@@ -1,0 +1,127 @@
+- generic [active] [ref=f17e1]:
+  - generic [ref=f17e2]:
+    - generic [ref=f17e3]:
+      - generic [ref=f17e6]:
+        - generic [ref=f17e8]:
+          - link [ref=f17e9] [cursor=pointer]:
+            - /url: /
+            - img "pump.fun logomark" [ref=f17e11]
+          - button [ref=f17e12] [cursor=pointer]
+        - generic [ref=f17e16]:
+          - list [ref=f17e18]:
+            - listitem [ref=f17e19]:
+              - link [ref=f17e20] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f17e23]:
+              - link [ref=f17e24] [cursor=pointer]:
+                - /url: /explore
+            - listitem [ref=f17e28]:
+              - link [ref=f17e29] [cursor=pointer]:
+                - /url: /go
+            - listitem [ref=f17e32]:
+              - link [ref=f17e33] [cursor=pointer]:
+                - /url: /mayhem
+            - listitem [ref=f17e36]:
+              - link [ref=f17e37] [cursor=pointer]:
+                - /url: /live
+            - listitem [ref=f17e40]:
+              - button [ref=f17e41] [cursor=pointer]
+            - listitem [ref=f17e44]:
+              - link [ref=f17e45] [cursor=pointer]:
+                - /url: https://trade.padre.gg/?utm_source=pumpweb
+            - listitem [ref=f17e48]:
+              - link [ref=f17e49] [cursor=pointer]:
+                - /url: /pump-token
+          - button [ref=f17e54] [cursor=pointer]
+        - button "Toggle Sidebar" [ref=f17e58]
+      - main [ref=f17e59]:
+        - generic [ref=f17e60]:
+          - generic [ref=f17e61]:
+            - generic [ref=f17e63]:
+              - link "Trade faster. Pump is better on mobile." [ref=f17e65] [cursor=pointer]:
+                - /url: https://join.pump.fun/HSag?pid=web_retail&c=app_banner&af_adset=app_banner_2025_10&af_ad=legacy_banner&af_sub1=xp_23ay4e&af_web_dp=https%3A%2F%2Fapp.pump.fun&af_sub2=placement%3Ahome_bottom&deep_link_value=HVWaFa5HTbX3hSju8rGkjVrVcYT1dPUUHBCug45zpump&af_dp=pump%3A%2F%2F&mint=HVWaFa5HTbX3hSju8rGkjVrVcYT1dPUUHBCug45zpump
+              - button [ref=f17e68] [cursor=pointer]
+            - generic [ref=f17e72]:
+              - generic [ref=f17e74]:
+                - button "Go back" [ref=f17e75] [cursor=pointer]
+                - search [ref=f17e79]:
+                  - button "Search for coins and users" [ref=f17e80] [cursor=pointer]:
+                    - generic [ref=f17e84]: Search for coins and users...
+                    - generic [ref=f17e86]:
+                      - generic: ⌘
+                      - generic: K
+                - button [disabled] [aria-hidden] [ref=f17e87]
+              - generic [ref=f17e90]:
+                - button [ref=f17e92] [cursor=pointer]:
+                  - button "Create" [ref=f17e93]
+                - button "Sign in" [disabled] [ref=f17e97]
+            - generic [ref=f17e98]:
+              - button "Info bar settings" [ref=f17e99] [cursor=pointer]
+              - radiogroup "Info bar content" [ref=f17e104]:
+                - radio "Watchlist" [checked] [ref=f17e105] [cursor=pointer]
+                - radio "Positions" [ref=f17e108] [cursor=pointer]
+                - radio "Following" [ref=f17e111] [cursor=pointer]
+                - radio "Recently viewed" [ref=f17e115] [cursor=pointer]
+          - generic [ref=f17e181]:
+            - complementary "web.coin.alerts" [ref=f17e182]:
+              - generic [ref=f17e185]:
+                - button "web.screeners.change_view_a11y" [ref=f17e186] [cursor=pointer]:
+                  - generic [ref=f17e189]: Hot callouts
+                - generic [ref=f17e192]:
+                  - button "Filters" [ref=f17e193] [cursor=pointer]
+                  - button "web.coin.alerts_split_down" [ref=f17e196] [cursor=pointer]
+                  - button "web.coin.alerts_split_right" [ref=f17e200] [cursor=pointer]
+            - generic [ref=f17e215]:
+              - generic [ref=f17e219]:
+                - generic [ref=f17e222] [cursor=pointer]:
+                  - img "Coin image for HVWaFa5HTbX3hSju8rGkjVrVcYT1dPUUHBCug45zpump" [ref=f17e224]
+                  - img "The hologram Dog logo" [ref=f17e226]
+                - generic [ref=f17e227]:
+                  - generic [ref=f17e228]:
+                    - heading "JAX" [level=1] [ref=f17e229]
+                    - generic [ref=f17e231]:
+                      - generic [ref=f17e232]: The hologram Dog
+                      - generic "Coin creation time" [ref=f17e235]:
+                        - time [ref=f17e237]: 2h ago
+                  - generic [ref=f17e238]:
+                    - button "Copy mint address" [ref=f17e239] [cursor=pointer]: HVWaFa
+                    - generic [ref=f17e242]:
+                      - generic [ref=f17e243]: "Chain and launchpad:"
+                      - generic [ref=f17e244]: Pump
+                    - generic [ref=f17e245]:
+                      - generic [ref=f17e246]: "Creator rewards recipient:"
+                      - generic [ref=f17e247]: Rewards → holders
+                    - link [ref=f17e251] [cursor=pointer]:
+                      - /url: https://x.com/Ikarbro/status/2100567725986738383
+                    - button "Add to watchlist" [ref=f17e254] [cursor=pointer]
+                    - button "Log in to report" [ref=f17e257] [cursor=pointer]
+                - button "Switch between price and market cap" [ref=f17e263] [cursor=pointer]:
+                  - generic [ref=f17e264]: Market cap.
+              - generic [ref=f17e268]:
+                - generic "Loading chart" [ref=f17e271]
+                - button "Resize chart" [ref=f17e289]
+          - generic [ref=f17e311]:
+            - paragraph [ref=f17e312]: © Pump.fun 2026
+            - navigation "Footer" [ref=f17e313]:
+              - link "Blog" [ref=f17e314] [cursor=pointer]:
+                - /url: https://medium.com/@pumpdotfun_
+              - button "Resources" [ref=f17e315] [cursor=pointer]
+              - button "Legal" [ref=f17e318] [cursor=pointer]
+            - generic [ref=f17e321]:
+              - link "X" [ref=f17e322] [cursor=pointer]:
+                - /url: https://twitter.com/pumpfun
+              - link "TikTok" [ref=f17e325] [cursor=pointer]:
+                - /url: https://www.tiktok.com/@pump.fun
+              - link "YouTube" [ref=f17e328] [cursor=pointer]:
+                - /url: https://www.youtube.com/@pumpfunofficial
+    - generic [ref=f17e331]:
+      - generic [ref=f17e332]:
+        - paragraph [ref=f17e333]: We value your privacy
+        - paragraph [ref=f17e334]: This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content.
+      - generic [ref=f17e335]:
+        - generic [ref=f17e336]:
+          - button "Reject all" [ref=f17e337] [cursor=pointer]
+          - button "Customize" [ref=f17e339] [cursor=pointer]
+        - button "Accept all" [ref=f17e341] [cursor=pointer]
+  - region "Notifications alt+T"
+  - alert [ref=f17e343]

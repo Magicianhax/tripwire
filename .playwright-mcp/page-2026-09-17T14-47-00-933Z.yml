@@ -1,0 +1,63 @@
+- generic [active] [ref=f13e1]:
+  - generic [ref=f13e18]:
+    - generic [ref=f13e21]:
+      - generic [ref=f13e23]:
+        - link [ref=f13e24] [cursor=pointer]:
+          - /url: /
+          - img "pump.fun logomark" [ref=f13e26]
+        - button [ref=f13e27] [cursor=pointer]
+      - generic [ref=f13e31]:
+        - list [ref=f13e33]:
+          - listitem [ref=f13e34]:
+            - link [ref=f13e35] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=f13e38]:
+            - link [ref=f13e39] [cursor=pointer]:
+              - /url: /explore
+          - listitem [ref=f13e43]:
+            - link [ref=f13e44] [cursor=pointer]:
+              - /url: /go
+          - listitem [ref=f13e47]:
+            - link [ref=f13e48] [cursor=pointer]:
+              - /url: /mayhem
+          - listitem [ref=f13e51]:
+            - link [ref=f13e52] [cursor=pointer]:
+              - /url: /live
+          - listitem [ref=f13e55]:
+            - button [ref=f13e56] [cursor=pointer]
+          - listitem [ref=f13e59]:
+            - link [ref=f13e60] [cursor=pointer]:
+              - /url: https://trade.padre.gg/?utm_source=pumpweb
+          - listitem [ref=f13e63]:
+            - link [ref=f13e64] [cursor=pointer]:
+              - /url: /pump-token
+        - button [ref=f13e69] [cursor=pointer]
+      - button "Toggle Sidebar" [ref=f13e74]
+    - main [ref=f13e75]:
+      - generic [ref=f13e77]:
+        - generic [ref=f13e79]:
+          - link "Trade faster. Pump is better on mobile." [ref=f13e81] [cursor=pointer]:
+            - /url: https://join.pump.fun/HSag?pid=web_retail&c=app_banner&af_adset=app_banner_2025_10&af_ad=legacy_banner&af_sub1=xp_23ay4e&af_web_dp=https%3A%2F%2Fapp.pump.fun&af_sub2=placement%3Ahome_bottom
+          - button [ref=f13e84] [cursor=pointer]
+        - generic [ref=f13e88]:
+          - generic [ref=f13e90]:
+            - search [ref=f13e92]:
+              - button "Search for coins and users" [ref=f13e93] [cursor=pointer]:
+                - generic [ref=f13e97]: Search for coins and users...
+                - generic [ref=f13e99]:
+                  - generic: ⌘
+                  - generic: K
+            - button [disabled] [aria-hidden] [ref=f13e100]
+          - generic [ref=f13e103]:
+            - button [ref=f13e105] [cursor=pointer]:
+              - button "Create" [ref=f13e106]
+            - button "Sign in" [disabled] [ref=f13e110]
+        - generic [ref=f13e111]:
+          - button "Info bar settings" [ref=f13e112] [cursor=pointer]
+          - radiogroup "Info bar content" [ref=f13e117]:
+            - radio "Watchlist" [checked] [ref=f13e118] [cursor=pointer]
+            - radio "Positions" [ref=f13e121] [cursor=pointer]
+            - radio "Following" [ref=f13e124] [cursor=pointer]
+            - radio "Recently viewed" [ref=f13e128] [cursor=pointer]
+  - region "Notifications alt+T"
+  - alert [ref=f13e202]

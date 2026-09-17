@@ -1,0 +1,65 @@
+[     549ms] [INFO] Loading the script 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit' violates the following Content Security Policy directive: "script-src 'self' 'wasm-unsafe-eval' https://vercel.com https://vercel.live/". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The policy is report-only, so the violation has been logged but no further action has been taken. @ https://app.uniswap.org/swap?chain=base&outputCurrency=0x4ed4e862860bed51a9570b96d89af5e1b0efefed:0
+[    1122ms] [INFO] Loading the script 'https://challenges.cloudflare.com/turnstile/v0/g/330e41bb475c/api.js' violates the following Content Security Policy directive: "script-src 'self' 'wasm-unsafe-eval' https://vercel.com https://vercel.live/". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The policy is report-only, so the violation has been logged but no further action has been taken. @ https://app.uniswap.org/swap?chain=base&outputCurrency=0x4ed4e862860bed51a9570b96d89af5e1b0efefed:0
+[    2785ms] [WARNING] WARN {context: Object} Invalid call to `updateScrollLock` before calling `initializeScrollWatcher` @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    3003ms] [INFO] INFO {context: Object} Session init started @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    3184ms] [ERROR] WebSocket connection to 'wss://nbstream.binance.click/wallet-connector' failed: Error in connection establishment: net::ERR_NAME_NOT_RESOLVED @ https://app.uniswap.org/assets/dist-u9Gno2jN.js:568
+[    4062ms] [INFO] Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wasm-unsafe-eval' https://vercel.com https://vercel.live/'. Either the 'unsafe-inline' keyword, a hash ('sha256-NzvNrqk5jB9YZATwo5BF4JoRlJ02HsnFikbKXgEPdaQ='), or a nonce ('nonce-...') is required to enable inline execution. The policy is report-only, so the violation has been logged but no further action has been taken. @ https://app.uniswap.org/assets/dist-BSr_XE16.js:0
+[    4063ms] [ERROR] Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wasm-unsafe-eval' https://challenges.cloudflare.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-NzvNrqk5jB9YZATwo5BF4JoRlJ02HsnFikbKXgEPdaQ='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked. @ https://app.uniswap.org/assets/dist-BSr_XE16.js:0
+[    4839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/1:0
+[    4840ms] [WARNING] WARN {context: Object} RPC error {method: getBlockNumber, chainId: 1, durationMs: 1869, provider: unirpc, transport: ethers} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    4855ms] [INFO] INFO {context: Object} Session init completed {needChallenge: true, durationMs: 0} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    5325ms] [INFO] INFO {context: Object} Challenge received {challengeType: 1, challengeId: a520f309-69f8-4323-8f8e-401a7bfe586a} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    5945ms] [LOG] %cWarning! color:#F16552; font-size:50px; font-weight: bold; -webkit-text-stroke: 1px black; @ https://privy.app.uniswap.org/_next/static/chunks/pages/apps/%5Bapp_id%5D/embedded-wallets-12b879f7c495acb1.js?dpl=dpl_58U8BwQR8kYKjRCfyDBen2GGoq7V:0
+[    5945ms] [LOG] %cYou are reading this message because you opened the browser console, a developer tool. Do not enter or paste code you do not understand. Never share your tokens or any other info with anyone. If someone told you to do this, it is very likely a scam. font-size: 18px; @ https://privy.app.uniswap.org/_next/static/chunks/pages/apps/%5Bapp_id%5D/embedded-wallets-12b879f7c495acb1.js?dpl=dpl_58U8BwQR8kYKjRCfyDBen2GGoq7V:0
+[    6428ms] [INFO] INFO {context: Object} Verify completed {success: false, attemptNumber: 1, totalDurationMs: 6419.900000002235} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    7755ms] [INFO] INFO {context: Object} Verify completed {success: true, attemptNumber: 2, totalDurationMs: 7747.400000002235} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    7992ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/1:0
+[    8146ms] [LOG] 🚀 ~ file: relay.ts:63 ~ .then ~ domains: [wss://nbstream.binance.com/wallet-connector, wss://nbstream.binance.info/wallet-connector] @ https://app.uniswap.org/assets/dist-u9Gno2jN.js:568
+[    8279ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8280ms] [INFO] INFO {context: Object} Session init started @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8280ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/1:0
+[    8281ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/1:0
+[    8282ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8283ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8441ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/uniswap.compliancev2service.v1.compliancev2Service/GatedFeatures:0
+[    8442ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8504ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/8453:0
+[    8504ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/8453:0
+[    8505ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8506ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8955ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/1:0
+[    8955ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/1:0
+[    8957ms] [WARNING] WARN {context: Object} Session-gated retry still failed {tags: Object, extra: Object} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8958ms] [WARNING] WARN {context: Object} RPC error {method: eth_call, chainId: 1, durationMs: 5788, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8959ms] [WARNING] WARN {context: Object} Session-gated retry still failed {tags: Object, extra: Object} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8960ms] [WARNING] WARN {context: Object} RPC error {method: eth_blockNumber, chainId: 1, durationMs: 5958, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[    8961ms] [INFO] INFO {context: Object} Session init completed {needChallenge: true, durationMs: 681.4000000022352} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   15182ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/uniswap.compliancev2service.v1.compliancev2Service/GatedFeatures:0
+[   16287ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/uniswap.compliancev2service.v1.compliancev2Service/FeatureGatedTokens:0
+[   18683ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/8453:0
+[   18684ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/8453:0
+[   18684ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/1:0
+[   18684ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://entry-gateway.backend-prod.api.uniswap.org/rpc/1:0
+[   18909ms] [WARNING] WARN {context: Object} Session-gated retry still failed {tags: Object, extra: Object} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   18911ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   18912ms] [INFO] INFO {context: Object} Challenge received {challengeType: 2, challengeId: ae705226-11cd-4882-bdd3-a06a03a5efcc} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   18988ms] [INFO] INFO {context: Object} Hashcash solve completed {durationMs: 75.59999999776483, success: true, difficulty: 1, iterationCount: 293, usedWorker: true} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20530ms] [WARNING] WARN {context: Object} Session-gated retry still failed {tags: Object, extra: Object} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20531ms] [WARNING] WARN {context: Object} RPC error {method: eth_blockNumber, chainId: 8453, durationMs: 17521, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20532ms] [WARNING] WARN {context: Object} Session-gated retry still failed {tags: Object, extra: Object} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20532ms] [WARNING] WARN {context: Object} RPC error {method: eth_chainId, chainId: 8453, durationMs: 17472, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20533ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20533ms] [INFO] INFO {context: Object} Session recovery started {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20566ms] [INFO] INFO {context: Object} Verify completed {success: true, attemptNumber: 1, totalDurationMs: 11605.5} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20769ms] [INFO] INFO {context: Object} RPC response {method: net_version, chainId: 8453, durationMs: 237, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20771ms] [INFO] INFO {context: Object} RPC response {method: eth_blockNumber, chainId: 8453, durationMs: 240, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20995ms] [INFO] INFO {context: Object} RPC response {method: eth_chainId, chainId: 8453, durationMs: 452, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20996ms] [INFO] INFO {context: Object} Session-gated retry succeeded {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20996ms] [INFO] INFO {context: Object} RPC response {method: eth_chainId, chainId: 1, durationMs: 12034, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20996ms] [INFO] INFO {context: Object} Session-gated retry succeeded {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20996ms] [INFO] INFO {context: Object} RPC response {method: eth_chainId, chainId: 1, durationMs: 17937, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20997ms] [INFO] INFO {context: Object} Session-gated retry succeeded {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20997ms] [INFO] INFO {context: Object} Session-gated retry succeeded {tags: Object, extra: undefined} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   20997ms] [INFO] INFO {context: Object} RPC response {method: eth_blockNumber, chainId: 1, durationMs: 12038, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   27169ms] [INFO] INFO {context: Object} RPC response {method: eth_blockNumber, chainId: 8453, durationMs: 235, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1
+[   27174ms] [INFO] INFO {context: Object} RPC response {method: eth_chainId, chainId: 8453, durationMs: 233, provider: unirpc, transport: viem} @ https://app.uniswap.org/assets/logger-Cshlk2HY.js:1

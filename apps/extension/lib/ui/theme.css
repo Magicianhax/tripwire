@@ -1611,3 +1611,341 @@ div.tw-dock-chip {
     animation: none;
   }
 }
+
+/* -------------------- Author badges (X username row) -------------------- */
+
+/* The row sits inside X's own header line, so it takes its baseline from the name next to it and
+   adds no height: 18px marks, a 24px hit target via the pseudo-element. */
+.tw-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-1);
+  vertical-align: text-bottom;
+}
+
+.tw-badge {
+  appearance: none;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  background: var(--tw-raised);
+  color: var(--tw-text);
+  cursor: pointer;
+}
+
+/* Pointer target only: 24px tall without changing the 18px mark or X's line height. */
+.tw-badge::after {
+  content: "";
+  position: absolute;
+  inset: -3px -3px;
+}
+
+@media (hover: hover) {
+  .tw-badge:hover {
+    border-color: var(--tw-mint-line);
+    background: var(--tw-mint-dim);
+  }
+}
+
+.tw-badge[aria-expanded="true"] {
+  border-color: var(--tw-mint);
+  background: var(--tw-mint-dim);
+}
+
+.tw-badge:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 1px;
+}
+
+/* -------------------- Badge card -------------------- */
+
+.tw-badge-card .tw-card-header {
+  min-height: 48px;
+}
+
+.tw-badge-card .tw-card-sub .tw-meta {
+  font-size: 0.75rem;
+}
+
+/* Venue tabs carry their brand mark before the name. */
+.tw-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tw-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+.tw-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px var(--tw-space-2);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  font-size: 0.75rem;
+  color: var(--tw-text);
+}
+
+.tw-tag .tw-icon {
+  color: var(--tw-text-2);
+}
+
+.tw-holding-rows li {
+  min-height: 30px;
+}
+
+.tw-holding-name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  min-width: 0;
+}
+
+.tw-side {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: var(--tw-radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tw-side[data-side="long"] {
+  background: var(--tw-mint-dim);
+  color: var(--tw-mint);
+}
+
+.tw-side[data-side="short"] {
+  background: var(--tw-red-dim);
+  color: var(--tw-red);
+}
+
+.tw-market-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.tw-market-rows li {
+  display: grid;
+  gap: 4px;
+  padding: var(--tw-space-2) 10px;
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-raised);
+}
+
+.tw-market-question {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--tw-text);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.tw-market-figures {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-3);
+  font-size: 0.8125rem;
+  color: var(--tw-text-2);
+}
+
+.tw-market-figures .tw-fig:first-of-type {
+  margin-left: auto;
+  color: var(--tw-text);
+}
+
+.tw-sources {
+  margin: 0;
+  font-size: 0.75rem;
+}
+
+/* -------------------- Wallet links -------------------- */
+
+.tw-link-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--tw-space-2);
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--tw-text);
+}
+
+.tw-link-status .tw-meta {
+  font-size: 0.75rem;
+}
+
+.tw-link-action,
+.tw-link-btn,
+.tw-link-save,
+.tw-link-cancel {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  background: transparent;
+  color: var(--tw-text);
+  font-family: var(--tw-font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tw-link-save {
+  min-height: 28px;
+  border-color: var(--tw-mint);
+  background: var(--tw-mint);
+  color: var(--tw-ink);
+  font-weight: 600;
+}
+
+.tw-link-save:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.tw-link-cancel {
+  min-height: 28px;
+}
+
+@media (hover: hover) {
+  .tw-link-action:hover,
+  .tw-link-btn:hover,
+  .tw-link-cancel:hover {
+    border-color: var(--tw-mint-line);
+    color: var(--tw-mint);
+  }
+  .tw-link-save:hover:not(:disabled) {
+    filter: brightness(1.08);
+  }
+}
+
+.tw-link-action:focus-visible,
+.tw-link-btn:focus-visible,
+.tw-link-save:focus-visible,
+.tw-link-cancel:focus-visible,
+.tw-link-input:focus-visible,
+.tw-link-venue:focus-within {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 1px;
+}
+
+.tw-card-links {
+  padding: 0 var(--tw-space-4) var(--tw-space-4);
+}
+
+.tw-link-wallet {
+  display: grid;
+  gap: var(--tw-space-2);
+  justify-items: start;
+  padding-top: var(--tw-space-3);
+  border-top: 1px solid var(--tw-line);
+}
+
+.tw-link-venues {
+  display: flex;
+  gap: var(--tw-space-2);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.tw-link-venue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--tw-text-2);
+  cursor: pointer;
+}
+
+.tw-link-venue[data-on] {
+  border-color: var(--tw-mint);
+  background: var(--tw-mint-dim);
+  color: var(--tw-mint);
+}
+
+.tw-link-field {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+}
+
+.tw-link-label {
+  font-size: 0.75rem;
+  color: var(--tw-text-2);
+}
+
+.tw-link-input {
+  appearance: none;
+  width: 100%;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-ground);
+  color: var(--tw-text);
+  font-size: 0.8125rem;
+}
+
+.tw-link-input::placeholder {
+  color: var(--tw-text-3);
+}
+
+.tw-link-input[aria-invalid="true"] {
+  border-color: var(--tw-red);
+}
+
+.tw-link-error {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--tw-red);
+}
+
+.tw-link-buttons {
+  display: flex;
+  gap: var(--tw-space-2);
+}
+
+/* The post card's author block: the Nansen label line's companion. */
+.tw-card-author {
+  display: grid;
+  gap: var(--tw-space-2);
+  justify-items: start;
+  margin: var(--tw-space-2) var(--tw-space-4) 0;
+}
+
+.tw-card-author .tw-link-wallet {
+  padding-top: 0;
+  border-top: none;
+}

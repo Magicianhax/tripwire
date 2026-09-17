@@ -1,6 +1,12 @@
 import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 
-export type TabDef = { id: string; label: string; content: ReactNode };
+export type TabDef = {
+  id: string;
+  label: string;
+  content: ReactNode;
+  /** An optional brand mark before the label (the author badge card's venue tabs). */
+  icon?: ReactNode;
+};
 
 /**
  * WAI-ARIA tabs with automatic activation: one tab stop, arrow keys (wrapping), Home and End
@@ -63,6 +69,7 @@ export function Tabs({ tabs, label, initial }: { tabs: TabDef[]; label: string; 
               tabIndex={on ? 0 : -1}
               onClick={() => setSelected(t.id)}
             >
+              {t.icon}
               {t.label}
             </button>
           );

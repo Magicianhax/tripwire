@@ -1,0 +1,5999 @@
+{
+  "capturedAt": "2026-09-17T14:47:37.778Z",
+  "url": "https://pump.fun/",
+  "title": "Pump.fun — Launch and trade memecoins on Solana",
+  "buttons": [
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_32 button-module-SQH47MGK-module__-d3wmW__button__variant_ghost button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__icon_only button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+      "visible": true,
+      "rect": [
+        55,
+        20,
+        32,
+        32
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.min-h-10.flex-row.items-center",
+        "div .flex.flex-col.gap-2.p-2",
+        "div .relative.flex.h-full.w-full",
+        "div .fixed.top-0.bottom-0.z-40",
+        "div data-state=collapsed .text-sidebar-foreground.group.peer.hidden",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Support",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "help-support-button-sidebar"
+      },
+      "cls": "peer/menu-button flex w-full items-center gap-2 overflow-hidden",
+      "visible": true,
+      "rect": [
+        16,
+        312,
+        40,
+        40
+      ],
+      "inForm": false,
+      "ancestors": [
+        "li .group/menu-item.relative",
+        "ul .flex.w-full.min-w-0.flex-col",
+        "div .w-full.text-sm.px-2",
+        "div .relative.flex.w-full.min-w-0",
+        "div .flex.min-h-0.flex-1.flex-col",
+        "div .relative.flex.h-full.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Create",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "create-button-sidebar"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_40 button-module-SQH47MGK-module__-d3wmW__button__variant_primary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__rounded_base w-full",
+      "visible": true,
+      "rect": [
+        16,
+        460,
+        40,
+        40
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .relative.flex.w-full.min-w-0",
+        "div .relative.flex.w-full.min-w-0",
+        "div .flex.min-h-0.flex-1.flex-col",
+        "div .relative.flex.h-full.w-full",
+        "div .fixed.top-0.bottom-0.z-40",
+        "div data-state=collapsed .text-sidebar-foreground.group.peer.hidden"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Left side",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "sidebar-side-panel-left",
+        "aria-label": "Left side"
+      },
+      "cls": "flex min-w-0 flex-1 items-center justify-center gap-1.5",
+      "visible": true,
+      "rect": [
+        16,
+        867,
+        39,
+        30
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=sidebar-side-panel-triggers .flex.gap-1.5.px-2.pb-1",
+        "div .flex.flex-col.gap-2.p-2",
+        "div .relative.flex.h-full.w-full",
+        "div .fixed.top-0.bottom-0.z-40",
+        "div data-state=collapsed .text-sidebar-foreground.group.peer.hidden",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Right side",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "sidebar-side-panel-right",
+        "aria-label": "Right side"
+      },
+      "cls": "flex min-w-0 flex-1 items-center justify-center gap-1.5",
+      "visible": true,
+      "rect": [
+        16,
+        903,
+        39,
+        30
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=sidebar-side-panel-triggers .flex.gap-1.5.px-2.pb-1",
+        "div .flex.flex-col.gap-2.p-2",
+        "div .relative.flex.h-full.w-full",
+        "div .fixed.top-0.bottom-0.z-40",
+        "div data-state=collapsed .text-sidebar-foreground.group.peer.hidden",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": null,
+      "disabled": false,
+      "attrs": {
+        "aria-label": "Toggle Sidebar"
+      },
+      "cls": "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4",
+      "visible": true,
+      "rect": [
+        63,
+        0,
+        16,
+        945
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .relative.flex.h-full.w-full",
+        "div .fixed.top-0.bottom-0.z-40",
+        "div data-state=collapsed .text-sidebar-foreground.group.peer.hidden",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_32 button-module-SQH47MGK-module__-d3wmW__button__variant_ghost button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__icon_only button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+      "visible": true,
+      "rect": [
+        1872,
+        4,
+        32,
+        32
+      ],
+      "inForm": false,
+      "ancestors": [
+        "section .flex.items-center.justify-center.h-10",
+        "div .max-md:hidden",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full",
+        "main .relative.flex.flex-1.flex-col",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Search for coins and users...⌘K",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-label": "Search for coins and users"
+      },
+      "cls": "flex h-full w-full min-w-0 items-center gap-2",
+      "visible": true,
+      "rect": [
+        96,
+        54,
+        452,
+        40
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div role=search .relative.flex.h-10.w-full",
+        "div .contents",
+        "div .flex.items-center.w-full.max-w-[500px]",
+        "div .flex.items-center.justify-start.h-full",
+        "div .flex.items-center.justify-between.w-full",
+        "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Preview a copied coin or wallet address"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_40 button-module-SQH47MGK-module__-d3wmW__button__variant_secondary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__icon_only button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+      "visible": true,
+      "rect": [
+        556,
+        54,
+        40,
+        40
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.w-full.max-w-[500px]",
+        "div .flex.items-center.justify-start.h-full",
+        "div .flex.items-center.justify-between.w-full",
+        "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full"
+      ]
+    },
+    {
+      "tag": "div",
+      "text": "",
+      "type": null,
+      "disabled": false,
+      "attrs": {
+        "role": "button"
+      },
+      "cls": "",
+      "visible": true,
+      "rect": [
+        1770,
+        54,
+        40,
+        40
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .max-[480px]:hidden",
+        "div .flex.items-center.justify-end.h-full",
+        "div .flex.items-center.justify-between.w-full",
+        "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Create"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_40 button-module-SQH47MGK-module__-d3wmW__button__variant_secondary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__icon_only button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+      "visible": true,
+      "rect": [
+        1770,
+        54,
+        40,
+        40
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div role=button id=base-ui-_R_dd8lald3mknlpjb_",
+        "div .max-[480px]:hidden",
+        "div .flex.items-center.justify-end.h-full",
+        "div .flex.items-center.justify-between.w-full",
+        "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+        "header .flex.flex-col.sticky.top-0"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Sign in",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "sign-in-button"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_40 button-module-SQH47MGK-module__-d3wmW__button__variant_primary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+      "visible": true,
+      "rect": [
+        1822,
+        54,
+        74,
+        40
+      ],
+      "inForm": false,
+      "ancestors": [
+        "span .inline-flex",
+        "div .flex.items-center.justify-end.h-full",
+        "div .flex.items-center.justify-between.w-full",
+        "div .flex.items-center.px-[var(--padding-x-main)].max-lg:px-4",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "aria-label": "Info bar settings"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-md",
+      "visible": true,
+      "rect": [
+        84,
+        115,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full",
+        "main .relative.flex.flex-1.flex-col",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-checked": "true",
+        "role": "radio",
+        "aria-label": "Top traders"
+      },
+      "cls": "flex size-6 items-center justify-center rounded-md transition-colors",
+      "visible": true,
+      "rect": [
+        125,
+        115,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div role=radiogroup aria-label=Info bar content .flex.shrink-0.items-center.gap-0.5",
+        "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full",
+        "main .relative.flex.flex-1.flex-col",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-checked": "false",
+        "role": "radio",
+        "aria-label": "Positions"
+      },
+      "cls": "flex size-6 items-center justify-center rounded-md transition-colors",
+      "visible": true,
+      "rect": [
+        151,
+        115,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div role=radiogroup aria-label=Info bar content .flex.shrink-0.items-center.gap-0.5",
+        "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full",
+        "main .relative.flex.flex-1.flex-col",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-checked": "false",
+        "role": "radio",
+        "aria-label": "Following"
+      },
+      "cls": "flex size-6 items-center justify-center rounded-md transition-colors",
+      "visible": true,
+      "rect": [
+        177,
+        115,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div role=radiogroup aria-label=Info bar content .flex.shrink-0.items-center.gap-0.5",
+        "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full",
+        "main .relative.flex.flex-1.flex-col",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-checked": "false",
+        "role": "radio",
+        "aria-label": "Recently viewed"
+      },
+      "cls": "flex size-6 items-center justify-center rounded-md transition-colors",
+      "visible": true,
+      "rect": [
+        203,
+        115,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div role=radiogroup aria-label=Info bar content .flex.shrink-0.items-center.gap-0.5",
+        "div data-testid=token-info-bar .flex.h-9.items-center.gap-2",
+        "header .flex.flex-col.sticky.top-0",
+        "div .pump-main-shell.flex.flex-col.w-full",
+        "main .relative.flex.flex-1.flex-col",
+        "div .group/sidebar-wrapper.flex.min-h-svh.w-full"
+      ]
+    },
+    {
+      "tag": "header",
+      "text": "Top Profit",
+      "type": null,
+      "disabled": false,
+      "attrs": {
+        "role": "button",
+        "data-testid": "screeners-pane-header",
+        "aria-label": "Move Top Profit — drag to reorder, or to a screen edge to op"
+      },
+      "cls": "flex items-center gap-1.5 cursor-grab touch-none active:cursor-grabbing",
+      "visible": true,
+      "rect": [
+        322,
+        145,
+        449,
+        44
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch",
+        "div data-testid=screeners-deck .group/deck.custom-scrollbar.min-h-0.flex-1",
+        "div .flex.min-h-0.flex-1.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Top Profit",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-view-trigger",
+        "aria-label": "Top Profit — change view"
+      },
+      "cls": "flex min-w-0 items-center gap-1 rounded-lg border",
+      "visible": true,
+      "rect": [
+        364,
+        154,
+        114,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "header role=button data-testid=screeners-pane-header aria-label=Move Top Profit — drag to reorder, or to .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch",
+        "div data-testid=screeners-deck .group/deck.custom-scrollbar.min-h-0.flex-1"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-split-down",
+        "aria-label": "Split down"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        657,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Top Profit — drag to reorder, or to .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-split-right",
+        "aria-label": "Split right"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        683,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Top Profit — drag to reorder, or to .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-close-button",
+        "aria-label": "Close Top Profit"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        709,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Top Profit — drag to reorder, or to .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-label": "Top Profit pane options"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        735,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Top Profit — drag to reorder, or to .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Profit",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "aria-label": "Ranking metric"
+      },
+      "cls": "whitespace-nowrap rounded-full border bg-bg-secondary font-semibold transition-colors",
+      "visible": true,
+      "rect": [
+        334,
+        193,
+        70,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2.pb-2",
+        "div data-testid=screeners-pnl-scroll .flex-1.min-h-0.overflow-y-auto.overflow-x-hidden",
+        "div .flex.h-full.min-h-0.w-full",
+        "div .flex.min-h-0.flex-1.flex-col",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1W",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "aria-label": "Time window"
+      },
+      "cls": "whitespace-nowrap rounded-full border bg-bg-secondary font-semibold transition-colors",
+      "visible": true,
+      "rect": [
+        412,
+        193,
+        55,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2.pb-2",
+        "div data-testid=screeners-pnl-scroll .flex-1.min-h-0.overflow-y-auto.overflow-x-hidden",
+        "div .flex.h-full.min-h-0.w-full",
+        "div .flex.min-h-0.flex-1.flex-col",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Load 20 more",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "inline-flex items-center justify-center rounded-full border border-white/10",
+      "visible": true,
+      "rect": [
+        479,
+        1043,
+        126,
+        38
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .relative.flex.justify-center.pt-4",
+        "div data-testid=screeners-pnl-scroll .flex-1.min-h-0.overflow-y-auto.overflow-x-hidden",
+        "div .flex.h-full.min-h-0.w-full",
+        "div .flex.min-h-0.flex-1.flex-col",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Top Profit column .group/scol.relative.flex.h-full"
+      ]
+    },
+    {
+      "tag": "header",
+      "text": "Hot callouts",
+      "type": null,
+      "disabled": false,
+      "attrs": {
+        "role": "button",
+        "data-testid": "screeners-pane-header",
+        "aria-label": "Move Hot callouts — drag to reorder, or to a screen edge to "
+      },
+      "cls": "flex items-center gap-1.5 cursor-grab touch-none active:cursor-grabbing",
+      "visible": true,
+      "rect": [
+        772,
+        145,
+        449,
+        44
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Hot callouts column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch",
+        "div data-testid=screeners-deck .group/deck.custom-scrollbar.min-h-0.flex-1",
+        "div .flex.min-h-0.flex-1.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Hot callouts",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-view-trigger",
+        "aria-label": "Hot callouts — change view"
+      },
+      "cls": "flex min-w-0 items-center gap-1 rounded-lg border",
+      "visible": true,
+      "rect": [
+        814,
+        154,
+        128,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "header role=button data-testid=screeners-pane-header aria-label=Move Hot callouts — drag to reorder, or  .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Hot callouts column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch",
+        "div data-testid=screeners-deck .group/deck.custom-scrollbar.min-h-0.flex-1"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "screeners-pane-filter-toggle",
+        "aria-label": "Filters"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1081,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Hot callouts — drag to reorder, or  .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Hot callouts column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-split-down",
+        "aria-label": "Split down"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1107,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Hot callouts — drag to reorder, or  .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Hot callouts column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-split-right",
+        "aria-label": "Split right"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1133,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Hot callouts — drag to reorder, or  .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Hot callouts column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-close-button",
+        "aria-label": "Close Hot callouts"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1159,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Hot callouts — drag to reorder, or  .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Hot callouts column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-label": "Hot callouts pane options"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1185,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Hot callouts — drag to reorder, or  .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Hot callouts column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        201,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        329,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        330,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        330,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "3",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        329,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        329,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        503,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        503,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        540,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        686,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        687,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        687,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "3",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        686,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        686,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        908,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        908,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        945,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        1073,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        1074,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        1074,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        1073,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "2",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "2 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        1073,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more updates",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-updates-show-more"
+      },
+      "cls": "relative z-[2] font-semibold text-[#86EFAC] hover:underline text-[13px]",
+      "visible": true,
+      "rect": [
+        832,
+        1116,
+        123,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-updates-show-more-row .flex.w-full.items-center.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        1187,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        1187,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        1224,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        1370,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        1371,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        1371,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "3",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        1370,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "2",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "2 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        1370,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more updates",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-updates-show-more"
+      },
+      "cls": "relative z-[2] font-semibold text-[#86EFAC] hover:underline text-[13px]",
+      "visible": true,
+      "rect": [
+        832,
+        1413,
+        123,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-updates-show-more-row .flex.w-full.items-center.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        1503,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        1503,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        1540,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-note-show-more"
+      },
+      "cls": "self-start text-xs font-bold text-primary-green hover:underline relative",
+      "visible": true,
+      "rect": [
+        832,
+        1630,
+        65,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        1726,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        1727,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        1727,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        1726,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        1726,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        1811,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        1811,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        1848,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        2302,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        2303,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        2303,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        2302,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        2302,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        2712,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        2712,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        2749,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        2877,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        2878,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        2878,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        2877,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        2877,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        2922,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        3086,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        3087,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        3087,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "6",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        3086,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        3086,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        3191,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "4",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        3191,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        3228,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        3374,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        3375,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        3375,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        3374,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        3374,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        3459,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        3459,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        3496,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        3624,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        3625,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        3625,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        3624,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        3624,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        3710,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        3710,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        3747,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        3875,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        3876,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        3876,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        3875,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        3875,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        3960,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        3960,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        3997,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-note-show-more"
+      },
+      "cls": "self-start text-xs font-bold text-primary-green hover:underline relative",
+      "visible": true,
+      "rect": [
+        832,
+        4087,
+        65,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        4509,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        4510,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        4510,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        4509,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        4509,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        4554,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-note-show-more"
+      },
+      "cls": "self-start text-xs font-bold text-primary-green hover:underline relative",
+      "visible": true,
+      "rect": [
+        832,
+        4644,
+        65,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        5066,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        5067,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        5067,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        5066,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        5066,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        5152,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        5152,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        5189,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        5317,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        5318,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        5318,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "5",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        5317,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        5317,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        5362,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-note-show-more"
+      },
+      "cls": "self-start text-xs font-bold text-primary-green hover:underline relative",
+      "visible": true,
+      "rect": [
+        832,
+        5452,
+        65,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        5874,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        5875,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        5875,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        5874,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        5874,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        5919,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        6198,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        6199,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "2",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        6198,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "4",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        937,
+        6198,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        978,
+        6198,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        6243,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-note-show-more"
+      },
+      "cls": "self-start text-xs font-bold text-primary-green hover:underline relative",
+      "visible": true,
+      "rect": [
+        832,
+        6333,
+        65,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        6429,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        6430,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        6430,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "2",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        6429,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "1 reply"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        6429,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        6768,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        6768,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        6805,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        6933,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        6934,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        6934,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        6933,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        6933,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        6978,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        7106,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        7107,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        7107,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        7106,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        7106,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        7151,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        7279,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        7280,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        7280,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        7279,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        7279,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        7324,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        7478,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        7479,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        7479,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "5",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        7478,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "2",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "2 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        7478,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more updates",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-updates-show-more"
+      },
+      "cls": "relative z-[2] font-semibold text-[#86EFAC] hover:underline text-[13px]",
+      "visible": true,
+      "rect": [
+        832,
+        7521,
+        123,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-updates-show-more-row .flex.w-full.items-center.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        7591,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        7591,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        7628,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        7756,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        7757,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        7757,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "2",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        7756,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "4",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "4 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        7756,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more updates",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-updates-show-more"
+      },
+      "cls": "relative z-[2] font-semibold text-[#86EFAC] hover:underline text-[13px]",
+      "visible": true,
+      "rect": [
+        832,
+        7799,
+        123,
+        16
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-updates-show-more-row .flex.w-full.items-center.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div",
+        "li",
+        "ul aria-label=Latest callouts across the site .flex.w-full.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-update-shares",
+        "aria-label": "Share this update"
+      },
+      "cls": "relative z-[2] inline-flex items-center gap-1 rounded-full",
+      "visible": true,
+      "rect": [
+        824,
+        7870,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "1",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "callout-update-like",
+        "aria-label": "Like this update"
+      },
+      "cls": "relative z-[2] inline-flex w-fit items-center gap-1",
+      "visible": true,
+      "rect": [
+        864,
+        7870,
+        40,
+        20
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-update-metrics .-ml-2.flex.w-fit.items-center",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div data-testid=callout-update-row .flex.w-full.gap-3",
+        "div data-testid=callout-thread-updates .flex.w-full.flex-col",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "aria-label": "Follow"
+      },
+      "cls": "group/follow inline-flex shrink-0 items-center justify-center font-semibold",
+      "visible": true,
+      "rect": [
+        1185,
+        7907,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-2",
+        "div .ml-auto.shrink-0.relative.z-[2]",
+        "div .flex.w-full.items-center.gap-1.5",
+        "div .flex.min-w-0.flex-1.flex-col",
+        "div .flex.w-full.items-start.gap-3",
+        "article data-testid=feed-callout-card .flex.w-full.flex-col.py-2"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-share",
+        "aria-label": "Share this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        824,
+        8035,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replay",
+        "aria-label": "Replay this position"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        865,
+        8036,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "callout-action-repost",
+        "aria-label": "Repost this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        895,
+        8036,
+        30,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "3",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-like",
+        "aria-label": "Like this callout"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        925,
+        8035,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "0",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "callout-action-replies",
+        "aria-label": "0 replies"
+      },
+      "cls": "flex items-center justify-center gap-[var(--ar-gap,4px)] rounded-full px-[var(--ar-px,8px)]",
+      "visible": true,
+      "rect": [
+        967,
+        8035,
+        41,
+        28
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=callout-actions-chips .flex.flex-wrap.items-center",
+        "div",
+        "div",
+        "div",
+        "div data-testid=callout-actions-cluster .min-w-0.flex-1",
+        "div .flex.min-h-7.w-full.items-center"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more callouts",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "inline-flex items-center justify-center rounded-full border border-white/10",
+      "visible": true,
+      "rect": [
+        913,
+        8088,
+        166,
+        38
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .relative.flex.justify-center.pt-4",
+        "div data-testid=screeners-global-callouts-scroll .flex-1.min-h-0.-mx-[var(--screeners-pad,0px)].overflow-y-auto",
+        "div .relative.flex.h-full.min-h-0",
+        "div .flex.min-h-0.flex-1.flex-col",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Hot callouts column .group/scol.relative.flex.h-full"
+      ]
+    },
+    {
+      "tag": "header",
+      "text": "Trending",
+      "type": null,
+      "disabled": false,
+      "attrs": {
+        "role": "button",
+        "data-testid": "screeners-pane-header",
+        "aria-label": "Move Trending — drag to reorder, or to a screen edge to open"
+      },
+      "cls": "flex items-center gap-1.5 cursor-grab touch-none active:cursor-grabbing",
+      "visible": true,
+      "rect": [
+        1222,
+        145,
+        448,
+        44
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Trending column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch",
+        "div data-testid=screeners-deck .group/deck.custom-scrollbar.min-h-0.flex-1",
+        "div .flex.min-h-0.flex-1.flex-col"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Trending",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-view-trigger",
+        "aria-label": "Trending — change view"
+      },
+      "cls": "flex min-w-0 items-center gap-1 rounded-lg border",
+      "visible": true,
+      "rect": [
+        1264,
+        154,
+        109,
+        26
+      ],
+      "inForm": false,
+      "ancestors": [
+        "header role=button data-testid=screeners-pane-header aria-label=Move Trending — drag to reorder, or to a .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Trending column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch",
+        "div data-testid=screeners-deck .group/deck.custom-scrollbar.min-h-0.flex-1"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-state": "closed",
+        "data-testid": "screeners-pane-filter-toggle",
+        "aria-label": "Filters"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1530,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Trending — drag to reorder, or to a .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Trending column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-split-down",
+        "aria-label": "Split down"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1556,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Trending — drag to reorder, or to a .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Trending column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-split-right",
+        "aria-label": "Split right"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1582,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Trending — drag to reorder, or to a .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Trending column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "data-testid": "screeners-pane-close-button",
+        "aria-label": "Close Trending"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1608,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Trending — drag to reorder, or to a .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Trending column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-label": "Trending pane options"
+      },
+      "cls": "flex size-6 shrink-0 items-center justify-center rounded-lg",
+      "visible": true,
+      "rect": [
+        1634,
+        155,
+        24,
+        24
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .ml-auto.flex.items-center.gap-0.5",
+        "header role=button data-testid=screeners-pane-header aria-label=Move Trending — drag to reorder, or to a .flex.items-center.gap-1.5.cursor-grab",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0",
+        "section data-testid=screeners-column aria-label=Trending column .group/scol.relative.flex.h-full",
+        "div data-testid=screeners-sortable-column .relative.flex.h-full.min-h-0",
+        "div .flex.h-full.w-full.items-stretch"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Show more coins",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "inline-flex items-center justify-center rounded-full border border-white/10",
+      "visible": true,
+      "rect": [
+        1372,
+        1429,
+        148,
+        38
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .relative.flex.justify-center.pt-4",
+        "div data-testid=screeners-coin-board-scroll .flex-1.min-h-0.overflow-y-auto.overflow-x-hidden",
+        "div .relative.flex.min-h-0.flex-1",
+        "div .flex.min-h-0.w-full.flex-1",
+        "div .flex.min-h-0.flex-1.flex-col",
+        "div data-testid=screeners-pane .relative.flex.min-h-0.basis-0"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Reject all",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "reject-all-button"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_32 button-module-SQH47MGK-module__-d3wmW__button__variant_secondary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+      "visible": true,
+      "rect": [
+        1501,
+        884,
+        83,
+        32
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-x-2",
+        "div .flex.border-t.border-solid.border-border-secondary",
+        "div data-testid=cookie-consent-modal .fixed.bottom-4.right-0.flex",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Customize",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "customize-button"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_32 button-module-SQH47MGK-module__-d3wmW__button__variant_secondary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+      "visible": true,
+      "rect": [
+        1592,
+        884,
+        91,
+        32
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.items-center.gap-x-2",
+        "div .flex.border-t.border-solid.border-border-secondary",
+        "div data-testid=cookie-consent-modal .fixed.bottom-4.right-0.flex",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Accept all",
+      "type": "button",
+      "disabled": false,
+      "attrs": {
+        "aria-pressed": "false",
+        "data-testid": "accept-all-button"
+      },
+      "cls": "button-module-SQH47MGK-module__-d3wmW__button button-module-SQH47MGK-module__-d3wmW__button__size_32 button-module-SQH47MGK-module__-d3wmW__button__variant_primary button-module-SQH47MGK-module__-d3wmW__button__width_base button-module-SQH47MGK-module__-d3wmW__button__rounded_base",
+      "visible": true,
+      "rect": [
+        1800,
+        884,
+        87,
+        32
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .flex.border-t.border-solid.border-border-secondary",
+        "div data-testid=cookie-consent-modal .fixed.bottom-4.right-0.flex",
+        "div"
+      ]
+    }
+  ],
+  "hiddenButtonCount": 7,
+  "inputs": []
+}

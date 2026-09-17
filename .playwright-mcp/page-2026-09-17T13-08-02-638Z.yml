@@ -1,0 +1,62 @@
+- generic [active] [ref=f3e1]:
+  - 'status "Replay mode: recorded Nansen data, not live" [ref=f3e2]': REPLAY
+  - banner [ref=f3e3]:
+    - generic [ref=f3e4]:
+      - link "TRIPWIRE" [ref=f3e5] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=f3e6]:
+        - list [ref=f3e7]:
+          - listitem [ref=f3e8]:
+            - link "Status" [ref=f3e9] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=f3e10]:
+            - link "Rules" [ref=f3e11] [cursor=pointer]:
+              - /url: /rules
+          - listitem [ref=f3e12]:
+            - link "Ledger" [ref=f3e13] [cursor=pointer]:
+              - /url: /ledger
+          - listitem [ref=f3e14]:
+            - link "History" [ref=f3e15] [cursor=pointer]:
+              - /url: /history
+  - main [ref=f3e16]:
+    - generic [ref=f3e17]:
+      - heading "History" [level=1] [ref=f3e19]
+      - generic [ref=f3e20]:
+        - heading "Overrides" [level=2] [ref=f3e21]
+        - table [ref=f3e23]:
+          - rowgroup [ref=f3e24]:
+            - row [ref=f3e25]:
+              - columnheader "Time" [ref=f3e26]
+              - columnheader "Venue" [ref=f3e27]
+              - columnheader "Target" [ref=f3e28]
+              - columnheader "Verdict" [ref=f3e29]
+              - columnheader "Rule ids" [ref=f3e30]
+          - rowgroup [ref=f3e31]:
+            - row [ref=f3e32]:
+              - cell "17/09/2026, 6:07:35 pm" [ref=f3e33]
+              - cell "jupiter" [ref=f3e34]
+              - cell "BONK · solana" [ref=f3e35]
+              - cell "TRIPWIRE" [ref=f3e36]
+              - cell "exit_pressure" [ref=f3e38]
+      - generic [ref=f3e39]:
+        - heading "Recent checks" [level=2] [ref=f3e40]
+        - table [ref=f3e42]:
+          - rowgroup [ref=f3e43]:
+            - row [ref=f3e44]:
+              - columnheader "Time" [ref=f3e45]
+              - columnheader "Venue" [ref=f3e46]
+              - columnheader "Target" [ref=f3e47]
+              - columnheader "Verdict" [ref=f3e48]
+          - rowgroup [ref=f3e49]:
+            - row [ref=f3e50]:
+              - cell "17/09/2026, 6:07:35 pm" [ref=f3e51]
+              - cell "jupiter" [ref=f3e52]
+              - cell "HYPE long" [ref=f3e53]
+              - cell "CLEAR" [ref=f3e54]
+            - row [ref=f3e56]:
+              - cell "17/09/2026, 6:07:34 pm" [ref=f3e57]
+              - cell "jupiter" [ref=f3e58]
+              - cell "BONK · solana" [ref=f3e59]
+              - cell "CAUTION" [ref=f3e60]
+  - button "Open Next.js Dev Tools" [ref=f3e67] [cursor=pointer]
+  - alert [ref=f3e71]

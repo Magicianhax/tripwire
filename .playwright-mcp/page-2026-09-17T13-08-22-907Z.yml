@@ -1,0 +1,45 @@
+- generic [active] [ref=f5e1]:
+  - 'status "Replay mode: recorded Nansen data, not live" [ref=f5e2]': REPLAY
+  - banner [ref=f5e3]:
+    - generic [ref=f5e4]:
+      - link "TRIPWIRE" [ref=f5e5] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=f5e6]:
+        - list [ref=f5e7]:
+          - listitem [ref=f5e8]:
+            - link "Status" [ref=f5e9] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=f5e10]:
+            - link "Rules" [ref=f5e11] [cursor=pointer]:
+              - /url: /rules
+          - listitem [ref=f5e12]:
+            - link "Ledger" [ref=f5e13] [cursor=pointer]:
+              - /url: /ledger
+          - listitem [ref=f5e14]:
+            - link "History" [ref=f5e15] [cursor=pointer]:
+              - /url: /history
+  - main [ref=f5e16]:
+    - generic [ref=f5e17]:
+      - heading "Ledger" [level=1] [ref=f5e19]
+      - generic [ref=f5e21]:
+        - generic [ref=f5e22]:
+          - generic [ref=f5e23]: Calls
+          - paragraph [ref=f5e24]: 0 / 1000
+        - generic [ref=f5e25]:
+          - generic [ref=f5e26]: Successful calls
+          - generic [ref=f5e27]: "0"
+        - generic [ref=f5e28]:
+          - generic [ref=f5e29]: Credits today
+          - generic [ref=f5e30]: "0"
+        - generic [ref=f5e31]:
+          - generic [ref=f5e32]: Credits total
+          - generic [ref=f5e33]: "0"
+      - generic [ref=f5e34]:
+        - generic [ref=f5e35]:
+          - heading "By endpoint" [level=2] [ref=f5e36]
+          - paragraph [ref=f5e37]: No calls yet.
+        - generic [ref=f5e38]:
+          - heading "Recent calls" [level=2] [ref=f5e39]
+          - paragraph [ref=f5e40]: No calls yet.
+  - button "Open Next.js Dev Tools" [ref=f5e46] [cursor=pointer]
+  - alert [ref=f5e50]

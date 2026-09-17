@@ -1,0 +1,2033 @@
+- generic [active] [ref=f33e1]:
+  - generic [ref=f33e2]:
+    - generic [ref=f33e3]:
+      - link "Skip to main content" [ref=f33e4] [cursor=pointer]:
+        - /url: "#__pm_main"
+      - navigation "Main" [ref=f33e5]:
+        - generic [ref=f33e6]:
+          - link "Polymarket Logo" [ref=f33e8] [cursor=pointer]:
+            - /url: /
+            - img "Polymarket" [ref=f33e9]
+          - generic [ref=f33e14]:
+            - textbox "Search" [ref=f33e19]:
+              - /placeholder: Search polymarkets...
+            - generic [ref=f33e20]: /
+        - generic [ref=f33e32]:
+          - generic [ref=f33e34]:
+            - link "Trending" [ref=f33e35] [cursor=pointer]:
+              - /url: /
+            - link "Combos Combos" [ref=f33e42] [cursor=pointer]:
+              - /url: /combos
+              - generic [ref=f33e43]:
+                - img "Combos" [ref=f33e45]
+                - generic [ref=f33e48]: Combos
+            - link "Perps" [ref=f33e49] [cursor=pointer]:
+              - /url: /perps
+            - link "Breaking" [ref=f33e55] [cursor=pointer]:
+              - /url: /breaking
+            - link "New" [ref=f33e58] [cursor=pointer]:
+              - /url: /new
+            - link "Politics" [ref=f33e62] [cursor=pointer]:
+              - /url: /politics
+            - link "Sports" [ref=f33e65] [cursor=pointer]:
+              - /url: /sports/live
+            - link "Crypto" [ref=f33e68] [cursor=pointer]:
+              - /url: /crypto
+            - link "Esports" [ref=f33e71] [cursor=pointer]:
+              - /url: /esports
+            - link "Iran" [ref=f33e74] [cursor=pointer]:
+              - /url: /iran
+            - link "Finance" [ref=f33e77] [cursor=pointer]:
+              - /url: /finance
+            - link "Geopolitics" [ref=f33e80] [cursor=pointer]:
+              - /url: /geopolitics
+            - link "Tech" [ref=f33e83] [cursor=pointer]:
+              - /url: /tech
+            - link "Culture" [ref=f33e86] [cursor=pointer]:
+              - /url: /pop-culture
+            - link "Economy" [ref=f33e89] [cursor=pointer]:
+              - /url: /economy
+            - link "Weather" [ref=f33e92] [cursor=pointer]:
+              - /url: /weather
+            - link "Mentions" [ref=f33e95] [cursor=pointer]:
+              - /url: /mentions
+            - link "Elections" [ref=f33e98] [cursor=pointer]:
+              - /url: /elections
+            - link "Art" [ref=f33e101] [cursor=pointer]:
+              - /url: /pop-culture/art
+            - button "Open more navigation links" [ref=f33e104] [cursor=pointer]: More
+          - button "Scroll right" [ref=f33e107] [cursor=pointer]
+      - generic [ref=f33e108]:
+        - main [ref=f33e111]:
+          - generic [ref=f33e112]:
+            - heading "Polymarket | The World’s Largest Prediction Market™" [level=1] [ref=f33e113]
+            - generic [ref=f33e114]:
+              - region "Featured markets carousel" [ref=f33e118]:
+                - heading "Featured markets" [level=2] [ref=f33e119]
+                - generic [ref=f33e121]:
+                  - generic [ref=f33e123]:
+                    - link [aria-hidden] [ref=f33e124] [cursor=pointer]:
+                      - /url: /event/fed-decision-in-october-20260617190323537
+                    - generic [ref=f33e125]:
+                      - generic [ref=f33e126]:
+                        - img "icon for Fed Decision in October?" [ref=f33e130]
+                        - generic [ref=f33e131]:
+                          - heading [level=3] [ref=f33e132]:
+                            - link "Fed Decision in October?" [ref=f33e133] [cursor=pointer]:
+                              - /url: /event/fed-decision-in-october-20260617190323537
+                          - generic [ref=f33e135]:
+                            - link "Economy" [ref=f33e136] [cursor=pointer]:
+                              - /url: /economy
+                            - generic [ref=f33e137]: ·
+                            - link "Global Rates" [ref=f33e138] [cursor=pointer]:
+                              - /url: /predictions/Global-Rates
+                      - generic [ref=f33e139]:
+                        - button [ref=f33e140] [cursor=pointer]
+                        - button "Add to favorites" [ref=f33e145] [cursor=pointer]
+                    - generic [ref=f33e147]:
+                      - generic [ref=f33e148]:
+                        - generic [ref=f33e149]:
+                          - link "25 bps decrease 1%" [ref=f33e150] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537/will-the-fed-decrease-interest-rates-by-25-bps-after-the-october-2026-meeting-20260617190324030
+                            - paragraph [ref=f33e153]: 25 bps decrease
+                            - generic [ref=f33e154]: 1%
+                          - link "No change 53%" [ref=f33e155] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537/will-there-be-no-change-in-fed-interest-rates-after-the-october-2026-meeting-20260617190324031
+                            - paragraph [ref=f33e158]: No change
+                            - generic [ref=f33e159]: 53%
+                          - link "25 bps increase 47%" [ref=f33e160] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537/will-the-fed-increase-interest-rates-by-25-bps-after-the-october-2026-meeting-20260617190324032
+                            - paragraph [ref=f33e163]: 25 bps increase
+                            - generic [ref=f33e164]: 47%
+                          - link "50+ bps increase 1%" [ref=f33e165] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537/will-the-fed-increase-interest-rates-by-50-bps-after-the-october-2026-meeting-20260617190324033
+                            - paragraph [ref=f33e168]: 50+ bps increase
+                            - generic [ref=f33e169]: 1%
+                        - generic [ref=f33e172]:
+                          - link [ref=f33e173] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e174]:
+                              - img "JohnA" [ref=f33e176]
+                              - generic [ref=f33e177]:
+                                - paragraph [ref=f33e178]: JohnA
+                                - paragraph [ref=f33e179]: No matter the result, its an honor to gamble with you fellow degens
+                          - link [ref=f33e180] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e183]:
+                              - paragraph [ref=f33e184]: Secondary-Mosque
+                              - paragraph [ref=f33e185]: Just added more 😁😁
+                          - link [ref=f33e186] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e189]:
+                              - paragraph [ref=f33e190]: negoossppe
+                              - paragraph [ref=f33e191]: camel finance if you fucked this up its on you
+                          - link [ref=f33e192] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e195]:
+                              - paragraph [ref=f33e196]: Polken
+                              - paragraph [ref=f33e197]: wasup from camel crew
+                          - link [ref=f33e198] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e201]:
+                              - paragraph [ref=f33e202]: NotNiels
+                              - paragraph [ref=f33e203]: First Polymarket bet, Camels, UNITE! (entertainment purposes only)
+                          - link [ref=f33e204] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e205]:
+                              - img "JohnA" [ref=f33e207]
+                              - generic [ref=f33e208]:
+                                - paragraph [ref=f33e209]: JohnA
+                                - paragraph [ref=f33e210]: No matter the result, its an honor to gamble with you fellow degens
+                          - link [ref=f33e211] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e214]:
+                              - paragraph [ref=f33e215]: Secondary-Mosque
+                              - paragraph [ref=f33e216]: Just added more 😁😁
+                          - link [ref=f33e217] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e220]:
+                              - paragraph [ref=f33e221]: negoossppe
+                              - paragraph [ref=f33e222]: camel finance if you fucked this up its on you
+                          - link [ref=f33e223] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e226]:
+                              - paragraph [ref=f33e227]: Polken
+                              - paragraph [ref=f33e228]: wasup from camel crew
+                          - link [ref=f33e229] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e232]:
+                              - paragraph [ref=f33e233]: NotNiels
+                              - paragraph [ref=f33e234]: First Polymarket bet, Camels, UNITE! (entertainment purposes only)
+                          - link [ref=f33e235] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e236]:
+                              - img "JohnA" [ref=f33e238]
+                              - generic [ref=f33e239]:
+                                - paragraph [ref=f33e240]: JohnA
+                                - paragraph [ref=f33e241]: No matter the result, its an honor to gamble with you fellow degens
+                          - link [ref=f33e242] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e245]:
+                              - paragraph [ref=f33e246]: Secondary-Mosque
+                              - paragraph [ref=f33e247]: Just added more 😁😁
+                          - link [ref=f33e248] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e251]:
+                              - paragraph [ref=f33e252]: negoossppe
+                              - paragraph [ref=f33e253]: camel finance if you fucked this up its on you
+                          - link [ref=f33e254] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e257]:
+                              - paragraph [ref=f33e258]: Polken
+                              - paragraph [ref=f33e259]: wasup from camel crew
+                          - link [ref=f33e260] [cursor=pointer]:
+                            - /url: /event/fed-decision-in-october-20260617190323537
+                            - generic [ref=f33e263]:
+                              - paragraph [ref=f33e264]: NotNiels
+                              - paragraph [ref=f33e265]: First Polymarket bet, Camels, UNITE! (entertainment purposes only)
+                      - generic [ref=f33e273]:
+                        - paragraph [ref=f33e276]:
+                          - text: No change
+                          - generic [ref=f33e277]: 53%
+                        - paragraph [ref=f33e280]:
+                          - text: 25 bps increase
+                          - generic [ref=f33e281]: 47%
+                        - paragraph [ref=f33e284]:
+                          - text: 25 bps decrease
+                          - generic [ref=f33e285]: <1%
+                        - paragraph [ref=f33e288]:
+                          - text: 50+ bps increase
+                          - generic [ref=f33e289]: <1%
+                    - generic [ref=f33e291]:
+                      - paragraph [ref=f33e292]: $6M Vol
+                      - generic [ref=f33e293]:
+                        - generic [ref=f33e294]: Monthly
+                        - generic [ref=f33e301]: ·
+                        - img "Polymarket" [ref=f33e302]
+                  - generic [ref=f33e306]:
+                    - link [aria-hidden] [ref=f33e307] [cursor=pointer]:
+                      - /url: /event/efl-mnc-nor-2026-09-17
+                    - generic [ref=f33e308]:
+                      - generic [ref=f33e309]:
+                        - generic [ref=f33e312]:
+                          - heading [level=3] [ref=f33e313]:
+                            - link [ref=f33e314] [cursor=pointer]:
+                              - /url: /event/efl-mnc-nor-2026-09-17
+                              - text: Manchester City FC vs. Norwich City FC
+                          - generic [ref=f33e316]:
+                            - link [ref=f33e317] [cursor=pointer]:
+                              - /url: /sports/live
+                              - text: Sports
+                            - generic [ref=f33e318]: ·
+                            - link [ref=f33e319] [cursor=pointer]:
+                              - /url: /sports/soccer
+                              - text: Soccer
+                            - generic [ref=f33e320]: ·
+                            - link [ref=f33e321] [cursor=pointer]:
+                              - /url: /sports/efl-cup/games
+                              - text: EFL CUP
+                        - generic [ref=f33e323]:
+                          - link [ref=f33e324] [cursor=pointer]:
+                            - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-mnc&outcomeIndex=0
+                            - generic [ref=f33e325]: Manchester
+                          - link [ref=f33e327] [cursor=pointer]:
+                            - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-draw&outcomeIndex=0
+                            - generic [ref=f33e328]: DRAW
+                          - link [ref=f33e329] [cursor=pointer]:
+                            - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-nor&outcomeIndex=0
+                            - generic [ref=f33e330]: Norwich
+                        - generic [ref=f33e332]:
+                          - generic [ref=f33e333]:
+                            - generic [ref=f33e334]:
+                              - generic [ref=f33e335]: Spread
+                              - generic [ref=f33e336]:
+                                - button [ref=f33e337] [cursor=pointer]
+                                - generic [ref=f33e340]:
+                                  - button [ref=f33e342]: "1.5"
+                                  - button [ref=f33e344]: "2.5"
+                                - button [disabled]
+                            - generic [ref=f33e345]:
+                              - link [ref=f33e346] [cursor=pointer]:
+                                - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-spread-home-2pt5&outcomeIndex=0
+                                - generic [ref=f33e347]: MNC -2.5
+                              - link [ref=f33e349] [cursor=pointer]:
+                                - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-spread-home-2pt5&outcomeIndex=1
+                                - generic [ref=f33e350]: NOR +2.5
+                          - generic [ref=f33e352]:
+                            - generic [ref=f33e353]:
+                              - generic [ref=f33e354]: Total
+                              - generic [ref=f33e355]:
+                                - button [ref=f33e356] [cursor=pointer]
+                                - generic [ref=f33e359]:
+                                  - button [ref=f33e361]: "0.5"
+                                  - button [ref=f33e363]: "1.5"
+                                  - button [ref=f33e365]: "2.5"
+                                  - button [ref=f33e367]: "3.5"
+                                  - button [ref=f33e369]: "4.5"
+                                  - button [ref=f33e371]: "5.5"
+                                - button [ref=f33e372] [cursor=pointer]
+                            - generic [ref=f33e373]:
+                              - link [ref=f33e374] [cursor=pointer]:
+                                - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-total-3pt5&outcomeIndex=0
+                                - generic [ref=f33e375]: O 3.5
+                              - link [ref=f33e376] [cursor=pointer]:
+                                - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-total-3pt5&outcomeIndex=1
+                                - generic [ref=f33e377]: U 3.5
+                        - generic [ref=f33e379]:
+                          - generic [ref=f33e380]:
+                            - generic [ref=f33e381]:
+                              - generic [ref=f33e382]: Spread
+                              - generic [ref=f33e383]:
+                                - button [ref=f33e384] [cursor=pointer]
+                                - generic [ref=f33e387]:
+                                  - button [ref=f33e389]: "1.5"
+                                  - button [ref=f33e391]: "2.5"
+                                - button [disabled]
+                            - generic [ref=f33e392]:
+                              - link [ref=f33e393] [cursor=pointer]:
+                                - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-spread-home-2pt5&outcomeIndex=0
+                                - generic [ref=f33e394]: MNC -2.5
+                              - link [ref=f33e396] [cursor=pointer]:
+                                - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-spread-home-2pt5&outcomeIndex=1
+                                - generic [ref=f33e397]: NOR +2.5
+                          - generic [ref=f33e399]:
+                            - generic [ref=f33e400]:
+                              - generic [ref=f33e401]: Total
+                              - generic [ref=f33e402]:
+                                - button [ref=f33e403] [cursor=pointer]
+                                - generic [ref=f33e406]:
+                                  - button [ref=f33e408]: "0.5"
+                                  - button [ref=f33e410]: "1.5"
+                                  - button [ref=f33e412]: "2.5"
+                                  - button [ref=f33e414]: "3.5"
+                                  - button [ref=f33e416]: "4.5"
+                                  - button [ref=f33e418]: "5.5"
+                                - button [ref=f33e419] [cursor=pointer]
+                            - generic [ref=f33e420]:
+                              - link [ref=f33e421] [cursor=pointer]:
+                                - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-total-3pt5&outcomeIndex=0
+                                - generic [ref=f33e422]: O 3.5
+                              - link [ref=f33e423] [cursor=pointer]:
+                                - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-total-3pt5&outcomeIndex=1
+                                - generic [ref=f33e424]: U 3.5
+                      - generic [ref=f33e427]:
+                        - generic [ref=f33e428]: Manchester City FC
+                        - generic [ref=f33e433]:
+                          - generic [ref=f33e434]: 6:30 PM
+                          - generic [ref=f33e435]: September 17
+                        - generic [ref=f33e436]: Norwich City FC
+                    - paragraph [ref=f33e446]: $711K Vol
+                  - generic [ref=f33e452]:
+                    - link [aria-hidden] [ref=f33e453] [cursor=pointer]:
+                      - /url: /event/btc-updown-5m-1789656600
+                    - generic [ref=f33e455]:
+                      - generic [ref=f33e462]:
+                        - heading [level=3] [ref=f33e463]:
+                          - link [ref=f33e464] [cursor=pointer]:
+                            - /url: /event/btc-updown-5m-1789656600
+                            - text: Bitcoin Up or Down
+                        - generic: September 17, 10:50AM-10:55AM ET
+                      - generic [ref=f33e467]:
+                        - link [ref=f33e468] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600?outcomeIndex=0
+                          - generic [ref=f33e469]:
+                            - generic [ref=f33e470]: Up
+                            - generic [ref=f33e471]: 2.11x
+                        - link [ref=f33e472] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600?outcomeIndex=1
+                          - generic [ref=f33e473]:
+                            - generic [ref=f33e474]: Down
+                            - generic [ref=f33e475]: 1.9x
+                      - generic [ref=f33e478]:
+                        - link [ref=f33e479] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e482]:
+                            - paragraph [ref=f33e483]: ghachu
+                            - paragraph [ref=f33e484]: you can like only one comment a time
+                        - link [ref=f33e485] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e489]:
+                            - paragraph [ref=f33e490]: skibidi-dibidi
+                            - paragraph [ref=f33e491]: porn is healthier than this shiii
+                        - link [ref=f33e492] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e495]:
+                            - paragraph [ref=f33e496]: lotboy
+                            - paragraph [ref=f33e497]: This market was made for the bots to milk us humans
+                        - link [ref=f33e498] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e502]:
+                            - paragraph [ref=f33e503]: Blue31
+                            - paragraph [ref=f33e504]: Waiting for 1min market
+                        - link [ref=f33e505] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e509]:
+                            - paragraph [ref=f33e510]: It-aint-much
+                            - paragraph [ref=f33e511]: I refreshed like 500 times today :D
+                        - link [ref=f33e512] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e515]:
+                            - paragraph [ref=f33e516]: ghachu
+                            - paragraph [ref=f33e517]: you can like only one comment a time
+                        - link [ref=f33e518] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e522]:
+                            - paragraph [ref=f33e523]: skibidi-dibidi
+                            - paragraph [ref=f33e524]: porn is healthier than this shiii
+                        - link [ref=f33e525] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e528]:
+                            - paragraph [ref=f33e529]: lotboy
+                            - paragraph [ref=f33e530]: This market was made for the bots to milk us humans
+                        - link [ref=f33e531] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e535]:
+                            - paragraph [ref=f33e536]: Blue31
+                            - paragraph [ref=f33e537]: Waiting for 1min market
+                        - link [ref=f33e538] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e542]:
+                            - paragraph [ref=f33e543]: It-aint-much
+                            - paragraph [ref=f33e544]: I refreshed like 500 times today :D
+                        - link [ref=f33e545] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e548]:
+                            - paragraph [ref=f33e549]: ghachu
+                            - paragraph [ref=f33e550]: you can like only one comment a time
+                        - link [ref=f33e551] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e555]:
+                            - paragraph [ref=f33e556]: skibidi-dibidi
+                            - paragraph [ref=f33e557]: porn is healthier than this shiii
+                        - link [ref=f33e558] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e561]:
+                            - paragraph [ref=f33e562]: lotboy
+                            - paragraph [ref=f33e563]: This market was made for the bots to milk us humans
+                        - link [ref=f33e564] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e568]:
+                            - paragraph [ref=f33e569]: Blue31
+                            - paragraph [ref=f33e570]: Waiting for 1min market
+                        - link [ref=f33e571] [cursor=pointer]:
+                          - /url: /event/btc-updown-5m-1789656600
+                          - generic [ref=f33e575]:
+                            - paragraph [ref=f33e576]: It-aint-much
+                            - paragraph [ref=f33e577]: I refreshed like 500 times today :D
+                    - generic [ref=f33e582]:
+                      - paragraph [ref=f33e583]: $199 Vol
+                      - generic [ref=f33e584]:
+                        - generic [ref=f33e585]: Live
+                        - generic [ref=f33e590]: ·
+                - generic [ref=f33e594]:
+                  - generic [ref=f33e595]:
+                    - button [ref=f33e596] [cursor=pointer]
+                    - button [ref=f33e598] [cursor=pointer]
+                    - button [ref=f33e600] [cursor=pointer]
+                    - button [ref=f33e602] [cursor=pointer]
+                    - button [ref=f33e604] [cursor=pointer]
+                    - button [ref=f33e606] [cursor=pointer]
+                    - button [ref=f33e608] [cursor=pointer]
+                  - generic [ref=f33e610]:
+                    - button "BTC 5min Up or Down" [ref=f33e611] [cursor=pointer]
+                    - button "Sports" [ref=f33e619] [cursor=pointer]
+              - generic [ref=f33e636]:
+                - generic [ref=f33e637]:
+                  - generic [ref=f33e638]:
+                    - heading "All markets" [level=2] [ref=f33e639]
+                    - generic [ref=f33e640]:
+                      - generic [ref=f33e641]:
+                        - button [ref=f33e643] [cursor=pointer]
+                        - textbox "Search" [ref=f33e644]
+                      - button "Toggle filters" [ref=f33e645] [cursor=pointer]:
+                        - img "sliders" [ref=f33e647]
+                      - button "Toggle watchlist" [ref=f33e651] [cursor=pointer]
+                  - generic [ref=f33e654]:
+                    - navigation "Market tabs" [ref=f33e656]:
+                      - button "All" [ref=f33e657] [cursor=pointer]
+                      - button "Fed" [ref=f33e659] [cursor=pointer]
+                      - button "Trump" [ref=f33e661] [cursor=pointer]
+                      - button "NFL" [ref=f33e663] [cursor=pointer]
+                      - button "AI Safety" [ref=f33e665] [cursor=pointer]
+                      - button "Yemen" [ref=f33e667] [cursor=pointer]
+                      - button "Berlin" [ref=f33e669] [cursor=pointer]
+                      - button "Mecklenburg-Vorpommern" [ref=f33e671] [cursor=pointer]
+                      - button "Russia Election" [ref=f33e673] [cursor=pointer]
+                      - button "Brazil" [ref=f33e675] [cursor=pointer]
+                      - button "Clarity Act" [ref=f33e677] [cursor=pointer]
+                      - button "Key Senate Races" [ref=f33e679] [cursor=pointer]
+                      - button "Key Governor Races" [ref=f33e681] [cursor=pointer]
+                      - button "Texas Midterm" [ref=f33e683] [cursor=pointer]
+                      - button "GTA VI" [ref=f33e685] [cursor=pointer]
+                      - button "Iran" [ref=f33e687] [cursor=pointer]
+                      - button "US Canada Trade War" [ref=f33e689] [cursor=pointer]
+                      - button "Anthropic IPO" [ref=f33e691] [cursor=pointer]
+                      - button "Gaza" [ref=f33e693] [cursor=pointer]
+                      - button "Israel Election" [ref=f33e695] [cursor=pointer]
+                      - button "Oil" [ref=f33e697] [cursor=pointer]
+                      - button "AI" [ref=f33e699] [cursor=pointer]
+                      - button "Earnings" [ref=f33e701] [cursor=pointer]
+                      - button "Tweet Markets" [ref=f33e703] [cursor=pointer]
+                      - button "Daily Temperature" [ref=f33e705] [cursor=pointer]
+                      - button "Cuba" [ref=f33e707] [cursor=pointer]
+                      - button "Peace Deal" [ref=f33e709] [cursor=pointer]
+                      - button "Privates" [ref=f33e711] [cursor=pointer]
+                      - button "Strait of Hormuz" [ref=f33e713] [cursor=pointer]
+                      - button "Global Elections" [ref=f33e715] [cursor=pointer]
+                      - button "Midterms" [ref=f33e717] [cursor=pointer]
+                      - button "Movies" [ref=f33e719] [cursor=pointer]
+                      - button "Crypto Prices" [ref=f33e721] [cursor=pointer]
+                      - button "Commodities" [ref=f33e723] [cursor=pointer]
+                    - button "Scroll right" [ref=f33e725] [cursor=pointer]
+                  - generic [ref=f33e727]:
+                    - button [ref=f33e728] [cursor=pointer]:
+                      - generic [ref=f33e733]: 24hr Volume
+                    - button [ref=f33e737] [cursor=pointer]:
+                      - generic [ref=f33e738]: All
+                    - button [ref=f33e742] [cursor=pointer]:
+                      - generic [ref=f33e743]: Active
+                    - generic [ref=f33e747] [cursor=pointer]:
+                      - checkbox [ref=f33e748]
+                      - checkbox [aria-hidden]
+                      - generic [ref=f33e749]: Hide sports
+                    - generic [ref=f33e750] [cursor=pointer]:
+                      - checkbox [ref=f33e751]
+                      - checkbox [aria-hidden]
+                      - generic [ref=f33e752]: Hide crypto
+                    - generic [ref=f33e753] [cursor=pointer]:
+                      - checkbox [ref=f33e754]
+                      - checkbox [aria-hidden]
+                      - generic [ref=f33e755]: Hide earnings
+                - generic [ref=f33e757]:
+                  - generic [ref=f33e758]:
+                    - generic [ref=f33e761]:
+                      - generic [ref=f33e762]:
+                        - img "Fed Decision in October? card icon" [ref=f33e764]
+                        - link [ref=f33e767] [cursor=pointer]:
+                          - /url: /event/fed-decision-in-october-20260617190323537
+                          - heading "Fed Decision in October?" [level=3] [ref=f33e769]
+                      - generic [ref=f33e770]:
+                        - generic [ref=f33e772]:
+                          - generic [ref=f33e773]:
+                            - link [ref=f33e776] [cursor=pointer]:
+                              - /url: /event/fed-decision-in-october-20260617190323537/will-there-be-no-change-in-fed-interest-rates-after-the-october-2026-meeting-20260617190324031
+                              - paragraph [ref=f33e777]: No change
+                            - generic [ref=f33e780]:
+                              - paragraph [ref=f33e781]: 53%
+                              - link "Yes 53%" [ref=f33e782] [cursor=pointer]:
+                                - /url: /event/fed-decision-in-october-20260617190323537?marketSlug=will-there-be-no-change-in-fed-interest-rates-after-the-october-2026-meeting-20260617190324031&outcomeIndex=0
+                                - generic [ref=f33e783]: "Yes"
+                                - generic [ref=f33e784]: 53%
+                              - link "No 48%" [ref=f33e785] [cursor=pointer]:
+                                - /url: /event/fed-decision-in-october-20260617190323537?marketSlug=will-there-be-no-change-in-fed-interest-rates-after-the-october-2026-meeting-20260617190324031&outcomeIndex=1
+                                - generic [ref=f33e786]: "No"
+                                - generic [ref=f33e787]: 48%
+                          - generic [ref=f33e788]:
+                            - link [ref=f33e791] [cursor=pointer]:
+                              - /url: /event/fed-decision-in-october-20260617190323537/will-the-fed-increase-interest-rates-by-25-bps-after-the-october-2026-meeting-20260617190324032
+                              - paragraph [ref=f33e792]: 25 bps increase
+                            - generic [ref=f33e795]:
+                              - paragraph [ref=f33e796]: 47%
+                              - link "Yes 47%" [ref=f33e797] [cursor=pointer]:
+                                - /url: /event/fed-decision-in-october-20260617190323537?marketSlug=will-the-fed-increase-interest-rates-by-25-bps-after-the-october-2026-meeting-20260617190324032&outcomeIndex=0
+                                - generic [ref=f33e798]: "Yes"
+                                - generic [ref=f33e799]: 47%
+                              - link "No 54%" [ref=f33e800] [cursor=pointer]:
+                                - /url: /event/fed-decision-in-october-20260617190323537?marketSlug=will-the-fed-increase-interest-rates-by-25-bps-after-the-october-2026-meeting-20260617190324032&outcomeIndex=1
+                                - generic [ref=f33e801]: "No"
+                                - generic [ref=f33e802]: 54%
+                        - generic [ref=f33e804]:
+                          - paragraph [ref=f33e806]:
+                            - generic [ref=f33e807]: $6M
+                            - text: Vol.
+                          - generic [ref=f33e815]:
+                            - button "Rewards" [ref=f33e816] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e817] [cursor=pointer]
+                    - generic [ref=f33e821]:
+                      - generic [ref=f33e822]:
+                        - img "BTC Up or Down 5m card icon" [ref=f33e824]
+                        - generic [ref=f33e825]:
+                          - link [ref=f33e827] [cursor=pointer]:
+                            - /url: /event/btc-updown-5m-1789656600
+                            - heading "BTC Up or Down 5m" [level=3] [ref=f33e829]
+                          - generic [ref=f33e835]:
+                            - paragraph [ref=f33e836]: 47%
+                            - paragraph [ref=f33e837]: Up
+                      - generic [ref=f33e838]:
+                        - generic [ref=f33e839]:
+                          - link [ref=f33e840] [cursor=pointer]:
+                            - /url: /event/btc-updown-5m-1789656600?outcomeIndex=0
+                            - paragraph [ref=f33e841]: Up
+                          - link [ref=f33e842] [cursor=pointer]:
+                            - /url: /event/btc-updown-5m-1789656600?outcomeIndex=1
+                            - paragraph [ref=f33e843]: Down
+                        - generic [ref=f33e845]:
+                          - generic [ref=f33e846]:
+                            - paragraph [ref=f33e851]: Live
+                            - generic [ref=f33e852]: ·
+                            - link "Bitcoin" [ref=f33e853] [cursor=pointer]:
+                              - /url: /crypto/bitcoin
+                          - button "Add to favorites" [ref=f33e856] [cursor=pointer]
+                    - generic [ref=f33e860]:
+                      - generic [ref=f33e861]:
+                        - img "Another Fed rate hike in 2026? card icon" [ref=f33e863]
+                        - generic [ref=f33e864]:
+                          - link [ref=f33e866] [cursor=pointer]:
+                            - /url: /event/another-fed-rate-hike-in-2026
+                            - heading "Another Fed rate hike in 2026?" [level=3] [ref=f33e868]
+                          - generic [ref=f33e874]:
+                            - paragraph [ref=f33e875]: 81%
+                            - paragraph [ref=f33e876]: chance
+                      - generic [ref=f33e877]:
+                        - generic [ref=f33e878]:
+                          - link [ref=f33e879] [cursor=pointer]:
+                            - /url: /event/another-fed-rate-hike-in-2026?outcomeIndex=0
+                            - paragraph [ref=f33e880]: "Yes"
+                          - link [ref=f33e881] [cursor=pointer]:
+                            - /url: /event/another-fed-rate-hike-in-2026?outcomeIndex=1
+                            - paragraph [ref=f33e882]: "No"
+                        - generic [ref=f33e884]:
+                          - generic [ref=f33e885]:
+                            - paragraph [ref=f33e889]: NEW
+                            - generic [ref=f33e890]: ·
+                            - paragraph [ref=f33e891]:
+                              - generic [ref=f33e892]: $23K
+                              - text: Vol.
+                          - generic [ref=f33e900]:
+                            - button "Rewards" [ref=f33e901] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e902] [cursor=pointer]
+                    - generic [ref=f33e906]:
+                      - link "G. Maristany 62% M. Ribera 39%" [ref=f33e907] [cursor=pointer]:
+                        - /url: /event/wta-marista-ribera-2026-09-16
+                        - generic [ref=f33e908]:
+                          - paragraph [ref=f33e911]: G. Maristany
+                          - paragraph [ref=f33e912]: 62%
+                        - generic [ref=f33e913]:
+                          - paragraph [ref=f33e916]: M. Ribera
+                          - paragraph [ref=f33e917]: 39%
+                      - generic [ref=f33e918]:
+                        - generic [ref=f33e919]:
+                          - link [ref=f33e920] [cursor=pointer]:
+                            - /url: /event/wta-marista-ribera-2026-09-16?outcomeIndex=0
+                            - paragraph [ref=f33e922]: G. Mari.
+                          - link [ref=f33e924] [cursor=pointer]:
+                            - /url: /event/wta-marista-ribera-2026-09-16?outcomeIndex=1
+                            - paragraph [ref=f33e926]: M. Ribera
+                        - generic [ref=f33e929]:
+                          - generic [ref=f33e930]:
+                            - paragraph [ref=f33e931]:
+                              - generic [ref=f33e932]: $350K
+                              - text: Vol.
+                            - generic [ref=f33e933]: ·
+                            - link "WTA Tour" [ref=f33e934] [cursor=pointer]:
+                              - /url: /sports/wta/games
+                          - button "Add to favorites" [ref=f33e937] [cursor=pointer]
+                    - generic [ref=f33e941]:
+                      - link "Betis 64% Getafe 13%" [ref=f33e942] [cursor=pointer]:
+                        - /url: /event/lal-bet-get-2026-09-17
+                        - generic [ref=f33e943]:
+                          - paragraph [ref=f33e946]: Betis
+                          - paragraph [ref=f33e947]: 64%
+                        - generic [ref=f33e948]:
+                          - paragraph [ref=f33e951]: Getafe
+                          - paragraph [ref=f33e952]: 13%
+                      - generic [ref=f33e953]:
+                        - generic [ref=f33e954]:
+                          - link [ref=f33e955] [cursor=pointer]:
+                            - /url: /event/lal-bet-get-2026-09-17?marketSlug=lal-bet-get-2026-09-17-bet&outcomeIndex=0
+                            - paragraph [ref=f33e957]: Betis
+                          - link [ref=f33e959] [cursor=pointer]:
+                            - /url: /event/lal-bet-get-2026-09-17?marketSlug=lal-bet-get-2026-09-17-draw&outcomeIndex=0
+                            - paragraph [ref=f33e960]: DRAW
+                          - link [ref=f33e961] [cursor=pointer]:
+                            - /url: /event/lal-bet-get-2026-09-17?marketSlug=lal-bet-get-2026-09-17-get&outcomeIndex=0
+                            - paragraph [ref=f33e963]: Getafe
+                        - generic [ref=f33e966]:
+                          - generic [ref=f33e967]:
+                            - paragraph [ref=f33e968]:
+                              - generic [ref=f33e969]: $538K
+                              - text: Vol.
+                            - generic [ref=f33e970]: ·
+                            - link "LaLiga" [ref=f33e971] [cursor=pointer]:
+                              - /url: /sports/laliga/games/week/6
+                          - button "Add to favorites" [ref=f33e974] [cursor=pointer]
+                    - generic [ref=f33e978]:
+                      - link "B8 60% M80 41%" [ref=f33e979] [cursor=pointer]:
+                        - /url: /event/cs2-b8-m80-2026-09-17
+                        - generic [ref=f33e980]:
+                          - paragraph [ref=f33e983]: B8
+                          - paragraph [ref=f33e984]: 60%
+                        - generic [ref=f33e985]:
+                          - paragraph [ref=f33e988]: M80
+                          - paragraph [ref=f33e989]: 41%
+                      - generic [ref=f33e990]:
+                        - generic [ref=f33e991]:
+                          - link [ref=f33e992] [cursor=pointer]:
+                            - /url: /event/cs2-b8-m80-2026-09-17?outcomeIndex=0
+                            - paragraph [ref=f33e994]: B8
+                          - link [ref=f33e996] [cursor=pointer]:
+                            - /url: /event/cs2-b8-m80-2026-09-17?outcomeIndex=1
+                            - paragraph [ref=f33e998]: M80
+                        - generic [ref=f33e1001]:
+                          - generic [ref=f33e1002]:
+                            - paragraph [ref=f33e1003]:
+                              - generic [ref=f33e1004]: $289K
+                              - text: Vol.
+                            - generic [ref=f33e1005]: ·
+                            - link "CS2" [ref=f33e1006] [cursor=pointer]:
+                              - /url: /esports/cs2
+                          - button "Add to favorites" [ref=f33e1009] [cursor=pointer]
+                    - generic [ref=f33e1013]:
+                      - link "Lions 32% Bills 69%" [ref=f33e1014] [cursor=pointer]:
+                        - /url: /event/nfl-det-buf-2026-09-18
+                        - generic [ref=f33e1015]:
+                          - paragraph [ref=f33e1018]: Lions
+                          - paragraph [ref=f33e1019]: 32%
+                        - generic [ref=f33e1020]:
+                          - paragraph [ref=f33e1023]: Bills
+                          - paragraph [ref=f33e1024]: 69%
+                      - generic [ref=f33e1025]:
+                        - generic [ref=f33e1026]:
+                          - link [ref=f33e1027] [cursor=pointer]:
+                            - /url: /event/nfl-det-buf-2026-09-18?outcomeIndex=0
+                            - paragraph [ref=f33e1029]: Lions
+                          - link [ref=f33e1031] [cursor=pointer]:
+                            - /url: /event/nfl-det-buf-2026-09-18?outcomeIndex=1
+                            - paragraph [ref=f33e1033]: Bills
+                        - generic [ref=f33e1036]:
+                          - generic [ref=f33e1037]:
+                            - paragraph [ref=f33e1038]:
+                              - generic [ref=f33e1039]: $525K
+                              - text: Vol.
+                            - generic [ref=f33e1040]: ·
+                            - link "NFL" [ref=f33e1041] [cursor=pointer]:
+                              - /url: /sports/nfl
+                          - generic [ref=f33e1043]:
+                            - button "Rewards" [ref=f33e1044] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1045] [cursor=pointer]
+                    - generic [ref=f33e1049]:
+                      - link "Manchester City FC 91% Norwich City FC 3%" [ref=f33e1050] [cursor=pointer]:
+                        - /url: /event/efl-mnc-nor-2026-09-17
+                        - generic [ref=f33e1051]:
+                          - paragraph [ref=f33e1054]: Manchester City FC
+                          - paragraph [ref=f33e1055]: 91%
+                        - generic [ref=f33e1056]:
+                          - paragraph [ref=f33e1059]: Norwich City FC
+                          - paragraph [ref=f33e1060]: 3%
+                      - generic [ref=f33e1061]:
+                        - generic [ref=f33e1062]:
+                          - link [ref=f33e1063] [cursor=pointer]:
+                            - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-mnc&outcomeIndex=0
+                            - paragraph [ref=f33e1065]: Manchester
+                          - link [ref=f33e1067] [cursor=pointer]:
+                            - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-draw&outcomeIndex=0
+                            - paragraph [ref=f33e1068]: DRAW
+                          - link [ref=f33e1069] [cursor=pointer]:
+                            - /url: /event/efl-mnc-nor-2026-09-17?marketSlug=efl-mnc-nor-2026-09-17-nor&outcomeIndex=0
+                            - paragraph [ref=f33e1071]: Norwich
+                        - generic [ref=f33e1074]:
+                          - generic [ref=f33e1075]:
+                            - paragraph [ref=f33e1076]:
+                              - generic [ref=f33e1077]: $737K
+                              - text: Vol.
+                            - generic [ref=f33e1078]: ·
+                            - link "EFL CUP" [ref=f33e1079] [cursor=pointer]:
+                              - /url: /sports/efl-cup/games/week/39
+                          - button "Add to favorites" [ref=f33e1082] [cursor=pointer]
+                    - generic [ref=f33e1086]:
+                      - generic [ref=f33e1087]:
+                        - img "How many Fed rate hikes in 2026? card icon" [ref=f33e1089]
+                        - link [ref=f33e1092] [cursor=pointer]:
+                          - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369
+                          - heading "How many Fed rate hikes in 2026?" [level=3] [ref=f33e1094]
+                      - generic [ref=f33e1095]:
+                        - generic [ref=f33e1097]:
+                          - generic [ref=f33e1098]:
+                            - link [ref=f33e1101] [cursor=pointer]:
+                              - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369/will-2-fed-rate-hikes-happen-in-2026-20260623190852891
+                              - paragraph [ref=f33e1102]: 2 (50 bps)
+                            - generic [ref=f33e1105]:
+                              - paragraph [ref=f33e1106]: 67%
+                              - link "Yes 67%" [ref=f33e1107] [cursor=pointer]:
+                                - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369?marketSlug=will-2-fed-rate-hikes-happen-in-2026-20260623190852891&outcomeIndex=0
+                                - generic [ref=f33e1108]: "Yes"
+                                - generic [ref=f33e1109]: 67%
+                              - link "No 34%" [ref=f33e1110] [cursor=pointer]:
+                                - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369?marketSlug=will-2-fed-rate-hikes-happen-in-2026-20260623190852891&outcomeIndex=1
+                                - generic [ref=f33e1111]: "No"
+                                - generic [ref=f33e1112]: 34%
+                          - generic [ref=f33e1113]:
+                            - link [ref=f33e1116] [cursor=pointer]:
+                              - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369/will-1-fed-rate-hike-happen-in-2026-20260623190852890
+                              - paragraph [ref=f33e1117]: 1 (25 bps)
+                            - generic [ref=f33e1120]:
+                              - paragraph [ref=f33e1121]: 19%
+                              - link "Yes 19%" [ref=f33e1122] [cursor=pointer]:
+                                - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369?marketSlug=will-1-fed-rate-hike-happen-in-2026-20260623190852890&outcomeIndex=0
+                                - generic [ref=f33e1123]: "Yes"
+                                - generic [ref=f33e1124]: 19%
+                              - link "No 82%" [ref=f33e1125] [cursor=pointer]:
+                                - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369?marketSlug=will-1-fed-rate-hike-happen-in-2026-20260623190852890&outcomeIndex=1
+                                - generic [ref=f33e1126]: "No"
+                                - generic [ref=f33e1127]: 82%
+                        - generic [ref=f33e1129]:
+                          - paragraph [ref=f33e1131]:
+                            - generic [ref=f33e1132]: $480K
+                            - text: Vol.
+                          - generic [ref=f33e1134]:
+                            - button "Rewards" [ref=f33e1135] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1136] [cursor=pointer]
+                    - generic [ref=f33e1140]:
+                      - generic [ref=f33e1141]:
+                        - img "U.S. enacts AI safety bill before 2027? card icon" [ref=f33e1143]
+                        - generic [ref=f33e1144]:
+                          - link [ref=f33e1146] [cursor=pointer]:
+                            - /url: /event/us-enacts-ai-safety-bill-before-2027
+                            - heading "U.S. enacts AI safety bill before 2027?" [level=3] [ref=f33e1148]
+                          - generic [ref=f33e1154]:
+                            - paragraph [ref=f33e1155]: 13%
+                            - paragraph [ref=f33e1156]: chance
+                      - generic [ref=f33e1157]:
+                        - generic [ref=f33e1158]:
+                          - link [ref=f33e1159] [cursor=pointer]:
+                            - /url: /event/us-enacts-ai-safety-bill-before-2027?outcomeIndex=0
+                            - paragraph [ref=f33e1160]: "Yes"
+                          - link [ref=f33e1161] [cursor=pointer]:
+                            - /url: /event/us-enacts-ai-safety-bill-before-2027?outcomeIndex=1
+                            - paragraph [ref=f33e1162]: "No"
+                        - generic [ref=f33e1164]:
+                          - paragraph [ref=f33e1166]:
+                            - generic [ref=f33e1167]: $125K
+                            - text: Vol.
+                          - generic [ref=f33e1175]:
+                            - button "Rewards" [ref=f33e1176] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1177] [cursor=pointer]
+                    - generic [ref=f33e1181]:
+                      - generic [ref=f33e1182]:
+                        - img "Friedrich Merz out as Chancellor of Germany by...? card icon" [ref=f33e1184]
+                        - link [ref=f33e1187] [cursor=pointer]:
+                          - /url: /event/friedrich-merz-out-as-chancellor-of-germany-before-2027
+                          - heading "Friedrich Merz out as Chancellor of Germany by...?" [level=3] [ref=f33e1189]
+                      - generic [ref=f33e1190]:
+                        - generic [ref=f33e1192]:
+                          - generic [ref=f33e1193]:
+                            - link [ref=f33e1196] [cursor=pointer]:
+                              - /url: /event/friedrich-merz-out-as-chancellor-of-germany-before-2027/friedrich-merz-out-as-chancellor-of-germany-before-2027
+                              - paragraph [ref=f33e1197]: December 31, 2026
+                            - generic [ref=f33e1200]:
+                              - paragraph [ref=f33e1201]: 20%
+                              - link "Yes 20%" [ref=f33e1202] [cursor=pointer]:
+                                - /url: /event/friedrich-merz-out-as-chancellor-of-germany-before-2027?marketSlug=friedrich-merz-out-as-chancellor-of-germany-before-2027&outcomeIndex=0
+                                - generic [ref=f33e1203]: "Yes"
+                                - generic [ref=f33e1204]: 20%
+                              - link "No 81%" [ref=f33e1205] [cursor=pointer]:
+                                - /url: /event/friedrich-merz-out-as-chancellor-of-germany-before-2027?marketSlug=friedrich-merz-out-as-chancellor-of-germany-before-2027&outcomeIndex=1
+                                - generic [ref=f33e1206]: "No"
+                                - generic [ref=f33e1207]: 81%
+                          - generic [ref=f33e1208]:
+                            - link [ref=f33e1211] [cursor=pointer]:
+                              - /url: /event/friedrich-merz-out-as-chancellor-of-germany-before-2027/friedrich-merz-out-as-chancellor-of-germany-before-october-31-2026
+                              - paragraph [ref=f33e1212]: October 31, 2026
+                            - generic [ref=f33e1215]:
+                              - paragraph [ref=f33e1216]: 13%
+                              - link "Yes 13%" [ref=f33e1217] [cursor=pointer]:
+                                - /url: /event/friedrich-merz-out-as-chancellor-of-germany-before-2027?marketSlug=friedrich-merz-out-as-chancellor-of-germany-before-october-31-2026&outcomeIndex=0
+                                - generic [ref=f33e1218]: "Yes"
+                                - generic [ref=f33e1219]: 13%
+                              - link "No 88%" [ref=f33e1220] [cursor=pointer]:
+                                - /url: /event/friedrich-merz-out-as-chancellor-of-germany-before-2027?marketSlug=friedrich-merz-out-as-chancellor-of-germany-before-october-31-2026&outcomeIndex=1
+                                - generic [ref=f33e1221]: "No"
+                                - generic [ref=f33e1222]: 88%
+                        - generic [ref=f33e1224]:
+                          - paragraph [ref=f33e1226]:
+                            - generic [ref=f33e1227]: $2M
+                            - text: Vol.
+                          - generic [ref=f33e1235]:
+                            - button "Rewards" [ref=f33e1236] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1237] [cursor=pointer]
+                    - generic [ref=f33e1241]:
+                      - generic [ref=f33e1242]:
+                        - img "Next Prime Minister of Sweden card icon" [ref=f33e1244]
+                        - link [ref=f33e1247] [cursor=pointer]:
+                          - /url: /event/next-prime-minister-of-sweden
+                          - heading "Next Prime Minister of Sweden" [level=3] [ref=f33e1249]
+                      - generic [ref=f33e1250]:
+                        - generic [ref=f33e1252]:
+                          - generic [ref=f33e1253]:
+                            - link [ref=f33e1256] [cursor=pointer]:
+                              - /url: /event/next-prime-minister-of-sweden/will-magdalena-andersson-be-the-next-prime-minister-of-sweden
+                              - paragraph [ref=f33e1257]: Magdalena Andersson
+                            - generic [ref=f33e1260]:
+                              - paragraph [ref=f33e1261]: 94%
+                              - link "Yes 94%" [ref=f33e1262] [cursor=pointer]:
+                                - /url: /event/next-prime-minister-of-sweden?marketSlug=will-magdalena-andersson-be-the-next-prime-minister-of-sweden&outcomeIndex=0
+                                - generic [ref=f33e1263]: "Yes"
+                                - generic [ref=f33e1264]: 94%
+                              - link "No 7%" [ref=f33e1265] [cursor=pointer]:
+                                - /url: /event/next-prime-minister-of-sweden?marketSlug=will-magdalena-andersson-be-the-next-prime-minister-of-sweden&outcomeIndex=1
+                                - generic [ref=f33e1266]: "No"
+                                - generic [ref=f33e1267]: 7%
+                          - generic [ref=f33e1268]:
+                            - link [ref=f33e1271] [cursor=pointer]:
+                              - /url: /event/next-prime-minister-of-sweden/will-ulf-kristersson-be-the-next-prime-minister-of-sweden
+                              - paragraph [ref=f33e1272]: Ulf Kristersson
+                            - generic [ref=f33e1275]:
+                              - paragraph [ref=f33e1276]: 2%
+                              - link "Yes 2%" [ref=f33e1277] [cursor=pointer]:
+                                - /url: /event/next-prime-minister-of-sweden?marketSlug=will-ulf-kristersson-be-the-next-prime-minister-of-sweden&outcomeIndex=0
+                                - generic [ref=f33e1278]: "Yes"
+                                - generic [ref=f33e1279]: 2%
+                              - link "No 98%" [ref=f33e1280] [cursor=pointer]:
+                                - /url: /event/next-prime-minister-of-sweden?marketSlug=will-ulf-kristersson-be-the-next-prime-minister-of-sweden&outcomeIndex=1
+                                - generic [ref=f33e1281]: "No"
+                                - generic [ref=f33e1282]: 98%
+                        - generic [ref=f33e1284]:
+                          - paragraph [ref=f33e1286]:
+                            - generic [ref=f33e1287]: $8M
+                            - text: Vol.
+                          - generic [ref=f33e1289]:
+                            - button "Rewards" [ref=f33e1290] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1291] [cursor=pointer]
+                    - generic [ref=f33e1295]:
+                      - generic [ref=f33e1296]:
+                        - img "Berlin State Election Winner card icon" [ref=f33e1298]
+                        - link [ref=f33e1301] [cursor=pointer]:
+                          - /url: /event/berlin-state-election-winner
+                          - heading "Berlin State Election Winner" [level=3] [ref=f33e1303]
+                      - generic [ref=f33e1304]:
+                        - generic [ref=f33e1306]:
+                          - generic [ref=f33e1307]:
+                            - link [ref=f33e1310] [cursor=pointer]:
+                              - /url: /event/berlin-state-election-winner/will-linke-win-the-most-seats-in-the-2026-berlin-state-elections
+                              - paragraph [ref=f33e1311]: Linke
+                            - generic [ref=f33e1314]:
+                              - paragraph [ref=f33e1315]: 62%
+                              - link "Yes 62%" [ref=f33e1316] [cursor=pointer]:
+                                - /url: /event/berlin-state-election-winner?marketSlug=will-linke-win-the-most-seats-in-the-2026-berlin-state-elections&outcomeIndex=0
+                                - generic [ref=f33e1317]: "Yes"
+                                - generic [ref=f33e1318]: 62%
+                              - link "No 39%" [ref=f33e1319] [cursor=pointer]:
+                                - /url: /event/berlin-state-election-winner?marketSlug=will-linke-win-the-most-seats-in-the-2026-berlin-state-elections&outcomeIndex=1
+                                - generic [ref=f33e1320]: "No"
+                                - generic [ref=f33e1321]: 39%
+                          - generic [ref=f33e1322]:
+                            - link [ref=f33e1325] [cursor=pointer]:
+                              - /url: /event/berlin-state-election-winner/will-cdu-win-the-most-seats-in-the-2026-berlin-state-elections
+                              - paragraph [ref=f33e1326]: CDU
+                            - generic [ref=f33e1329]:
+                              - paragraph [ref=f33e1330]: 31%
+                              - link "Yes 31%" [ref=f33e1331] [cursor=pointer]:
+                                - /url: /event/berlin-state-election-winner?marketSlug=will-cdu-win-the-most-seats-in-the-2026-berlin-state-elections&outcomeIndex=0
+                                - generic [ref=f33e1332]: "Yes"
+                                - generic [ref=f33e1333]: 31%
+                              - link "No 70%" [ref=f33e1334] [cursor=pointer]:
+                                - /url: /event/berlin-state-election-winner?marketSlug=will-cdu-win-the-most-seats-in-the-2026-berlin-state-elections&outcomeIndex=1
+                                - generic [ref=f33e1335]: "No"
+                                - generic [ref=f33e1336]: 70%
+                        - generic [ref=f33e1338]:
+                          - paragraph [ref=f33e1340]:
+                            - generic [ref=f33e1341]: $4M
+                            - text: Vol.
+                          - generic [ref=f33e1343]:
+                            - button "Rewards" [ref=f33e1344] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1345] [cursor=pointer]
+                    - generic [ref=f33e1349]:
+                      - generic [ref=f33e1350]:
+                        - img "Which party will win the Senate in 2026? card icon" [ref=f33e1352]
+                        - link [ref=f33e1355] [cursor=pointer]:
+                          - /url: /event/which-party-will-win-the-senate-in-2026
+                          - heading "Which party will win the Senate in 2026?" [level=3] [ref=f33e1357]
+                      - generic [ref=f33e1358]:
+                        - generic [ref=f33e1360]:
+                          - generic [ref=f33e1361]:
+                            - link [ref=f33e1364] [cursor=pointer]:
+                              - /url: /event/which-party-will-win-the-senate-in-2026/will-the-democratic-party-control-the-senate-after-the-2026-midterm-elections
+                              - paragraph [ref=f33e1365]: Democratic Party
+                            - generic [ref=f33e1368]:
+                              - paragraph [ref=f33e1369]: 60%
+                              - link "Yes 60%" [ref=f33e1370] [cursor=pointer]:
+                                - /url: /event/which-party-will-win-the-senate-in-2026?marketSlug=will-the-democratic-party-control-the-senate-after-the-2026-midterm-elections&outcomeIndex=0
+                                - generic [ref=f33e1371]: "Yes"
+                                - generic [ref=f33e1372]: 60%
+                              - link "No 41%" [ref=f33e1373] [cursor=pointer]:
+                                - /url: /event/which-party-will-win-the-senate-in-2026?marketSlug=will-the-democratic-party-control-the-senate-after-the-2026-midterm-elections&outcomeIndex=1
+                                - generic [ref=f33e1374]: "No"
+                                - generic [ref=f33e1375]: 41%
+                          - generic [ref=f33e1376]:
+                            - link [ref=f33e1379] [cursor=pointer]:
+                              - /url: /event/which-party-will-win-the-senate-in-2026/will-the-republican-party-control-the-senate-after-the-2026-midterm-elections
+                              - paragraph [ref=f33e1380]: Republican Party
+                            - generic [ref=f33e1383]:
+                              - paragraph [ref=f33e1384]: 41%
+                              - link "Yes 41%" [ref=f33e1385] [cursor=pointer]:
+                                - /url: /event/which-party-will-win-the-senate-in-2026?marketSlug=will-the-republican-party-control-the-senate-after-the-2026-midterm-elections&outcomeIndex=0
+                                - generic [ref=f33e1386]: "Yes"
+                                - generic [ref=f33e1387]: 41%
+                              - link "No 60%" [ref=f33e1388] [cursor=pointer]:
+                                - /url: /event/which-party-will-win-the-senate-in-2026?marketSlug=will-the-republican-party-control-the-senate-after-the-2026-midterm-elections&outcomeIndex=1
+                                - generic [ref=f33e1389]: "No"
+                                - generic [ref=f33e1390]: 60%
+                        - generic [ref=f33e1392]:
+                          - paragraph [ref=f33e1394]:
+                            - generic [ref=f33e1395]: $5M
+                            - text: Vol.
+                          - generic [ref=f33e1397]:
+                            - button "Earn 3.25% holding rewards" [ref=f33e1398] [cursor=pointer]
+                            - button "Rewards" [ref=f33e1399] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1400] [cursor=pointer]
+                    - generic [ref=f33e1404]:
+                      - generic [ref=f33e1405]:
+                        - img "Clarity Act (H.R.3633) signed into law in 2026? card icon" [ref=f33e1407]
+                        - generic [ref=f33e1408]:
+                          - link [ref=f33e1410] [cursor=pointer]:
+                            - /url: /event/clarity-act-signed-into-law-in-2026
+                            - heading "Clarity Act (H.R.3633) signed into law in 2026?" [level=3] [ref=f33e1412]
+                          - generic [ref=f33e1418]:
+                            - paragraph [ref=f33e1419]: 9%
+                            - paragraph [ref=f33e1420]: chance
+                      - generic [ref=f33e1421]:
+                        - generic [ref=f33e1422]:
+                          - link [ref=f33e1423] [cursor=pointer]:
+                            - /url: /event/clarity-act-signed-into-law-in-2026?outcomeIndex=0
+                            - paragraph [ref=f33e1424]: "Yes"
+                          - link [ref=f33e1425] [cursor=pointer]:
+                            - /url: /event/clarity-act-signed-into-law-in-2026?outcomeIndex=1
+                            - paragraph [ref=f33e1426]: "No"
+                        - generic [ref=f33e1428]:
+                          - paragraph [ref=f33e1430]:
+                            - generic [ref=f33e1431]: $22M
+                            - text: Vol.
+                          - generic [ref=f33e1433]:
+                            - button "Rewards" [ref=f33e1434] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1435] [cursor=pointer]
+                    - generic [ref=f33e1439]:
+                      - generic [ref=f33e1440]:
+                        - img "Mecklenburg-Vorpommern Parliamentary Election Winner card icon" [ref=f33e1442]
+                        - link [ref=f33e1445] [cursor=pointer]:
+                          - /url: /event/mecklenburg-vorpommern-parliamentary-election-winner
+                          - heading "Mecklenburg-Vorpommern Parliamentary Election Winner" [level=3] [ref=f33e1447]
+                      - generic [ref=f33e1448]:
+                        - generic [ref=f33e1450]:
+                          - generic [ref=f33e1451]:
+                            - link [ref=f33e1454] [cursor=pointer]:
+                              - /url: /event/mecklenburg-vorpommern-parliamentary-election-winner/will-afd-win-the-most-seats-in-the-2026-mecklenburg-vorpommern-parliamentary-elections
+                              - paragraph [ref=f33e1455]: AfD
+                            - generic [ref=f33e1458]:
+                              - paragraph [ref=f33e1459]: 76%
+                              - link "Yes 76%" [ref=f33e1460] [cursor=pointer]:
+                                - /url: /event/mecklenburg-vorpommern-parliamentary-election-winner?marketSlug=will-afd-win-the-most-seats-in-the-2026-mecklenburg-vorpommern-parliamentary-elections&outcomeIndex=0
+                                - generic [ref=f33e1461]: "Yes"
+                                - generic [ref=f33e1462]: 76%
+                              - link "No 25%" [ref=f33e1463] [cursor=pointer]:
+                                - /url: /event/mecklenburg-vorpommern-parliamentary-election-winner?marketSlug=will-afd-win-the-most-seats-in-the-2026-mecklenburg-vorpommern-parliamentary-elections&outcomeIndex=1
+                                - generic [ref=f33e1464]: "No"
+                                - generic [ref=f33e1465]: 25%
+                          - generic [ref=f33e1466]:
+                            - link [ref=f33e1469] [cursor=pointer]:
+                              - /url: /event/mecklenburg-vorpommern-parliamentary-election-winner/will-spd-win-the-most-seats-in-the-2026-mecklenburg-vorpommern-parliamentary-elections
+                              - paragraph [ref=f33e1470]: SPD
+                            - generic [ref=f33e1473]:
+                              - paragraph [ref=f33e1474]: 25%
+                              - link "Yes 25%" [ref=f33e1475] [cursor=pointer]:
+                                - /url: /event/mecklenburg-vorpommern-parliamentary-election-winner?marketSlug=will-spd-win-the-most-seats-in-the-2026-mecklenburg-vorpommern-parliamentary-elections&outcomeIndex=0
+                                - generic [ref=f33e1476]: "Yes"
+                                - generic [ref=f33e1477]: 25%
+                              - link "No 76%" [ref=f33e1478] [cursor=pointer]:
+                                - /url: /event/mecklenburg-vorpommern-parliamentary-election-winner?marketSlug=will-spd-win-the-most-seats-in-the-2026-mecklenburg-vorpommern-parliamentary-elections&outcomeIndex=1
+                                - generic [ref=f33e1479]: "No"
+                                - generic [ref=f33e1480]: 76%
+                        - generic [ref=f33e1482]:
+                          - paragraph [ref=f33e1484]:
+                            - generic [ref=f33e1485]: $1M
+                            - text: Vol.
+                          - generic [ref=f33e1487]:
+                            - button "Rewards" [ref=f33e1488] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1489] [cursor=pointer]
+                    - generic [ref=f33e1493]:
+                      - generic [ref=f33e1494]:
+                        - img "How high will 10-year Treasury yield go before 2027? card icon" [ref=f33e1496]
+                        - link [ref=f33e1499] [cursor=pointer]:
+                          - /url: /event/how-high-will-10-year-treasury-yield-go-before-2027
+                          - heading "How high will 10-year Treasury yield go before 2027?" [level=3] [ref=f33e1501]
+                      - generic [ref=f33e1502]:
+                        - generic [ref=f33e1504]:
+                          - generic [ref=f33e1505]:
+                            - link [ref=f33e1508] [cursor=pointer]:
+                              - /url: /event/how-high-will-10-year-treasury-yield-go-before-2027/will-the-10-year-treasury-yield-hit-5pt1-before-2027
+                              - paragraph [ref=f33e1509]: 5.1%
+                            - generic [ref=f33e1512]:
+                              - paragraph [ref=f33e1513]: 74%
+                              - link "Yes 74%" [ref=f33e1514] [cursor=pointer]:
+                                - /url: /event/how-high-will-10-year-treasury-yield-go-before-2027?marketSlug=will-the-10-year-treasury-yield-hit-5pt1-before-2027&outcomeIndex=0
+                                - generic [ref=f33e1515]: "Yes"
+                                - generic [ref=f33e1516]: 74%
+                              - link "No 26%" [ref=f33e1517] [cursor=pointer]:
+                                - /url: /event/how-high-will-10-year-treasury-yield-go-before-2027?marketSlug=will-the-10-year-treasury-yield-hit-5pt1-before-2027&outcomeIndex=1
+                                - generic [ref=f33e1518]: "No"
+                                - generic [ref=f33e1519]: 26%
+                          - generic [ref=f33e1520]:
+                            - link [ref=f33e1523] [cursor=pointer]:
+                              - /url: /event/how-high-will-10-year-treasury-yield-go-before-2027/will-the-10-year-treasury-yield-hit-5pt2-before-2027-457-991
+                              - paragraph [ref=f33e1524]: 5.2%
+                            - generic [ref=f33e1527]:
+                              - paragraph [ref=f33e1528]: 57%
+                              - link "Yes 57%" [ref=f33e1529] [cursor=pointer]:
+                                - /url: /event/how-high-will-10-year-treasury-yield-go-before-2027?marketSlug=will-the-10-year-treasury-yield-hit-5pt2-before-2027-457-991&outcomeIndex=0
+                                - generic [ref=f33e1530]: "Yes"
+                                - generic [ref=f33e1531]: 57%
+                              - link "No 43%" [ref=f33e1532] [cursor=pointer]:
+                                - /url: /event/how-high-will-10-year-treasury-yield-go-before-2027?marketSlug=will-the-10-year-treasury-yield-hit-5pt2-before-2027-457-991&outcomeIndex=1
+                                - generic [ref=f33e1533]: "No"
+                                - generic [ref=f33e1534]: 43%
+                        - generic [ref=f33e1536]:
+                          - paragraph [ref=f33e1538]:
+                            - generic [ref=f33e1539]: $488K
+                            - text: Vol.
+                          - generic [ref=f33e1547]:
+                            - button "Rewards" [ref=f33e1548] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1549] [cursor=pointer]
+                    - generic [ref=f33e1553]:
+                      - generic [ref=f33e1554]:
+                        - img "Bab el-Mandeb Strait effectively closed by...? card icon" [ref=f33e1556]
+                        - link [ref=f33e1559] [cursor=pointer]:
+                          - /url: /event/bab-el-mandeb-strait-effectively-closed-by
+                          - heading "Bab el-Mandeb Strait effectively closed by...?" [level=3] [ref=f33e1561]
+                      - generic [ref=f33e1562]:
+                        - generic [ref=f33e1564]:
+                          - generic [ref=f33e1565]:
+                            - link [ref=f33e1568] [cursor=pointer]:
+                              - /url: /event/bab-el-mandeb-strait-effectively-closed-by/bab-el-mandeb-strait-effectively-closed-by-december-31-983-117-222-252
+                              - paragraph [ref=f33e1569]: December 31
+                            - generic [ref=f33e1572]:
+                              - paragraph [ref=f33e1573]: 21%
+                              - link "Yes 21%" [ref=f33e1574] [cursor=pointer]:
+                                - /url: /event/bab-el-mandeb-strait-effectively-closed-by?marketSlug=bab-el-mandeb-strait-effectively-closed-by-december-31-983-117-222-252&outcomeIndex=0
+                                - generic [ref=f33e1575]: "Yes"
+                                - generic [ref=f33e1576]: 21%
+                              - link "No 80%" [ref=f33e1577] [cursor=pointer]:
+                                - /url: /event/bab-el-mandeb-strait-effectively-closed-by?marketSlug=bab-el-mandeb-strait-effectively-closed-by-december-31-983-117-222-252&outcomeIndex=1
+                                - generic [ref=f33e1578]: "No"
+                                - generic [ref=f33e1579]: 80%
+                          - generic [ref=f33e1580]:
+                            - link [ref=f33e1583] [cursor=pointer]:
+                              - /url: /event/bab-el-mandeb-strait-effectively-closed-by/bab-el-mandeb-strait-effectively-closed-by-october-31
+                              - paragraph [ref=f33e1584]: October 31
+                            - generic [ref=f33e1587]:
+                              - paragraph [ref=f33e1588]: 13%
+                              - link "Yes 13%" [ref=f33e1589] [cursor=pointer]:
+                                - /url: /event/bab-el-mandeb-strait-effectively-closed-by?marketSlug=bab-el-mandeb-strait-effectively-closed-by-october-31&outcomeIndex=0
+                                - generic [ref=f33e1590]: "Yes"
+                                - generic [ref=f33e1591]: 13%
+                              - link "No 88%" [ref=f33e1592] [cursor=pointer]:
+                                - /url: /event/bab-el-mandeb-strait-effectively-closed-by?marketSlug=bab-el-mandeb-strait-effectively-closed-by-october-31&outcomeIndex=1
+                                - generic [ref=f33e1593]: "No"
+                                - generic [ref=f33e1594]: 88%
+                        - generic [ref=f33e1596]:
+                          - paragraph [ref=f33e1598]:
+                            - generic [ref=f33e1599]: $14M
+                            - text: Vol.
+                          - generic [ref=f33e1601]:
+                            - button "Rewards" [ref=f33e1602] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1603] [cursor=pointer]
+                    - generic [ref=f33e1607]:
+                      - generic [ref=f33e1608]:
+                        - img "Texas Senate Election Winner card icon" [ref=f33e1610]
+                        - link [ref=f33e1613] [cursor=pointer]:
+                          - /url: /event/texas-senate-election-winner
+                          - heading "Texas Senate Election Winner" [level=3] [ref=f33e1615]
+                      - generic [ref=f33e1616]:
+                        - generic [ref=f33e1618]:
+                          - generic [ref=f33e1619]:
+                            - link [ref=f33e1622] [cursor=pointer]:
+                              - /url: /event/texas-senate-election-winner/will-the-democrats-win-the-texas-senate-race-in-2026
+                              - paragraph [ref=f33e1623]: James Talarico (D)
+                            - generic [ref=f33e1626]:
+                              - paragraph [ref=f33e1627]: 57%
+                              - link "Yes 57%" [ref=f33e1628] [cursor=pointer]:
+                                - /url: /event/texas-senate-election-winner?marketSlug=will-the-democrats-win-the-texas-senate-race-in-2026&outcomeIndex=0
+                                - generic [ref=f33e1629]: "Yes"
+                                - generic [ref=f33e1630]: 57%
+                              - link "No 43%" [ref=f33e1631] [cursor=pointer]:
+                                - /url: /event/texas-senate-election-winner?marketSlug=will-the-democrats-win-the-texas-senate-race-in-2026&outcomeIndex=1
+                                - generic [ref=f33e1632]: "No"
+                                - generic [ref=f33e1633]: 43%
+                          - generic [ref=f33e1634]:
+                            - link [ref=f33e1637] [cursor=pointer]:
+                              - /url: /event/texas-senate-election-winner/will-the-republicans-win-the-texas-senate-race-in-2026
+                              - paragraph [ref=f33e1638]: Ken Paxton (R)
+                            - generic [ref=f33e1641]:
+                              - paragraph [ref=f33e1642]: 43%
+                              - link "Yes 43%" [ref=f33e1643] [cursor=pointer]:
+                                - /url: /event/texas-senate-election-winner?marketSlug=will-the-republicans-win-the-texas-senate-race-in-2026&outcomeIndex=0
+                                - generic [ref=f33e1644]: "Yes"
+                                - generic [ref=f33e1645]: 43%
+                              - link "No 58%" [ref=f33e1646] [cursor=pointer]:
+                                - /url: /event/texas-senate-election-winner?marketSlug=will-the-republicans-win-the-texas-senate-race-in-2026&outcomeIndex=1
+                                - generic [ref=f33e1647]: "No"
+                                - generic [ref=f33e1648]: 58%
+                        - generic [ref=f33e1650]:
+                          - paragraph [ref=f33e1652]:
+                            - generic [ref=f33e1653]: $1M
+                            - text: Vol.
+                          - generic [ref=f33e1655]:
+                            - button "Rewards" [ref=f33e1656] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1657] [cursor=pointer]
+                    - generic [ref=f33e1661]:
+                      - generic [ref=f33e1662]:
+                        - img "Russia x Ukraine ceasefire agreement by...? card icon" [ref=f33e1664]
+                        - link [ref=f33e1667] [cursor=pointer]:
+                          - /url: /event/russia-x-ukraine-ceasefire-agreement-by
+                          - heading "Russia x Ukraine ceasefire agreement by...?" [level=3] [ref=f33e1669]
+                      - generic [ref=f33e1670]:
+                        - generic [ref=f33e1672]:
+                          - generic [ref=f33e1673]:
+                            - link [ref=f33e1676] [cursor=pointer]:
+                              - /url: /event/russia-x-ukraine-ceasefire-agreement-by/russia-x-ukraine-ceasefire-agreement-by-december-31-2027
+                              - paragraph [ref=f33e1677]: December 31, 2027
+                            - generic [ref=f33e1680]:
+                              - paragraph [ref=f33e1681]: 70%
+                              - link "Yes 70%" [ref=f33e1682] [cursor=pointer]:
+                                - /url: /event/russia-x-ukraine-ceasefire-agreement-by?marketSlug=russia-x-ukraine-ceasefire-agreement-by-december-31-2027&outcomeIndex=0
+                                - generic [ref=f33e1683]: "Yes"
+                                - generic [ref=f33e1684]: 70%
+                              - link "No 31%" [ref=f33e1685] [cursor=pointer]:
+                                - /url: /event/russia-x-ukraine-ceasefire-agreement-by?marketSlug=russia-x-ukraine-ceasefire-agreement-by-december-31-2027&outcomeIndex=1
+                                - generic [ref=f33e1686]: "No"
+                                - generic [ref=f33e1687]: 31%
+                          - generic [ref=f33e1688]:
+                            - link [ref=f33e1691] [cursor=pointer]:
+                              - /url: /event/russia-x-ukraine-ceasefire-agreement-by/russia-x-ukraine-ceasefire-agreement-by-november-30-2027
+                              - paragraph [ref=f33e1692]: November 30, 2027
+                            - generic [ref=f33e1695]:
+                              - paragraph [ref=f33e1696]: 66%
+                              - link "Yes 66%" [ref=f33e1697] [cursor=pointer]:
+                                - /url: /event/russia-x-ukraine-ceasefire-agreement-by?marketSlug=russia-x-ukraine-ceasefire-agreement-by-november-30-2027&outcomeIndex=0
+                                - generic [ref=f33e1698]: "Yes"
+                                - generic [ref=f33e1699]: 66%
+                              - link "No 35%" [ref=f33e1700] [cursor=pointer]:
+                                - /url: /event/russia-x-ukraine-ceasefire-agreement-by?marketSlug=russia-x-ukraine-ceasefire-agreement-by-november-30-2027&outcomeIndex=1
+                                - generic [ref=f33e1701]: "No"
+                                - generic [ref=f33e1702]: 35%
+                        - generic [ref=f33e1704]:
+                          - paragraph [ref=f33e1706]:
+                            - generic [ref=f33e1707]: $8M
+                            - text: Vol.
+                          - generic [ref=f33e1709]:
+                            - button "Rewards" [ref=f33e1710] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1711] [cursor=pointer]
+                    - generic [ref=f33e1715]:
+                      - generic [ref=f33e1716]:
+                        - img "Which company has the best AI model end of September? card icon" [ref=f33e1718]
+                        - link [ref=f33e1721] [cursor=pointer]:
+                          - /url: /event/which-company-has-the-best-ai-model-end-of-september-20260717143435868
+                          - heading "Which company has the best AI model end of September?" [level=3] [ref=f33e1723]
+                      - generic [ref=f33e1724]:
+                        - generic [ref=f33e1726]:
+                          - generic [ref=f33e1727]:
+                            - link [ref=f33e1730] [cursor=pointer]:
+                              - /url: /event/which-company-has-the-best-ai-model-end-of-september-20260717143435868/will-anthropic-have-the-best-ai-model-at-the-end-of-september-2026-20260717143137053
+                              - paragraph [ref=f33e1731]: Anthropic
+                            - generic [ref=f33e1734]:
+                              - paragraph [ref=f33e1735]: 97%
+                              - link "Yes 97%" [ref=f33e1736] [cursor=pointer]:
+                                - /url: /event/which-company-has-the-best-ai-model-end-of-september-20260717143435868?marketSlug=will-anthropic-have-the-best-ai-model-at-the-end-of-september-2026-20260717143137053&outcomeIndex=0
+                                - generic [ref=f33e1737]: "Yes"
+                                - generic [ref=f33e1738]: 97%
+                              - link "No 3%" [ref=f33e1739] [cursor=pointer]:
+                                - /url: /event/which-company-has-the-best-ai-model-end-of-september-20260717143435868?marketSlug=will-anthropic-have-the-best-ai-model-at-the-end-of-september-2026-20260717143137053&outcomeIndex=1
+                                - generic [ref=f33e1740]: "No"
+                                - generic [ref=f33e1741]: 3%
+                          - generic [ref=f33e1742]:
+                            - link [ref=f33e1745] [cursor=pointer]:
+                              - /url: /event/which-company-has-the-best-ai-model-end-of-september-20260717143435868/will-openai-have-the-best-ai-model-at-the-end-of-september-2026-20260717143137058
+                              - paragraph [ref=f33e1746]: OpenAI
+                            - generic [ref=f33e1749]:
+                              - paragraph [ref=f33e1750]: 1%
+                              - link "Yes 1%" [ref=f33e1751] [cursor=pointer]:
+                                - /url: /event/which-company-has-the-best-ai-model-end-of-september-20260717143435868?marketSlug=will-openai-have-the-best-ai-model-at-the-end-of-september-2026-20260717143137058&outcomeIndex=0
+                                - generic [ref=f33e1752]: "Yes"
+                                - generic [ref=f33e1753]: 1%
+                              - link "No 99%" [ref=f33e1754] [cursor=pointer]:
+                                - /url: /event/which-company-has-the-best-ai-model-end-of-september-20260717143435868?marketSlug=will-openai-have-the-best-ai-model-at-the-end-of-september-2026-20260717143137058&outcomeIndex=1
+                                - generic [ref=f33e1755]: "No"
+                                - generic [ref=f33e1756]: 99%
+                        - generic [ref=f33e1758]:
+                          - paragraph [ref=f33e1760]:
+                            - generic [ref=f33e1761]: $3M
+                            - text: Vol.
+                          - button "Add to favorites" [ref=f33e1770] [cursor=pointer]
+                    - generic [ref=f33e1774]:
+                      - generic [ref=f33e1775]:
+                        - img "US announces end of Iranian blockade by...? card icon" [ref=f33e1777]
+                        - link [ref=f33e1780] [cursor=pointer]:
+                          - /url: /event/us-announces-end-of-iranian-blockade-byptptpt-20260713152715080
+                          - heading "US announces end of Iranian blockade by...?" [level=3] [ref=f33e1782]
+                      - generic [ref=f33e1783]:
+                        - generic [ref=f33e1785]:
+                          - generic [ref=f33e1786]:
+                            - link [ref=f33e1789] [cursor=pointer]:
+                              - /url: /event/us-announces-end-of-iranian-blockade-byptptpt-20260713152715080/us-announces-end-of-iranian-blockade-by-december-31-2026-20260727171803489-375-949-645-919-269-157-255-857
+                              - paragraph [ref=f33e1790]: December 31
+                            - generic [ref=f33e1793]:
+                              - paragraph [ref=f33e1794]: 60%
+                              - link "Yes 60%" [ref=f33e1795] [cursor=pointer]:
+                                - /url: /event/us-announces-end-of-iranian-blockade-byptptpt-20260713152715080?marketSlug=us-announces-end-of-iranian-blockade-by-december-31-2026-20260727171803489-375-949-645-919-269-157-255-857&outcomeIndex=0
+                                - generic [ref=f33e1796]: "Yes"
+                                - generic [ref=f33e1797]: 60%
+                              - link "No 40%" [ref=f33e1798] [cursor=pointer]:
+                                - /url: /event/us-announces-end-of-iranian-blockade-byptptpt-20260713152715080?marketSlug=us-announces-end-of-iranian-blockade-by-december-31-2026-20260727171803489-375-949-645-919-269-157-255-857&outcomeIndex=1
+                                - generic [ref=f33e1799]: "No"
+                                - generic [ref=f33e1800]: 40%
+                          - generic [ref=f33e1801]:
+                            - link [ref=f33e1804] [cursor=pointer]:
+                              - /url: /event/us-announces-end-of-iranian-blockade-byptptpt-20260713152715080/us-announces-end-of-iranian-blockade-by-october-31-2026-20260727171711632-895-372-622-413-171-454-592-696
+                              - paragraph [ref=f33e1805]: October 31
+                            - generic [ref=f33e1808]:
+                              - paragraph [ref=f33e1809]: 34%
+                              - link "Yes 34%" [ref=f33e1810] [cursor=pointer]:
+                                - /url: /event/us-announces-end-of-iranian-blockade-byptptpt-20260713152715080?marketSlug=us-announces-end-of-iranian-blockade-by-october-31-2026-20260727171711632-895-372-622-413-171-454-592-696&outcomeIndex=0
+                                - generic [ref=f33e1811]: "Yes"
+                                - generic [ref=f33e1812]: 34%
+                              - link "No 67%" [ref=f33e1813] [cursor=pointer]:
+                                - /url: /event/us-announces-end-of-iranian-blockade-byptptpt-20260713152715080?marketSlug=us-announces-end-of-iranian-blockade-by-october-31-2026-20260727171711632-895-372-622-413-171-454-592-696&outcomeIndex=1
+                                - generic [ref=f33e1814]: "No"
+                                - generic [ref=f33e1815]: 67%
+                        - generic [ref=f33e1817]:
+                          - paragraph [ref=f33e1819]:
+                            - generic [ref=f33e1820]: $29M
+                            - text: Vol.
+                          - generic [ref=f33e1822]:
+                            - button "Rewards" [ref=f33e1823] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1824] [cursor=pointer]
+                    - generic [ref=f33e1828]:
+                      - generic [ref=f33e1829]:
+                        - img "Prime Minister of Israel after the next election? card icon" [ref=f33e1831]
+                        - link [ref=f33e1834] [cursor=pointer]:
+                          - /url: /event/who-will-be-the-next-prime-minister-of-israel-after-the-next-election
+                          - heading "Prime Minister of Israel after the next election?" [level=3] [ref=f33e1836]
+                      - generic [ref=f33e1837]:
+                        - generic [ref=f33e1839]:
+                          - generic [ref=f33e1840]:
+                            - link [ref=f33e1843] [cursor=pointer]:
+                              - /url: /event/who-will-be-the-next-prime-minister-of-israel-after-the-next-election/will-gadi-eizenkot-be-the-next-prime-minister-of-israel
+                              - paragraph [ref=f33e1844]: Gadi Eizenkot
+                            - generic [ref=f33e1847]:
+                              - paragraph [ref=f33e1848]: 51%
+                              - link "Yes 51%" [ref=f33e1849] [cursor=pointer]:
+                                - /url: /event/who-will-be-the-next-prime-minister-of-israel-after-the-next-election?marketSlug=will-gadi-eizenkot-be-the-next-prime-minister-of-israel&outcomeIndex=0
+                                - generic [ref=f33e1850]: "Yes"
+                                - generic [ref=f33e1851]: 51%
+                              - link "No 50%" [ref=f33e1852] [cursor=pointer]:
+                                - /url: /event/who-will-be-the-next-prime-minister-of-israel-after-the-next-election?marketSlug=will-gadi-eizenkot-be-the-next-prime-minister-of-israel&outcomeIndex=1
+                                - generic [ref=f33e1853]: "No"
+                                - generic [ref=f33e1854]: 50%
+                          - generic [ref=f33e1855]:
+                            - link [ref=f33e1858] [cursor=pointer]:
+                              - /url: /event/who-will-be-the-next-prime-minister-of-israel-after-the-next-election/will-benjamin-netanyahu-be-the-next-prime-minister-of-israel
+                              - paragraph [ref=f33e1859]: Benjamin Netanyahu
+                            - generic [ref=f33e1862]:
+                              - paragraph [ref=f33e1863]: 31%
+                              - link "Yes 31%" [ref=f33e1864] [cursor=pointer]:
+                                - /url: /event/who-will-be-the-next-prime-minister-of-israel-after-the-next-election?marketSlug=will-benjamin-netanyahu-be-the-next-prime-minister-of-israel&outcomeIndex=0
+                                - generic [ref=f33e1865]: "Yes"
+                                - generic [ref=f33e1866]: 31%
+                              - link "No 70%" [ref=f33e1867] [cursor=pointer]:
+                                - /url: /event/who-will-be-the-next-prime-minister-of-israel-after-the-next-election?marketSlug=will-benjamin-netanyahu-be-the-next-prime-minister-of-israel&outcomeIndex=1
+                                - generic [ref=f33e1868]: "No"
+                                - generic [ref=f33e1869]: 70%
+                        - generic [ref=f33e1871]:
+                          - paragraph [ref=f33e1873]:
+                            - generic [ref=f33e1874]: $38M
+                            - text: Vol.
+                          - generic [ref=f33e1876]:
+                            - button "Rewards" [ref=f33e1877] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1878] [cursor=pointer]
+                    - generic [ref=f33e1882]:
+                      - generic [ref=f33e1883]:
+                        - 'img "Balance of Power: 2026 Midterms card icon" [ref=f33e1885]'
+                        - link [ref=f33e1888] [cursor=pointer]:
+                          - /url: /event/balance-of-power-2026-midterms
+                          - 'heading "Balance of Power: 2026 Midterms" [level=3] [ref=f33e1890]'
+                      - generic [ref=f33e1891]:
+                        - generic [ref=f33e1893]:
+                          - generic [ref=f33e1894]:
+                            - link [ref=f33e1897] [cursor=pointer]:
+                              - /url: /event/balance-of-power-2026-midterms/2026-balance-of-power-d-senate-d-house-949
+                              - paragraph [ref=f33e1898]: Democrats Sweep
+                            - generic [ref=f33e1901]:
+                              - paragraph [ref=f33e1902]: 60%
+                              - link "Yes 60%" [ref=f33e1903] [cursor=pointer]:
+                                - /url: /event/balance-of-power-2026-midterms?marketSlug=2026-balance-of-power-d-senate-d-house-949&outcomeIndex=0
+                                - generic [ref=f33e1904]: "Yes"
+                                - generic [ref=f33e1905]: 60%
+                              - link "No 41%" [ref=f33e1906] [cursor=pointer]:
+                                - /url: /event/balance-of-power-2026-midterms?marketSlug=2026-balance-of-power-d-senate-d-house-949&outcomeIndex=1
+                                - generic [ref=f33e1907]: "No"
+                                - generic [ref=f33e1908]: 41%
+                          - generic [ref=f33e1909]:
+                            - link [ref=f33e1912] [cursor=pointer]:
+                              - /url: /event/balance-of-power-2026-midterms/2026-balance-of-power-r-senate-d-house-444
+                              - paragraph [ref=f33e1913]: R Senate, D House
+                            - generic [ref=f33e1916]:
+                              - paragraph [ref=f33e1917]: 31%
+                              - link "Yes 31%" [ref=f33e1918] [cursor=pointer]:
+                                - /url: /event/balance-of-power-2026-midterms?marketSlug=2026-balance-of-power-r-senate-d-house-444&outcomeIndex=0
+                                - generic [ref=f33e1919]: "Yes"
+                                - generic [ref=f33e1920]: 31%
+                              - link "No 70%" [ref=f33e1921] [cursor=pointer]:
+                                - /url: /event/balance-of-power-2026-midterms?marketSlug=2026-balance-of-power-r-senate-d-house-444&outcomeIndex=1
+                                - generic [ref=f33e1922]: "No"
+                                - generic [ref=f33e1923]: 70%
+                        - generic [ref=f33e1925]:
+                          - paragraph [ref=f33e1927]:
+                            - generic [ref=f33e1928]: $12M
+                            - text: Vol.
+                          - generic [ref=f33e1930]:
+                            - button "Earn 3.25% holding rewards" [ref=f33e1931] [cursor=pointer]
+                            - button "Rewards" [ref=f33e1932] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1933] [cursor=pointer]
+                    - generic [ref=f33e1937]:
+                      - generic [ref=f33e1938]:
+                        - img "Who will Trump pick as the next Press Secretary? card icon" [ref=f33e1940]
+                        - link [ref=f33e1943] [cursor=pointer]:
+                          - /url: /event/who-will-trump-pick-as-the-next-press-secretary-20260812210729848
+                          - heading "Who will Trump pick as the next Press Secretary?" [level=3] [ref=f33e1945]
+                      - generic [ref=f33e1946]:
+                        - generic [ref=f33e1948]:
+                          - generic [ref=f33e1949]:
+                            - link [ref=f33e1952] [cursor=pointer]:
+                              - /url: /event/who-will-trump-pick-as-the-next-press-secretary-20260812210729848/will-scott-jennings-be-the-next-white-house-press-secretary-20260812211426417
+                              - paragraph [ref=f33e1953]: Scott Jennings
+                            - generic [ref=f33e1956]:
+                              - paragraph [ref=f33e1957]: 22%
+                              - link "Yes 22%" [ref=f33e1958] [cursor=pointer]:
+                                - /url: /event/who-will-trump-pick-as-the-next-press-secretary-20260812210729848?marketSlug=will-scott-jennings-be-the-next-white-house-press-secretary-20260812211426417&outcomeIndex=0
+                                - generic [ref=f33e1959]: "Yes"
+                                - generic [ref=f33e1960]: 22%
+                              - link "No 78%" [ref=f33e1961] [cursor=pointer]:
+                                - /url: /event/who-will-trump-pick-as-the-next-press-secretary-20260812210729848?marketSlug=will-scott-jennings-be-the-next-white-house-press-secretary-20260812211426417&outcomeIndex=1
+                                - generic [ref=f33e1962]: "No"
+                                - generic [ref=f33e1963]: 78%
+                          - generic [ref=f33e1964]:
+                            - link [ref=f33e1967] [cursor=pointer]:
+                              - /url: /event/who-will-trump-pick-as-the-next-press-secretary-20260812210729848/will-candidate-n-be-the-next-white-house-press-secretary-20260812210720674
+                              - paragraph [ref=f33e1968]: Maria Bartiromo
+                            - generic [ref=f33e1971]:
+                              - paragraph [ref=f33e1972]: 17%
+                              - link "Yes 17%" [ref=f33e1973] [cursor=pointer]:
+                                - /url: /event/who-will-trump-pick-as-the-next-press-secretary-20260812210729848?marketSlug=will-candidate-n-be-the-next-white-house-press-secretary-20260812210720674&outcomeIndex=0
+                                - generic [ref=f33e1974]: "Yes"
+                                - generic [ref=f33e1975]: 17%
+                              - link "No 84%" [ref=f33e1976] [cursor=pointer]:
+                                - /url: /event/who-will-trump-pick-as-the-next-press-secretary-20260812210729848?marketSlug=will-candidate-n-be-the-next-white-house-press-secretary-20260812210720674&outcomeIndex=1
+                                - generic [ref=f33e1977]: "No"
+                                - generic [ref=f33e1978]: 84%
+                        - generic [ref=f33e1980]:
+                          - paragraph [ref=f33e1982]:
+                            - generic [ref=f33e1983]: $437K
+                            - text: Vol.
+                          - generic [ref=f33e1985]:
+                            - button "Rewards" [ref=f33e1986] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e1987] [cursor=pointer]
+                    - generic [ref=f33e1991]:
+                      - generic [ref=f33e1992]:
+                        - img "NATO x Russia military clash by...? card icon" [ref=f33e1994]
+                        - link [ref=f33e1997] [cursor=pointer]:
+                          - /url: /event/nato-x-russia-military-clash-in-2025
+                          - heading "NATO x Russia military clash by...?" [level=3] [ref=f33e1999]
+                      - generic [ref=f33e2000]:
+                        - generic [ref=f33e2002]:
+                          - generic [ref=f33e2003]:
+                            - link [ref=f33e2006] [cursor=pointer]:
+                              - /url: /event/nato-x-russia-military-clash-in-2025/nato-x-russia-military-clash-by-december-31-2026-244-538-582
+                              - paragraph [ref=f33e2007]: December 31
+                            - generic [ref=f33e2010]:
+                              - paragraph [ref=f33e2011]: 26%
+                              - link "Yes 26%" [ref=f33e2012] [cursor=pointer]:
+                                - /url: /event/nato-x-russia-military-clash-in-2025?marketSlug=nato-x-russia-military-clash-by-december-31-2026-244-538-582&outcomeIndex=0
+                                - generic [ref=f33e2013]: "Yes"
+                                - generic [ref=f33e2014]: 26%
+                              - link "No 75%" [ref=f33e2015] [cursor=pointer]:
+                                - /url: /event/nato-x-russia-military-clash-in-2025?marketSlug=nato-x-russia-military-clash-by-december-31-2026-244-538-582&outcomeIndex=1
+                                - generic [ref=f33e2016]: "No"
+                                - generic [ref=f33e2017]: 75%
+                          - generic [ref=f33e2018]:
+                            - link [ref=f33e2021] [cursor=pointer]:
+                              - /url: /event/nato-x-russia-military-clash-in-2025/nato-x-russia-military-clash-by-october-31-2026
+                              - paragraph [ref=f33e2022]: October 31
+                            - generic [ref=f33e2025]:
+                              - paragraph [ref=f33e2026]: 13%
+                              - link "Yes 13%" [ref=f33e2027] [cursor=pointer]:
+                                - /url: /event/nato-x-russia-military-clash-in-2025?marketSlug=nato-x-russia-military-clash-by-october-31-2026&outcomeIndex=0
+                                - generic [ref=f33e2028]: "Yes"
+                                - generic [ref=f33e2029]: 13%
+                              - link "No 88%" [ref=f33e2030] [cursor=pointer]:
+                                - /url: /event/nato-x-russia-military-clash-in-2025?marketSlug=nato-x-russia-military-clash-by-october-31-2026&outcomeIndex=1
+                                - generic [ref=f33e2031]: "No"
+                                - generic [ref=f33e2032]: 88%
+                        - generic [ref=f33e2034]:
+                          - paragraph [ref=f33e2036]:
+                            - generic [ref=f33e2037]: $7M
+                            - text: Vol.
+                          - generic [ref=f33e2039]:
+                            - button "Rewards" [ref=f33e2040] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e2041] [cursor=pointer]
+                    - generic [ref=f33e2045]:
+                      - link "Top Esports 51% Invictus Gaming 49%" [ref=f33e2046] [cursor=pointer]:
+                        - /url: /event/lol-tes-ig1-2026-09-17
+                        - generic [ref=f33e2047]:
+                          - paragraph [ref=f33e2050]: Top Esports
+                          - paragraph [ref=f33e2051]: 51%
+                        - generic [ref=f33e2052]:
+                          - paragraph [ref=f33e2055]: Invictus Gaming
+                          - paragraph [ref=f33e2056]: 49%
+                      - generic [ref=f33e2057]:
+                        - generic [ref=f33e2058]:
+                          - link [ref=f33e2059] [cursor=pointer]:
+                            - /url: /event/lol-tes-ig1-2026-09-17?outcomeIndex=0
+                            - paragraph [ref=f33e2061]: Top Esports
+                          - link [ref=f33e2063] [cursor=pointer]:
+                            - /url: /event/lol-tes-ig1-2026-09-17?outcomeIndex=1
+                            - paragraph [ref=f33e2065]: Invictus
+                        - generic [ref=f33e2068]:
+                          - generic [ref=f33e2069]:
+                            - paragraph [ref=f33e2070]:
+                              - generic [ref=f33e2071]: $10M
+                              - text: Vol.
+                            - generic [ref=f33e2072]: ·
+                            - link "LoL" [ref=f33e2073] [cursor=pointer]:
+                              - /url: /esports/league-of-legends
+                          - button "Add to favorites" [ref=f33e2076] [cursor=pointer]
+                    - generic [ref=f33e2080]:
+                      - generic [ref=f33e2081]:
+                        - img "Which party will gain most seats in Russian Parliamentary Election? card icon" [ref=f33e2083]
+                        - link [ref=f33e2086] [cursor=pointer]:
+                          - /url: /event/which-party-will-gain-most-seats-in-russian-parliamentary-election
+                          - heading "Which party will gain most seats in Russian Parliamentary Election?" [level=3] [ref=f33e2088]
+                      - generic [ref=f33e2089]:
+                        - generic [ref=f33e2091]:
+                          - generic [ref=f33e2092]:
+                            - link [ref=f33e2095] [cursor=pointer]:
+                              - /url: /event/which-party-will-gain-most-seats-in-russian-parliamentary-election/will-united-russia-er-gain-the-most-seats-in-the-next-russian-parliamentary-election
+                              - paragraph [ref=f33e2096]: United Russia (ER)
+                            - generic [ref=f33e2099]:
+                              - paragraph [ref=f33e2100]: 75%
+                              - link "Yes 75%" [ref=f33e2101] [cursor=pointer]:
+                                - /url: /event/which-party-will-gain-most-seats-in-russian-parliamentary-election?marketSlug=will-united-russia-er-gain-the-most-seats-in-the-next-russian-parliamentary-election&outcomeIndex=0
+                                - generic [ref=f33e2102]: "Yes"
+                                - generic [ref=f33e2103]: 75%
+                              - link "No 26%" [ref=f33e2104] [cursor=pointer]:
+                                - /url: /event/which-party-will-gain-most-seats-in-russian-parliamentary-election?marketSlug=will-united-russia-er-gain-the-most-seats-in-the-next-russian-parliamentary-election&outcomeIndex=1
+                                - generic [ref=f33e2105]: "No"
+                                - generic [ref=f33e2106]: 26%
+                          - generic [ref=f33e2107]:
+                            - link [ref=f33e2110] [cursor=pointer]:
+                              - /url: /event/which-party-will-gain-most-seats-in-russian-parliamentary-election/will-new-people-nl-gain-the-most-seats-in-the-next-russian-parliamentary-election
+                              - paragraph [ref=f33e2111]: New People (NL)
+                            - generic [ref=f33e2114]:
+                              - paragraph [ref=f33e2115]: 22%
+                              - link "Yes 22%" [ref=f33e2116] [cursor=pointer]:
+                                - /url: /event/which-party-will-gain-most-seats-in-russian-parliamentary-election?marketSlug=will-new-people-nl-gain-the-most-seats-in-the-next-russian-parliamentary-election&outcomeIndex=0
+                                - generic [ref=f33e2117]: "Yes"
+                                - generic [ref=f33e2118]: 22%
+                              - link "No 78%" [ref=f33e2119] [cursor=pointer]:
+                                - /url: /event/which-party-will-gain-most-seats-in-russian-parliamentary-election?marketSlug=will-new-people-nl-gain-the-most-seats-in-the-next-russian-parliamentary-election&outcomeIndex=1
+                                - generic [ref=f33e2120]: "No"
+                                - generic [ref=f33e2121]: 78%
+                        - generic [ref=f33e2123]:
+                          - paragraph [ref=f33e2125]:
+                            - generic [ref=f33e2126]: $31M
+                            - text: Vol.
+                          - generic [ref=f33e2128]:
+                            - button "Rewards" [ref=f33e2129] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e2130] [cursor=pointer]
+                    - generic [ref=f33e2134]:
+                      - generic [ref=f33e2135]:
+                        - img "Bitcoin above ___ on September 17? card icon" [ref=f33e2137]
+                        - link [ref=f33e2140] [cursor=pointer]:
+                          - /url: /event/bitcoin-above-on-september-17-2026
+                          - heading "Bitcoin above ___ on September 17?" [level=3] [ref=f33e2142]
+                      - generic [ref=f33e2143]:
+                        - generic [ref=f33e2145]:
+                          - generic [ref=f33e2146]:
+                            - link [ref=f33e2149] [cursor=pointer]:
+                              - /url: /event/bitcoin-above-on-september-17-2026/bitcoin-above-68k-on-september-17-2026
+                              - paragraph [ref=f33e2150]: 68,000
+                            - generic [ref=f33e2153]:
+                              - paragraph [ref=f33e2154]: 100%
+                              - link "Yes 100%" [ref=f33e2155] [cursor=pointer]:
+                                - /url: /event/bitcoin-above-on-september-17-2026?marketSlug=bitcoin-above-68k-on-september-17-2026&outcomeIndex=0
+                                - generic [ref=f33e2156]: "Yes"
+                                - generic [ref=f33e2157]: 100%
+                              - link "No <1%" [ref=f33e2158] [cursor=pointer]:
+                                - /url: /event/bitcoin-above-on-september-17-2026?marketSlug=bitcoin-above-68k-on-september-17-2026&outcomeIndex=1
+                                - generic [ref=f33e2159]: "No"
+                                - generic [ref=f33e2160]: <1%
+                          - generic [ref=f33e2161]:
+                            - link [ref=f33e2164] [cursor=pointer]:
+                              - /url: /event/bitcoin-above-on-september-17-2026/bitcoin-above-70k-on-september-17-2026
+                              - paragraph [ref=f33e2165]: 70,000
+                            - generic [ref=f33e2168]:
+                              - paragraph [ref=f33e2169]: 100%
+                              - link "Yes 100%" [ref=f33e2170] [cursor=pointer]:
+                                - /url: /event/bitcoin-above-on-september-17-2026?marketSlug=bitcoin-above-70k-on-september-17-2026&outcomeIndex=0
+                                - generic [ref=f33e2171]: "Yes"
+                                - generic [ref=f33e2172]: 100%
+                              - link "No <1%" [ref=f33e2173] [cursor=pointer]:
+                                - /url: /event/bitcoin-above-on-september-17-2026?marketSlug=bitcoin-above-70k-on-september-17-2026&outcomeIndex=1
+                                - generic [ref=f33e2174]: "No"
+                                - generic [ref=f33e2175]: <1%
+                        - generic [ref=f33e2177]:
+                          - generic [ref=f33e2178]:
+                            - paragraph [ref=f33e2179]:
+                              - generic [ref=f33e2180]: $2M
+                              - text: Vol.
+                            - generic [ref=f33e2181]: ·
+                            - link "Bitcoin" [ref=f33e2182] [cursor=pointer]:
+                              - /url: /crypto/bitcoin
+                          - button "Add to favorites" [ref=f33e2191] [cursor=pointer]
+                    - generic [ref=f33e2195]:
+                      - link "Vitality 100% magic 0%" [ref=f33e2196] [cursor=pointer]:
+                        - /url: /event/cs2-vit-mgc-2026-09-17
+                        - generic [ref=f33e2197]:
+                          - paragraph [ref=f33e2200]: Vitality
+                          - paragraph [ref=f33e2201]: 100%
+                        - generic [ref=f33e2202]:
+                          - paragraph [ref=f33e2205]: magic
+                          - paragraph [ref=f33e2206]: 0%
+                      - generic [ref=f33e2207]:
+                        - generic [ref=f33e2208]:
+                          - link [ref=f33e2209] [cursor=pointer]:
+                            - /url: /event/cs2-vit-mgc-2026-09-17?outcomeIndex=0
+                            - paragraph [ref=f33e2211]: Vitality
+                          - link [ref=f33e2213] [cursor=pointer]:
+                            - /url: /event/cs2-vit-mgc-2026-09-17?outcomeIndex=1
+                            - paragraph [ref=f33e2215]: magic
+                        - generic [ref=f33e2218]:
+                          - generic [ref=f33e2219]:
+                            - paragraph [ref=f33e2220]:
+                              - generic [ref=f33e2221]: $1M
+                              - text: Vol.
+                            - generic [ref=f33e2222]: ·
+                            - link "CS2" [ref=f33e2223] [cursor=pointer]:
+                              - /url: /esports/cs2
+                          - button "Add to favorites" [ref=f33e2226] [cursor=pointer]
+                    - generic [ref=f33e2230]:
+                      - generic [ref=f33e2231]:
+                        - img "What price will Bitcoin hit in September? card icon" [ref=f33e2233]
+                        - link [ref=f33e2236] [cursor=pointer]:
+                          - /url: /event/what-price-will-bitcoin-hit-in-september-2026
+                          - heading "What price will Bitcoin hit in September?" [level=3] [ref=f33e2238]
+                      - generic [ref=f33e2239]:
+                        - generic [ref=f33e2241]:
+                          - generic [ref=f33e2242]:
+                            - link [ref=f33e2245] [cursor=pointer]:
+                              - /url: /event/what-price-will-bitcoin-hit-in-september-2026/will-bitcoin-reach-77pt5k-in-september-2026-from-september-15
+                              - paragraph [ref=f33e2246]: ↑ 77,500
+                            - generic [ref=f33e2249]:
+                              - paragraph [ref=f33e2250]: 86%
+                              - link "Yes 86%" [ref=f33e2251] [cursor=pointer]:
+                                - /url: /event/what-price-will-bitcoin-hit-in-september-2026?marketSlug=will-bitcoin-reach-77pt5k-in-september-2026-from-september-15&outcomeIndex=0
+                                - generic [ref=f33e2252]: "Yes"
+                                - generic [ref=f33e2253]: 86%
+                              - link "No 15%" [ref=f33e2254] [cursor=pointer]:
+                                - /url: /event/what-price-will-bitcoin-hit-in-september-2026?marketSlug=will-bitcoin-reach-77pt5k-in-september-2026-from-september-15&outcomeIndex=1
+                                - generic [ref=f33e2255]: "No"
+                                - generic [ref=f33e2256]: 15%
+                          - generic [ref=f33e2257]:
+                            - link [ref=f33e2260] [cursor=pointer]:
+                              - /url: /event/what-price-will-bitcoin-hit-in-september-2026/will-bitcoin-dip-to-75k-in-september-2026-from-september-16
+                              - paragraph [ref=f33e2261]: ↓ 75,000
+                            - generic [ref=f33e2264]:
+                              - paragraph [ref=f33e2265]: 72%
+                              - link "Yes 72%" [ref=f33e2266] [cursor=pointer]:
+                                - /url: /event/what-price-will-bitcoin-hit-in-september-2026?marketSlug=will-bitcoin-dip-to-75k-in-september-2026-from-september-16&outcomeIndex=0
+                                - generic [ref=f33e2267]: "Yes"
+                                - generic [ref=f33e2268]: 72%
+                              - link "No 29%" [ref=f33e2269] [cursor=pointer]:
+                                - /url: /event/what-price-will-bitcoin-hit-in-september-2026?marketSlug=will-bitcoin-dip-to-75k-in-september-2026-from-september-16&outcomeIndex=1
+                                - generic [ref=f33e2270]: "No"
+                                - generic [ref=f33e2271]: 29%
+                        - generic [ref=f33e2273]:
+                          - generic [ref=f33e2274]:
+                            - paragraph [ref=f33e2275]:
+                              - generic [ref=f33e2276]: $7M
+                              - text: Vol.
+                            - generic [ref=f33e2277]: ·
+                            - link "Bitcoin" [ref=f33e2278] [cursor=pointer]:
+                              - /url: /crypto/bitcoin
+                          - button "Add to favorites" [ref=f33e2287] [cursor=pointer]
+                    - generic [ref=f33e2291]:
+                      - generic [ref=f33e2292]:
+                        - img "Ballon d'Or Winner 2026 card icon" [ref=f33e2294]
+                        - link [ref=f33e2297] [cursor=pointer]:
+                          - /url: /event/ballon-dor-winner-2026
+                          - heading "Ballon d'Or Winner 2026" [level=3] [ref=f33e2299]
+                      - generic [ref=f33e2300]:
+                        - generic [ref=f33e2302]:
+                          - generic [ref=f33e2303]:
+                            - link [ref=f33e2306] [cursor=pointer]:
+                              - /url: /event/ballon-dor-winner-2026/will-harry-kane-win-the-2026-ballon-dor
+                              - paragraph [ref=f33e2307]: Harry Kane
+                            - generic [ref=f33e2310]:
+                              - paragraph [ref=f33e2311]: 57%
+                              - link "Yes 57%" [ref=f33e2312] [cursor=pointer]:
+                                - /url: /event/ballon-dor-winner-2026?marketSlug=will-harry-kane-win-the-2026-ballon-dor&outcomeIndex=0
+                                - generic [ref=f33e2313]: "Yes"
+                                - generic [ref=f33e2314]: 57%
+                              - link "No 43%" [ref=f33e2315] [cursor=pointer]:
+                                - /url: /event/ballon-dor-winner-2026?marketSlug=will-harry-kane-win-the-2026-ballon-dor&outcomeIndex=1
+                                - generic [ref=f33e2316]: "No"
+                                - generic [ref=f33e2317]: 43%
+                          - generic [ref=f33e2318]:
+                            - link [ref=f33e2321] [cursor=pointer]:
+                              - /url: /event/ballon-dor-winner-2026/will-lamine-yamal-win-the-2026-ballon-dor
+                              - paragraph [ref=f33e2322]: Lamine Yamal
+                            - generic [ref=f33e2325]:
+                              - paragraph [ref=f33e2326]: 21%
+                              - link "Yes 21%" [ref=f33e2327] [cursor=pointer]:
+                                - /url: /event/ballon-dor-winner-2026?marketSlug=will-lamine-yamal-win-the-2026-ballon-dor&outcomeIndex=0
+                                - generic [ref=f33e2328]: "Yes"
+                                - generic [ref=f33e2329]: 21%
+                              - link "No 79%" [ref=f33e2330] [cursor=pointer]:
+                                - /url: /event/ballon-dor-winner-2026?marketSlug=will-lamine-yamal-win-the-2026-ballon-dor&outcomeIndex=1
+                                - generic [ref=f33e2331]: "No"
+                                - generic [ref=f33e2332]: 79%
+                        - generic [ref=f33e2334]:
+                          - paragraph [ref=f33e2336]:
+                            - generic [ref=f33e2337]: $37M
+                            - text: Vol.
+                          - generic [ref=f33e2339]:
+                            - button "Rewards" [ref=f33e2340] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e2341] [cursor=pointer]
+                    - generic [ref=f33e2345]:
+                      - generic [ref=f33e2346]:
+                        - 'img "Elon Musk # tweets September 11 - September 18, 2026? card icon" [ref=f33e2348]'
+                        - link [ref=f33e2351] [cursor=pointer]:
+                          - /url: /event/elon-musk-of-tweets-september-11-september-18-2026
+                          - 'heading "Elon Musk # tweets September 11 - September 18, 2026?" [level=3] [ref=f33e2353]'
+                      - generic [ref=f33e2354]:
+                        - generic [ref=f33e2356]:
+                          - generic [ref=f33e2357]:
+                            - link [ref=f33e2360] [cursor=pointer]:
+                              - /url: /event/elon-musk-of-tweets-september-11-september-18-2026/elon-musk-of-tweets-september-11-september-18-2026-200-219
+                              - paragraph [ref=f33e2361]: 200-219
+                            - generic [ref=f33e2364]:
+                              - paragraph [ref=f33e2365]: 46%
+                              - link "Yes 46%" [ref=f33e2366] [cursor=pointer]:
+                                - /url: /event/elon-musk-of-tweets-september-11-september-18-2026?marketSlug=elon-musk-of-tweets-september-11-september-18-2026-200-219&outcomeIndex=0
+                                - generic [ref=f33e2367]: "Yes"
+                                - generic [ref=f33e2368]: 46%
+                              - link "No 55%" [ref=f33e2369] [cursor=pointer]:
+                                - /url: /event/elon-musk-of-tweets-september-11-september-18-2026?marketSlug=elon-musk-of-tweets-september-11-september-18-2026-200-219&outcomeIndex=1
+                                - generic [ref=f33e2370]: "No"
+                                - generic [ref=f33e2371]: 55%
+                          - generic [ref=f33e2372]:
+                            - link [ref=f33e2375] [cursor=pointer]:
+                              - /url: /event/elon-musk-of-tweets-september-11-september-18-2026/elon-musk-of-tweets-september-11-september-18-2026-180-199
+                              - paragraph [ref=f33e2376]: 180-199
+                            - generic [ref=f33e2379]:
+                              - paragraph [ref=f33e2380]: 45%
+                              - link "Yes 45%" [ref=f33e2381] [cursor=pointer]:
+                                - /url: /event/elon-musk-of-tweets-september-11-september-18-2026?marketSlug=elon-musk-of-tweets-september-11-september-18-2026-180-199&outcomeIndex=0
+                                - generic [ref=f33e2382]: "Yes"
+                                - generic [ref=f33e2383]: 45%
+                              - link "No 56%" [ref=f33e2384] [cursor=pointer]:
+                                - /url: /event/elon-musk-of-tweets-september-11-september-18-2026?marketSlug=elon-musk-of-tweets-september-11-september-18-2026-180-199&outcomeIndex=1
+                                - generic [ref=f33e2385]: "No"
+                                - generic [ref=f33e2386]: 56%
+                        - generic [ref=f33e2388]:
+                          - paragraph [ref=f33e2390]:
+                            - generic [ref=f33e2391]: $2M
+                            - text: Vol.
+                          - generic [ref=f33e2399]:
+                            - button "Rewards" [ref=f33e2400] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e2401] [cursor=pointer]
+                    - generic [ref=f33e2405]:
+                      - generic [ref=f33e2406]:
+                        - 'img "UEFA Champions League: 2027 Champion card icon" [ref=f33e2408]'
+                        - link [ref=f33e2411] [cursor=pointer]:
+                          - /url: /event/uefa-champions-league-2027-champion-20260701202025549
+                          - 'heading "UEFA Champions League: 2027 Champion" [level=3] [ref=f33e2413]'
+                      - generic [ref=f33e2414]:
+                        - generic [ref=f33e2416]:
+                          - generic [ref=f33e2417]:
+                            - link [ref=f33e2420] [cursor=pointer]:
+                              - /url: /event/uefa-champions-league-2027-champion-20260701202025549/will-barcelona-win-the-2026-27-uefa-champions-league-championship-20260701202025560
+                              - paragraph [ref=f33e2421]: Barcelona
+                            - generic [ref=f33e2424]:
+                              - paragraph [ref=f33e2425]: 20%
+                              - link "Yes 20%" [ref=f33e2426] [cursor=pointer]:
+                                - /url: /event/uefa-champions-league-2027-champion-20260701202025549?marketSlug=will-barcelona-win-the-2026-27-uefa-champions-league-championship-20260701202025560&outcomeIndex=0
+                                - generic [ref=f33e2427]: "Yes"
+                                - generic [ref=f33e2428]: 20%
+                              - link "No 81%" [ref=f33e2429] [cursor=pointer]:
+                                - /url: /event/uefa-champions-league-2027-champion-20260701202025549?marketSlug=will-barcelona-win-the-2026-27-uefa-champions-league-championship-20260701202025560&outcomeIndex=1
+                                - generic [ref=f33e2430]: "No"
+                                - generic [ref=f33e2431]: 81%
+                          - generic [ref=f33e2432]:
+                            - link [ref=f33e2435] [cursor=pointer]:
+                              - /url: /event/uefa-champions-league-2027-champion-20260701202025549/will-bayern-munich-win-the-2026-27-uefa-champions-league-championship-20260701202025565
+                              - paragraph [ref=f33e2436]: Bayern Munich
+                            - generic [ref=f33e2439]:
+                              - paragraph [ref=f33e2440]: 16%
+                              - link "Yes 16%" [ref=f33e2441] [cursor=pointer]:
+                                - /url: /event/uefa-champions-league-2027-champion-20260701202025549?marketSlug=will-bayern-munich-win-the-2026-27-uefa-champions-league-championship-20260701202025565&outcomeIndex=0
+                                - generic [ref=f33e2442]: "Yes"
+                                - generic [ref=f33e2443]: 16%
+                              - link "No 85%" [ref=f33e2444] [cursor=pointer]:
+                                - /url: /event/uefa-champions-league-2027-champion-20260701202025549?marketSlug=will-bayern-munich-win-the-2026-27-uefa-champions-league-championship-20260701202025565&outcomeIndex=1
+                                - generic [ref=f33e2445]: "No"
+                                - generic [ref=f33e2446]: 85%
+                        - generic [ref=f33e2448]:
+                          - paragraph [ref=f33e2450]:
+                            - generic [ref=f33e2451]: $35M
+                            - text: Vol.
+                          - generic [ref=f33e2453]:
+                            - button "Rewards" [ref=f33e2454] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e2455] [cursor=pointer]
+                    - generic [ref=f33e2459]:
+                      - generic [ref=f33e2460]:
+                        - img "Democratic Presidential Nominee 2028 card icon" [ref=f33e2462]
+                        - link [ref=f33e2465] [cursor=pointer]:
+                          - /url: /event/democratic-presidential-nominee-2028
+                          - heading "Democratic Presidential Nominee 2028" [level=3] [ref=f33e2467]
+                      - generic [ref=f33e2468]:
+                        - generic [ref=f33e2470]:
+                          - generic [ref=f33e2471]:
+                            - link [ref=f33e2474] [cursor=pointer]:
+                              - /url: /event/democratic-presidential-nominee-2028/will-alexandria-ocasio-cortez-win-the-2028-democratic-presidential-nomination-653
+                              - paragraph [ref=f33e2475]: Alexandria Ocasio-Cortez
+                            - generic [ref=f33e2478]:
+                              - paragraph [ref=f33e2479]: 18%
+                              - link "Yes 18%" [ref=f33e2480] [cursor=pointer]:
+                                - /url: /event/democratic-presidential-nominee-2028?marketSlug=will-alexandria-ocasio-cortez-win-the-2028-democratic-presidential-nomination-653&outcomeIndex=0
+                                - generic [ref=f33e2481]: "Yes"
+                                - generic [ref=f33e2482]: 18%
+                              - link "No 82%" [ref=f33e2483] [cursor=pointer]:
+                                - /url: /event/democratic-presidential-nominee-2028?marketSlug=will-alexandria-ocasio-cortez-win-the-2028-democratic-presidential-nomination-653&outcomeIndex=1
+                                - generic [ref=f33e2484]: "No"
+                                - generic [ref=f33e2485]: 82%
+                          - generic [ref=f33e2486]:
+                            - link [ref=f33e2489] [cursor=pointer]:
+                              - /url: /event/democratic-presidential-nominee-2028/will-jon-ossoff-win-the-2028-democratic-presidential-nomination-885
+                              - paragraph [ref=f33e2490]: Jon Ossoff
+                            - generic [ref=f33e2493]:
+                              - paragraph [ref=f33e2494]: 16%
+                              - link "Yes 16%" [ref=f33e2495] [cursor=pointer]:
+                                - /url: /event/democratic-presidential-nominee-2028?marketSlug=will-jon-ossoff-win-the-2028-democratic-presidential-nomination-885&outcomeIndex=0
+                                - generic [ref=f33e2496]: "Yes"
+                                - generic [ref=f33e2497]: 16%
+                              - link "No 84%" [ref=f33e2498] [cursor=pointer]:
+                                - /url: /event/democratic-presidential-nominee-2028?marketSlug=will-jon-ossoff-win-the-2028-democratic-presidential-nomination-885&outcomeIndex=1
+                                - generic [ref=f33e2499]: "No"
+                                - generic [ref=f33e2500]: 84%
+                        - generic [ref=f33e2502]:
+                          - paragraph [ref=f33e2504]:
+                            - generic [ref=f33e2505]: $1B
+                            - text: Vol.
+                          - generic [ref=f33e2507]:
+                            - button "Earn 3.25% holding rewards" [ref=f33e2508] [cursor=pointer]
+                            - button "Rewards" [ref=f33e2509] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e2510] [cursor=pointer]
+                    - generic [ref=f33e2514]:
+                      - generic [ref=f33e2515]:
+                        - img "What will WTI Crude Oil (WTI) hit in September 2026? card icon" [ref=f33e2517]
+                        - link [ref=f33e2520] [cursor=pointer]:
+                          - /url: /event/what-price-will-wti-hit-in-september-2026
+                          - heading "What will WTI Crude Oil (WTI) hit in September 2026?" [level=3] [ref=f33e2522]
+                      - generic [ref=f33e2523]:
+                        - generic [ref=f33e2525]:
+                          - generic [ref=f33e2526]:
+                            - link [ref=f33e2529] [cursor=pointer]:
+                              - /url: /event/what-price-will-wti-hit-in-september-2026/will-wti-dip-to-100-in-september-2026-from-september-14
+                              - paragraph [ref=f33e2530]: ↓ $100
+                            - generic [ref=f33e2533]:
+                              - paragraph [ref=f33e2534]: 100%
+                              - link "Yes 100%" [ref=f33e2535] [cursor=pointer]:
+                                - /url: /event/what-price-will-wti-hit-in-september-2026?marketSlug=will-wti-dip-to-100-in-september-2026-from-september-14&outcomeIndex=0
+                                - generic [ref=f33e2536]: "Yes"
+                                - generic [ref=f33e2537]: 100%
+                              - link "No <1%" [ref=f33e2538] [cursor=pointer]:
+                                - /url: /event/what-price-will-wti-hit-in-september-2026?marketSlug=will-wti-dip-to-100-in-september-2026-from-september-14&outcomeIndex=1
+                                - generic [ref=f33e2539]: "No"
+                                - generic [ref=f33e2540]: <1%
+                          - generic [ref=f33e2541]:
+                            - link [ref=f33e2544] [cursor=pointer]:
+                              - /url: /event/what-price-will-wti-hit-in-september-2026/will-wti-dip-to-95-in-september-2026
+                              - paragraph [ref=f33e2545]: ↓ $95
+                            - generic [ref=f33e2548]:
+                              - paragraph [ref=f33e2549]: 83%
+                              - link "Yes 83%" [ref=f33e2550] [cursor=pointer]:
+                                - /url: /event/what-price-will-wti-hit-in-september-2026?marketSlug=will-wti-dip-to-95-in-september-2026&outcomeIndex=0
+                                - generic [ref=f33e2551]: "Yes"
+                                - generic [ref=f33e2552]: 83%
+                              - link "No 18%" [ref=f33e2553] [cursor=pointer]:
+                                - /url: /event/what-price-will-wti-hit-in-september-2026?marketSlug=will-wti-dip-to-95-in-september-2026&outcomeIndex=1
+                                - generic [ref=f33e2554]: "No"
+                                - generic [ref=f33e2555]: 18%
+                        - generic [ref=f33e2557]:
+                          - paragraph [ref=f33e2559]:
+                            - generic [ref=f33e2560]: $6M
+                            - text: Vol.
+                          - generic [ref=f33e2568]:
+                            - button "Rewards" [ref=f33e2569] [cursor=pointer]
+                            - button "Add to favorites" [ref=f33e2570] [cursor=pointer]
+                  - button "Show more markets" [ref=f33e2573] [cursor=pointer]
+        - contentinfo [ref=f33e2575]:
+          - generic [ref=f33e2577]:
+            - generic [ref=f33e2578]:
+              - link [ref=f33e2579] [cursor=pointer]:
+                - /url: /
+                - img "Polymarket" [ref=f33e2580]
+              - paragraph [ref=f33e2581]: The World's Largest Prediction Market™
+            - generic [ref=f33e2582]:
+              - generic [ref=f33e2583]:
+                - heading "Markets by category and topics" [level=3] [ref=f33e2584]
+                - generic [ref=f33e2585]:
+                  - link "Midterms Predictions & odds" [ref=f33e2586] [cursor=pointer]:
+                    - /url: /predictions/midterms
+                    - text: Midterms
+                    - generic [ref=f33e2587]: Predictions & odds
+                  - link "Movies Predictions & odds" [ref=f33e2588] [cursor=pointer]:
+                    - /url: /predictions/movies
+                    - text: Movies
+                    - generic [ref=f33e2589]: Predictions & odds
+                  - link "Crypto Prices Predictions & odds" [ref=f33e2590] [cursor=pointer]:
+                    - /url: /predictions/crypto-prices
+                    - text: Crypto Prices
+                    - generic [ref=f33e2591]: Predictions & odds
+                  - link "Commodities Predictions & odds" [ref=f33e2592] [cursor=pointer]:
+                    - /url: /predictions/commodities
+                    - text: Commodities
+                    - generic [ref=f33e2593]: Predictions & odds
+                  - link "Fed Predictions & odds" [ref=f33e2594] [cursor=pointer]:
+                    - /url: /predictions/fed
+                    - text: Fed
+                    - generic [ref=f33e2595]: Predictions & odds
+                  - link "Trump Predictions & odds" [ref=f33e2596] [cursor=pointer]:
+                    - /url: /predictions/trump
+                    - text: Trump
+                    - generic [ref=f33e2597]: Predictions & odds
+                  - link "NFL Predictions & odds" [ref=f33e2598] [cursor=pointer]:
+                    - /url: /predictions/nfl
+                    - text: NFL
+                    - generic [ref=f33e2599]: Predictions & odds
+                  - link "AI Safety Predictions & odds" [ref=f33e2600] [cursor=pointer]:
+                    - /url: /predictions/ai-safety
+                    - text: AI Safety
+                    - generic [ref=f33e2601]: Predictions & odds
+                  - link "Yemen Predictions & odds" [ref=f33e2602] [cursor=pointer]:
+                    - /url: /predictions/yemen
+                    - text: Yemen
+                    - generic [ref=f33e2603]: Predictions & odds
+                  - link "Berlin Predictions & odds" [ref=f33e2604] [cursor=pointer]:
+                    - /url: /predictions/berlin
+                    - text: Berlin
+                    - generic [ref=f33e2605]: Predictions & odds
+                  - link "Mecklenburg-Vorpommern Predictions & odds" [ref=f33e2606] [cursor=pointer]:
+                    - /url: /predictions/mecklenburg-vorpommern
+                    - text: Mecklenburg-Vorpommern
+                    - generic [ref=f33e2607]: Predictions & odds
+                  - link "Russia Election Predictions & odds" [ref=f33e2608] [cursor=pointer]:
+                    - /url: /predictions/russia-election
+                    - text: Russia Election
+                    - generic [ref=f33e2609]: Predictions & odds
+                  - link "Brazil Predictions & odds" [ref=f33e2610] [cursor=pointer]:
+                    - /url: /predictions/brazil
+                    - text: Brazil
+                    - generic [ref=f33e2611]: Predictions & odds
+                  - link "Clarity Act Predictions & odds" [ref=f33e2612] [cursor=pointer]:
+                    - /url: /predictions/clarity-act
+                    - text: Clarity Act
+                    - generic [ref=f33e2613]: Predictions & odds
+                  - button "View more" [ref=f33e2614] [cursor=pointer]
+              - generic [ref=f33e2618]:
+                - heading "Support & Social" [level=3] [ref=f33e2619]
+                - generic [ref=f33e2620]:
+                  - link "Learn" [ref=f33e2621] [cursor=pointer]:
+                    - /url: https://docs.polymarket.com/concepts
+                  - link "𝕏 (Twitter)" [ref=f33e2622] [cursor=pointer]:
+                    - /url: https://x.com/Polymarket
+                  - link "Instagram" [ref=f33e2623] [cursor=pointer]:
+                    - /url: https://www.instagram.com/polymarket
+                  - link "Discord" [ref=f33e2624] [cursor=pointer]:
+                    - /url: https://discord.gg/Polymarket
+                  - link "TikTok" [ref=f33e2625] [cursor=pointer]:
+                    - /url: https://www.tiktok.com/@polymarket
+                  - link "News" [ref=f33e2626] [cursor=pointer]:
+                    - /url: https://news.polymarket.com
+                  - link "Contact us" [ref=f33e2627] [cursor=pointer]:
+                    - /url: mailto:hello@polymarket.com
+                  - link "Help Center" [ref=f33e2628] [cursor=pointer]:
+                    - /url: https://help.polymarket.com
+                  - link "Status" [ref=f33e2629] [cursor=pointer]:
+                    - /url: https://status.polymarket.com
+              - generic [ref=f33e2630]:
+                - heading "Polymarket" [level=3] [ref=f33e2631]
+                - generic [ref=f33e2632]:
+                  - link "Rewards" [ref=f33e2633] [cursor=pointer]:
+                    - /url: /rewards
+                  - link "APIs" [ref=f33e2634] [cursor=pointer]:
+                    - /url: https://docs.polymarket.com/api-reference
+                  - link "Leaderboard" [ref=f33e2635] [cursor=pointer]:
+                    - /url: /leaderboard
+                  - link "Institutional" [ref=f33e2636] [cursor=pointer]:
+                    - /url: https://institutional.polymarket.com
+                  - link "Accuracy" [ref=f33e2637] [cursor=pointer]:
+                    - /url: /accuracy
+                  - link "Brand" [ref=f33e2638] [cursor=pointer]:
+                    - /url: /brand
+                  - link "Activity" [ref=f33e2639] [cursor=pointer]:
+                    - /url: /activity
+                  - link "Careers" [ref=f33e2640] [cursor=pointer]:
+                    - /url: https://careers.polymarket.com
+                  - link "Press" [ref=f33e2641] [cursor=pointer]:
+                    - /url: mailto:press@polymarket.com
+            - generic [ref=f33e2642]:
+              - generic [ref=f33e2643]:
+                - generic [ref=f33e2644]:
+                  - link "Email" [ref=f33e2645] [cursor=pointer]:
+                    - /url: mailto:hello@polymarket.com
+                  - link "X (Twitter)" [ref=f33e2650] [cursor=pointer]:
+                    - /url: https://x.com/Polymarket
+                  - link "Instagram" [ref=f33e2653] [cursor=pointer]:
+                    - /url: https://www.instagram.com/polymarket
+                  - link "Discord" [ref=f33e2659] [cursor=pointer]:
+                    - /url: https://discord.gg/Polymarket
+                  - link "TikTok" [ref=f33e2662] [cursor=pointer]:
+                    - /url: https://www.tiktok.com/@polymarket
+                - generic [ref=f33e2665]:
+                  - generic [ref=f33e2666]: Adventure One QSS Inc. © 2026
+                  - generic [ref=f33e2667]: ·
+                  - link "Privacy" [ref=f33e2668] [cursor=pointer]:
+                    - /url: /privacy
+                  - generic [ref=f33e2669]: ·
+                  - link "Terms of Use" [ref=f33e2670] [cursor=pointer]:
+                    - /url: https://polymarket.com/tos
+                  - generic [ref=f33e2671]: ·
+                  - link "Market Integrity" [ref=f33e2672] [cursor=pointer]:
+                    - /url: https://integrity.polymarket.com/
+                  - generic [ref=f33e2673]: ·
+                  - link "Transparency" [ref=f33e2674] [cursor=pointer]:
+                    - /url: /transparency
+                  - generic [ref=f33e2675]: ·
+                  - link "Help Center" [ref=f33e2676] [cursor=pointer]:
+                    - /url: https://help.polymarket.com
+                  - generic [ref=f33e2677]: ·
+                  - link "Docs" [ref=f33e2678] [cursor=pointer]:
+                    - /url: https://docs.polymarket.com
+              - paragraph [ref=f33e2679]:
+                - text: Polymarket operates globally through separate legal entities.
+                - link "Polymarket US" [ref=f33e2680] [cursor=pointer]:
+                  - /url: https://polymarket.us/
+                - text: is operated by QCX LLC d/b/a Polymarket US, a CFTC-regulated Designated Contract Market. This international platform is not regulated by the CFTC and operates independently. Trading involves substantial risk of loss. See our
+                - link "Terms of Service" [ref=f33e2681] [cursor=pointer]:
+                  - /url: https://polymarket.com/tos
+                - text: "&"
+                - link "Privacy Policy" [ref=f33e2682] [cursor=pointer]:
+                  - /url: https://polymarket.com/privacy
+                - text: .
+    - region "Notifications (F8)":
+      - list
+  - alert [ref=f33e2683]

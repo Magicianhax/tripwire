@@ -200,3 +200,57 @@ test("@smoke Jupiter: changing the token drops the old block at once and shows C
   expect(after.slice(firstClear, firstChecking).some((s) => s.block)).toBe(false);
   expect(consoleErrors).toEqual([]);
 });
+
+test("@smoke X: author badges appear next to the username and open the badge card", async ({ context, request, consoleErrors }) => {
+  const HL_WALLET = "0x7fdafde5cfb5465924316eced2d3715494c517d1";
+  const PM_WALLET = "0x1963eabad7eb7499fb049ddebb96a8fd22179bfd";
+  for (const [venue, address] of [
+    ["hyperliquid", HL_WALLET],
+    ["polymarket", PM_WALLET],
+  ] as const) {
+    const res = await request.put(`${BACKEND}/api/links`, { headers: { origin: EXTENSION_ORIGIN }, data: { handle: "degenalpha", venue, address } });
+    expect(res.status(), `PUT /api/links ${venue}`).toBe(200);
+  }
+
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("https://x.com/home");
+
+  // The linked author gets both venue badges; the Nansen-labeled author gets the Nansen badge;
+  // the unlabeled, unlinked authors get none.
+  const linked = page.locator("article", { hasText: "@degenalpha" });
+  await expect(linked.locator(".tw-badge")).toHaveCount(2, { timeout: 15_000 });
+  const labeled = page.locator("article", { hasText: "@VitalikButerin" });
+  await expect(labeled.locator(".tw-badge")).toHaveCount(1);
+  await expect(page.locator("article", { hasText: "@weatherfan" }).locator(".tw-badge")).toHaveCount(0);
+
+  // The badges sit inside X's username row, and the post keeps its height.
+  const inHeader = await linked.locator(".tw-badge").first().evaluate((el) => {
+    const host = (el.getRootNode() as ShadowRoot).host;
+    return { inUserName: !!host.closest('[data-testid="User-Name"]'), after: host.previousElementSibling?.getAttribute("href") ?? null };
+  });
+  expect(inHeader).toEqual({ inUserName: true, after: "/degenalpha" });
+
+  const hlBadge = linked.locator('.tw-badge[data-venue="hyperliquid"]');
+  await hlBadge.click();
+  const card = page.locator('.tw-pop[role="dialog"] .tw-badge-card');
+  await expect(card).toBeVisible();
+  await expect(hlBadge).toHaveAttribute("aria-expanded", "true");
+  await expect(card.getByRole("tab")).toHaveText(["Hyperliquid", "Polymarket"]);
+  await expect(card.getByRole("tab", { name: "Hyperliquid" })).toHaveAttribute("aria-selected", "true");
+  await expect(card.getByText("Linked by you").first()).toBeVisible();
+  await expect(card.locator(".tw-readouts dd").first()).not.toHaveText("—");
+
+  // The Polymarket tab shows that wallet's open positions.
+  await card.getByRole("tab", { name: "Polymarket" }).click();
+  await expect(card.locator(".tw-market-rows li").first()).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(card).toHaveCount(0);
+  await expect(hlBadge).toHaveAttribute("aria-expanded", "false");
+
+  for (const venue of ["hyperliquid", "polymarket"] as const) {
+    await request.fetch(`${BACKEND}/api/links`, { method: "DELETE", headers: { origin: EXTENSION_ORIGIN }, data: { handle: "degenalpha", venue } });
+  }
+  expect(consoleErrors).toEqual([]);
+});

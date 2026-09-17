@@ -1,0 +1,466 @@
+- generic [active] [ref=f27e1]:
+  - generic [ref=f27e2]:
+    - generic [ref=f27e5]:
+      - generic [ref=f27e6]:
+        - generic [ref=f27e7]: Announcements
+        - img [aria-hidden] [ref=f27e8] [cursor=pointer]
+      - generic [ref=f27e10] [cursor=pointer]: "New listing: USELESS-USDC perps"
+      - generic [ref=f27e12] [cursor=pointer]: "New listing: PONS-USDC perps"
+      - generic [ref=f27e14] [cursor=pointer]:
+        - generic [ref=f27e15]: HyENA HIP-3 DEX sunset
+        - generic [ref=f27e16]: All HyENA (hyna) markets will wind down starting from 10:00 UTC on 31 August
+    - generic [ref=f27e17]:
+      - generic [ref=f27e20]:
+        - link [ref=f27e21] [cursor=pointer]:
+          - /url: /trade
+        - generic [ref=f27e36]:
+          - link "Trade" [ref=f27e38] [cursor=pointer]:
+            - /url: /trade
+          - link "Outcomes" [ref=f27e40] [cursor=pointer]:
+            - /url: /outcomes
+          - link "Portfolio" [ref=f27e42] [cursor=pointer]:
+            - /url: /portfolio
+          - link "Earn" [ref=f27e44] [cursor=pointer]:
+            - /url: /earn
+          - link "Vaults" [ref=f27e46] [cursor=pointer]:
+            - /url: /vaults
+          - link "Staking" [ref=f27e48] [cursor=pointer]:
+            - /url: /staking
+          - link "Referrals" [ref=f27e50] [cursor=pointer]:
+            - /url: /referrals
+          - link "Leaderboard" [ref=f27e52] [cursor=pointer]:
+            - /url: /leaderboard
+          - generic [ref=f27e53] [cursor=pointer]: More
+        - generic [ref=f27e57]:
+          - button "Connect" [ref=f27e58] [cursor=pointer]
+          - generic [ref=f27e59]:
+            - generic [ref=f27e60] [cursor=pointer]
+            - generic [ref=f27e64] [cursor=pointer]
+      - generic [ref=f27e71]:
+        - generic [ref=f27e83]:
+          - generic [ref=f27e85]:
+            - generic [ref=f27e87] [cursor=pointer]:
+              - generic [ref=f27e89]:
+                - img "ETH"
+              - generic [ref=f27e90]: ETH-USDC
+            - generic [ref=f27e94]: 25x
+          - generic [ref=f27e97]:
+            - generic [ref=f27e98]:
+              - generic [ref=f27e99]: Mark
+              - generic [ref=f27e102]: 2,461.5
+            - generic [ref=f27e104]:
+              - generic [ref=f27e105]: Oracle
+              - generic [ref=f27e108]: 2,462.5
+            - generic [ref=f27e110]:
+              - generic [ref=f27e111]: 24h Change
+              - generic [ref=f27e114]:
+                - generic [ref=f27e115]: "+72.7"
+                - text: / +3.04%
+            - generic [ref=f27e116]:
+              - generic [ref=f27e117]: 24h Volume
+              - generic [ref=f27e119]: $1,516,079,568.76
+            - generic [ref=f27e122]:
+              - generic [ref=f27e123]: Open Interest
+              - generic [ref=f27e126]: $2,431,553,269.40
+            - generic [ref=f27e129]:
+              - generic [ref=f27e130]: Funding / Countdown
+              - generic [ref=f27e134]:
+                - generic [ref=f27e135]: 0.0013%
+                - text: 00:07:30
+        - generic [ref=f27e140]:
+          - generic [ref=f27e142]:
+            - generic [ref=f27e144] [cursor=pointer]: Chart
+            - generic [ref=f27e145] [cursor=pointer]: Funding
+          - generic [ref=f27e148]:
+            - iframe [ref=f27e151]:
+              - generic [ref=f32e1]:
+                - contentinfo:
+                  - paragraph: TradingView is interactive and has commands to use with a screen reader. The following is a list of keyboard commands available to interact on the platform
+                  - list:
+                    - listitem: Start using keyboard navigation mode. Press Alt + Z
+                    - listitem: Quick search. Press Ctrl + K
+                    - listitem: Change symbol. Start typing symbol name
+                    - listitem: Change interval. Press number or comma
+                    - listitem: Indicators, Metrics and Strategies. Press slash
+                    - listitem: Load layout. Press period
+                - generic [ref=f32e2]:
+                  - toolbar [ref=f32e6]:
+                    - generic [ref=f32e10]:
+                      - generic [ref=f32e12]:
+                        - radiogroup [ref=f32e13]:
+                          - radio "5 minutes" [ref=f32e14]:
+                            - generic [ref=f32e15]: 5m
+                          - radio "1 hour" [checked] [ref=f32e17]:
+                            - generic [ref=f32e18]: 1h
+                          - radio "1 day" [ref=f32e20]:
+                            - generic [ref=f32e21]: D
+                        - button "Time Interval" [ref=f32e23]
+                      - button "Candles" [ref=f32e33]
+                      - button "Indicators & Strategies" [ref=f32e45]:
+                        - generic [ref=f32e49]: Indicators
+                      - generic [ref=f32e53]:
+                        - button "Quick Search" [ref=f32e54]
+                        - button "Fullscreen mode" [ref=f32e59]
+                  - generic [ref=f32e63]:
+                    - toolbar [ref=f32e64]:
+                      - generic [ref=f32e68]:
+                        - generic [ref=f32e69]:
+                          - generic [ref=f32e72]:
+                            - button "Cross" [pressed] [ref=f32e74]
+                            - button "Cursors" [pressed] [ref=f32e81]
+                          - generic [ref=f32e87]:
+                            - button "Trend Line" [ref=f32e89]
+                            - button "Trend line tools" [ref=f32e96]
+                          - generic [ref=f32e102]:
+                            - button "Fib Retracement" [ref=f32e104]
+                            - button "Gann and Fibonacci tools" [ref=f32e114]
+                          - generic [ref=f32e120]:
+                            - button "XABCD Pattern" [ref=f32e122]
+                            - button "Patterns" [ref=f32e129]
+                          - generic [ref=f32e135]:
+                            - button "Long Position" [ref=f32e137]
+                            - button "Forecasting and measurement tools" [ref=f32e143]
+                          - generic [ref=f32e149]:
+                            - button "Brush" [ref=f32e151]
+                            - button "Geometric shapes" [ref=f32e158]
+                          - generic [ref=f32e164]:
+                            - button "Text" [ref=f32e166]
+                            - button "Annotation tools" [ref=f32e171]
+                          - generic [ref=f32e176]:
+                            - button "Icon" [ref=f32e178]
+                            - button "Icons" [ref=f32e183]
+                        - generic [ref=f32e187]:
+                          - button "Measure" [ref=f32e188]
+                          - button "Zoom In" [ref=f32e193]
+                        - generic [ref=f32e201]:
+                          - generic [ref=f32e204]:
+                            - button "Magnet Mode snaps drawings placed near price bars to the closest OHLC value" [ref=f32e206]
+                            - button "Magnets" [ref=f32e213]
+                          - button "Stay in Drawing Mode" [ref=f32e217]
+                          - button "Lock all drawings" [ref=f32e222]
+                          - generic [ref=f32e228]:
+                            - button "Hide all drawings" [ref=f32e230]
+                            - button "Hide options" [ref=f32e235]
+                        - generic [ref=f32e241]:
+                          - button "Remove 0 drawings" [ref=f32e243]
+                          - button "Remove options" [ref=f32e248]
+                        - button "Show Object Tree" [ref=f32e254]
+                    - button "Hide Drawings Toolbar" [ref=f32e262]
+                  - generic [ref=f32e267]:
+                    - 'region "Chart #1" [ref=f32e270]':
+                      - generic [ref=f32e271]:
+                        - generic [ref=f32e274]:
+                          - generic "Chart for HYPERLIQUID:ETHUSD, 1 hour" [ref=f32e276]
+                          - generic:
+                            - generic:
+                              - toolbar:
+                                - generic:
+                                  - generic [ref=f32e277]:
+                                    - generic "Change symbol" [ref=f32e278]:
+                                      - button "Change symbol" [ref=f32e279]: ETHUSD
+                                    - text: ·
+                                    - generic "Change interval" [ref=f32e280]:
+                                      - text: ·
+                                      - button "Change interval" [ref=f32e281]: 1h
+                                    - text: ·
+                                    - generic [ref=f32e282]:
+                                      - text: ·
+                                      - generic [ref=f32e283]: Hyperliquid
+                                    - text: · ·
+                                  - generic:
+                                    - generic:
+                                      - button "More"
+                                  - generic "Market open" [ref=f32e285]
+                                - generic [ref=f32e290]:
+                                  - generic [ref=f32e291]:
+                                    - generic [ref=f32e292]: O
+                                    - generic [ref=f32e293]: 2,462.2
+                                  - generic [ref=f32e294]:
+                                    - generic [ref=f32e295]: H
+                                    - generic [ref=f32e296]: 2,482.8
+                                  - generic [ref=f32e297]:
+                                    - generic [ref=f32e298]: L
+                                    - generic [ref=f32e299]: 2,449.8
+                                  - generic [ref=f32e300]:
+                                    - generic [ref=f32e301]: C
+                                    - generic [ref=f32e302]: 2,461.6
+                                  - generic [ref=f32e303]: "-0.20000 (−0.01%)"
+                        - generic [ref=f32e313]:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - toolbar:
+                                  - generic:
+                                    - generic [ref=f32e316]:
+                                      - generic [ref=f32e317]: Volume
+                                      - generic [ref=f32e319]: SMA
+                                    - generic:
+                                      - generic:
+                                        - button "Hide"
+                                        - button "Settings"
+                                        - button "Remove"
+                                        - button "More"
+                                  - generic "Volume" [ref=f32e324]: 43.59 K
+                    - toolbar [ref=f32e338]:
+                      - generic [ref=f32e340]:
+                        - generic [ref=f32e341]:
+                          - button "5 years in 1 week intervals" [ref=f32e342]:
+                            - generic [ref=f32e343]: 5y
+                          - button "1 year in 1 week intervals" [ref=f32e344]:
+                            - generic [ref=f32e345]: 1y
+                          - button "6 months in 2 hours intervals" [ref=f32e346]:
+                            - generic [ref=f32e347]: 6m
+                          - button "3 months in 1 hour intervals" [ref=f32e348]:
+                            - generic [ref=f32e349]: 3m
+                          - button "1 month in 30 minutes intervals" [ref=f32e350]:
+                            - generic [ref=f32e351]: 1m
+                          - button "5 days in 5 minutes intervals" [ref=f32e352]:
+                            - generic [ref=f32e353]: 5d
+                          - button "1 day in 1 minute intervals" [ref=f32e354]:
+                            - generic [ref=f32e355]: 1d
+                        - button "Go to" [ref=f32e358]
+                      - generic [ref=f32e362]:
+                        - button "Timezone" [ref=f32e365]:
+                          - generic [ref=f32e366]: 19:52:29 (UTC+5)
+                        - button "Toggle Percentage" [ref=f32e370]
+                        - button "Toggle Log Scale" [ref=f32e378]:
+                          - generic [ref=f32e379]: log
+                        - button "Toggle Auto Scale" [pressed] [ref=f32e381]:
+                          - generic [ref=f32e382]: auto
+                - alert
+            - generic [ref=f27e152]:
+              - link "Chart" [ref=f27e153] [cursor=pointer]:
+                - /url: https://www.tradingview.com/
+              - text: by TradingView
+        - generic [ref=f27e158]:
+          - generic [ref=f27e159]:
+            - generic [ref=f27e160]:
+              - generic [ref=f27e162] [cursor=pointer]: Order Book
+              - generic [ref=f27e163] [cursor=pointer]: Trades
+            - generic [ref=f27e165] [cursor=pointer]
+          - generic [ref=f27e173]:
+            - generic [ref=f27e174]:
+              - generic [ref=f27e175] [cursor=pointer]: "0.1"
+              - generic [ref=f27e179] [cursor=pointer]: ETH
+            - generic [ref=f27e184]:
+              - generic [ref=f27e185]: Price
+              - generic [ref=f27e186]: Size (ETH)
+              - generic [ref=f27e187]: Total (ETH)
+            - generic [ref=f27e189]:
+              - generic [ref=f27e191] [cursor=pointer]:
+                - generic [ref=f27e193]: 2,462.6
+                - generic [ref=f27e195]: "169.0154"
+                - generic [ref=f27e197]: 1,043.2732
+              - generic [ref=f27e200] [cursor=pointer]:
+                - generic [ref=f27e202]: 2,462.5
+                - generic [ref=f27e204]: "263.9318"
+                - generic [ref=f27e206]: "874.2578"
+              - generic [ref=f27e209] [cursor=pointer]:
+                - generic [ref=f27e211]: 2,462.4
+                - generic [ref=f27e213]: "136.8687"
+                - generic [ref=f27e215]: "610.3260"
+              - generic [ref=f27e218] [cursor=pointer]:
+                - generic [ref=f27e220]: 2,462.3
+                - generic [ref=f27e222]: "90.8546"
+                - generic [ref=f27e224]: "473.4573"
+              - generic [ref=f27e227] [cursor=pointer]:
+                - generic [ref=f27e229]: 2,462.2
+                - generic [ref=f27e231]: "171.7091"
+                - generic [ref=f27e233]: "382.6027"
+              - generic [ref=f27e236] [cursor=pointer]:
+                - generic [ref=f27e238]: 2,462.1
+                - generic [ref=f27e240]: "43.3657"
+                - generic [ref=f27e242]: "210.8936"
+              - generic [ref=f27e245] [cursor=pointer]:
+                - generic [ref=f27e247]: 2,462.0
+                - generic [ref=f27e249]: "99.1548"
+                - generic [ref=f27e251]: "167.5279"
+              - generic [ref=f27e254] [cursor=pointer]:
+                - generic [ref=f27e256]: 2,461.9
+                - generic [ref=f27e258]: "9.6999"
+                - generic [ref=f27e260]: "68.3731"
+              - generic [ref=f27e263] [cursor=pointer]:
+                - generic [ref=f27e265]: 2,461.8
+                - generic [ref=f27e267]: "25.4220"
+                - generic [ref=f27e269]: "58.6732"
+              - generic [ref=f27e272] [cursor=pointer]:
+                - generic [ref=f27e274]: 2,461.7
+                - generic [ref=f27e276]: "2.2500"
+                - generic [ref=f27e278]: "33.2512"
+              - generic [ref=f27e281] [cursor=pointer]:
+                - generic [ref=f27e283]: 2,461.6
+                - generic [ref=f27e285]: "31.0012"
+                - generic [ref=f27e287]: "31.0012"
+              - generic [ref=f27e290]:
+                - generic [ref=f27e291]: Spread
+                - generic [ref=f27e292]: "0.1"
+                - generic [ref=f27e293]: 0.004%
+              - generic [ref=f27e295] [cursor=pointer]:
+                - generic [ref=f27e297]: 2,461.5
+                - generic [ref=f27e299]: "155.5651"
+                - generic [ref=f27e301]: "155.5651"
+              - generic [ref=f27e304] [cursor=pointer]:
+                - generic [ref=f27e306]: 2,461.4
+                - generic [ref=f27e308]: "32.7270"
+                - generic [ref=f27e310]: "188.2921"
+              - generic [ref=f27e313] [cursor=pointer]:
+                - generic [ref=f27e315]: 2,461.3
+                - generic [ref=f27e317]: "134.7260"
+                - generic [ref=f27e319]: "323.0181"
+              - generic [ref=f27e322] [cursor=pointer]:
+                - generic [ref=f27e324]: 2,461.2
+                - generic [ref=f27e326]: "411.9211"
+                - generic [ref=f27e328]: "734.9392"
+              - generic [ref=f27e331] [cursor=pointer]:
+                - generic [ref=f27e333]: 2,461.1
+                - generic [ref=f27e335]: "60.8531"
+                - generic [ref=f27e337]: "795.7923"
+              - generic [ref=f27e340] [cursor=pointer]:
+                - generic [ref=f27e342]: 2,461.0
+                - generic [ref=f27e344]: "250.4856"
+                - generic [ref=f27e346]: 1,046.2779
+              - generic [ref=f27e349] [cursor=pointer]:
+                - generic [ref=f27e351]: 2,460.9
+                - generic [ref=f27e353]: "288.8333"
+                - generic [ref=f27e355]: 1,335.1112
+              - generic [ref=f27e358] [cursor=pointer]:
+                - generic [ref=f27e360]: 2,460.8
+                - generic [ref=f27e362]: "238.1061"
+                - generic [ref=f27e364]: 1,573.2173
+              - generic [ref=f27e367] [cursor=pointer]:
+                - generic [ref=f27e369]: 2,460.7
+                - generic [ref=f27e371]: "367.1061"
+                - generic [ref=f27e373]: 1,940.3234
+              - generic [ref=f27e376] [cursor=pointer]:
+                - generic [ref=f27e378]: 2,460.6
+                - generic [ref=f27e380]: "115.0215"
+                - generic [ref=f27e382]: 2,055.3449
+              - generic [ref=f27e385] [cursor=pointer]:
+                - generic [ref=f27e387]: 2,460.5
+                - generic [ref=f27e389]: "114.9442"
+                - generic [ref=f27e391]: 2,170.2891
+        - generic [ref=f27e397]:
+          - generic [ref=f27e398]:
+            - generic [ref=f27e399]:
+              - button "Cross" [ref=f27e400] [cursor=pointer]
+              - button "20x" [ref=f27e401] [cursor=pointer]
+              - button "Unified" [ref=f27e402] [cursor=pointer]
+            - generic [ref=f27e404]:
+              - generic [ref=f27e406] [cursor=pointer]: Market
+              - generic [ref=f27e407] [cursor=pointer]: Limit
+              - generic [ref=f27e408] [cursor=pointer]: Pro
+            - generic [ref=f27e414]:
+              - generic [ref=f27e416] [cursor=pointer]: Buy / Long
+              - generic [ref=f27e417] [cursor=pointer]: Sell / Short
+            - generic [ref=f27e418]:
+              - generic [ref=f27e419]:
+                - generic [ref=f27e420]: Available to Trade
+                - generic [ref=f27e421]: 0.00 USDC
+              - generic [ref=f27e422]:
+                - generic [ref=f27e423]: Current Position
+                - generic [ref=f27e424]: 0.0000 ETH
+            - generic [ref=f27e427]:
+              - generic [ref=f27e428]: Size
+              - textbox [ref=f27e430]
+              - generic [ref=f27e431]: ETH
+            - generic [ref=f27e436]:
+              - generic [ref=f27e438] [cursor=pointer]
+              - generic [ref=f27e448]:
+                - textbox [ref=f27e449]: "0"
+                - generic [ref=f27e450]: "%"
+            - generic [ref=f27e452]:
+              - generic [ref=f27e454]:
+                - generic [ref=f27e455] [cursor=pointer]
+                - generic [ref=f27e456]: Reduce Only
+              - generic [ref=f27e460]:
+                - generic [ref=f27e461] [cursor=pointer]
+                - generic [ref=f27e462]: Take Profit / Stop Loss
+          - generic [ref=f27e466]:
+            - button "Connect" [ref=f27e467] [cursor=pointer]
+            - generic [ref=f27e469]:
+              - generic [ref=f27e470]: Liquidation Price
+              - generic [ref=f27e472]:
+                - generic [ref=f27e473]: Order Value
+                - generic [ref=f27e474]: N/A
+              - generic [ref=f27e475]:
+                - generic [ref=f27e476]: Margin Required
+                - generic [ref=f27e477]: N/A
+              - generic [ref=f27e478]:
+                - generic [ref=f27e479]: Slippage
+                - generic [ref=f27e482]: "Est: 0% / Max: 8.00%"
+              - generic [ref=f27e485]:
+                - generic [ref=f27e486]: Fees
+                - generic [ref=f27e489]: 0.0450% / 0.0150%
+        - generic [ref=f27e496]:
+          - generic [ref=f27e497]:
+            - generic [ref=f27e499]:
+              - generic [ref=f27e501] [cursor=pointer]: Balances
+              - generic [ref=f27e502] [cursor=pointer]: Positions
+              - generic [ref=f27e503] [cursor=pointer]: Outcomes
+              - generic [ref=f27e504] [cursor=pointer]: Open Orders
+              - generic [ref=f27e505] [cursor=pointer]: TWAP
+              - generic [ref=f27e506] [cursor=pointer]: Chase
+              - generic [ref=f27e507] [cursor=pointer]: Trade History
+              - generic [ref=f27e508] [cursor=pointer]: Funding History
+              - generic [ref=f27e509] [cursor=pointer]: Order History
+            - generic [ref=f27e512]:
+              - generic [ref=f27e513] [cursor=pointer]: Side
+              - generic [ref=f27e517] [cursor=pointer]: Market
+          - table [ref=f27e523]:
+            - rowgroup [ref=f27e524]:
+              - row [ref=f27e525]:
+                - cell "Market" [ref=f27e526]
+                - cell "Size" [ref=f27e535]
+                - cell "Position Value" [ref=f27e544]
+                - cell "Entry Price" [ref=f27e553]
+                - cell "Mark Price" [ref=f27e562]
+                - cell "PNL (ROE %)" [ref=f27e571]
+                - cell "Liq. Price" [ref=f27e581]
+                - cell "Margin" [ref=f27e590]
+                - cell "Funding" [ref=f27e600]
+            - rowgroup [ref=f27e610]:
+              - row [ref=f27e611]:
+                - cell "No open positions yet" [ref=f27e612]
+        - generic [ref=f27e618]:
+          - generic [ref=f27e620]:
+            - button "Deposit" [ref=f27e621]
+            - button "Withdraw" [ref=f27e622]
+          - generic [ref=f27e626]:
+            - generic [ref=f27e627]: Unified Account Summary
+            - generic [ref=f27e629]:
+              - generic [ref=f27e630]:
+                - generic [ref=f27e631]: Unified Account Ratio
+                - generic [ref=f27e634]: 0.00%
+              - generic [ref=f27e668]:
+                - generic [ref=f27e669]: Portfolio Value
+                - generic [ref=f27e670]: $0.00
+              - generic [ref=f27e672]:
+                - generic [ref=f27e673]: Unrealized PNL
+                - generic [ref=f27e674]: $0.00
+              - generic [ref=f27e675]:
+                - generic [ref=f27e676]: Perps Maintenance Margin
+                - generic [ref=f27e679]: $0.00
+              - generic [ref=f27e680]:
+                - generic [ref=f27e681]: Unified Account Leverage
+                - generic [ref=f27e684]: 0.00x
+      - generic [ref=f27e687]:
+        - link "Online" [ref=f27e688] [cursor=pointer]:
+          - /url: https://hyperliquid.statuspage.io/
+        - generic [ref=f27e690]:
+          - link "Docs" [ref=f27e691] [cursor=pointer]:
+            - /url: https://hyperliquid.gitbook.io/hyperliquid-docs
+          - link "Support" [ref=f27e692] [cursor=pointer]:
+            - /url: https://hyperliquid.gitbook.io/hyperliquid-docs/support
+          - link "Terms" [ref=f27e693] [cursor=pointer]:
+            - /url: /terms
+          - link "Privacy Policy" [ref=f27e694] [cursor=pointer]:
+            - /url: /privacyPolicy
+  - iframe [aria-hidden] [ref=f27e3]:
+    - generic [ref=f28e2]:
+      - generic [ref=f28e11]:
+        - heading [level=1] [ref=f28e12]:
+          - paragraph [ref=f28e13]: Status embed installed correctly
+        - generic [ref=f28e14]: This will be shown if an incident or maintenance is posted on your status page.
+        - link "View latest updates" [ref=f28e16] [cursor=pointer]:
+          - /url: https://hyperliquid.statuspage.io?utm_source=embed
+      - button [ref=f28e18] [cursor=pointer]

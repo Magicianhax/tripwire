@@ -147,3 +147,84 @@ export type ApiErrorBody =
   | { error: "internal"; message: string }
   | { error: "bad path" }
   | { error: "backend_unreachable" };
+
+// ---- Author badges (POST /api/author-badges, GET/PUT/DELETE /api/links) ----
+
+export type WalletVenueId = "hyperliquid" | "polymarket";
+
+export type BadgeLink = { address: string; source: "user" | "curated"; sourceUrl: string | null };
+
+export type NansenBadge = {
+  entity: string;
+  tags: string[];
+  matchedBy: "displayName" | "handle";
+  totalHoldingsUsd: number | null;
+  topHoldings: { symbol: string; chain: string; valueUsd: number }[];
+  realizedPnlUsd: number | null;
+  winRate: number | null;
+  pnlWindowDays: number;
+  errors: string[];
+};
+
+export type HyperliquidBadgePosition = {
+  coin: string;
+  side: "long" | "short";
+  size: number;
+  entryPx: number | null;
+  markPx: number | null;
+  liquidationPx: number | null;
+  unrealizedPnlUsd: number | null;
+  leverage: number | null;
+  valueUsd: number | null;
+};
+
+export type HyperliquidBadgeFill = { time: number; coin: string; dir: string; px: number | null; sz: number | null; closedPnlUsd: number | null };
+
+export type HyperliquidBadge = {
+  link: BadgeLink;
+  accountValueUsd: number | null;
+  marginUsedUsd: number | null;
+  positions: HyperliquidBadgePosition[] | null;
+  fills: HyperliquidBadgeFill[] | null;
+  fillsRealizedPnlUsd: number | null;
+  fillsWindow: { count: number; fromMs: number; toMs: number } | null;
+  nansenPerp: { realizedPnlUsd: number | null; winRate: number | null; windowDays: number } | null;
+  errors: string[];
+};
+
+export type PolymarketBadgePosition = { marketId: string; question: string; side: string; costUsd: number | null; valueUsd: number; pnlUsd: number | null };
+export type PolymarketBadgeTrade = {
+  timestamp: string;
+  action: "Buy" | "Sell" | null;
+  side: string | null;
+  size: number | null;
+  price: number | null;
+  usdcValue: number | null;
+  question: string | null;
+};
+
+export type PolymarketBadge = {
+  link: BadgeLink;
+  totalPnlUsd: number | null;
+  realizedPnlUsd: number | null;
+  unrealizedPnlUsd: number | null;
+  winRate: number | null;
+  marketsTraded: number | null;
+  marketsWon: number | null;
+  openPositions: PolymarketBadgePosition[] | null;
+  trades: PolymarketBadgeTrade[] | null;
+  errors: string[];
+};
+
+export type AuthorBadgesResponse = {
+  handle: string;
+  nansen?: NansenBadge;
+  hyperliquid?: HyperliquidBadge;
+  polymarket?: PolymarketBadge;
+  errors: string[];
+};
+
+export type WalletLinkDto = { handle: string; venue: WalletVenueId; address: string; source: "user" | "curated"; sourceUrl: string | null; createdAt: number | null };
+export type LinksResponse = { links: WalletLinkDto[] };
+export type LinkResponse = { link: WalletLinkDto };
+export type UnlinkResponse = { deleted: boolean };

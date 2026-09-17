@@ -29,6 +29,9 @@ export type PanelProps = {
   initialTab?: string;
   /** The spot token's chain when `data` carries no target (X post intel). */
   chain?: string | null;
+  /** The post author's own block under the finding (X): the Nansen label line's companion, with
+   * the "Link wallet" action for Hyperliquid and Polymarket. */
+  author?: ReactNode;
 };
 
 /** "Nansen label: <entity> (tags), holds $X of SYMBOL", only rendered when an entity matched. */
@@ -77,7 +80,7 @@ function defaultFinding(verdict: Verdict): string {
 
 /** The evidence card: header row (token logo, title, chain, age, verdict pill, close), the one-line
  * finding, the author's Nansen label, evidence tabs by target kind, and the source line. */
-export function Panel({ data, title, onClose, replay, person, headline, postTimeIso, checkedAtIso, initialTab, chain }: PanelProps) {
+export function Panel({ data, title, onClose, replay, person, headline, postTimeIso, checkedAtIso, initialTab, chain, author }: PanelProps) {
   const cardRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -128,6 +131,7 @@ export function Panel({ data, title, onClose, replay, person, headline, postTime
           <CountInText text={finding} />
         </p>
         {person ? <PersonLine person={person} /> : null}
+        {author}
         {body}
       </div>
       <PanelFooter endpointCount={endpointCount(data)} errors={data.panel.errors} />

@@ -1,0 +1,274 @@
+{
+  "capturedAt": "2026-09-17T14:52:57.848Z",
+  "url": "https://app.hyperliquid.xyz/trade/ETH",
+  "title": "2,461.6 | ETH | Hyperliquid",
+  "buttons": [
+    {
+      "tag": "button",
+      "text": "Connect",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-ftTHYK dfFRVV",
+      "visible": true,
+      "rect": [
+        1746,
+        12,
+        82,
+        33
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div",
+        "div",
+        "div .sc-iBYQkv.bCwfQS",
+        "div",
+        "div .sc-bjfHbI.jFothj",
+        "div id=root"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Cross",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-ftTHYK ihUCJn",
+      "visible": true,
+      "rect": [
+        1571,
+        71,
+        105,
+        33
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .sc-bjfHbI.jFothj",
+        "div .sc-bTTELM.cvPUuJ",
+        "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+        "div",
+        "div",
+        "div .react-grid-item.draggable.cssTransforms.react-resizable-hide"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "20x",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-ftTHYK ihUCJn",
+      "visible": true,
+      "rect": [
+        1686,
+        71,
+        105,
+        33
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .sc-bjfHbI.jFothj",
+        "div .sc-bTTELM.cvPUuJ",
+        "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+        "div",
+        "div",
+        "div .react-grid-item.draggable.cssTransforms.react-resizable-hide"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Unified",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-ftTHYK ihUCJn",
+      "visible": true,
+      "rect": [
+        1802,
+        71,
+        105,
+        33
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .sc-bjfHbI.jFothj",
+        "div .sc-bTTELM.cvPUuJ",
+        "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+        "div",
+        "div",
+        "div .react-grid-item.draggable.cssTransforms.react-resizable-hide"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Connect",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-ftTHYK hIwQDy",
+      "visible": true,
+      "rect": [
+        1571,
+        547,
+        336,
+        33
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div",
+        "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+        "div",
+        "div",
+        "div .react-grid-item.draggable.cssTransforms.react-resizable-hide",
+        "div .react-grid-layout.layout"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Deposit",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-ftTHYK hIwQDy disabled",
+      "visible": true,
+      "rect": [
+        1571,
+        744,
+        164,
+        33
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .sc-bjfHbI.jFothj",
+        "div",
+        "div .sc-bjfHbI.jFothj",
+        "div",
+        "div",
+        "div"
+      ]
+    },
+    {
+      "tag": "button",
+      "text": "Withdraw",
+      "type": "button",
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-ftTHYK bntFwW disabled",
+      "visible": true,
+      "rect": [
+        1743,
+        744,
+        164,
+        33
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .sc-bjfHbI.jFothj",
+        "div",
+        "div .sc-bjfHbI.jFothj",
+        "div",
+        "div",
+        "div"
+      ]
+    }
+  ],
+  "hiddenButtonCount": 0,
+  "sideToggleGroup": [
+    {
+      "tag": "div",
+      "text": "",
+      "type": null,
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-dwnOUR gEfuDH right",
+      "visible": true,
+      "rect": [
+        1739,
+        165,
+        166,
+        29
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .sc-fXqpFg.dwViCB",
+        "div",
+        "div .sc-bTTELM.cvPUuJ",
+        "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+        "div",
+        "div"
+      ]
+    },
+    {
+      "tag": "div",
+      "text": "Buy / Long",
+      "type": null,
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-UpCWa iEmiSs",
+      "visible": true,
+      "rect": [
+        1575,
+        165,
+        164,
+        29
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .sc-fXqpFg.dwViCB",
+        "div",
+        "div .sc-bTTELM.cvPUuJ",
+        "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+        "div",
+        "div"
+      ]
+    },
+    {
+      "tag": "div",
+      "text": "Sell / Short",
+      "type": null,
+      "disabled": false,
+      "attrs": {},
+      "cls": "sc-UpCWa iEmiSs right",
+      "visible": true,
+      "rect": [
+        1739,
+        165,
+        164,
+        29
+      ],
+      "inForm": false,
+      "ancestors": [
+        "div .sc-fXqpFg.dwViCB",
+        "div",
+        "div .sc-bTTELM.cvPUuJ",
+        "div .sc-bjfHbI.jFothj.sc-eKJbhj.itjJRY",
+        "div",
+        "div"
+      ]
+    }
+  ],
+  "firstAncestorWithButtons": {
+    "depthFromToggleLabel": 3,
+    "buttons": [
+      "Cross",
+      "20x",
+      "Unified"
+    ]
+  },
+  "inputs": [
+    {
+      "type": "text",
+      "placeholder": "",
+      "aria": null,
+      "testid": null,
+      "inForm": false
+    },
+    {
+      "type": "text",
+      "placeholder": "",
+      "aria": null,
+      "testid": null,
+      "inForm": false
+    }
+  ]
+}

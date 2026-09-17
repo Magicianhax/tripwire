@@ -74,4 +74,17 @@ describe("createResultCache", () => {
     expect(loadA).toHaveBeenCalledTimes(1);
     expect(loadB).toHaveBeenCalledTimes(2);
   });
+
+  it("drop() forgets a cached success, so the next get reloads it (a wallet link changed)", async () => {
+    const cache = createResultCache<string, Result>();
+    const load = vi.fn(() => Promise.resolve<Result>({ ok: true, value: "a" }));
+
+    await cache.get("a", load);
+    await cache.get("a", load);
+    expect(load).toHaveBeenCalledTimes(1);
+
+    cache.drop("a");
+    await cache.get("a", load);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
 });

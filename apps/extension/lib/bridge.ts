@@ -7,7 +7,7 @@
 
 export type ApiMessage = {
   type: "api";
-  method: "GET" | "POST" | "PUT";
+  method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
   body?: unknown;
 };

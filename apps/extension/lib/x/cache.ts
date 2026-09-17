@@ -4,6 +4,9 @@ export type ResultCache<K, T> = {
    * entry so the next `get()` for that key calls `load()` again instead of being stuck on a
    * stale failure for the rest of the page session. A settled `ok: true` result stays cached. */
   get(key: K, load: () => Promise<T>): Promise<T>;
+  /** Forget a cached success on purpose (the author's wallet links changed), so the next `get()`
+   * reloads it. */
+  drop(key: K): void;
 };
 
 /** A page-session promise cache for `{ok: boolean}`-shaped results (Tripwire's `ApiResult<T>`).
@@ -31,5 +34,10 @@ export function createResultCache<K, T extends { ok: boolean }>(): ResultCache<K
     return started;
   }
 
-  return { get };
+  return {
+    get,
+    drop(key: K): void {
+      entries.delete(key);
+    },
+  };
 }

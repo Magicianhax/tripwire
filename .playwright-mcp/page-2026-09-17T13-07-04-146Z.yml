@@ -1,0 +1,64 @@
+- generic [active] [ref=e1]:
+  - 'status "Replay mode: recorded Nansen data, not live" [ref=e2]': REPLAY
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "TRIPWIRE" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Status" [ref=e9] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e10]:
+            - link "Rules" [ref=e11] [cursor=pointer]:
+              - /url: /rules
+          - listitem [ref=e12]:
+            - link "Ledger" [ref=e13] [cursor=pointer]:
+              - /url: /ledger
+          - listitem [ref=e14]:
+            - link "History" [ref=e15] [cursor=pointer]:
+              - /url: /history
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - heading "Status" [level=1] [ref=e19]
+      - generic [ref=e20]:
+        - heading "Backend" [level=2] [ref=e21]
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - generic [ref=e24]: Backend
+            - generic [ref=e25]: OK
+          - generic [ref=e26]:
+            - generic [ref=e27]: API key
+            - generic [ref=e28]: Nansen CLI login
+          - generic [ref=e29]:
+            - generic [ref=e30]: Replay mode
+            - generic [ref=e31]: "On"
+      - generic [ref=e32]:
+        - heading "Credits & calls" [level=2] [ref=e33]
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - generic [ref=e36]: Credits today
+            - generic [ref=e37]: 0 / 3000
+          - generic [ref=e38]:
+            - generic [ref=e39]: Calls total
+            - generic [ref=e40]: 0 / 1000
+        - 'progressbar "Calls toward the buildathon goal: 0 of 1000, 0%" [ref=e41]'
+      - generic [ref=e42]:
+        - heading "Load the extension" [level=2] [ref=e43]
+        - list [ref=e44]:
+          - listitem [ref=e45]:
+            - text: "Build it:"
+            - code [ref=e46]: pnpm -F extension build
+          - listitem [ref=e47]:
+            - text: Open
+            - code [ref=e48]: chrome://extensions
+            - text: in Chrome.
+          - listitem [ref=e49]: Turn on Developer mode (top right).
+          - listitem [ref=e50]:
+            - text: Click "Load unpacked" and select
+            - code [ref=e51]: apps/extension/.output/chrome-mv3
+            - text: .
+      - generic [ref=e52]:
+        - heading "Last 10 checks" [level=2] [ref=e53]
+        - paragraph [ref=e54]: No checks yet. Open a post on X with the extension loaded to run one.
+  - alert [ref=e55]

@@ -1,0 +1,540 @@
+- generic [active] [ref=f53e1]:
+  - generic [ref=f53e2]:
+    - generic [ref=f53e3]:
+      - link "Skip to main content" [ref=f53e4] [cursor=pointer]:
+        - /url: "#__pm_main"
+      - navigation "Main" [ref=f53e5]:
+        - generic [ref=f53e6]:
+          - link "Polymarket Logo" [ref=f53e8] [cursor=pointer]:
+            - /url: /
+            - img "Polymarket" [ref=f53e9]
+          - textbox "Search" [ref=f53e19]:
+            - /placeholder: Search polymarkets...
+        - generic [ref=f53e29]:
+          - generic [ref=f53e31]:
+            - link "Trending" [ref=f53e32] [cursor=pointer]:
+              - /url: /
+            - link "Combos Combos" [ref=f53e39] [cursor=pointer]:
+              - /url: /combos
+              - generic [ref=f53e40]:
+                - img "Combos" [ref=f53e42]
+                - generic [ref=f53e45]: Combos
+            - link "Perps" [ref=f53e46] [cursor=pointer]:
+              - /url: /perps
+            - link "Breaking" [ref=f53e52] [cursor=pointer]:
+              - /url: /breaking
+            - link "New" [ref=f53e55] [cursor=pointer]:
+              - /url: /new
+            - link "Politics" [ref=f53e59] [cursor=pointer]:
+              - /url: /politics
+            - link "Sports" [ref=f53e62] [cursor=pointer]:
+              - /url: /sports/live
+            - link "Crypto" [ref=f53e65] [cursor=pointer]:
+              - /url: /crypto
+            - link "Esports" [ref=f53e68] [cursor=pointer]:
+              - /url: /esports
+            - link "Iran" [ref=f53e71] [cursor=pointer]:
+              - /url: /iran
+            - link "Finance" [ref=f53e74] [cursor=pointer]:
+              - /url: /finance
+            - link "Geopolitics" [ref=f53e77] [cursor=pointer]:
+              - /url: /geopolitics
+            - link "Tech" [ref=f53e80] [cursor=pointer]:
+              - /url: /tech
+            - link "Culture" [ref=f53e83] [cursor=pointer]:
+              - /url: /pop-culture
+            - link "Economy" [ref=f53e86] [cursor=pointer]:
+              - /url: /economy
+            - link "Weather" [ref=f53e89] [cursor=pointer]:
+              - /url: /weather
+            - link "Mentions" [ref=f53e92] [cursor=pointer]:
+              - /url: /mentions
+            - link "Elections" [ref=f53e95] [cursor=pointer]:
+              - /url: /elections
+            - link "Art" [ref=f53e98] [cursor=pointer]:
+              - /url: /pop-culture/art
+            - button "Open more navigation links" [ref=f53e101] [cursor=pointer]: More
+          - button "Scroll right" [ref=f53e104] [cursor=pointer]
+      - generic [ref=f53e105]:
+        - main [ref=f53e108]:
+          - generic [ref=f53e112]:
+            - generic [ref=f53e116]:
+              - generic [ref=f53e117]:
+                - img "icon for Fed Decision in October?" [ref=f53e121]
+                - generic [ref=f53e122]:
+                  - generic [ref=f53e124]:
+                    - link "Economy" [ref=f53e125] [cursor=pointer]:
+                      - /url: /economy
+                    - generic [ref=f53e126]: ·
+                    - link "Fed" [ref=f53e127] [cursor=pointer]:
+                      - /url: /predictions/fed
+                  - heading "Fed Decision in October?" [level=1] [ref=f53e128]
+              - generic [ref=f53e131]:
+                - button [ref=f53e132] [cursor=pointer]
+                - button [ref=f53e133] [cursor=pointer]
+                - button "Add to favorites" [ref=f53e134] [cursor=pointer]
+            - generic [ref=f53e138]:
+              - button "View past events" [ref=f53e139] [cursor=pointer]:
+                - generic [ref=f53e140]: Past
+              - link [ref=f53e143] [cursor=pointer]:
+                - /url: /event/fed-decision-in-october-20260617190323537
+                - paragraph [ref=f53e146]: Oct 28
+              - link [ref=f53e147] [cursor=pointer]:
+                - /url: /event/fed-decision-in-december-20260729232808632
+                - paragraph [ref=f53e150]: Dec 9
+              - link [ref=f53e151] [cursor=pointer]:
+                - /url: /event/fed-decision-in-january-20260729233815502
+                - paragraph [ref=f53e154]: Jan 27, 2027
+            - generic [ref=f53e157]:
+              - generic [ref=f53e159]:
+                - generic [ref=f53e161]:
+                  - generic [ref=f53e164]:
+                    - paragraph [ref=f53e167]:
+                      - text: No change
+                      - generic [ref=f53e168]: 53%
+                    - paragraph [ref=f53e171]:
+                      - text: 25 bps increase
+                      - generic [ref=f53e172]: 47%
+                    - paragraph [ref=f53e175]:
+                      - text: 25 bps decrease
+                      - generic [ref=f53e176]: <1%
+                    - paragraph [ref=f53e179]:
+                      - text: 50+ bps increase
+                      - generic [ref=f53e180]: <1%
+                  - img "Polymarket" [ref=f53e182]
+                - generic [ref=f53e188]:
+                  - generic [ref=f53e189]:
+                    - generic [ref=f53e190]:
+                      - button [ref=f53e191]
+                      - paragraph [ref=f53e197]: $5,940,139 Vol.
+                    - generic [ref=f53e199]: Oct 28, 2026
+                  - generic [ref=f53e204]:
+                    - tablist "Select chart window" [ref=f53e208]:
+                      - tab "1H" [ref=f53e209] [cursor=pointer]
+                      - tab "6H" [ref=f53e210] [cursor=pointer]
+                      - tab "1D" [ref=f53e211] [cursor=pointer]
+                      - tab "1W" [ref=f53e212] [cursor=pointer]
+                      - tab "1M" [ref=f53e213] [cursor=pointer]
+                      - tab "ALL" [ref=f53e214] [cursor=pointer]
+                    - generic [ref=f53e215]:
+                      - button [ref=f53e217] [cursor=pointer]
+                      - button [ref=f53e220] [cursor=pointer]
+              - generic [ref=f53e224]:
+                - generic [ref=f53e229] [cursor=pointer]:
+                  - generic [ref=f53e232]:
+                    - paragraph [ref=f53e234]: 50+ bps decrease
+                    - paragraph [ref=f53e236]: $864,381 Vol.
+                  - paragraph [ref=f53e239]: <1%
+                  - generic [ref=f53e240]:
+                    - button "Buy Yes 0.4¢" [ref=f53e241]:
+                      - generic [ref=f53e242]:
+                        - generic [ref=f53e243]: Buy Yes
+                        - generic [ref=f53e244]: 0.4¢
+                    - button "Buy No 99.7¢" [ref=f53e245]:
+                      - generic [ref=f53e246]:
+                        - generic [ref=f53e247]: Buy No
+                        - generic [ref=f53e248]: 99.7¢
+                - generic [ref=f53e253] [cursor=pointer]:
+                  - generic [ref=f53e256]:
+                    - paragraph [ref=f53e258]: 25 bps decrease
+                    - paragraph [ref=f53e260]: $1,198,920 Vol.
+                  - paragraph [ref=f53e263]: 1%
+                  - generic [ref=f53e264]:
+                    - button "Buy Yes 0.9¢" [ref=f53e265]:
+                      - generic [ref=f53e266]:
+                        - generic [ref=f53e267]: Buy Yes
+                        - generic [ref=f53e268]: 0.9¢
+                    - button "Buy No 99.2¢" [ref=f53e269]:
+                      - generic [ref=f53e270]:
+                        - generic [ref=f53e271]: Buy No
+                        - generic [ref=f53e272]: 99.2¢
+                - generic [ref=f53e277] [cursor=pointer]:
+                  - generic [ref=f53e280]:
+                    - paragraph [ref=f53e282]: No change
+                    - generic [ref=f53e283]:
+                      - paragraph [ref=f53e284]: $1,726,296 Vol.
+                      - button "Rewards" [ref=f53e285]
+                  - paragraph [ref=f53e288]: 53%
+                  - generic [ref=f53e289]:
+                    - button "Buy Yes 53¢" [ref=f53e290]:
+                      - generic [ref=f53e291]:
+                        - generic [ref=f53e292]: Buy Yes
+                        - generic [ref=f53e293]: 53¢
+                    - button "Buy No 48¢" [ref=f53e294]:
+                      - generic [ref=f53e295]:
+                        - generic [ref=f53e296]: Buy No
+                        - generic [ref=f53e297]: 48¢
+                - generic [ref=f53e302] [cursor=pointer]:
+                  - generic [ref=f53e305]:
+                    - paragraph [ref=f53e307]: 25 bps increase
+                    - generic [ref=f53e308]:
+                      - paragraph [ref=f53e309]: $1,402,757 Vol.
+                      - button "Rewards" [ref=f53e310]
+                  - paragraph [ref=f53e313]: 47%
+                  - generic [ref=f53e314]:
+                    - button "Buy Yes 47¢" [ref=f53e315]:
+                      - generic [ref=f53e316]:
+                        - generic [ref=f53e317]: Buy Yes
+                        - generic [ref=f53e318]: 47¢
+                    - button "Buy No 54¢" [ref=f53e319]:
+                      - generic [ref=f53e320]:
+                        - generic [ref=f53e321]: Buy No
+                        - generic [ref=f53e322]: 54¢
+                - generic [ref=f53e327] [cursor=pointer]:
+                  - generic [ref=f53e330]:
+                    - paragraph [ref=f53e332]: 50+ bps increase
+                    - paragraph [ref=f53e334]: $747,785 Vol.
+                  - paragraph [ref=f53e337]: 1%
+                  - generic [ref=f53e338]:
+                    - button "Buy Yes 0.7¢" [ref=f53e339]:
+                      - generic [ref=f53e340]:
+                        - generic [ref=f53e341]: Buy Yes
+                        - generic [ref=f53e342]: 0.7¢
+                    - button "Buy No 99.4¢" [ref=f53e343]:
+                      - generic [ref=f53e344]:
+                        - generic [ref=f53e345]: Buy No
+                        - generic [ref=f53e346]: 99.4¢
+            - generic [ref=f53e348]:
+              - generic [ref=f53e349]: "The FED interest rates are defined in this market by the upper bound of the target federal funds range. The decisions on the target federal funds range are made by the Federal Open Market Committee (FOMC) meetings. This market will resolve to the amount of basis points the upper bound of the target federal funds rate is changed by versus the level it was prior to the Federal Reserve's October 2026 meeting. If the target federal funds rate is changed to a level not expressed in the displayed options, the change will be rounded up to the nearest 25 and will resolve to the relevant bracket. (e.g. if there's a cut/increase of 12.5 bps it will be considered to be 25 bps) The resolution source for this market is the FOMC’s statement after its meeting scheduled for October 27-28, 2026 according to the official calendar: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm. The level and change of the target federal funds rate is also published at the official website of the Federal Reserve at https://www.federalreserve.gov/monetarypolicy/openmarket.htm. This market may resolve as soon as the FOMC’s statement for their October meeting with relevant data is issued. If no statement is released by the end date of the next scheduled meeting, this market will resolve to the \"No change\" bracket."
+              - generic [ref=f53e350]: "**The September 16 FOMC decision to raise the federal funds rate 25 basis points to the 3.75-4.00% range, paired with a dot plot showing 16 of 18 officials expecting at least one additional hike by year-end, is the dominant factor shaping trader views on the October meeting.** Persistent inflation—August CPI at 3.4% year-over-year with core at 2.4%—and upward revisions to the inflation and neutral rate forecasts have reinforced expectations for further tightening, while geopolitical energy price pressures add upside risks. Markets price the October outcome near even odds because the next data release (September CPI on October 14) and election timing create scope for either a pause or another 25-basis-point move, with futures and prediction platforms showing closely contested probabilities around 50%. Upcoming labor market and inflation prints will likely determine whether the consensus shifts toward consecutive hikes or a hold."
+              - tablist "Market information" [ref=f53e351]:
+                - generic [ref=f53e354]:
+                  - heading [level=2] [ref=f53e355]:
+                    - button "Rules" [ref=f53e356] [cursor=pointer]
+                  - heading [level=2] [ref=f53e357]:
+                    - button "Market Context" [ref=f53e358] [cursor=pointer]
+              - tabpanel "Rules" [ref=f53e360]:
+                - generic [ref=f53e362]:
+                  - generic [ref=f53e363]:
+                    - generic [ref=f53e364]:
+                      - text: "The FED interest rates are defined in this market by the upper bound of the target federal funds range. The decisions on the target federal funds range are made by the Federal Open Market Committee (FOMC) meetings.This market will resolve to the amount of basis points the upper bound of the target federal funds rate is changed by versus the level it was prior to the Federal Reserve's October 2026 meeting.If the target federal funds rate is changed to a level not expressed in the displayed options, the change will be rounded up to the nearest 25 and will resolve to the relevant bracket. (e.g. if there's a cut/increase of 12.5 bps it will be considered to be 25 bps)The resolution source for this market is the FOMC’s statement after its meeting scheduled for October 27-28, 2026 according to the official calendar:"
+                      - link "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" [ref=f53e365] [cursor=pointer]:
+                        - /url: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
+                      - text: .The level and change of the target federal funds rate is also published at the official website of the Federal Reserve at
+                      - link "https://www.federalreserve.gov/monetarypolicy/openmarket.htm" [ref=f53e366] [cursor=pointer]:
+                        - /url: https://www.federalreserve.gov/monetarypolicy/openmarket.htm
+                      - text: .This market may resolve as soon as the FOMC’s statement for their October meeting with relevant data is issued. If no statement is released by the end date of the next scheduled meeting, this market will resolve to the "No change" bracket.
+                    - generic [ref=f53e367]: "The FED interest rates are defined in this market by the upper bound of the target federal funds range. The decisions on the target federal funds range are made by the Federal Open Market Committee (FOMC) meetings. This market will resolve to the amount of basis points the upper bound of the target federal funds rate is changed by versus the level it was prior to the Federal Reserve's October 2026 meeting. If the target federal funds rate is changed to a level not expressed in the displayed options, the change will be rounded up to the nearest 25 and will resolve to the relevant bracket. (e.g. if there's a cut/increase of 12.5 bps it will be considered to be 25 bps) The resolution source for this market is the FOMC’s statement after its meeting scheduled for October 27-28, 2026 according to the official calendar: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm. The level and change of the target federal funds rate is also published at the official website of the Federal Reserve at https://www.federalreserve.gov/monetarypolicy/openmarket.htm. This market may resolve as soon as the FOMC’s statement for their October meeting with relevant data is issued. If no statement is released by the end date of the next scheduled meeting, this market will resolve to the \"No change\" bracket."
+                  - paragraph [ref=f53e370]: "Market Opened: Jun 17, 2026, 7:21 PM ET"
+                  - generic [ref=f53e380]:
+                    - paragraph [ref=f53e381]: Resolver
+                    - link "0x69c47De9D..." [ref=f53e382] [cursor=pointer]:
+                      - /url: https://polygonscan.com/address/0x69c47De9D4D3Dad79590d61b9e05918E03775f24
+                  - link [ref=f53e386] [cursor=pointer]:
+                    - /url: https://oracle.uma.xyz/propose?project=Polymarket&transactionHash=0x8367f053977569f945fb2c11b3d5a2b03e5542f5bfe3a8302627fed0a5420463&eventIndex=4
+                    - button "Propose resolution" [ref=f53e387]
+            - generic [ref=f53e390]:
+              - heading [level=2] [ref=f53e391]:
+                - button "Comments (9,561)" [ref=f53e392] [cursor=pointer]:
+                  - text: Comments
+                  - generic [ref=f53e393]: (9,561)
+              - heading [level=2] [ref=f53e394]:
+                - button "Top Holders" [ref=f53e395] [cursor=pointer]
+              - heading [level=2] [ref=f53e396]:
+                - button "Positions" [ref=f53e397] [cursor=pointer]
+              - heading [level=2] [ref=f53e398]:
+                - button "Activity" [ref=f53e399] [cursor=pointer]
+            - generic [ref=f53e403]:
+              - generic [ref=f53e404]:
+                - generic [ref=f53e408]:
+                  - textbox "Add a comment..." [ref=f53e409]
+                  - generic [ref=f53e410]:
+                    - button [ref=f53e411] [cursor=pointer]
+                    - button [ref=f53e417] [cursor=pointer]
+                    - button "Post" [disabled]
+                - generic [ref=f53e424]:
+                  - button "sort-comments-by" [ref=f53e426] [cursor=pointer]:
+                    - generic [ref=f53e427]: Newest
+                  - paragraph [ref=f53e435]: Beware of external links.
+                - button [ref=f53e443] [cursor=pointer]
+                - button [ref=f53e457] [cursor=pointer]
+                - button [ref=f53e471] [cursor=pointer]
+                - button [ref=f53e485] [cursor=pointer]
+                - button [ref=f53e499] [cursor=pointer]
+                - button [ref=f53e513] [cursor=pointer]
+                - button [ref=f53e527] [cursor=pointer]
+                - button [ref=f53e541] [cursor=pointer]
+                - button [ref=f53e555] [cursor=pointer]
+                - button [ref=f53e569] [cursor=pointer]
+              - generic [ref=f53e576]:
+                - heading "Frequently Asked Questions" [level=2] [ref=f53e577]
+                - generic [ref=f53e578]:
+                  - generic [ref=f53e579]:
+                    - heading [level=3] [ref=f53e580]:
+                      - button "What is the \"Fed Decision in October?\" prediction market?" [ref=f53e581] [cursor=pointer]
+                    - region "What is the \"Fed Decision in October?\" prediction market?":
+                      - generic [ref=f53e584]: "\"Fed Decision in October?\" is a prediction market on Polymarket with 5 possible outcomes where traders buy and sell shares based on what they believe will happen. The current leading outcome is \"No change\" at 53%, followed by \"25 bps increase\" at 47%. Prices reflect real-time crowd-sourced probabilities. For example, a share priced at 53¢ implies that the market collectively assigns a 53% chance to that outcome. These odds shift continuously as traders react to new developments and information. Shares in the correct outcome are redeemable for $1 each upon market resolution."
+                  - generic [ref=f53e585]:
+                    - heading [level=3] [ref=f53e586]:
+                      - button "How much trading activity has \"Fed Decision in October?\" generated on Polymarket?" [ref=f53e587] [cursor=pointer]
+                    - region "How much trading activity has \"Fed Decision in October?\" generated on Polymarket?":
+                      - generic [ref=f53e590]: As of today, "Fed Decision in October?" has generated $5.9 million in total trading volume since the market launched on Jun 17, 2026. This level of trading activity reflects strong engagement from the Polymarket community and helps ensure that the current odds are informed by a deep pool of market participants. You can track live price movements and trade on any outcome directly on this page.
+                  - generic [ref=f53e591]:
+                    - heading [level=3] [ref=f53e592]:
+                      - button "How do I trade on \"Fed Decision in October?\"?" [ref=f53e593] [cursor=pointer]
+                    - region "How do I trade on \"Fed Decision in October?\"?":
+                      - generic [ref=f53e596]: To trade on "Fed Decision in October?," browse the 5 available outcomes listed on this page. Each outcome displays a current price representing the market's implied probability. To take a position, select the outcome you believe is most likely, choose "Yes" to trade in favor of it or "No" to trade against it, enter your amount, and click "Trade." If your chosen outcome is correct when the market resolves, your "Yes" shares pay out $1 each. If it's incorrect, they pay out $0. You can also sell your shares at any time before resolution if you want to lock in a profit or cut a loss.
+                  - generic [ref=f53e597]:
+                    - heading [level=3] [ref=f53e598]:
+                      - button "What are the current odds for \"Fed Decision in October?\"?" [ref=f53e599] [cursor=pointer]
+                    - region "What are the current odds for \"Fed Decision in October?\"?":
+                      - generic [ref=f53e602]: The current frontrunner for "Fed Decision in October?" is "No change" at 53%, meaning the market assigns a 53% chance to that outcome. The next closest outcome is "25 bps increase" at 47%. These odds update in real-time as traders buy and sell shares, so they reflect the latest collective view of what's most likely to happen. Check back frequently or bookmark this page to follow how the odds shift as new information emerges.
+                  - generic [ref=f53e603]:
+                    - heading [level=3] [ref=f53e604]:
+                      - button "How will \"Fed Decision in October?\" be resolved?" [ref=f53e605] [cursor=pointer]
+                    - region "How will \"Fed Decision in October?\" be resolved?":
+                      - generic [ref=f53e608]: The resolution rules for "Fed Decision in October?" define exactly what needs to happen for each outcome to be declared a winner — including the official data sources used to determine the result. You can review the complete resolution criteria in the "Rules" section on this page above the comments. We recommend reading the rules carefully before trading, as they specify the precise conditions, edge cases, and sources that govern how this market is settled.
+                - button "View more" [ref=f53e609] [cursor=pointer]
+        - contentinfo [ref=f53e615]:
+          - generic [ref=f53e617]:
+            - generic [ref=f53e618]:
+              - link [ref=f53e619] [cursor=pointer]:
+                - /url: /
+                - img "Polymarket" [ref=f53e620]
+              - paragraph [ref=f53e621]: The World's Largest Prediction Market™
+            - generic [ref=f53e622]:
+              - generic [ref=f53e624]:
+                - heading "Related topics" [level=3] [ref=f53e625]
+                - generic [ref=f53e626]:
+                  - link "Fed Predictions & odds" [ref=f53e627] [cursor=pointer]:
+                    - /url: /predictions/fed
+                    - text: Fed
+                    - generic [ref=f53e628]: Predictions & odds
+                  - link "Fomc Predictions & odds" [ref=f53e629] [cursor=pointer]:
+                    - /url: /predictions/fomc
+                    - text: Fomc
+                    - generic [ref=f53e630]: Predictions & odds
+                  - link "Oil Predictions & odds" [ref=f53e631] [cursor=pointer]:
+                    - /url: /predictions/oil
+                    - text: Oil
+                    - generic [ref=f53e632]: Predictions & odds
+                  - link "Commodities Predictions & odds" [ref=f53e633] [cursor=pointer]:
+                    - /url: /predictions/commodities
+                    - text: Commodities
+                    - generic [ref=f53e634]: Predictions & odds
+                  - link "IPO Predictions & odds" [ref=f53e635] [cursor=pointer]:
+                    - /url: /predictions/ipo
+                    - text: IPO
+                    - generic [ref=f53e636]: Predictions & odds
+                  - link "Equities Predictions & odds" [ref=f53e637] [cursor=pointer]:
+                    - /url: /predictions/equities
+                    - text: Equities
+                    - generic [ref=f53e638]: Predictions & odds
+                  - link "Stocks Predictions & odds" [ref=f53e639] [cursor=pointer]:
+                    - /url: /predictions/stocks
+                    - text: Stocks
+                    - generic [ref=f53e640]: Predictions & odds
+                  - link "Apple Predictions & odds" [ref=f53e641] [cursor=pointer]:
+                    - /url: /predictions/apple
+                    - text: Apple
+                    - generic [ref=f53e642]: Predictions & odds
+                  - link "Indicies Predictions & odds" [ref=f53e643] [cursor=pointer]:
+                    - /url: /predictions/indicies
+                    - text: Indicies
+                    - generic [ref=f53e644]: Predictions & odds
+                  - link "SPX Predictions & odds" [ref=f53e645] [cursor=pointer]:
+                    - /url: /predictions/spx
+                    - text: SPX
+                    - generic [ref=f53e646]: Predictions & odds
+                  - generic [ref=f53e647]:
+                    - generic [ref=f53e649]:
+                      - link [ref=f53e650] [cursor=pointer]:
+                        - /url: /predictions/spy
+                        - text: SPY
+                        - generic [ref=f53e651]: Predictions & odds
+                      - link [ref=f53e652] [cursor=pointer]:
+                        - /url: /predictions/treasuries
+                        - text: Treasuries
+                        - generic [ref=f53e653]: Predictions & odds
+                      - link [ref=f53e654] [cursor=pointer]:
+                        - /url: /predictions/gold
+                        - text: Gold
+                        - generic [ref=f53e655]: Predictions & odds
+                      - link [ref=f53e656] [cursor=pointer]:
+                        - /url: /predictions/ecb
+                        - text: ECB
+                        - generic [ref=f53e657]: Predictions & odds
+                      - link [ref=f53e658] [cursor=pointer]:
+                        - /url: /predictions/euro
+                        - text: Euro
+                        - generic [ref=f53e659]: Predictions & odds
+                      - link [ref=f53e660] [cursor=pointer]:
+                        - /url: /predictions/meta
+                        - text: Meta
+                        - generic [ref=f53e661]: Predictions & odds
+                      - link [ref=f53e662] [cursor=pointer]:
+                        - /url: /predictions/silver
+                        - text: Silver
+                        - generic [ref=f53e663]: Predictions & odds
+                      - link [ref=f53e664] [cursor=pointer]:
+                        - /url: /predictions/aapl
+                        - text: AAPL
+                        - generic [ref=f53e665]: Predictions & odds
+                      - link [ref=f53e666] [cursor=pointer]:
+                        - /url: /predictions/rate
+                        - text: Rate
+                        - generic [ref=f53e667]: Predictions & odds
+                      - link [ref=f53e668] [cursor=pointer]:
+                        - /url: /predictions/googl
+                        - text: GOOGL
+                        - generic [ref=f53e669]: Predictions & odds
+                    - button "View more" [ref=f53e670] [cursor=pointer]
+              - generic [ref=f53e675]:
+                - heading "Popular Finance markets" [level=3] [ref=f53e676]
+                - generic [ref=f53e677]:
+                  - link "How many Fed rate cuts in 2026?" [ref=f53e678] [cursor=pointer]:
+                    - /url: /event/how-many-fed-rate-cuts-in-2026
+                  - link "Fed Decision in December?" [ref=f53e679] [cursor=pointer]:
+                    - /url: /event/fed-decision-in-december-20260729232808632
+                  - link "Fed rate cut by...?" [ref=f53e680] [cursor=pointer]:
+                    - /url: /event/fed-rate-cut-by-629
+                  - link "How many Fed rate hikes in 2026?" [ref=f53e681] [cursor=pointer]:
+                    - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369
+                  - link "What will the Fed rate be at the end of 2026?" [ref=f53e682] [cursor=pointer]:
+                    - /url: /event/what-will-the-fed-rate-be-at-the-end-of-2026
+                  - link "Fed decisions (Sep–Dec)" [ref=f53e683] [cursor=pointer]:
+                    - /url: /event/fed-decisions-sepdec
+                  - link "Another Fed rate hike in 2026?" [ref=f53e684] [cursor=pointer]:
+                    - /url: /event/another-fed-rate-hike-in-2026
+                  - link "Trump tries to fire Warsh in 2026?" [ref=f53e685] [cursor=pointer]:
+                    - /url: /event/trump-tries-to-fire-warsh-in-2026-20260724155002773
+                  - link "Fed Decision in January?" [ref=f53e686] [cursor=pointer]:
+                    - /url: /event/fed-decision-in-january-20260729233815502
+                  - link "What will Fed Rate hit before 2027?" [ref=f53e687] [cursor=pointer]:
+                    - /url: /event/what-will-fed-rate-hit-before-2027
+                  - generic [ref=f53e688]:
+                    - generic [ref=f53e690]:
+                      - link [ref=f53e691] [cursor=pointer]:
+                        - /url: /event/fed-emergency-rate-cut-before-2027
+                        - text: Fed emergency rate cut before 2027?
+                      - link [ref=f53e692] [cursor=pointer]:
+                        - /url: /event/lisa-cook-officially-out-as-fed-governor-byptptpt-20260807214943167
+                        - text: Lisa Cook officially out as Fed Governor by...?
+                      - link [ref=f53e693] [cursor=pointer]:
+                        - /url: /event/warsh-out-as-fed-chair-by-20260723173321450
+                        - text: Warsh out as Fed Chair by…?
+                      - link [ref=f53e694] [cursor=pointer]:
+                        - /url: /event/how-many-dissent-at-the-december-fed-meeting-20260730000304473
+                        - text: How many dissent at the December Fed meeting?
+                      - link [ref=f53e695] [cursor=pointer]:
+                        - /url: /event/how-many-dissent-at-the-october-fed-meeting
+                        - text: How many dissent at the October Fed meeting?
+                      - link [ref=f53e696] [cursor=pointer]:
+                        - /url: /event/will-trump-try-to-fire-powell-as-fed-board-member-by
+                        - text: Will Trump try to fire Powell as Fed Board Member by...?
+                      - link [ref=f53e697] [cursor=pointer]:
+                        - /url: /event/jerome-powell-out-from-fed-board-by
+                        - text: Jerome Powell out of Fed Board by…?
+                      - link [ref=f53e698] [cursor=pointer]:
+                        - /url: /event/how-many-dissent-at-the-january-fed-meeting-20260730001232359
+                        - text: How many dissent at the January Fed meeting?
+                      - link [ref=f53e699] [cursor=pointer]:
+                        - /url: /event/jerome-powell-in-jail-before-2027
+                        - text: Jerome Powell in jail before 2027?
+                      - link [ref=f53e700] [cursor=pointer]:
+                        - /url: /event/jerome-powell-federally-charged-by-june-30
+                        - text: Jerome Powell federally charged by...?
+                    - button "View more" [ref=f53e701] [cursor=pointer]
+              - generic [ref=f53e706]:
+                - heading "New Finance markets" [level=3] [ref=f53e707]
+                - generic [ref=f53e708]:
+                  - link "Another Fed rate hike in 2026?" [ref=f53e709] [cursor=pointer]:
+                    - /url: /event/another-fed-rate-hike-in-2026
+                  - link "How many dissent at the October Fed meeting?" [ref=f53e710] [cursor=pointer]:
+                    - /url: /event/how-many-dissent-at-the-october-fed-meeting
+                  - link "Fed decisions (Sep–Dec)" [ref=f53e711] [cursor=pointer]:
+                    - /url: /event/fed-decisions-sepdec
+                  - link "Lisa Cook officially out as Fed Governor by...?" [ref=f53e712] [cursor=pointer]:
+                    - /url: /event/lisa-cook-officially-out-as-fed-governor-byptptpt-20260807214943167
+                  - link "How many dissent at the January Fed meeting?" [ref=f53e713] [cursor=pointer]:
+                    - /url: /event/how-many-dissent-at-the-january-fed-meeting-20260730001232359
+                  - link "How many dissent at the December Fed meeting?" [ref=f53e714] [cursor=pointer]:
+                    - /url: /event/how-many-dissent-at-the-december-fed-meeting-20260730000304473
+                  - link "Fed Decision in January?" [ref=f53e715] [cursor=pointer]:
+                    - /url: /event/fed-decision-in-january-20260729233815502
+                  - link "Fed Decision in December?" [ref=f53e716] [cursor=pointer]:
+                    - /url: /event/fed-decision-in-december-20260729232808632
+                  - link "Trump tries to fire Warsh in 2026?" [ref=f53e717] [cursor=pointer]:
+                    - /url: /event/trump-tries-to-fire-warsh-in-2026-20260724155002773
+                  - link "Warsh out as Fed Chair by…?" [ref=f53e718] [cursor=pointer]:
+                    - /url: /event/warsh-out-as-fed-chair-by-20260723173321450
+                  - generic [ref=f53e719]:
+                    - generic [ref=f53e721]:
+                      - link [ref=f53e722] [cursor=pointer]:
+                        - /url: /event/how-many-fed-rate-hikes-in-2026-20260623190717369
+                        - text: How many Fed rate hikes in 2026?
+                      - link [ref=f53e723] [cursor=pointer]:
+                        - /url: /event/will-trump-try-to-fire-powell-as-fed-board-member-by
+                        - text: Will Trump try to fire Powell as Fed Board Member by...?
+                      - link [ref=f53e724] [cursor=pointer]:
+                        - /url: /event/what-will-the-fed-rate-be-at-the-end-of-2026
+                        - text: What will the Fed rate be at the end of 2026?
+                      - link [ref=f53e725] [cursor=pointer]:
+                        - /url: /event/jerome-powell-in-jail-before-2027
+                        - text: Jerome Powell in jail before 2027?
+                      - link [ref=f53e726] [cursor=pointer]:
+                        - /url: /event/jerome-powell-federally-charged-by-june-30
+                        - text: Jerome Powell federally charged by...?
+                      - link [ref=f53e727] [cursor=pointer]:
+                        - /url: /event/jerome-powell-out-from-fed-board-by
+                        - text: Jerome Powell out of Fed Board by…?
+                      - link [ref=f53e728] [cursor=pointer]:
+                        - /url: /event/fed-rate-cut-by-629
+                        - text: Fed rate cut by...?
+                      - link [ref=f53e729] [cursor=pointer]:
+                        - /url: /event/what-will-fed-rate-hit-before-2027
+                        - text: What will Fed Rate hit before 2027?
+                      - link [ref=f53e730] [cursor=pointer]:
+                        - /url: /event/fed-emergency-rate-cut-before-2027
+                        - text: Fed emergency rate cut before 2027?
+                      - link [ref=f53e731] [cursor=pointer]:
+                        - /url: /event/how-many-fed-rate-cuts-in-2026
+                        - text: How many Fed rate cuts in 2026?
+                    - button "View more" [ref=f53e732] [cursor=pointer]
+            - generic [ref=f53e736]:
+              - generic [ref=f53e737]:
+                - generic [ref=f53e738]:
+                  - link "Email" [ref=f53e739] [cursor=pointer]:
+                    - /url: mailto:hello@polymarket.com
+                  - link "X (Twitter)" [ref=f53e744] [cursor=pointer]:
+                    - /url: https://x.com/Polymarket
+                  - link "Instagram" [ref=f53e747] [cursor=pointer]:
+                    - /url: https://www.instagram.com/polymarket
+                  - link "Discord" [ref=f53e753] [cursor=pointer]:
+                    - /url: https://discord.gg/Polymarket
+                  - link "TikTok" [ref=f53e756] [cursor=pointer]:
+                    - /url: https://www.tiktok.com/@polymarket
+                - generic [ref=f53e759]:
+                  - generic [ref=f53e760]: Adventure One QSS Inc. © 2026
+                  - generic [ref=f53e761]: ·
+                  - link "Privacy" [ref=f53e762] [cursor=pointer]:
+                    - /url: /privacy
+                  - generic [ref=f53e763]: ·
+                  - link "Terms of Use" [ref=f53e764] [cursor=pointer]:
+                    - /url: https://polymarket.com/tos
+                  - generic [ref=f53e765]: ·
+                  - link "Market Integrity" [ref=f53e766] [cursor=pointer]:
+                    - /url: https://integrity.polymarket.com/
+                  - generic [ref=f53e767]: ·
+                  - link "Transparency" [ref=f53e768] [cursor=pointer]:
+                    - /url: /transparency
+                  - generic [ref=f53e769]: ·
+                  - link "Help Center" [ref=f53e770] [cursor=pointer]:
+                    - /url: https://help.polymarket.com
+                  - generic [ref=f53e771]: ·
+                  - link "Docs" [ref=f53e772] [cursor=pointer]:
+                    - /url: https://docs.polymarket.com
+              - paragraph [ref=f53e773]:
+                - text: Polymarket operates globally through separate legal entities.
+                - link "Polymarket US" [ref=f53e774] [cursor=pointer]:
+                  - /url: https://polymarket.us/
+                - text: is operated by QCX LLC d/b/a Polymarket US, a CFTC-regulated Designated Contract Market. This international platform is not regulated by the CFTC and operates independently. Trading involves substantial risk of loss. See our
+                - link "Terms of Service" [ref=f53e775] [cursor=pointer]:
+                  - /url: https://polymarket.com/tos
+                - text: "&"
+                - link "Privacy Policy" [ref=f53e776] [cursor=pointer]:
+                  - /url: https://polymarket.com/privacy
+                - text: .
+    - region "Notifications (F8)":
+      - list
+  - alert [ref=f53e777]

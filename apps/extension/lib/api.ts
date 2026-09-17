@@ -8,7 +8,11 @@ import type { Chain, SpotTarget, Target, Verdict } from "@tripwire/core";
 import { toResult, type ApiResult } from "./api-result";
 import type { BridgeResponse } from "./bridge";
 import type {
+  AuthorBadgesResponse,
   GuardResponse,
+  LinkResponse,
+  UnlinkResponse,
+  WalletVenueId,
   HealthResponse,
   OverrideResponse,
   PersonIntelResponse,
@@ -29,7 +33,7 @@ async function send(message: unknown): Promise<BridgeResponse | undefined> {
   }
 }
 
-async function call<T>(method: "GET" | "POST" | "PUT", path: string, body?: unknown): Promise<ApiResult<T>> {
+async function call<T>(method: "GET" | "POST" | "PUT" | "DELETE", path: string, body?: unknown): Promise<ApiResult<T>> {
   return toResult<T>(await send({ type: "api", method, path, body }));
 }
 
@@ -67,4 +71,16 @@ export function setPreset(preset: "degen" | "balanced" | "paranoid"): Promise<Ap
 
 export function override(target: Target, verdict: Verdict, ruleIds: string[], venue: string): Promise<ApiResult<OverrideResponse>> {
   return call("POST", "/api/override", { target, verdict, ruleIds, venue });
+}
+
+export function authorBadges(handle: string, displayName: string): Promise<ApiResult<AuthorBadgesResponse>> {
+  return call("POST", "/api/author-badges", { handle, displayName });
+}
+
+export function linkWallet(handle: string, venue: WalletVenueId, address: string): Promise<ApiResult<LinkResponse>> {
+  return call("PUT", "/api/links", { handle, venue, address });
+}
+
+export function unlinkWallet(handle: string, venue: WalletVenueId): Promise<ApiResult<UnlinkResponse>> {
+  return call("DELETE", "/api/links", { handle, venue });
 }

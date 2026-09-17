@@ -12,6 +12,7 @@ import { mountReact } from "../../lib/ui/mount";
 import { Panel } from "../../lib/ui/Panel";
 import { Popover } from "../../lib/ui/Popover";
 import { X_MATCHES } from "../../lib/venues";
+import { createBadgeController } from "../../lib/x/author-badges";
 import { createResultCache } from "../../lib/x/cache";
 import { createMountTracker } from "../../lib/x/mounts";
 import { createPanelToggle } from "../../lib/x/panel-toggle";
@@ -54,6 +55,8 @@ export default defineContentScript({
     const processed = new WeakSet<Element>();
     // Chip/panel mounts per tweet article, unmounted once X drops the article from the DOM.
     const mounts = createMountTracker();
+    // Author badges (Nansen label, linked Hyperliquid/Polymarket wallets) next to the username.
+    const badges = createBadgeController({ ctx, mounts, stopHostClicks, zIndex: POPOVER_Z_INDEX });
 
     function getChipIntel(target: SpotTarget, timeIso: string | null): Promise<ApiResult<PostIntelResponse>> {
       const key = `${target.chain}:${target.tokenAddress}`;
@@ -89,6 +92,9 @@ export default defineContentScript({
       // Rebind to a fresh, non-null const: TS doesn't retain narrowing of `parsedTweet`
       // through the nested `function togglePanel` declaration below.
       const tweet: ParsedTweet = parsedTweet;
+
+      // Badges are about the author, so they run for every post, token or not.
+      void badges.attach(article, tweet);
 
       const token = pickToken(tweet.tokens);
       if (!token) return;
@@ -137,6 +143,8 @@ export default defineContentScript({
             personIntel(tweet.handle, tweet.displayName, target),
           ]);
           const [panelResult, personResult] = await panelDataPromise;
+          // Already loaded for the badge row (one fetch per handle per page session).
+          const badgeResult = tweet.handle ? await badges.load(tweet.handle, tweet.displayName) : null;
           if (!isCurrent()) return null; // closed again before the data came back
 
           if (!panelResult.ok) {
@@ -167,6 +175,11 @@ export default defineContentScript({
                 headline={chipHeadline(panelResult.data)}
                 postTimeIso={tweet.timeIso}
                 chain={target.chain}
+                author={badges.authorSection(
+                  tweet,
+                  personResult.ok && personResult.data.entity !== null,
+                  badgeResult?.ok ? badgeResult.data : null,
+                )}
               />
             </Popover>
           );
