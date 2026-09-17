@@ -51,14 +51,15 @@ a {
 }
 
 /* Focus rings never use yellow (reserved for danger, DESIGN.md): #EDEDED on the dark ink
-   surfaces; the one control that sits on a yellow fill (the TRIPWIRE chip) flips to an ink
-   ring so it still reads against its own background. */
+   surfaces. */
 :focus-visible {
   outline: 2px solid var(--tw-body);
   outline-offset: 2px;
 }
-.tw-chip-tripwire:focus-visible {
-  outline-color: var(--tw-ink);
+
+::selection {
+  background: var(--tw-body);
+  color: var(--tw-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -120,13 +121,20 @@ a {
 .tw-nav {
   border-bottom: 1px solid var(--tw-border);
 }
+/* padding-block only: the inline gutter comes from .tw-container, so the nav lines up with
+   the page content. */
 .tw-nav-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--tw-space-lg);
-  padding: var(--tw-space-md) 0;
+  gap: var(--tw-space-sm) var(--tw-space-lg);
+  padding-block: var(--tw-space-md);
   flex-wrap: wrap;
+}
+.tw-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-sm);
 }
 .tw-wordmark {
   font-family: var(--tw-font-display);
@@ -145,13 +153,14 @@ a {
   padding: 0;
 }
 .tw-nav-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
   font-family: var(--tw-font-display);
   font-weight: 600;
   font-size: 0.75rem;
   color: var(--tw-secondary);
   text-decoration: none;
-  padding-bottom: var(--tw-space-xs);
   border-bottom: 2px solid transparent;
 }
 .tw-nav-link:hover {
@@ -159,7 +168,7 @@ a {
 }
 .tw-nav-link[aria-current="page"] {
   color: var(--tw-body);
-  border-bottom-color: var(--tw-yellow);
+  border-bottom-color: var(--tw-body);
 }
 
 main.tw-main {
@@ -187,50 +196,61 @@ main.tw-main {
   display: block;
 }
 
-/* Replay watermark badge */
+/* Replay watermark badge: sits in the nav row next to the wordmark, never over content. */
 .tw-replay-badge {
-  position: fixed;
-  top: var(--tw-space-md);
-  right: var(--tw-space-md);
-  z-index: 50;
   /* Not yellow: yellow is reserved for danger (DESIGN.md). */
   background: var(--tw-secondary);
   color: var(--tw-ink);
   font-family: var(--tw-font-mono);
   font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  padding: var(--tw-space-xs) var(--tw-space-sm);
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  padding: 2px var(--tw-space-xs);
   border-radius: var(--tw-radius-sm);
 }
 
-/* Verdict chip */
+/* Verdict chip: same anatomy as the extension's (DESIGN.md "Verdict chip"). */
 .tw-chip {
-  display: inline-block;
-  font-family: var(--tw-font-display);
-  font-weight: 600;
-  font-size: 0.75rem;
-  line-height: 1.3;
-  padding: var(--tw-space-xs) var(--tw-space-sm);
+  display: inline-flex;
+  align-items: stretch;
+  height: 24px;
+  border: 1px solid var(--tw-border);
   border-radius: var(--tw-radius-sm);
-  border: 1px solid transparent;
+  background: var(--tw-surface);
+  overflow: hidden;
   white-space: nowrap;
+  vertical-align: middle;
 }
-.tw-chip-tripwire {
+.tw-chip-key {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--tw-space-sm);
+  font-family: var(--tw-font-display);
+  font-stretch: 75%;
+  font-weight: 900;
+  font-size: 0.75rem;
+  color: var(--tw-body);
+}
+.tw-chip[data-verdict="TRIPWIRE"] {
+  border: 1.5px solid var(--tw-yellow);
+}
+.tw-chip[data-verdict="TRIPWIRE"] .tw-chip-key {
   background: var(--tw-yellow);
   color: var(--tw-ink);
 }
-.tw-chip-caution {
-  background: var(--tw-ink);
-  color: var(--tw-body);
+.tw-chip[data-verdict="CAUTION"] {
   border: 1.5px solid var(--tw-yellow);
 }
-.tw-chip-clear {
-  background: var(--tw-surface-raised);
+.tw-chip[data-verdict="CAUTION"] .tw-chip-key {
+  color: var(--tw-yellow);
+}
+.tw-chip[data-verdict="CLEAR"] .tw-chip-key {
   color: var(--tw-success);
 }
-.tw-chip-unchecked {
+.tw-chip[data-verdict="UNCHECKED"] {
   background: var(--tw-surface-raised);
+}
+.tw-chip[data-verdict="UNCHECKED"] .tw-chip-key {
   color: var(--tw-secondary);
 }
 .tw-chip-danger-text {
@@ -272,6 +292,17 @@ main.tw-main {
 }
 .tw-table-wrap {
   overflow-x: auto;
+}
+.tw-nowrap {
+  white-space: nowrap;
+}
+.tw-rule-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  min-width: 28ch;
 }
 .tw-empty {
   color: var(--tw-secondary);
@@ -320,6 +351,7 @@ main.tw-main {
   border-radius: 0;
 }
 .tw-segment {
+  min-height: 32px;
   font-family: var(--tw-font-display);
   font-weight: 600;
   font-size: 0.75rem;
@@ -359,7 +391,9 @@ main.tw-main {
 .tw-rule-toggle {
   display: inline-flex;
   align-items: center;
+  min-height: 28px;
   gap: var(--tw-space-xs);
+  cursor: pointer;
   font-family: var(--tw-font-display);
   font-weight: 600;
   font-size: 0.75rem;
@@ -382,8 +416,9 @@ main.tw-main {
 /* Form controls */
 input[type="checkbox"] {
   accent-color: var(--tw-body);
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
+  margin: 3px;
 }
 .tw-input-number {
   font-family: var(--tw-font-mono);
@@ -407,6 +442,7 @@ select {
   color: var(--tw-body);
   border: 1px solid var(--tw-border);
   border-radius: var(--tw-radius-sm);
+  min-height: 28px;
   padding: var(--tw-space-xs) var(--tw-space-sm);
 }
 .tw-save-row {
@@ -437,8 +473,9 @@ select {
   gap: var(--tw-space-sm) var(--tw-space-md);
   margin-top: var(--tw-space-md);
   padding: var(--tw-space-sm) var(--tw-space-md);
-  border-left: 4px solid var(--tw-yellow);
-  background: var(--tw-surface-raised);
+  border: 1.5px solid var(--tw-yellow);
+  border-radius: var(--tw-radius-sm);
+  background: var(--tw-ink);
 }
 .tw-confirm-text {
   margin: 0;

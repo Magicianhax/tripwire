@@ -10,14 +10,21 @@ const LINKS = [
   { href: "/history", label: "History" },
 ];
 
-export function NavBar() {
+export function NavBar({ replay = false }: { replay?: boolean }) {
   const pathname = usePathname();
   return (
     <header className="tw-nav">
       <div className="tw-container tw-nav-row">
-        <Link href="/" className="tw-wordmark">
-          TRIPWIRE
-        </Link>
+        <div className="tw-nav-brand">
+          <Link href="/" className="tw-wordmark">
+            TRIPWIRE
+          </Link>
+          {replay ? (
+            <span className="tw-replay-badge" role="status" title="Replay mode: recorded Nansen data, not live">
+              Replay
+            </span>
+          ) : null}
+        </div>
         <nav>
           <ul className="tw-nav-links">
             {LINKS.map((l) => {

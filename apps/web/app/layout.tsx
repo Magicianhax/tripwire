@@ -16,12 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        {isReplay() && (
-          <div className="tw-replay-badge" role="status" title="Replay mode: recorded Nansen data, not live">
-            REPLAY
-          </div>
-        )}
-        <NavBar />
+        <NavBar replay={isReplay()} />
         <main className="tw-main">
           <div className="tw-container">{children}</div>
         </main>

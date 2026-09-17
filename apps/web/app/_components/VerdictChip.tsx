@@ -1,12 +1,12 @@
-import type { Verdict } from "@tripwire/core";
+import { verdictLabel, type Verdict } from "@tripwire/core";
 
-const CLASS: Record<Verdict, string> = {
-  TRIPWIRE: "tw-chip tw-chip-tripwire",
-  CAUTION: "tw-chip tw-chip-caution",
-  CLEAR: "tw-chip tw-chip-clear",
-  UNCHECKED: "tw-chip tw-chip-unchecked",
-};
-
+/** Same anatomy as the extension chip (DESIGN.md "Verdict chip"): a key cell carrying the
+ * verdict word. TRIPWIRE: yellow key; CAUTION: yellow border and text; Clear: green text;
+ * Unchecked: grey. */
 export function VerdictChip({ verdict }: { verdict: Verdict }) {
-  return <span className={CLASS[verdict]}>{verdict}</span>;
+  return (
+    <span className="tw-chip" data-verdict={verdict}>
+      <span className="tw-chip-key">{verdictLabel(verdict)}</span>
+    </span>
+  );
 }

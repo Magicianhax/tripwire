@@ -1,13 +1,12 @@
+import { isReplay } from "@/lib/nansen/client";
 import { ledgerSummary } from "@/lib/store";
+import { Time } from "../_components/Time";
 
 export const dynamic = "force-dynamic";
 
-function fmtTime(ts: number): string {
-  return new Date(ts).toLocaleString();
-}
-
 export default function LedgerPage() {
   const s = ledgerSummary();
+  const emptyText = isReplay() ? "Replay mode serves recorded data, so no Nansen calls are logged." : "No calls yet.";
 
   return (
     <>
@@ -42,7 +41,7 @@ export default function LedgerPage() {
         <section className="tw-section">
           <h2 className="tw-h2">By endpoint</h2>
           {s.byEndpoint.length === 0 ? (
-            <p className="tw-empty">No calls yet.</p>
+            <p className="tw-empty">{emptyText}</p>
           ) : (
             <div className="tw-table-wrap">
               <table className="tw-table">
@@ -66,7 +65,7 @@ export default function LedgerPage() {
                 <tbody>
                   {s.byEndpoint.map((e) => (
                     <tr key={e.endpoint}>
-                      <td>{e.endpoint}</td>
+                      <td className="tw-nowrap">{e.endpoint}</td>
                       <td className="tw-num">{e.calls}</td>
                       <td className="tw-num">{e.credits}</td>
                       <td className="tw-num">{e.avgMs}</td>
@@ -82,7 +81,7 @@ export default function LedgerPage() {
         <section className="tw-section">
           <h2 className="tw-h2">Recent calls</h2>
           {s.recent.length === 0 ? (
-            <p className="tw-empty">No calls yet.</p>
+            <p className="tw-empty">{emptyText}</p>
           ) : (
             <div className="tw-table-wrap">
               <table className="tw-table">
@@ -104,8 +103,10 @@ export default function LedgerPage() {
                 <tbody>
                   {s.recent.map((r, i) => (
                     <tr key={i}>
-                      <td className="tw-data">{fmtTime(r.ts)}</td>
-                      <td>{r.endpoint}</td>
+                      <td>
+                        <Time ts={r.ts} />
+                      </td>
+                      <td className="tw-nowrap">{r.endpoint}</td>
                       <td className="tw-num">{r.status}</td>
                       <td className="tw-num">{r.credits ?? "—"}</td>
                       <td className="tw-num">{r.latency_ms}</td>

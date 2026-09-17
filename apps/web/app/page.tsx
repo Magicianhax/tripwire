@@ -1,6 +1,7 @@
 import { resolveApiKey, type KeySource } from "@/lib/nansen/key";
 import { creditsToday, isReplay } from "@/lib/nansen/client";
 import { ledgerSummary, recentChecks } from "@/lib/store";
+import { Time } from "./_components/Time";
 import { VerdictChip } from "./_components/VerdictChip";
 import { targetLabelFromJson } from "./_lib/target-label";
 
@@ -14,10 +15,6 @@ const KEY_SOURCE_LABEL: Record<KeySource, string> = {
   "nansen-cli": "Nansen CLI login",
   none: "Not configured",
 };
-
-function fmtTime(ts: number): string {
-  return new Date(ts).toLocaleString();
-}
 
 export default function StatusPage() {
   const { source } = resolveApiKey();
@@ -36,10 +33,6 @@ export default function StatusPage() {
       <section className="tw-section">
         <h2 className="tw-h2">Backend</h2>
         <div className="tw-stat-row">
-          <div className="tw-stat">
-            <span className="tw-label tw-stat-label">Backend</span>
-            <span className="tw-data tw-stat-value">OK</span>
-          </div>
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">API key</span>
             <span className={`tw-data tw-stat-value${source === "none" ? " tw-chip-danger-text" : ""}`}>{KEY_SOURCE_LABEL[source]}</span>
@@ -109,9 +102,11 @@ export default function StatusPage() {
               <tbody>
                 {checks.map((c, i) => (
                   <tr key={i}>
-                    <td className="tw-data">{fmtTime(c.ts)}</td>
-                    <td>{c.venue}</td>
-                    <td>{targetLabelFromJson(c.target)}</td>
+                    <td>
+                      <Time ts={c.ts} />
+                    </td>
+                    <td className="tw-nowrap">{c.venue}</td>
+                    <td className="tw-nowrap">{targetLabelFromJson(c.target)}</td>
                     <td>
                       <VerdictChip verdict={c.verdict} />
                     </td>

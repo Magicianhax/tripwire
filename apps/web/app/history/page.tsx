@@ -1,25 +1,27 @@
-import { recentChecks, recentOverrides } from "@/lib/store";
+import { getRules, recentChecks, recentOverrides, recentSettingsChanges } from "@/lib/store";
+import { Time } from "../_components/Time";
 import { VerdictChip } from "../_components/VerdictChip";
+import { PRESET_LABEL, ruleDescriptions, rulesForPreset } from "../_lib/rule-names";
 import { targetLabelFromJson } from "../_lib/target-label";
 
 export const dynamic = "force-dynamic";
 
-function fmtTime(ts: number): string {
-  return new Date(ts).toLocaleString();
-}
-
-function ruleIdList(raw: string): string {
-  try {
-    const ids = JSON.parse(raw) as string[];
-    return ids.length ? ids.join(", ") : "—";
-  } catch {
-    return "—";
-  }
+function RuleLines({ lines }: { lines: string[] }) {
+  if (lines.length === 0) return <>—</>;
+  return (
+    <ul className="tw-rule-lines">
+      {lines.map((line, i) => (
+        <li key={i}>{line}</li>
+      ))}
+    </ul>
+  );
 }
 
 export default function HistoryPage() {
   const overrides = recentOverrides(50);
+  const changes = recentSettingsChanges(50);
   const checks = recentChecks(50);
+  const currentRules = getRules().rules;
 
   return (
     <>
@@ -40,19 +42,57 @@ export default function HistoryPage() {
                   <th scope="col">Venue</th>
                   <th scope="col">Target</th>
                   <th scope="col">Verdict</th>
-                  <th scope="col">Rule ids</th>
+                  <th scope="col">Rules overridden</th>
                 </tr>
               </thead>
               <tbody>
                 {overrides.map((o, i) => (
                   <tr key={i}>
-                    <td className="tw-data">{fmtTime(o.ts)}</td>
-                    <td>{o.venue}</td>
-                    <td>{targetLabelFromJson(o.target)}</td>
+                    <td>
+                      <Time ts={o.ts} />
+                    </td>
+                    <td className="tw-nowrap">{o.venue}</td>
+                    <td className="tw-nowrap">{targetLabelFromJson(o.target)}</td>
                     <td>
                       <VerdictChip verdict={o.verdict} />
                     </td>
-                    <td className="tw-data">{ruleIdList(o.rule_ids)}</td>
+                    <td>
+                      <RuleLines lines={ruleDescriptions(o.rule_ids, currentRules)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="tw-section">
+        <h2 className="tw-h2">Protection lowered</h2>
+        {changes.length === 0 ? (
+          <p className="tw-empty">No downgrades yet. Switching to a weaker preset, or disabling or loosening a block rule, shows up here.</p>
+        ) : (
+          <div className="tw-table-wrap">
+            <table className="tw-table">
+              <thead>
+                <tr>
+                  <th scope="col">Time</th>
+                  <th scope="col">Preset</th>
+                  <th scope="col">Blocks weakened</th>
+                </tr>
+              </thead>
+              <tbody>
+                {changes.map((c, i) => (
+                  <tr key={i}>
+                    <td>
+                      <Time ts={c.ts} />
+                    </td>
+                    <td className="tw-nowrap">
+                      {PRESET_LABEL[c.from_preset] ?? c.from_preset} → {PRESET_LABEL[c.to_preset] ?? c.to_preset}
+                    </td>
+                    <td>
+                      <RuleLines lines={ruleDescriptions(c.rule_ids, rulesForPreset(c.from_preset, currentRules))} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -79,9 +119,11 @@ export default function HistoryPage() {
               <tbody>
                 {checks.map((c, i) => (
                   <tr key={i}>
-                    <td className="tw-data">{fmtTime(c.ts)}</td>
-                    <td>{c.venue}</td>
-                    <td>{targetLabelFromJson(c.target)}</td>
+                    <td>
+                      <Time ts={c.ts} />
+                    </td>
+                    <td className="tw-nowrap">{c.venue}</td>
+                    <td className="tw-nowrap">{targetLabelFromJson(c.target)}</td>
                     <td>
                       <VerdictChip verdict={c.verdict} />
                     </td>
