@@ -6,8 +6,11 @@ import type { DepthSection, PerpPosition } from "@tripwire/core";
 import { DEPTH_SECTION_CREDITS } from "@tripwire/core";
 import type { DepthResponse, GuardResponse, PerpPanel, PostIntelResponse, SpotPanel } from "../lib/api-types";
 import { _resetCardSizes, cardSize, setCardSize } from "../lib/card-size";
+import { CardSizeContext } from "../lib/ui/card-size";
 import { Panel, type DepthLoader } from "../lib/ui/Panel";
 import { Popover } from "../lib/ui/Popover";
+import { PerpBody } from "../lib/ui/PerpBody";
+import { SpotBody } from "../lib/ui/SpotBody";
 
 function mountNode(node: React.ReactNode): { container: HTMLDivElement; root: Root } {
   const container = document.createElement("div");
@@ -111,6 +114,12 @@ describe("the card mounts before its data", () => {
   it("shapes the skeletons for the kind of card it is", () => {
     const spot = mountNode(<Panel data={null} title="$WIF" onClose={() => {}} />);
     expect([...spot.container.querySelectorAll(".tw-skeleton")].map((s) => s.getAttribute("data-shape"))).toEqual(["gauge", "chart", "tile"]);
+    expect(spot.container.querySelector(".tw-card-loading")?.getAttribute("data-kind")).toBe("spot");
+    expect([...spot.container.querySelectorAll("[data-skeleton-slot]")].map((s) => s.getAttribute("data-skeleton-slot"))).toEqual([
+      "primary",
+      "secondary",
+      "tertiary",
+    ]);
     spot.root.unmount();
 
     const perp = mountNode(<Panel data={null} title="ETH" onClose={() => {}} target={{ kind: "perp", coin: "ETH" }} />);
@@ -208,6 +217,22 @@ describe("a tab loads exactly what it draws, once", () => {
 });
 
 describe("expanding the card", () => {
+  it("keeps the persisted expanded first frame in the same named two-column skeleton", () => {
+    const { container, root } = mountNode(
+      <Popover anchor={null} onClose={() => {}} size="expanded" onToggleSize={() => {}}>
+        <Panel data={null} title="$WIF" onClose={() => {}} />
+      </Popover>,
+    );
+    const card = container.querySelector('.tw-card[data-size="expanded"]')!;
+    expect(card.querySelector('.tw-card-loading[data-kind="spot"]')).not.toBeNull();
+    expect([...card.querySelectorAll("[data-skeleton-slot]")].map((s) => s.getAttribute("data-skeleton-slot"))).toEqual([
+      "primary",
+      "secondary",
+      "tertiary",
+    ]);
+    root.unmount();
+  });
+
   it("is the same card at a different size, with the toggle in the header", () => {
     let size: "compact" | "expanded" = "compact";
     const render = () => (
@@ -220,7 +245,11 @@ describe("expanding the card", () => {
     expect(pop.getAttribute("data-size")).toBe("compact");
     expect(pop.getAttribute("aria-modal")).toBe("false");
     expect(container.querySelector(".tw-pop-backdrop")).toBeNull();
-    expect(container.querySelector(".tw-card-size")?.getAttribute("aria-label")).toBe("Expand card");
+    const expand = container.querySelector(".tw-card-size")!;
+    expect(document.getElementById(expand.getAttribute("aria-labelledby")!)?.textContent).toBe("Expand card");
+    const traders = [...container.querySelectorAll<HTMLButtonElement>('[role="tab"]')].find((tab) => tab.textContent?.startsWith("Traders"))!;
+    act(() => traders.click());
+    expect(traders.getAttribute("aria-selected")).toBe("true");
 
     size = "expanded";
     act(() => root.render(render()));
@@ -229,7 +258,11 @@ describe("expanding the card", () => {
     // Expanded covers the page and traps focus, so it says it is modal.
     expect(expanded.getAttribute("aria-modal")).toBe("true");
     expect(container.querySelector(".tw-pop-backdrop")).not.toBeNull();
-    expect(container.querySelector(".tw-card-size")?.getAttribute("aria-label")).toBe("Collapse card");
+    const collapse = container.querySelector(".tw-card-size")!;
+    expect(document.getElementById(collapse.getAttribute("aria-labelledby")!)?.textContent).toBe("Collapse card");
+    expect([...container.querySelectorAll<HTMLButtonElement>('[role="tab"]')].find((tab) => tab.textContent?.startsWith("Traders"))?.getAttribute("aria-selected")).toBe(
+      "true",
+    );
     root.unmount();
   });
 
@@ -332,6 +365,131 @@ describe("expanding the card", () => {
     };
     expect(tabsAt("compact")).toEqual(["Flow", "Wallets", "Risk"]);
     expect(tabsAt("expanded")).toEqual(["Flow", "Wallets", "Risk", `Holders${DEPTH_SECTION_CREDITS.spotHolders} credits`]);
+  });
+
+  it("gives expanded Spot Flow explicit window, gauges, chart and netflow layout hooks", () => {
+    const panel: SpotPanel = {
+      ...emptySpotPanel,
+      flow: {
+        smart_trader_net_flow_usd: 1,
+        smart_trader_wallet_count: 1,
+        whale_net_flow_usd: 2,
+        whale_wallet_count: 1,
+        public_figure_net_flow_usd: 3,
+        public_figure_wallet_count: 1,
+        top_pnl_net_flow_usd: 4,
+        top_pnl_wallet_count: 1,
+        exchange_net_flow_usd: 0,
+        fresh_wallets_net_flow_usd: 5,
+        fresh_wallets_wallet_count: 1,
+      },
+      netflow: { h1: 1, h24: 2, d7: 3, d30: 4, symbol: "WIF", traders: 4 },
+    };
+    const { container, root } = mountNode(
+      <CardSizeContext.Provider value="expanded">
+        <SpotBody panel={panel} timeframe={{ value: "1d", pending: null, onChange: () => {} }} />
+      </CardSizeContext.Provider>,
+    );
+    const layout = container.querySelector(".tw-spot-flow-layout")!;
+    expect([...layout.children].map((child) => child.className)).toEqual([
+      "tw-window",
+      "tw-spot-flow-gauges",
+      "tw-spot-flow-chart",
+      "tw-spot-flow-netflow",
+    ]);
+    root.unmount();
+  });
+
+  it("uses a dedicated eight-tile market grid hook in expanded positioning", () => {
+    const depth: DepthResponse = {
+      credits: 0,
+      skipped: [],
+      perpMarket: {
+        market: {
+          coin: "ETH",
+          markPrice: 2500,
+          oraclePrice: 2499,
+          midPrice: 2500,
+          premiumPct: 0.04,
+          fundingHourly: 0.0001,
+          fundingPer8h: 0.0008,
+          fundingAnnualPct: 8,
+          openInterestCoins: 100,
+          openInterestUsd: 250_000,
+          dayVolumeUsd: 1_000_000,
+          dayChangePct: 2,
+          maxLeverage: 50,
+        },
+        book: null,
+        funding: null,
+        errors: [],
+      },
+    };
+    const { container, root } = mountNode(
+      <CardSizeContext.Provider value="expanded">
+        <PerpBody
+          panel={{ coin: "ETH", screener: null, positions: null, trades: null, errors: [] }}
+          depth={{ data: depth, loading: [], failed: {} }}
+        />
+      </CardSizeContext.Provider>,
+    );
+    expect(container.querySelectorAll(".tw-market-readouts > .tw-readouts > div")).toHaveLength(8);
+    root.unmount();
+  });
+
+  it("keeps compact trader lists at five and caps expanded leaderboard and trades at twelve", () => {
+    const depth: DepthResponse = {
+      credits: 11,
+      skipped: [],
+      perpTraders: {
+        leaderboard: Array.from({ length: 20 }, (_, i) => ({
+          address: `0x${i}`,
+          label: `Leader ${i}`,
+          side: "Long",
+          realizedPnlUsd: i,
+          unrealizedPnlUsd: i,
+          totalPnlUsd: i,
+          positionValueUsd: i,
+          holdingAmount: i,
+          roiPct: i,
+          tradeCount: i,
+        })),
+        trades: Array.from({ length: 20 }, (_, i) => ({
+          address: `0x${i}`,
+          label: `Trader ${i}`,
+          side: "Long",
+          action: "Buy",
+          valueUsd: i,
+          priceUsd: i,
+          tokenAmount: i,
+          orderType: "Market",
+          timestamp: null,
+        })),
+        topAccounts: [],
+        topAccountsHere: 0,
+        credits: 11,
+        errors: [],
+      },
+    };
+    const countsAt = (size: "compact" | "expanded") => {
+      const { container, root } = mountNode(
+        <CardSizeContext.Provider value={size}>
+          <PerpBody
+            panel={{ coin: "ETH", screener: null, positions: null, trades: null, errors: [] }}
+            initialTab="traders"
+            depth={{ data: depth, loading: [], failed: {} }}
+          />
+        </CardSizeContext.Provider>,
+      );
+      const counts = [
+        container.querySelectorAll('section[aria-label="Top traders in ETH by PnL"] tbody tr').length,
+        container.querySelectorAll('section[aria-label="Largest recent trades"] .tw-trade-list > li').length,
+      ];
+      root.unmount();
+      return counts;
+    };
+    expect(countsAt("compact")).toEqual([5, 5]);
+    expect(countsAt("expanded")).toEqual([12, 12]);
   });
 });
 

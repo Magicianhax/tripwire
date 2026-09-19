@@ -113,7 +113,7 @@ test("wallet lens captures", async ({ context, extensionId }) => {
   await page.setViewportSize({ width: 1280, height: 1000 });
   await putRules(page, { preset: "balanced" });
   await page.goto("https://dexscreener.com/wallets");
-  const marker = page.locator(`.tw-wallet-marker[aria-label*="0x7f"]`);
+  const marker = page.getByRole("button", { name: /Inspect wallet 0x7f/ });
   await expect(marker).toBeVisible({ timeout: 20_000 });
   await shot(page.locator("#raw"), "wallet-marker");
 
@@ -128,7 +128,59 @@ test("wallet lens captures", async ({ context, extensionId }) => {
   await card.getByRole("tab", { name: "Hyperliquid" }).click();
   await page.waitForTimeout(200);
   await shot(card, "wallet-card-hyperliquid");
+  await card.getByRole("button", { name: "Expand card" }).click();
+  await expect(card).toHaveAttribute("data-size", "expanded");
+  await expect(card.locator(".tw-wallet-card")).toHaveAttribute("data-size", "expanded");
+  await page.waitForTimeout(200);
+  await shot(page, "wallet-card-expanded");
   await page.close();
+
+  // Author badges share the same expandable shell, but remember their size independently.
+  const badges = await context.newPage();
+  const linkedWallets = [
+    ["hyperliquid", "0x7fdafde5cfb5465924316eced2d3715494c517d1"],
+    ["polymarket", "0x1963eabad7eb7499fb049ddebb96a8fd22179bfd"],
+  ] as const;
+  try {
+    for (const [venue, address] of linkedWallets) {
+      const response = await badges.request.put(`${BACKEND}/api/links`, {
+        headers: { origin: EXTENSION_ORIGIN },
+        data: { handle: "degenalpha", venue, address },
+      });
+      expect(response.status()).toBe(200);
+    }
+    await badges.setViewportSize({ width: 1440, height: 1000 });
+    await badges.goto("https://x.com/home");
+    const linked = badges.locator("article", { hasText: "@degenalpha" });
+    const badge = linked.locator('.tw-badge[data-venue="hyperliquid"]');
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+    await badge.click();
+    const badgePop = badges.locator('.tw-pop[role="dialog"]');
+    await expect(badgePop.locator(".tw-badge-card")).toBeVisible();
+    await badges.waitForTimeout(200);
+    await shot(badgePop, "x-badge-card-hyperliquid");
+    await badgePop.getByRole("button", { name: "Expand card" }).click();
+    await expect(badgePop).toHaveAttribute("data-size", "expanded");
+    await expect(badgePop.locator(".tw-badge-card")).toHaveAttribute("data-size", "expanded");
+    await badges.waitForTimeout(200);
+    await shot(badges, "x-badge-card-expanded");
+  } finally {
+    let cleanupResponses;
+    try {
+      cleanupResponses = await Promise.all(
+        linkedWallets.map(([venue]) =>
+          badges.request.fetch(`${BACKEND}/api/links`, {
+            method: "DELETE",
+            headers: { origin: EXTENSION_ORIGIN },
+            data: { handle: "degenalpha", venue },
+          }),
+        ),
+      );
+    } finally {
+      await badges.close();
+    }
+    for (const response of cleanupResponses) expect(response.ok()).toBe(true);
+  }
 
   // enable-site: the popup's per-site consent block. The popup is opened as a page, so the
   // active tab and the granted origins are stubbed to what they would be on a real site the

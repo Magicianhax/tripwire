@@ -433,6 +433,62 @@ Four rounds. Round 4 followed a user screenshot of the live jumper.xyz widget, w
 - **`spot-risk` is absent from the presets**, so `risk_high_count` ships as a signal no default rule reads.
 - Port 3000 still runs a server this session did not start; `pnpm -F web build` rewrote `apps/web/.next` again, so that server probably needs a restart. No request was sent to it.
 
+## Expand, instant loading, and perp depth — takeover closure
+
+Audited and closed on 2026-09-19 from `feat/cockpit-ui` at `832835d`, after the implementation commits `91f5592`, `4bf5e30`, and `832835d`. Brief: `docs/briefs/expand-and-perp-depth.md`. The branch was clean before the takeover; the changes described below are the audit fixes and documentation/UI closure pass.
+
+### Data and credit boundary
+
+- `POST /api/depth` is the only extension-facing path for deeper market data. Hyperliquid, Binance, Bybit, OKX, and dYdX are called from the local backend, cached, and settled independently; a failed venue becomes one unavailable row rather than removing the table.
+- Funding is normalized to an 8-hour comparable rate and a simple annualized rate from each venue's actual funding interval. Hyperliquid and dYdX hourly schedules are not mislabeled as native 8-hour rates.
+- Perp Positioning adds Smart Money long/short exposure, buy/sell pressure, market/OI/volume/funding readouts, L2 depth evidence, funding history, and the five-venue table. Liquidations adds ±3/5/10% bands and the largest positions with entry, liquidation distance, and uPnL. Traders adds the coin PnL leaderboard, large recent trades, and top Hyperliquid accounts active in the coin. Chart uses Hyperliquid candles.
+- Paid sections stay explicit: Perp Traders is 11 credits, Spot Holders 5, and prediction Book 1. Their tab labels state the price before selection. Expanding a card never spends those credits by itself. The free market and venue sections remain lazy too.
+- Replay fixtures cover every added endpoint. `scripts/record-depth-fixtures.mjs` caps a recording run at 25 Nansen credits and never prints the key.
+
+### Card behavior and UI closure
+
+- Evidence, wallet, and author-badge cards now share compact/expanded behavior, remembered independently per card kind. Expanded is the same React content at a larger desktop size, not a parallel component tree.
+- Changing size preserves the selected tab and component state. The visual recapture caught a root-shape remount that reset Wallet Hyperliquid to Overview; `Popover` now keeps a stable fragment/card tree and the unit test selects Traders before resizing to prove it remains selected.
+- Wallet loading now uses shaped Overview and Holdings skeletons, `aria-busy`, and one polite live announcement instead of a single waiting sentence. Wallet and badge cards expose the same Maximize/Minimize action as evidence cards.
+- The expanded Spot Flow tab has an explicit layout: timeframe full width; gauges over netflow on the left; the 320px chart on the right. This removes the large empty quadrant in the first capture.
+- The eight Hyperliquid market metrics use a deliberate 4×2 expanded grid. Expanded Traders shows 12 leaderboard and 12 trade rows initially, keeping the top-account cohort discoverable while staying within the brief's 10–20 range.
+- Chromium scrollbars, a stronger continuation edge, and `min-width: 0` containment make clipped/continuing evidence legible without hiding table columns. The wallet footer trust copy is compressed to one metadata line.
+- Expand controls use action names (`Expand card` / `Collapse card`) without mixing them with toggle-state `aria-pressed`. A shared tooltip supplies the single accessible name and visible explanation on pointer hover or keyboard focus; header hints open downward inside the clipped card, and reduced-motion mode disables their transition. Wallet markers and author badges use the same pattern instead of mouse-only native titles.
+- The retired Hazard `DESIGN.md` was replaced by the shipped Nansen visual contract. ADR-0009 through ADR-0012 are now durable in `docs/DECISIONS.md`, and README signal/preset tables were reconciled with the calibrated implementation.
+
+### Captures
+
+`TRIPWIRE_CAPTURE=1`, replay backend on `:3217`, built extension in Playwright Chromium: **3 capture specs passed**. The five brief captures were regenerated and opened: `perp-expanded.png`, `perp-traders.png`, `perp-funding-venues.png`, `spot-expanded.png`, and `card-skeleton.png`. The audit also added and inspected `wallet-card-expanded.png` and `x-badge-card-expanded.png`, plus refreshed their compact captures.
+
+The final images show the Spot dead zone removed, the Perp 4×2 market grid, the third Traders cohort above the fold, full wallet titles at compact width, and wallet/badge expansion preserving the active Hyperliquid tab. Old `mobile.png` and `dock-mobile.png` remain historical artifacts only; desktop is the supported review target.
+
+### Rulings from the brief audit
+
+- Expanded cards retain tabs rather than rendering every paid section at once. This keeps the cost visible before spending, preserves one content path, and avoids a layout choice becoming permission for an 11-credit call. Four compact Perp tabs are accepted because Chart is a first-class decision view; the strip stays one line and scrolls instead of wrapping.
+- The base `/api/guard` or `/api/post-intel` answer is atomic. Its shell still appears immediately, while deeper tab sections have independent loading/failure state. Splitting the base response would add orchestration and duplicate-cache complexity without changing the verdict, so it is not part of this closure pass.
+- Funding history is a separate labelled series below the price chart rather than a dual-axis overlay. The separation is more legible and avoids implying that price and funding share a scale.
+- The expanded shell is content-sized up to `min(880px, 80vh)` rather than forcing empty height. The maximum geometry and 24px shell match the brief; shorter evidence does not grow a blank lower third.
+
+### Verification
+
+- `pnpm verify`: typecheck clean; core **200**, web **159**, extension **435** tests passed.
+- `$env:TRIPWIRE_E2E_PORT='3217'; pnpm verify:e2e`: extension and web production builds passed; desktop E2E **12 passed**, **3 capture-only specs skipped**.
+- `$env:TRIPWIRE_CAPTURE='1'; $env:TRIPWIRE_E2E_PORT='3217'; pnpm -F extension exec playwright test -c e2e/playwright.config.ts captures`: **3 passed**.
+- `git diff --check`: clean.
+- `impeccable detect` could not be rerun because the command is no longer installed on `PATH`. The last durable result remains 83 advisory findings/0 anti-patterns against the then-stale Hazard document; `DESIGN.md` is now reconciled, but no replacement detector count is claimed.
+
+Final code review found one test-data leak risk and one tooltip accessibility gap. Capture-created author links are now deleted from a `finally` block with checked responses and page closure, and the tooltip pattern above replaced native `title` hints. A follow-up review returned **APPROVE** with zero remaining findings.
+
+One tooling note: `pnpm build` (recursive, concurrent) hit a Windows libuv shutdown assertion once under Node 26 after Next had completed. `pnpm -F web build` immediately passed in isolation, and the required sequential build path inside `verify:e2e` passed twice. No product code failed to compile.
+
+### Residual concerns
+
+- The expanded cards still show one selected tab, by decision, so the user explicitly opens paid depth. They do not behave as an all-tabs dashboard.
+- Base evidence sections arrive together because the verdict response is atomic; only lazy depth sections settle independently.
+- Nansen screener funding/OI have equivalent Hyperliquid public readouts, but are not shown as duplicate figures. `predictedFundings` remains fixture/client groundwork and is not surfaced.
+- The design detector is unavailable locally, so the new design document has manual/capture review plus contrast/unit coverage, not a fresh detector count.
+- Human work remains: live unpacked checks on real sites, the 1,000-call ledger target, adding a Git remote, merge/push, demo recording, X post, and submission form.
+
 ## Wallet lens
 
 Commits `bb87d9d..` on `feat/cockpit-ui` (on top of `c9132e5`). Brief: `.superpowers/briefs/wallet-lens.md`. Unchanged: the origin/Host guard, blocker semantics, the popover and author-badge behaviour, anchor binding, override flow, replay tag and UNCHECKED-never-CLEAR. `DESIGN.md` and `docs/DECISIONS.md` are untouched; the ADR text is at the end of this section.

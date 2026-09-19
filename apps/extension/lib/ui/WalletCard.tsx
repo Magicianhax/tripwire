@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { NANSEN_LOGO, venueLogo, type WalletRef } from "@tripwire/core";
 import { CircleAlert, Coins, Wallet } from "lucide-react";
 import type { WalletLensResponse } from "../api-types";
@@ -6,6 +6,8 @@ import { pct, usd } from "./format";
 import { Icon, LABEL_KIND_ICON } from "./icons";
 import { BrandMark, ChainLogo, TokenLogo } from "./Logo";
 import { CardHeader, Empty, NansenLink, Problems, Readouts, Section, signOf as sign, Sources } from "./panel-parts";
+import { PopoverContext } from "./Popover";
+import { LoadingAnnouncement, SkeletonSection } from "./Skeleton";
 import { Tabs, type TabDef } from "./Tabs";
 import { HyperliquidBody, PolymarketBody } from "./VenueBody";
 import { refLabel } from "./WalletMarker";
@@ -98,6 +100,7 @@ export type WalletCardProps = {
  * spending their own Nansen quota by opening it.
  */
 export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, replay }: WalletCardProps) {
+  const pop = useContext(PopoverContext);
   const [labelsPending, setLabelsPending] = useState(false);
   const [labelsError, setLabelsError] = useState<string | null>(null);
 
@@ -141,9 +144,11 @@ export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, repl
     if (error) return <p className="tw-card-message tw-dock-error">{error}</p>;
     if (!lens) {
       return (
-        <p className="tw-card-message tw-dock-loading" role="status">
-          Reading this wallet…
-        </p>
+        <div className="tw-card-loading">
+          <LoadingAnnouncement what="wallet data" />
+          <SkeletonSection title="Wallet overview" shape="tile" rows={4} />
+          <SkeletonSection title="Top holdings" shape="table" rows={5} />
+        </div>
       );
     }
     if (!lens.resolved) return <p className="tw-card-message tw-dock-error">{lens.message ?? "This wallet could not be resolved."}</p>;
@@ -160,7 +165,7 @@ export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, repl
   };
 
   return (
-    <section className="tw-card tw-wallet-card">
+    <section className="tw-card tw-wallet-card" data-size={pop?.size ?? "compact"} aria-busy={!lens && !error ? "true" : undefined}>
       <CardHeader
         title={title}
         name={lens?.name ? null : lens?.label?.text}
@@ -184,8 +189,9 @@ export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, repl
             </p>
           ) : null}
         </div>
-        {lens?.sources.length ? <Sources>{lens.sources.join(" · ")}</Sources> : null}
-        <p className="tw-meta">This address went to your local backend, then to Nansen. Nothing is stored but the local cache.</p>
+        <p className="tw-sources tw-meta">
+          {lens?.sources.length ? `Data: ${lens.sources.join(" · ")} · ` : ""}Sent through your local backend to Nansen · Cached locally
+        </p>
         <Problems errors={lens?.errors ?? []} />
       </footer>
     </section>

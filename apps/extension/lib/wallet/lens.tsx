@@ -2,6 +2,7 @@ import { capMarkers, MAX_WALLET_MARKERS, walletKey, type WalletRef } from "@trip
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
 import { walletLabels, walletLens, type ApiResult } from "../api";
 import type { WalletLensResponse } from "../api-types";
+import { cardSize, setCardSize, type CardSize } from "../card-size";
 import { rememberWallet } from "../recent-wallets";
 import { mountReact } from "../ui/mount";
 import { Popover } from "../ui/Popover";
@@ -74,6 +75,7 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
 
     const button = marker.mount.ui.shadow.querySelector<HTMLButtonElement>(".tw-wallet-marker");
     let error: string | null = null;
+    let size: CardSize = cardSize("wallet");
 
     const card = await mountReact(ctx, { position: "modal", zIndex }, <></>);
     stopHostClicks(card.ui.shadowHost);
@@ -81,7 +83,17 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
     const draw = () => {
       const lens = loaded.get(walletKey(marker.ref)) ?? null;
       card.update(
-        <Popover anchor={button} returnFocus={() => button} onClose={() => closeCard()}>
+        <Popover
+          anchor={button}
+          returnFocus={() => button}
+          onClose={() => closeCard()}
+          size={size}
+          onToggleSize={() => {
+            size = size === "expanded" ? "compact" : "expanded";
+            setCardSize("wallet", size);
+            draw();
+          }}
+        >
           <WalletCard
             walletRef={marker.ref}
             lens={lens}

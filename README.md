@@ -42,6 +42,14 @@ A short GIF walkthrough, if added, lives in `docs/media/`.
   `<all_urls>` at install and never injects into a site you have not enabled.
 - **User-owned rules:** three presets (Degen, Balanced, Paranoid) or a custom rule set,
   editable at `/rules`, evaluated locally against the signals below.
+- **Immediate, expandable evidence:** every card opens before its data arrives with shaped,
+  reduced-motion-safe loading placeholders. The same card can expand into a desktop overlay
+  for larger charts and longer tables; wallet and author cards remember their own size too.
+  Expanding is free. Paid depth stays behind a tab that states its credit cost before it runs.
+- **Perp market depth:** Hyperliquid cards add positioning, liquidation bands and positions,
+  top traders, recent large trades, price/funding charts, order-book depth, and a normalized
+  funding/OI comparison across Hyperliquid, Binance, Bybit, OKX, and dYdX. Public exchange
+  calls are free, independently failable, cached, and backend-only.
 
 **What it never does:** it never reads, derives or stores a wallet address for an unlabeled X
 account; it never signs, sends or intercepts a transaction, and never connects to a wallet;
@@ -81,9 +89,10 @@ missing signal never counts toward CLEAR.
 
 | Signal | Meaning | Nansen endpoint(s) | Credits |
 |---|---|---|---|
-| `exit_pressure` | Net flow of labeled money (smart traders, whales, public figures) since the window opened; negative means labeled wallets are net selling | `tgm/flow-intelligence` | 1 |
-| `fresh_buy_share` | Fresh wallets' share of positive inflow | `tgm/flow-intelligence` | 1 |
-| `sm_netflow_24h` | Smart Money 24h net flow for the token | `smart-money/netflow` | 5 |
+| `labeled_exit_pct` | Labeled-wallet net flow as a percentage of the token's own 24h volume; negative means smart traders, whales, and public figures are net selling | `tgm/flow-intelligence`, `tgm/token-information` | 1 + 1/day |
+| `distribution_pct` | A labeled exit as a percentage of 24h volume, but only when fresh-wallet buying absorbs the selling; activity and wallet-count guards suppress noise | `tgm/flow-intelligence`, `tgm/token-information` | shared with `labeled_exit_pct` |
+| `sm_netflow_pct` | Smart Money 24h net flow as a percentage of the token's 24h volume | `smart-money/netflow`, `tgm/token-information` | 5 + shared denominator |
+| `drawdown_pct` | Seven-day price change, falling back to 24h when needed | `tgm/token-ohlcv` | endpoint-reported |
 | `risk_high_count` | Count of high-severity token risk indicators (`concentration-risk`, `liquidity-risk`, `token-supply-inflation`) | `tgm/indicators` | 5 |
 | `author_holds_token` | Current USD value the matched entity (X post author) holds of the token | `profiler/address/current-balance` | 1 |
 | `sm_opposite_side_pct` | Share of Smart Money perp exposure on the side opposite the user's chosen long/short | `perp-screener` | 1 |
@@ -95,10 +104,11 @@ presets ship in `packages/core/src/rules/presets.ts`:
 
 | Rule | Signal | Degen | Balanced | Paranoid |
 |---|---|---|---|---|
-| spot-exit | `exit_pressure` | block < -$500,000 | block < -$100,000 | block < -$25,000 |
-| spot-fresh | `fresh_buy_share` | warn > 90% | warn > 70% | block > 50% |
-| spot-sm24 | `sm_netflow_24h` | warn < -$250,000 | warn < -$50,000 | block < $0 |
-| spot-risk | `risk_high_count` | block >= 3 | block >= 2 | block >= 1 |
+| spot-distribution | `distribution_pct` | block < -6% | block < -2% | block < -0.75% |
+| spot-exit-deep | `labeled_exit_pct` | block < -10% | block < -5% | block < -2.5% |
+| spot-exit | `labeled_exit_pct` | warn < -4% | warn < -1% | warn < -0.5% |
+| spot-sm24 | `sm_netflow_pct` | warn < -4% | warn < -1.5% | warn < -0.75% |
+| spot-drawdown | `drawdown_pct` | warn <= -80% | warn <= -50% | block <= -30% |
 | perp-opp | `sm_opposite_side_pct` | block > 85% | block > 70% | block > 55% |
 | perp-liq | `inside_liq_band` | warn > $5,000,000 | warn > $1,000,000 | block > $250,000 |
 | pm-smart | `smart_side_disagrees` | block > 85% | block > 70% | block > 55% |
@@ -187,6 +197,11 @@ the whole window:
 | `perp-screener` | 2 min |
 | `tgm/perp-positions` | 2 min |
 | `smart-money/perp-trades` | 5 min |
+| `tgm/perp-pnl-leaderboard` | 5 min, Traders tab only |
+| `tgm/perp-trades` | 2 min, Traders tab only |
+| `perp-leaderboard` | 1 hour, Traders tab only |
+| `tgm/holders` | 10 min, expanded Spot Holders tab only |
+| `prediction-market/orderbook` | 2 min, expanded prediction Book tab only |
 | `prediction-market/market-screener` | 1 hour |
 | `prediction-market/top-holders` | 5 min |
 | `prediction-market/pnl-by-address` | 24 hours |

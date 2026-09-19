@@ -1,6 +1,7 @@
 import { NANSEN_LOGO, venueLogo, type BrandLogo } from "@tripwire/core";
 import type { AuthorBadgesResponse } from "../api-types";
 import { BrandMark } from "./Logo";
+import { Tooltip } from "./Tooltip";
 
 export type BadgeVenue = "nansen" | "hyperliquid" | "polymarket";
 
@@ -36,20 +37,26 @@ export function BadgeRow({
   if (venues.length === 0) return null;
   return (
     <span className="tw-badges">
-      {venues.map((venue) => (
-        <button
-          key={venue}
-          type="button"
-          className="tw-badge"
-          data-venue={venue}
-          aria-label={`${MARK[venue].label} for @${handle}`}
-          aria-haspopup="dialog"
-          aria-expanded={open === venue}
-          onClick={() => onOpen(venue)}
-        >
-          <BrandMark logo={MARK[venue].logo} size={14} />
-        </button>
-      ))}
+      {venues.map((venue) => {
+        const label = `${MARK[venue].label} for @${handle}`;
+        return (
+          <Tooltip key={venue} label={label}>
+            {(labelId) => (
+              <button
+                type="button"
+                className="tw-badge"
+                data-venue={venue}
+                aria-labelledby={labelId}
+                aria-haspopup="dialog"
+                aria-expanded={open === venue}
+                onClick={() => onOpen(venue)}
+              >
+                <BrandMark logo={MARK[venue].logo} size={14} />
+              </button>
+            )}
+          </Tooltip>
+        );
+      })}
     </span>
   );
 }

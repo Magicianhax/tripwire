@@ -9,6 +9,7 @@ import { Plate } from "./Plate";
 import { PopoverContext } from "./Popover";
 import { ReplayBadge } from "./ReplayBadge";
 import { decadeTicks, symlogFraction } from "./scales";
+import { Tooltip } from "./Tooltip";
 
 /** Center-zero split bar on a shared symmetric-log scale with decade ticks: selling extends left
  * of zero in red, buying right in mint, so direction carries the sign. A row whose rule fired
@@ -312,17 +313,19 @@ export function CardHeader({
       {verdict ? <Plate verdict={verdict} className="tw-card-plate" /> : null}
       <ReplayBadge replay={replay} />
       {toggleSize ? (
-        <button
-          type="button"
-          className="tw-card-size"
-          // The label says what the press will do, not what the card currently is.
-          aria-label={size === "expanded" ? "Collapse card" : "Expand card"}
-          title={size === "expanded" ? "Collapse card" : "Expand card"}
-          aria-pressed={size === "expanded"}
-          onClick={toggleSize}
-        >
-          <Icon icon={size === "expanded" ? Minimize2 : Maximize2} size={16} />
-        </button>
+        <Tooltip label={size === "expanded" ? "Collapse card" : "Expand card"} align="end" placement="bottom">
+          {(labelId) => (
+            <button
+              type="button"
+              className="tw-card-size"
+              // The label says what the press will do, not what the card currently is.
+              aria-labelledby={labelId}
+              onClick={toggleSize}
+            >
+              <Icon icon={size === "expanded" ? Minimize2 : Maximize2} size={16} />
+            </button>
+          )}
+        </Tooltip>
       ) : null}
       {close ? (
         <button type="button" className="tw-card-close" aria-label="Close" onClick={close}>

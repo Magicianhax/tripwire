@@ -1,6 +1,6 @@
 # Tripwire handoff
 
-Written 2026-09-18 so another agent (Codex, a fresh Claude session, or a human) can take over without this conversation. Everything here is checked into the repo.
+Written 2026-09-18 and refreshed by the Codex takeover on 2026-09-19 so another agent or human can continue without either conversation.
 
 ## What Tripwire is
 
@@ -11,7 +11,7 @@ A Chrome MV3 extension plus a local Next.js backend, built for the Nansen Meridi
 - **Anywhere:** the wallet lens marks addresses, ENS names and profile links on the page and opens a wallet card (holdings, PnL, Hyperliquid positions, Polymarket activity). Non-venue sites need a per-site permission granted from the popup.
 - **Local pages:** `/` status, `/rules` editor, `/ledger` (Nansen call count toward the buildathon's 1,000-call rule), `/history`.
 
-Product brief: `PRODUCT.md`. Architecture: `docs/ARCHITECTURE.md`. Decisions: `docs/DECISIONS.md` (ADR-0001..0008; later ADR text lives in `docs/BUILD-LOG.md`, not yet merged into DECISIONS.md).
+Product brief: `PRODUCT.md`. Architecture: `docs/ARCHITECTURE.md`. Decisions: `docs/DECISIONS.md` (ADR-0001..0012).
 
 ## Repo layout
 
@@ -51,7 +51,7 @@ The Nansen key comes from `apps/web/.env.local` (`NANSEN_API_KEY`) or, if absent
 
 ## Where the work stands
 
-Branch `feat/cockpit-ui` (not pushed; `master` is at the earlier `2e59a4b`). Shipped on the branch:
+Branch `feat/cockpit-ui` (not pushed; `master` is at the earlier `2e59a4b`). HEAD is `832835d`; the 2026-09-19 takeover closure is currently an uncommitted working-tree diff on top of it. Shipped on the branch:
 
 - Nansen-brand re-theme across extension, popup and web; Lucide icons; 28 official logos with provenance (`apps/extension/public/logos/SOURCES.md`).
 - Floating popover cards (replacing inline expansion), tabs, block-screen composition fixes.
@@ -61,16 +61,29 @@ Branch `feat/cockpit-ui` (not pushed; `master` is at the earlier `2e59a4b`). Shi
 - Wallet lens: detection, `/api/wallet`, wallet card, per-site consent, token-logo proxy.
 - Venue adapter fixes against real captured DOM (`docs/VENUE-CHECK.md`), strip placement, out-of-coverage and native-asset copy.
 
-In flight when this was written: **expand view + instant skeletons + perp depth** (`docs/briefs/expand-and-perp-depth.md`). If that build did not finish, its brief is the spec; check `git log` on the branch and `docs/BUILD-LOG.md` for how far it got.
+- Expanded evidence, wallet, and author-badge cards with per-kind persistence, focus trapping, and state-preserving collapse back to the anchor.
+- Immediate card shells with section-shaped skeletons and `aria-busy`; wallet loading now follows the same treatment.
+- Perp depth from Hyperliquid plus Binance, Bybit, OKX, and dYdX, normalized funding/OI, liquidation bands/positions, trader leaderboards/trades, and price/funding charts. Paid depth remains behind explicitly priced tabs.
+- Capture-driven UI polish: explicit expanded Spot layout, 4×2 market readouts, discoverable third Traders cohort, Chromium scroll affordance, and compact wallet metadata.
+- The stale Hazard `DESIGN.md` and missing ADR-0009..0012 have been reconciled with the built Nansen UI.
+
+The former in-flight brief, `docs/briefs/expand-and-perp-depth.md`, is now closed subject to final human live-site testing. The complete audit, rulings, exact verification, and residual gaps are at the end of `docs/BUILD-LOG.md`.
 
 ## What is left
 
-1. Finish the in-flight brief above if incomplete.
-2. **Finish review + documentation pass:** the visual world changed twice, so `DESIGN.md` still describes the retired "Hazard" world. Rewrite it from the built UI (tokens + prose), then re-run `impeccable detect` — most of its ~80 advisory findings are drift against that stale file.
-3. **Fold later ADR text into `docs/DECISIONS.md`** (badges ADR-0009, recalibration ADR-0010, wallet lens, expand/perp): the text is in `docs/BUILD-LOG.md`.
-4. **Merge `feat/cockpit-ui` into `master`** (fast-forward; the user decides) and update `tasks/todo.md`.
-5. **Buildathon submission:** ≥1,000 Nansen API calls logged on `/ledger` (check the count; the CLI under-reports per-call credits, see `docs/CALIBRATION.md`), a demo recording with no narration, an X post tagging @nansen_ai, and the entry form (email + X link + GitHub repo). The repo has no git remote yet — one must be added to submit.
-6. **Known gaps:** `.sol` names don't resolve (no working free resolver); the curated wallet list ships empty; Polymarket open positions lack size/price fields from Nansen; `profiler/labels` (100 credits) has no fixture; lightweight-charts is loaded eagerly (~52KB gzip) and should be lazy; calibration thresholds rest on a single day's sample.
+1. Review and commit the takeover working-tree diff, then **merge `feat/cockpit-ui` into `master`** when the user decides. No remote is configured, so nothing can be pushed yet.
+2. Run a manual load-unpacked pass on live x.com, jup.ag, app.hyperliquid.xyz, and polymarket.com. Automated replay E2E is green, but venue DOMs are the volatile boundary.
+3. If `impeccable` is reinstalled, run `impeccable detect apps/extension apps/web packages/core` once against the new `DESIGN.md`; the command was unavailable during takeover, so there is no fresh count.
+4. **Buildathon submission:** ≥1,000 Nansen API calls logged on `/ledger` (check the count; the CLI under-reports per-call credits, see `docs/CALIBRATION.md`), a demo recording with no narration, an X post tagging @nansen_ai, and the entry form (email + X link + GitHub repo).
+5. **Known gaps:** `.sol` names don't resolve (no working free resolver); the curated wallet list ships empty; Polymarket open positions lack size/price fields from Nansen; `profiler/labels` (100 credits) has no fixture; lightweight-charts is loaded eagerly (~52KB gzip); calibration thresholds rest on a single day's sample; `predictedFundings` is not surfaced.
+
+## Latest verification (2026-09-19)
+
+- `pnpm verify`: typecheck clean; core 200, web 159, extension 435 tests passed.
+- Sequential production builds and desktop replay E2E: 12 passed, 3 capture-only specs skipped.
+- Capture run: 3 passed; the five brief images plus expanded wallet/badge images were regenerated and visually inspected.
+- `git diff --check`: clean.
+- Final code review: **APPROVE**, with zero remaining critical/high/medium/low findings after cleanup and tooltip fixes.
 
 ## How to work on it
 

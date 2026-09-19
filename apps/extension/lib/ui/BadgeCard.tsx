@@ -1,6 +1,6 @@
 import { useContext, useId } from "react";
 import { cleanLabel, NANSEN_LOGO, venueLogo, type WalletVenue } from "@tripwire/core";
-import { BadgeCheck, CircleAlert } from "lucide-react";
+import { BadgeCheck, CircleAlert, Maximize2, Minimize2 } from "lucide-react";
 import type { AuthorBadgesResponse, BadgeLink, HyperliquidBadge, NansenBadge, PolymarketBadge } from "../api-types";
 import { badgeVenues, type BadgeVenue } from "./BadgeRow";
 import { pct, timeAgo, usd } from "./format";
@@ -11,6 +11,7 @@ import { Empty, Problems, Readouts, Section, signOf as sign, Sources } from "./p
 import { HyperliquidBody, PolymarketBody } from "./VenueBody";
 import { PopoverContext } from "./Popover";
 import { Tabs, type TabDef } from "./Tabs";
+import { Tooltip } from "./Tooltip";
 
 export type BadgeCardProps = {
   handle: string;
@@ -91,6 +92,8 @@ export function BadgeCard({ handle, displayName, badges, initial, onClose, onSav
   const ownId = useId();
   const headingId = pop?.headingId ?? ownId;
   const close = pop ? () => pop.close("close-button") : onClose;
+  const toggleSize = pop?.onToggleSize;
+  const size = pop?.size ?? "compact";
   const venues = badgeVenues(badges);
   const shown: BadgeVenue[] = venues.length > 0 ? venues : ["nansen"];
   const links: Partial<Record<WalletVenue, BadgeLink>> = {};
@@ -112,7 +115,7 @@ export function BadgeCard({ handle, displayName, badges, initial, onClose, onSav
   };
 
   return (
-    <section className="tw-card tw-badge-card">
+    <section className="tw-card tw-badge-card" data-size={size}>
       <header className="tw-card-header">
         <div className="tw-card-heading">
           <h2 id={headingId} className="tw-card-title" tabIndex={-1}>
@@ -122,6 +125,20 @@ export function BadgeCard({ handle, displayName, badges, initial, onClose, onSav
             <span className="tw-meta">@{handle}</span>
           </span>
         </div>
+        {toggleSize ? (
+          <Tooltip label={size === "expanded" ? "Collapse card" : "Expand card"} align="end" placement="bottom">
+            {(labelId) => (
+              <button
+                type="button"
+                className="tw-card-size"
+                aria-labelledby={labelId}
+                onClick={toggleSize}
+              >
+                <Icon icon={size === "expanded" ? Minimize2 : Maximize2} size={16} />
+              </button>
+            )}
+          </Tooltip>
+        ) : null}
         <button type="button" className="tw-card-close" aria-label="Close" onClick={close}>
           <CloseIcon />
         </button>

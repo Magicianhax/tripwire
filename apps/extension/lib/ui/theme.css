@@ -527,12 +527,19 @@ input {
 
 .tw-card-scroll {
   flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: auto;
   overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: var(--tw-line-strong) transparent;
 }
+
+.tw-card-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.tw-card-scroll::-webkit-scrollbar-thumb { border: 2px solid transparent; border-radius: var(--tw-radius-pill); background: var(--tw-line-strong); background-clip: padding-box; }
 
 .tw-card-finding {
   margin: 0;
@@ -614,7 +621,7 @@ input {
 /* Scroll edge: content continues under the footer. */
 .tw-card[data-more] .tw-card-footer {
   border-top-color: var(--tw-line-strong);
-  box-shadow: 0 -12px 16px -8px var(--tw-scroll-edge);
+  box-shadow: 0 -18px 24px -12px var(--tw-scroll-edge), 0 -1px 0 var(--tw-line-strong);
 }
 
 .tw-card-credit {
@@ -729,6 +736,7 @@ input {
 .tw-tabpanel {
   display: grid;
   gap: var(--tw-space-4);
+  min-width: 0;
   padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
 }
 
@@ -741,11 +749,16 @@ input {
   outline-offset: -2px;
 }
 
+.tw-spot-flow-layout { display: grid; gap: var(--tw-space-4); min-width: 0; }
+.tw-spot-flow-layout > *,
+.tw-market-readouts { min-width: 0; }
+
 /* -------------------- Evidence content -------------------- */
 
 .tw-section {
   display: grid;
   gap: 6px;
+  min-width: 0;
 }
 
 .tw-section-title {
@@ -1660,10 +1673,26 @@ div.tw-dock-chip {
   }
 }
 
+.tw-tooltip { position: relative; display: inline-flex; flex-shrink: 0; }
+.tw-tooltip-content {
+  position: absolute; z-index: 30; left: 50%; bottom: calc(100% + 7px);
+  padding: 5px 7px; border: 1px solid var(--tw-line-strong); border-radius: 6px;
+  background: var(--tw-raised); box-shadow: var(--tw-shadow-float); color: var(--tw-text);
+  font: 500 0.6875rem/1.3 Inter, sans-serif; opacity: 0; pointer-events: none;
+  transform: translate(-50%, 3px); transition: opacity 100ms, transform 100ms, visibility 100ms;
+  visibility: hidden; white-space: nowrap;
+}
+.tw-tooltip[data-align="end"] .tw-tooltip-content { right: 0; left: auto; transform: translateY(3px); }
+.tw-tooltip[data-placement="bottom"] .tw-tooltip-content { top: calc(100% + 7px); bottom: auto; transform: translate(-50%, -3px); }
+.tw-tooltip[data-align="end"][data-placement="bottom"] .tw-tooltip-content { transform: translateY(-3px); }
+.tw-tooltip:hover .tw-tooltip-content,
+.tw-tooltip:focus-within .tw-tooltip-content { opacity: 1; transform: translate(-50%, 0); visibility: visible; }
+.tw-tooltip[data-align="end"]:hover .tw-tooltip-content,
+.tw-tooltip[data-align="end"]:focus-within .tw-tooltip-content { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .tw-tooltip-content { transition: none; } }
+
 /* -------------------- Author badges (X username row) -------------------- */
 
-/* The row sits inside X's own header line, so it takes its baseline from the name next to it and
-   adds no height: 18px marks, a 24px hit target via the pseudo-element. */
 .tw-badges {
   display: inline-flex;
   align-items: center;
@@ -1686,7 +1715,6 @@ div.tw-dock-chip {
   cursor: pointer;
 }
 
-/* Pointer target only: 24px tall without changing the 18px mark or X's line height. */
 .tw-badge::after {
   content: "";
   position: absolute;
@@ -1716,7 +1744,6 @@ div.tw-dock-chip {
   min-height: 48px;
 }
 
-/* Tiles keep their figures on one baseline even when a label wraps to two lines. */
 .tw-badge-card .tw-readouts {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -1725,7 +1752,6 @@ div.tw-dock-chip {
   font-size: 0.75rem;
 }
 
-/* Venue tabs carry their brand mark before the name. */
 .tw-tab {
   display: inline-flex;
   align-items: center;
@@ -2244,12 +2270,7 @@ div.tw-dock-chip {
   color: var(--tw-text-2);
 }
 
-/* -------------------- Loading: the card's first frame --------------------
- *
- * A section reserves the height its real content will take, so nothing below it moves when the
- * numbers land and the card never collapses and re-expands. Heights are matched to the thing
- * each shape stands in for: a gauge row, a figure tile, a table row, the chart box.
- */
+/* Loading placeholders reserve the final section's height. */
 .tw-skeleton {
   display: grid;
   gap: 6px;
@@ -2263,8 +2284,6 @@ div.tw-dock-chip {
   animation: tw-skeleton-sweep 1.2s var(--tw-ease-out) infinite;
 }
 
-/* Matched heights: gauge rows are 20px, figure tiles 52px, table rows 28px, the chart 132px
-   (320px once the card is expanded, where the chart box itself grows). */
 .tw-skeleton-row[data-shape="gauge"] {
   height: 20px;
 }
@@ -2287,7 +2306,6 @@ div.tw-dock-chip {
   height: 320px;
 }
 
-/* Figure tiles come in rows of four, so their placeholder does too. */
 .tw-skeleton[data-shape="tile"] {
   grid-template-columns: repeat(4, 1fr);
   gap: var(--tw-space-2);
@@ -2310,25 +2328,17 @@ div.tw-dock-chip {
   }
 }
 
-/* The first frame's sections, in the same gutter the tab panels use, so nothing shifts
-   sideways when the real card replaces them. */
 .tw-card-loading {
   display: grid;
   gap: var(--tw-space-4);
   padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
 }
 
-/* The finding's line, held open while the sentence is still on its way. */
 .tw-card-finding-pending {
   height: 1.25em;
 }
 
-/* -------------------- Expanded card --------------------
- *
- * The anchored card is 440px beside its trigger. Expanded is a centred overlay on a dimmed
- * backdrop: the same content, laid out in two columns with room for full tables and a real
- * chart. Desktop only — Tripwire is a PC product, so there is no narrow variant here.
- */
+/* Expanded desktop overlay. */
 .tw-pop-backdrop {
   position: fixed;
   inset: 0;
@@ -2403,6 +2413,21 @@ div.tw-dock-chip {
   gap: 0 var(--tw-space-5);
 }
 
+[data-size=expanded] .tw-spot-flow-layout,
+[data-size=expanded] .tw-card-loading { grid-template-columns: minmax(420px, 1fr) minmax(0, 1.15fr); align-items: start; gap: var(--tw-space-4) var(--tw-space-5); }
+[data-size=expanded] .tw-spot-flow-layout { grid-column: 1 / -1; grid-template-areas: "window window" "gauges chart" "netflow chart"; }
+[data-size=expanded] .tw-spot-flow-layout > .tw-window { grid-area: window; }
+[data-size=expanded] .tw-spot-flow-layout > .tw-empty { grid-column: 1 / -1; }
+[data-size=expanded] .tw-spot-flow-gauges { grid-area: gauges; }
+[data-size=expanded] .tw-spot-flow-chart { grid-area: chart; }
+[data-size=expanded] .tw-spot-flow-netflow { grid-area: netflow; }
+[data-size=expanded] .tw-card-loading[data-kind=spot] { grid-template-areas: "primary secondary" "tertiary secondary"; }
+[data-size=expanded] .tw-card-loading[data-kind=perp] { grid-template-areas: "primary secondary" "tertiary tertiary"; }
+[data-size=expanded] .tw-card-loading[data-kind=prediction] { grid-template-areas: "primary secondary"; }
+[data-size=expanded] [data-skeleton-slot=primary] { grid-area: primary; }
+[data-size=expanded] [data-skeleton-slot=secondary] { grid-area: secondary; }
+[data-size=expanded] [data-skeleton-slot=tertiary] { grid-area: tertiary; }
+
 /* The things that want the full width: the window control, the wide tables and the chart. */
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-window,
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-sources,
@@ -2416,6 +2441,8 @@ div.tw-dock-chip {
 .tw-card[data-size="expanded"] .tw-card-finding {
   font-size: 1.0625rem;
 }
+
+[data-size=expanded] .tw-market-readouts > .tw-readouts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 /* The chart gets real height in the expanded card; the library sizes itself to this box. */
 .tw-chart-box {
@@ -2431,7 +2458,6 @@ div.tw-dock-chip {
   height: 100%;
 }
 
-/* The header's expand/collapse control, the same 24px square as Close beside it. */
 .tw-card-size {
   appearance: none;
   flex-shrink: 0;
@@ -2698,9 +2724,6 @@ div.tw-dock-chip {
 
 /* ---- Wallet lens ---- */
 
-/* The mark beside a wallet somebody shared. 14px so it sits inside a line of the host's own
-   text without changing its height; the 24px hit target comes from a pseudo-element, which
-   costs no layout. */
 .tw-wallet-marker {
   position: relative;
   display: inline-flex;
@@ -2739,7 +2762,6 @@ div.tw-dock-chip {
   outline-offset: 2px;
 }
 
-/* The wallet card is the same floating card as the evidence and badge cards. */
 .tw-wallet-card .tw-card-header {
   align-items: center;
 }
@@ -2752,8 +2774,6 @@ div.tw-dock-chip {
   margin-top: var(--tw-space-1);
 }
 
-/* The 100-credit label lookup. It is an action inside a sentence, so it reads as a link with a
-   real target size rather than as another button competing with the tabs. */
 .tw-premium-button {
   display: inline-flex;
   align-items: center;

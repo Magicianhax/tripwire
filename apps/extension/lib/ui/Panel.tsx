@@ -115,27 +115,27 @@ function defaultFinding(verdict: Verdict): string {
 function LoadingBody({ kind }: { kind: Target["kind"] | "spot" }) {
   if (kind === "perp") {
     return (
-      <div className="tw-card-loading">
-        <SkeletonSection title="Smart Money long vs short" shape="gauge" rows={1} />
+      <div className="tw-card-loading" data-kind="perp">
+        <SkeletonSection title="Smart Money long vs short" shape="gauge" rows={1} layoutSlot="primary" />
         {/* Eight figure tiles, four across, which is what "The market right now" renders. */}
-        <SkeletonSection title="The market right now" shape="tile" rows={8} />
-        <SkeletonSection title="Funding &amp; OI across venues" shape="table" rows={5} />
+        <SkeletonSection title="The market right now" shape="tile" rows={8} layoutSlot="secondary" />
+        <SkeletonSection title="Funding &amp; OI across venues" shape="table" rows={5} layoutSlot="tertiary" />
       </div>
     );
   }
   if (kind === "prediction") {
     return (
-      <div className="tw-card-loading">
-        <SkeletonSection title="Proven winners by side" shape="gauge" rows={1} />
-        <SkeletonSection title="Top holders" shape="table" rows={6} />
+      <div className="tw-card-loading" data-kind="prediction">
+        <SkeletonSection title="Proven winners by side" shape="gauge" rows={1} layoutSlot="primary" />
+        <SkeletonSection title="Top holders" shape="table" rows={6} layoutSlot="secondary" />
       </div>
     );
   }
   return (
-    <div className="tw-card-loading">
-      <SkeletonSection title="Net flow by wallet type" shape="gauge" rows={6} />
-      <SkeletonSection title="Price" shape="chart" rows={1} />
-      <SkeletonSection title="Smart Money netflow" shape="tile" rows={4} />
+    <div className="tw-card-loading" data-kind="spot">
+      <SkeletonSection title="Net flow by wallet type" shape="gauge" rows={6} layoutSlot="primary" />
+      <SkeletonSection title="Price" shape="chart" rows={1} layoutSlot="secondary" />
+      <SkeletonSection title="Smart Money netflow" shape="tile" rows={4} layoutSlot="tertiary" />
     </div>
   );
 }

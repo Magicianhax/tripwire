@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BUILTIN_MATCHES, grantedOrigins, isBuiltinOrigin, isEnableableUrl, originPattern, WALLET_SCRIPT_FILE } from "../lib/permissions";
 import { addRecent, RECENT_WALLETS_MAX, type RecentWallet } from "../lib/recent-wallets";
 import type { WalletLensResponse } from "../lib/api-types";
+import { Popover } from "../lib/ui/Popover";
 import { WalletCard, walletTitle } from "../lib/ui/WalletCard";
 import { WalletMarker, refLabel } from "../lib/ui/WalletMarker";
 
@@ -114,7 +115,9 @@ describe("WalletMarker", () => {
   it("names the wallet it belongs to, and says whether its card is open", () => {
     const { container } = mountNode(<WalletMarker ref={{ kind: "evm", query: EVM }} open={false} onClick={() => {}} />);
     const button = container.querySelector("button")!;
-    expect(button.getAttribute("aria-label")).toBe("Inspect wallet 0x7f…17d1 with Tripwire");
+    expect(document.getElementById(button.getAttribute("aria-labelledby")!)?.textContent).toBe("Inspect wallet 0x7f…17d1 with Tripwire");
+    expect(container.querySelector('[role="tooltip"]')).not.toBeNull();
+    expect(button.hasAttribute("title")).toBe(false);
     expect(button.getAttribute("aria-expanded")).toBe("false");
   });
 
@@ -133,10 +136,38 @@ describe("WalletMarker", () => {
 describe("WalletCard", () => {
   const ref = { kind: "evm", query: EVM } as const;
 
-  it("says it is working before the data lands", () => {
-    const { container } = mountNode(<WalletCard walletRef={ref} lens={null} error={null} onClose={() => {}} />);
-    expect(container.textContent).toContain("Reading this wallet");
+  it("reserves the wallet layout and announces that it is working before the data lands", () => {
+    const { container, root } = mountNode(<WalletCard walletRef={ref} lens={null} error={null} onClose={() => {}} />);
+    expect(container.querySelector(".tw-wallet-card")?.getAttribute("aria-busy")).toBe("true");
+    expect([...container.querySelectorAll(".tw-skeleton")].map((node) => node.getAttribute("data-shape"))).toEqual(["tile", "table"]);
+    expect(container.querySelector('[role="status"][aria-live="polite"]')?.textContent).toContain("Loading wallet data");
     expect(container.querySelector('[role="tablist"]')).toBeNull();
+    root.unmount();
+  });
+
+  it("gets its expand control from the popover frame", () => {
+    const onToggleSize = vi.fn();
+    let size: "compact" | "expanded" = "compact";
+    const node = () => (
+      <Popover anchor={null} onClose={() => {}} size={size} onToggleSize={onToggleSize}>
+        <WalletCard walletRef={ref} lens={lens()} error={null} onClose={() => {}} />
+      </Popover>
+    );
+    const { container, root } = mountNode(node());
+    const toggle = container.querySelector<HTMLButtonElement>(".tw-card-size")!;
+    expect(document.getElementById(toggle.getAttribute("aria-labelledby")!)?.textContent).toBe("Expand card");
+    expect(container.querySelector(".tw-pop")?.getAttribute("data-size")).toBe("compact");
+    expect(container.querySelector(".tw-wallet-card")?.getAttribute("data-size")).toBe("compact");
+    act(() => toggle.click());
+    expect(onToggleSize).toHaveBeenCalledOnce();
+
+    size = "expanded";
+    act(() => root.render(node()));
+    expect(container.querySelector(".tw-pop")?.getAttribute("data-size")).toBe("expanded");
+    expect(container.querySelector(".tw-wallet-card")?.getAttribute("data-size")).toBe("expanded");
+    const collapse = container.querySelector(".tw-card-size")!;
+    expect(document.getElementById(collapse.getAttribute("aria-labelledby")!)?.textContent).toBe("Collapse card");
+    root.unmount();
   });
 
   it("shows only the tabs that have data", () => {

@@ -94,7 +94,7 @@ function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: 
   const exitSignal = signals.find((s) => s.id === "labeled_exit_pct");
 
   return (
-    <>
+    <div className="tw-spot-flow-layout">
       {timeframe ? (
       <div className="tw-window">
         <Segmented options={TIMEFRAME_OPTIONS} value={view} onChange={timeframe.onChange} label="Flow and price window" />
@@ -115,72 +115,78 @@ function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: 
       {!hasAnything && !loading ? <Empty>No flow data came back for this token.</Empty> : null}
 
       {flow || loading ? (
-        <Section title="Net flow by wallet type" aside={`${view}, log scale`}>
-          {loading ? (
-            <Skeleton rows={6} />
-          ) : (
-            <>
-              <div className="tw-gauges">
-                <SegmentRow label="Labeled wallets" icon={LogOut} value={labeled} max={max} lit={lamp(exitHit)} rule threshold={thresholdUsd} />
-                {rows.map((r) => (
-                  <SegmentRow key={r.label} label={r.label} icon={r.icon} value={r.value} max={max} lit={r.lit} />
-                ))}
-              </div>
-              {onVerdictWindow && absorption !== null ? (
-                <p className="tw-note">
-                  Fresh wallets bought <b className="tw-fig">{absorption.toFixed(1)}x</b> what labeled wallets sold.
-                </p>
-              ) : null}
-              {onVerdictWindow && absorption === null && exitSignal?.value === 0 ? <p className="tw-note">{exitSignal.label}</p> : null}
-            </>
-          )}
-        </Section>
+        <div className="tw-spot-flow-gauges">
+          <Section title="Net flow by wallet type" aside={`${view}, log scale`}>
+            {loading ? (
+              <Skeleton rows={6} />
+            ) : (
+              <>
+                <div className="tw-gauges">
+                  <SegmentRow label="Labeled wallets" icon={LogOut} value={labeled} max={max} lit={lamp(exitHit)} rule threshold={thresholdUsd} />
+                  {rows.map((r) => (
+                    <SegmentRow key={r.label} label={r.label} icon={r.icon} value={r.value} max={max} lit={r.lit} />
+                  ))}
+                </div>
+                {onVerdictWindow && absorption !== null ? (
+                  <p className="tw-note">
+                    Fresh wallets bought <b className="tw-fig">{absorption.toFixed(1)}x</b> what labeled wallets sold.
+                  </p>
+                ) : null}
+                {onVerdictWindow && absorption === null && exitSignal?.value === 0 ? <p className="tw-note">{exitSignal.label}</p> : null}
+              </>
+            )}
+          </Section>
+        </div>
       ) : null}
 
-      <Section title="Price" aside={panel.token?.symbol ? `$${panel.token.symbol}` : null}>
-        {loading ? (
-          <Skeleton rows={1} tall />
-        ) : (
-          // The chart is the one thing that gains most from the expanded card: same series,
-          // more than twice the height to read it in.
-          <div className="tw-chart-box" data-size={size}>
-            <PriceChart candles={chart?.candles} postTimeIso={panel.postTimeIso} timeframe={view} symbol={panel.token?.symbol} />
-          </div>
-        )}
-        {!loading && !(chart?.candles && chart.candles.length > 1) ? <Empty>No price history came back for this window.</Empty> : null}
-      </Section>
+      <div className="tw-spot-flow-chart">
+        <Section title="Price" aside={panel.token?.symbol ? `$${panel.token.symbol}` : null}>
+          {loading ? (
+            <Skeleton rows={1} tall />
+          ) : (
+            // The chart is the one thing that gains most from the expanded card: same series,
+            // more than twice the height to read it in.
+            <div className="tw-chart-box" data-size={size}>
+              <PriceChart candles={chart?.candles} postTimeIso={panel.postTimeIso} timeframe={view} symbol={panel.token?.symbol} />
+            </div>
+          )}
+          {!loading && !(chart?.candles && chart.candles.length > 1) ? <Empty>No price history came back for this window.</Empty> : null}
+        </Section>
+      </div>
 
       {netflow ? (
-        <Section title="Smart Money netflow" aside={netflow.traders ? `${netflow.traders} traders` : null}>
-          <dl className="tw-readouts">
-            {NETFLOW_TILES.map(({ key, label }) => {
-              const value = netflow[key];
-              const target = NETFLOW_TILE_TIMEFRAME[key];
-              const selected = target === view && (key !== "d30" || view === "7d");
-              return (
-                <div key={key} data-lit={key === "h24" ? (lamp(netflowHit) ?? undefined) : undefined}>
-                  <dt>
-                    <button
-                      type="button"
-                      className="tw-tile-button"
-                      aria-pressed={selected}
-                      title={key === "d30" ? "Flows go back 7 days at most" : `Show the ${target} window`}
-                      onClick={() => timeframe?.onChange(target)}
-                    >
-                      {label}
-                      {key === "d30" ? <span className="tw-sr-only"> (flows go back 7 days at most)</span> : null}
-                    </button>
-                  </dt>
-                  <dd className="tw-fig" data-sign={value === null || value === 0 ? "zero" : value < 0 ? "neg" : "pos"}>
-                    {usd(value, true)}
-                  </dd>
-                </div>
-              );
-            })}
-          </dl>
-        </Section>
+        <div className="tw-spot-flow-netflow">
+          <Section title="Smart Money netflow" aside={netflow.traders ? `${netflow.traders} traders` : null}>
+            <dl className="tw-readouts">
+              {NETFLOW_TILES.map(({ key, label }) => {
+                const value = netflow[key];
+                const target = NETFLOW_TILE_TIMEFRAME[key];
+                const selected = target === view && (key !== "d30" || view === "7d");
+                return (
+                  <div key={key} data-lit={key === "h24" ? (lamp(netflowHit) ?? undefined) : undefined}>
+                    <dt>
+                      <button
+                        type="button"
+                        className="tw-tile-button"
+                        aria-pressed={selected}
+                        title={key === "d30" ? "Flows go back 7 days at most" : `Show the ${target} window`}
+                        onClick={() => timeframe?.onChange(target)}
+                      >
+                        {label}
+                        {key === "d30" ? <span className="tw-sr-only"> (flows go back 7 days at most)</span> : null}
+                      </button>
+                    </dt>
+                    <dd className="tw-fig" data-sign={value === null || value === 0 ? "zero" : value < 0 ? "neg" : "pos"}>
+                      {usd(value, true)}
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
+          </Section>
+        </div>
       ) : null}
-    </>
+    </div>
   );
 }
 

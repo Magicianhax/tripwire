@@ -306,14 +306,11 @@ export function Popover({
     </div>
   );
 
-  if (!expanded) return card;
   return (
     <>
-      {/* The backdrop takes the click that dismisses the card. `pointer-events` has to be
-          re-enabled here: the shadow host's modal container is click-through so the venue's own
-          page stays usable behind an anchored card. The outside-pointerdown listener above is
-          what actually closes it; this element only has to be hittable and opaque. */}
-      <div className="tw-pop-backdrop" aria-hidden="true" />
+      {expanded ? (
+        <div className="tw-pop-backdrop" aria-hidden="true" />
+      ) : null}
       {card}
     </>
   );

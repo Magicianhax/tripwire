@@ -10,6 +10,7 @@ import { parseLinkAddress } from "../lib/x/link-form";
 import { BadgeCard } from "../lib/ui/BadgeCard";
 import { BadgeRow } from "../lib/ui/BadgeRow";
 import { LinkWallet } from "../lib/ui/LinkWallet";
+import { Popover } from "../lib/ui/Popover";
 
 const FIXTURES_DIR = resolve(process.cwd(), "../../fixtures/html");
 const HL = "0x7fdafde5cfb5465924316eced2d3715494c517d1";
@@ -134,12 +135,14 @@ describe("BadgeRow", () => {
   it("renders one logo badge per venue, with accessible names and no emoji", () => {
     const { container, root } = mountNode(<BadgeRow handle="degenalpha" badges={badges} open={null} onOpen={() => {}} />);
     const buttons = [...container.querySelectorAll("button")];
-    expect(buttons.map((b) => b.getAttribute("aria-label"))).toEqual([
+    expect(buttons.map((b) => document.getElementById(b.getAttribute("aria-labelledby")!)?.textContent)).toEqual([
       "Nansen label for @degenalpha",
       "Hyperliquid account for @degenalpha",
       "Polymarket account for @degenalpha",
     ]);
     expect(buttons.every((b) => b.getAttribute("aria-haspopup") === "dialog")).toBe(true);
+    expect(container.querySelectorAll('[role="tooltip"]')).toHaveLength(3);
+    expect(buttons.every((b) => !b.hasAttribute("title") && !b.hasAttribute("aria-describedby"))).toBe(true);
     expect(container.querySelectorAll("img.tw-logo")).toHaveLength(3);
     expect(/\p{Extended_Pictographic}/u.test(container.textContent ?? "")).toBe(false);
     root.unmount();
@@ -166,6 +169,33 @@ describe("BadgeRow", () => {
 
 describe("BadgeCard", () => {
   const noop = async () => null;
+
+  it("uses the popover size control with compact and expanded semantics", () => {
+    const onToggleSize = vi.fn();
+    let size: "compact" | "expanded" = "compact";
+    const node = () => (
+      <Popover anchor={null} onClose={() => {}} size={size} onToggleSize={onToggleSize}>
+        <BadgeCard handle="degenalpha" displayName="Degen Alpha" badges={badges} initial="nansen" onClose={() => {}} onSave={noop} onUnlink={noop} />
+      </Popover>
+    );
+    const { container, root } = mountNode(node());
+    const expand = container.querySelector<HTMLButtonElement>(".tw-card-size")!;
+    expect(document.getElementById(expand.getAttribute("aria-labelledby")!)?.textContent).toBe("Expand card");
+    expect(expand.getAttribute("aria-pressed")).toBeNull();
+    expect(container.querySelector(".tw-pop")?.getAttribute("data-size")).toBe("compact");
+    expect(container.querySelector(".tw-badge-card")?.getAttribute("data-size")).toBe("compact");
+    act(() => expand.click());
+    expect(onToggleSize).toHaveBeenCalledOnce();
+
+    size = "expanded";
+    act(() => root.render(node()));
+    const collapse = container.querySelector<HTMLButtonElement>(".tw-card-size")!;
+    expect(document.getElementById(collapse.getAttribute("aria-labelledby")!)?.textContent).toBe("Collapse card");
+    expect(collapse.getAttribute("aria-pressed")).toBeNull();
+    expect(container.querySelector(".tw-pop")?.getAttribute("data-size")).toBe("expanded");
+    expect(container.querySelector(".tw-badge-card")?.getAttribute("data-size")).toBe("expanded");
+    root.unmount();
+  });
 
   it("shows one tab per badge and opens on the venue that was clicked", () => {
     const { container, root } = mountNode(

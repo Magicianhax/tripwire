@@ -3,6 +3,7 @@ import type { WalletVenue } from "@tripwire/core";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
 import { authorBadges, linkWallet, unlinkWallet, type ApiResult } from "../api";
 import type { AuthorBadgesResponse, BadgeLink } from "../api-types";
+import { cardSize, setCardSize, type CardSize } from "../card-size";
 import { BadgeCard } from "../ui/BadgeCard";
 import { BadgeRow, badgeVenues, type BadgeVenue } from "../ui/BadgeRow";
 import { LinkWallet } from "../ui/LinkWallet";
@@ -102,6 +103,7 @@ export function createBadgeController({ ctx, mounts, stopHostClicks, zIndex }: B
     let row: Mount | null = null;
     let card: Mount | null = null;
     let open: BadgeVenue | null = null;
+    let size: CardSize = cardSize("badge");
 
     function rowNode() {
       return <BadgeRow handle={tweet.handle} badges={badges} open={open} onOpen={(venue) => void toggleCard(venue)} />;
@@ -109,7 +111,17 @@ export function createBadgeController({ ctx, mounts, stopHostClicks, zIndex }: B
 
     function cardNode(initial: BadgeVenue, badgeButton: Element | null) {
       return (
-        <Popover anchor={badgeButton} returnFocus={() => badgeButton as HTMLElement | null} onClose={() => void closeCard()}>
+        <Popover
+          anchor={badgeButton}
+          returnFocus={() => badgeButton as HTMLElement | null}
+          onClose={() => void closeCard()}
+          size={size}
+          onToggleSize={() => {
+            size = size === "expanded" ? "compact" : "expanded";
+            setCardSize("badge", size);
+            card?.update(cardNode(initial, badgeButton));
+          }}
+        >
           <BadgeCard
             handle={tweet.handle}
             displayName={tweet.displayName}
@@ -140,6 +152,7 @@ export function createBadgeController({ ctx, mounts, stopHostClicks, zIndex }: B
       }
       await closeCard();
       open = venue;
+      size = cardSize("badge");
       row?.update(rowNode());
       const button = row?.ui.shadow.querySelector(`.tw-badge[data-venue="${venue}"]`) ?? null;
       const mount = await mountReact(ctx, { position: "modal", zIndex }, cardNode(venue, button));

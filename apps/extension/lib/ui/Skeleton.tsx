@@ -27,9 +27,20 @@ export function Skeleton({ shape = "row", rows = 3, label = "Loading" }: { shape
  * A titled block that is still loading: the heading is real from the first frame (it says what
  * is coming), the body is the placeholder.
  */
-export function SkeletonSection({ title, shape = "row", rows = 3 }: { title: string; shape?: SkeletonShape; rows?: number }) {
+export function SkeletonSection({
+  title,
+  shape = "row",
+  rows = 3,
+  layoutSlot,
+}: {
+  title: string;
+  shape?: SkeletonShape;
+  rows?: number;
+  /** Named placement in the expanded card's structural first-frame layout. */
+  layoutSlot?: "primary" | "secondary" | "tertiary";
+}) {
   return (
-    <section className="tw-section" aria-label={title} aria-busy="true">
+    <section className="tw-section" data-skeleton-slot={layoutSlot} aria-label={title} aria-busy="true">
       <h3 className="tw-section-title">
         <span>{title}</span>
       </h3>

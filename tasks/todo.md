@@ -1,4 +1,40 @@
-# Tripwire: /ship plan
+# Tripwire: Codex takeover plan (2026-09-19)
+
+Goal: take over the `feat/cockpit-ui` branch from the 2026-09-18 Claude handoff, finish the in-flight expand/skeleton/perp-depth brief, and leave the branch verified and documented.
+
+## Plan
+
+- [x] Audit commits `91f5592`, `4bf5e30`, and `832835d` against every requirement in `docs/briefs/expand-and-perp-depth.md`.
+- [x] Establish a clean baseline with `pnpm verify`, both production builds, and the desktop E2E suite.
+- [x] Fix only confirmed implementation or test gaps from the audit, preserving lazy paid-call behavior and the never-block-on-missing-data rule.
+- [x] Polish the shipped UI from the real desktop captures: strengthen hierarchy, spacing, overflow handling, and expanded-card density without changing the Nansen direction.
+- [x] Produce and inspect the required desktop captures; the design detector was attempted but is no longer installed on `PATH`.
+- [x] Rewrite stale `DESIGN.md` guidance from the shipped Nansen visual system and fold the post-ADR-0008 decisions from `docs/BUILD-LOG.md` into `docs/DECISIONS.md`.
+- [x] Update `docs/BUILD-LOG.md`, `docs/HANDOFF.md`, and this checklist with exact verification results, residual risks, and the next human-only actions.
+- [x] Review the final diff for scope, security, accessibility, and avoidable complexity.
+
+## Takeover review
+
+Takeover closure is complete in the working tree on `feat/cockpit-ui` at committed HEAD `832835d`; nothing was committed, merged, or pushed.
+
+- The three post-handoff commits were audited against the brief. The implemented architecture is retained: one shared compact/expanded React tree, an atomic base response, and explicit lazy paid tabs.
+- Closed gaps: wallet and author-badge expansion/persistence, shaped wallet loading, state-preserving resize, explicit expanded Spot/Perp layouts, discoverable Traders cohorts, overflow/scroll affordances, compact wallet metadata, and keyboard/pointer-accessible tooltips.
+- Capture fixtures now remove temporary author-wallet links in `finally`, check both DELETE responses, and close the page even when a capture fails.
+- Documentation now matches the product: current Nansen `DESIGN.md`, ADR-0009..0012, calibrated signal/preset tables, closure log, and refreshed handoff.
+- Final review required two accessibility/test-hygiene corrections and then returned **APPROVE** with 0 critical, high, medium, or low findings.
+
+Verification:
+
+- `pnpm verify`: core 200, web 159, extension 435 tests passed; all typechecks clean.
+- `$env:TRIPWIRE_E2E_PORT='3217'; pnpm verify:e2e`: both production builds passed; 12 replay E2E passed, 3 capture-only specs skipped.
+- Capture run with `TRIPWIRE_CAPTURE=1`: 3 passed. Required brief images plus expanded wallet/badge images were regenerated and visually inspected.
+- `git diff --check`: clean. Shadow-DOM source CSS is 59,784 bytes, below the 60,000-byte regression ceiling.
+
+Human-only next actions: load the unpacked extension on the real volatile sites, review/commit this working-tree diff, merge when desired, add a remote if pushing, hit the 1,000-call ledger goal, and record/post/submit the buildathon entry.
+
+---
+
+# Historical Tripwire: /ship plan
 
 Goal: ship Tripwire per `docs/superpowers/specs/2026-09-17-tripwire-design.md`. The detailed plan is `docs/superpowers/plans/2026-09-17-tripwire.md`; decisions since the plan are in `docs/DECISIONS.md`.
 Worktree: `C:/work/Nansen/feat-tripwire` (branch `feat/tripwire`).
@@ -65,4 +101,3 @@ Open for the human:
 - Ruling: 11px becomes a documented DESIGN.md type step (label-sm 0.6875rem) and #4a3e00 (ink-on-yellow muted) + #2A2A2A (border-neutral) become tokens; #f4f4f4 replaced by #EDEDED — documents real usage ≥11px floor — costs a DESIGN.md edit.
 - Ruling: CAUTION strip and weaken-confirm row use a full 1.5px yellow border per DESIGN.md instead of a 4px side border — spec fidelity over detector exception — costs nothing.
 - Parked: /history override sentences use current thresholds (rows store rule ids only) — Ruling: acceptable for v1; store thresholds per row later — costs historical accuracy of wording.
-

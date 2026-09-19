@@ -382,12 +382,13 @@ test("@smoke Wallet lens: markers appear where a wallet was shared, and the card
   await expect(markers).toHaveCount(3, { timeout: 20_000 });
 
   // One per place a wallet was shared: the raw address, the ENS name, the explorer link.
-  const labels = await markers.evaluateAll((els) => els.map((el) => el.getAttribute("aria-label")));
-  expect(labels).toEqual([
+  for (const [index, label] of [
     "Inspect wallet 0x7f…17d1 with Tripwire",
     "Inspect wallet vitalik.eth with Tripwire",
     "Inspect wallet 0xd8…6045 with Tripwire",
-  ]);
+  ].entries()) {
+    await expect(markers.nth(index)).toHaveAccessibleName(label);
+  }
 
   // The transaction hash, the bare `0x`, `docs.ethereum.org`, and both form fields: untouched.
   const clean = await page.evaluate(() => ({
@@ -403,7 +404,7 @@ test("@smoke Wallet lens: markers appear where a wallet was shared, and the card
   expect(clean.overflow, "a marker never makes the host page scroll sideways").toBeLessThanOrEqual(0);
 
   // The card opens beside the marker, on <body>, with the wallet's own identity.
-  const marker = page.locator('.tw-wallet-marker[aria-label*="0x7f"]');
+  const marker = page.getByRole("button", { name: /Inspect wallet 0x7f/ });
   await marker.click();
   const card = page.locator('.tw-pop[role="dialog"]');
   await expect(card).toBeVisible();
@@ -424,7 +425,7 @@ test("@smoke Wallet lens: markers appear where a wallet was shared, and the card
   await expect(marker).toHaveAttribute("aria-expanded", "false");
 
   // The ENS name resolves through the backend, not in the page.
-  await page.locator('.tw-wallet-marker[aria-label*="vitalik.eth"]').click();
+  await page.getByRole("button", { name: /Inspect wallet vitalik\.eth/ }).click();
   await expect(page.locator(".tw-card-title")).toHaveText("vitalik.eth", { timeout: 15_000 });
   await expect(page.locator(".tw-addr-text")).toHaveText("0x7f…17d1");
 

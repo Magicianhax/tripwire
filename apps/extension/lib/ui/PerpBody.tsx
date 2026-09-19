@@ -181,22 +181,24 @@ function PositioningTab({ panel, hits, depth }: { panel: PerpPanel; hits: HitDto
           <Skeleton shape="tile" rows={2} label="Loading market data" />
         ) : market?.market ? (
           <>
-            <Readouts
-              items={[
-                { label: "Mark", value: price(market.market.markPrice) },
-                { label: "Oracle", value: price(market.market.oraclePrice) },
-                { label: "Premium", value: signedPct(market.market.premiumPct, 3), sign: signOf(market.market.premiumPct) },
-                { label: "24h change", value: signedPct(market.market.dayChangePct, 2), sign: signOf(market.market.dayChangePct) },
-                { label: "Open interest", value: usd(market.market.openInterestUsd) },
-                { label: "24h volume", value: usd(market.market.dayVolumeUsd) },
-                {
-                  label: "Funding 8h",
-                  value: signedPct(market.market.fundingPer8h === null ? null : market.market.fundingPer8h * 100, 4),
-                  sign: signOf(market.market.fundingPer8h),
-                },
-                { label: "Max leverage", value: market.market.maxLeverage === null ? "—" : `${market.market.maxLeverage}x` },
-              ]}
-            />
+            <div className="tw-market-readouts">
+              <Readouts
+                items={[
+                  { label: "Mark", value: price(market.market.markPrice) },
+                  { label: "Oracle", value: price(market.market.oraclePrice) },
+                  { label: "Premium", value: signedPct(market.market.premiumPct, 3), sign: signOf(market.market.premiumPct) },
+                  { label: "24h change", value: signedPct(market.market.dayChangePct, 2), sign: signOf(market.market.dayChangePct) },
+                  { label: "Open interest", value: usd(market.market.openInterestUsd) },
+                  { label: "24h volume", value: usd(market.market.dayVolumeUsd) },
+                  {
+                    label: "Funding 8h",
+                    value: signedPct(market.market.fundingPer8h === null ? null : market.market.fundingPer8h * 100, 4),
+                    sign: signOf(market.market.fundingPer8h),
+                  },
+                  { label: "Max leverage", value: market.market.maxLeverage === null ? "—" : `${market.market.maxLeverage}x` },
+                ]}
+              />
+            </div>
             {book ? (
               <p className="tw-note">
                 Within <b className="tw-fig">±{book.bandPct}%</b> of mid there is <b className="tw-fig">{usd(book.bidUsd)}</b> of bids against{" "}
@@ -359,18 +361,18 @@ function TradersTab({ depth, coin }: { depth: DepthState; coin: string }) {
     return (
       <>
         <Section title={`Top traders in ${coin} by PnL`}>
-          <Skeleton shape="table" rows={rowLimit(size, 5, 10)} label="Loading the PnL leaderboard" />
+          <Skeleton shape="table" rows={rowLimit(size, 5, 12)} label="Loading the PnL leaderboard" />
         </Section>
         <Section title="Largest recent trades">
-          <Skeleton shape="row" rows={rowLimit(size, 4, 8)} label="Loading recent trades" />
+          <Skeleton shape="row" rows={rowLimit(size, 4, 12)} label="Loading recent trades" />
         </Section>
       </>
     );
   }
   if (!traders) return <Empty>Open this tab to load the {coin} trader leaderboard.</Empty>;
 
-  const leaders = (traders.leaderboard ?? []).slice(0, rowLimit(size, 5, 20));
-  const trades = (traders.trades ?? []).slice(0, rowLimit(size, 5, 20));
+  const leaders = (traders.leaderboard ?? []).slice(0, rowLimit(size, 5, 12));
+  const trades = (traders.trades ?? []).slice(0, rowLimit(size, 5, 12));
   const here = (traders.topAccounts ?? []).filter((a) => a.hereNow).slice(0, rowLimit(size, 5, 15));
 
   return (
