@@ -2315,3 +2315,136 @@ one contract an author typed.
   touched that file.
 - The "spent on this card" accounting line the earlier rounds raised is still a product decision and
   is not invented here.
+
+# Popup redesign — three tabs in a fixed 420px box (2026-09-20)
+
+Brief: `docs/briefs/popup-redesign.md`. User report: "this is ugly ux in extension showing these
+and also a big scroll also extension bg is black not matching the theme we have for popups design
+wise", with an Ambire Wallet popup as the width and polish reference.
+
+This is layout, theme and copy. Nothing the popup *does* changed: the preset switcher still asks
+before weakening, the per-site request still goes through Chrome's own prompt, the three local
+pages are still one click away, the recent wallets still reopen in Nansen Profiler, and the locate
+action still sends exactly one `tripwire:locate` to the active tab and prints the honest answer
+when nothing replies. The I-1 protocol — a listener with nothing mounted stays silent rather than
+answering `false` — is untouched.
+
+## Shape
+
+`360px` single column → `420 x 520px` fixed box, `overflow: hidden` on the body, a flex column of
+pinned head (56px) / optional settings row / tab strip + panel / pinned foot (40px). The tab panel
+is the only region in the popup allowed to scroll, and inside the Wallets panel the recent list is
+a second capped region (`max-height: 240px`, `overscroll-behavior-y: contain`).
+
+`#root` carries `height: 100%`. Without it the chain of definite heights breaks at the element
+`main.tsx` mounts into, `.tw-popup`'s own `height: 100%` goes indefinite, and the document scrolls
+again — which is exactly what the first capture run caught on the Sites tab after the unit test
+had passed. The unit test now renders through the same `#root` wrapper.
+
+## Theme
+
+The popup was one flat `panel` rectangle, which is why it read as "black". It now uses the local
+pages' three-step architecture at popup scale: `ground` (#06080B) head and foot with 8% hairlines,
+framing a `panel` (#0B1016) working surface, with `raised` (#111821) for the things that are
+actually objects — the on-this-tab row, the usage tiles, venue cells, granted-site rows, the chain
+chip. Mint stays the only ambient accent (selected tab and its 2px underline, selected preset,
+focus rings, the primary action, the "runs here" mark); amber only for the weaken-confirm and for
+"nothing to point at"; red only for an offline backend. Sora for the wordmark and the section
+headings, Inter with tabular numerals for everything else, JetBrains Mono only for addresses and
+the backend URL. Browser surfaces are themed too: mint selection, mint caret, `scrollbar-color`
+on both scroll regions.
+
+One authored motion moment: the panel a tab reveals rises 6px and fades over 180ms on
+`cubic-bezier(0.16, 1, 0.3, 1)`, the same curve the cards use. Reduced motion removes it.
+
+## Per tab
+
+**Protection** (default) — the preset segmented control with its existing weaken-confirm; a new
+"On this tab" row (venue mark or globe, the host, what Tripwire does there) with "Show me where it
+is" beside it and the locate answer under it; three usage tiles.
+
+The on-this-tab row is derived from what the popup already knows — the tab URL, the manifest's
+hosts, the granted origins (`entrypoints/popup/here.ts`) — so it costs no message to the page and
+cannot disagree with the Sites tab. It deliberately does *not* ask the content scripts what is
+mounted: that would be a second query on the locate channel, and the only honest answer to
+"what is showing right now" is the one the locate action already gets.
+
+**Sites** — the current site first (enable button, or "built in" / "enabled"), then the granted
+list with a remove per row, then the 18 built-in venues as a three-column logo grid grouped
+"Blocks trades" / "Evidence dock". The brief ordered the venue grid first; the first capture showed
+the enable button clipped by the scroll boundary, so the actionable block moved above the reference
+list. Pinned by "puts the action for the current site above the fold on the Sites tab".
+
+**Wallets** — one sentence instead of the paragraph, then the recent list: identity (a bare address
+shortened to `0x7f…17d1` in mono with the full value in `title`, a name in Inter), chain chip,
+relative time, and a copy action per row. "Clear" is a quiet text button in the section head.
+
+**Header** — wordmark, the status line, and a settings gear that discloses the Backend URL field
+(it used to sit in the middle of the column). **Footer** — the Nansen credit, Rules / Ledger /
+History, and the privacy sentence behind an info tooltip.
+
+## Copy
+
+Every paragraph is now one sentence. Cut: the wallet-lens paragraph ("Wherever an address or ENS
+name appears… It runs on X and the venues already. Add any other site here."), the privacy
+paragraph (moved to the footer tooltip), and the venue-list preamble. The status line lost its
+colon-and-clause form for a state plus a middot: "Connected · key via Nansen CLI", "Backend
+offline · run pnpm dev", "No Nansen key · run nansen login", "Replay mode · recorded data, no key".
+The recovery is kept in every failure line — a shorter error that drops the fix is not shorter, it
+is worse.
+
+## Usage tiles and the cap
+
+The brief asked for "checks run, blocks shown, credits spent today vs the cap". No free local
+endpoint exposes checks or blocks — those live in the `checks` table that only the server-rendered
+`/history` and `/` pages read — so the tiles report what the ledger actually holds: calls today,
+credits today, and total calls against the buildathon cap. Inventing the other two would be the
+same defect as a confident negative about data nobody read. A missing or offline answer prints
+`—`, never a zero.
+
+`/api/ledger` is a **local** read: no Nansen call, no credit. Opening the popup makes exactly three
+local reads (health, rules, ledger) and switching tab makes none — pinned by "costs nothing to open
+beyond the three local reads, and nothing at all to change tab".
+
+`BUILDATHON_CALL_CAP` moved to `packages/core/src/constants.ts`; `/ledger` and the popup tile now
+print the same constant instead of two copies of `1000` (the M-4 smell from the last wave).
+
+## Tests
+
+New: `apps/extension/test/popup-shell.test.tsx` (18 behaviour tests against a fake `chrome`: the
+three tabs, the zero-cost open and tab change, manual tab activation, the weaken-confirm, each
+on-this-tab state, the honest locate answer, the tiles and their dash, the per-site request and
+removal, the venue grid, the recent list and its clear, the shortened address, the footer links,
+the backend URL behind the gear) and `apps/extension/test/popup-layout.test.tsx` (13 measurements
+in real Chromium at 420px: no page scroll on any tab, head and foot still while the panel scrolls,
+every text colour at 4.5:1 or more against the surface actually painted behind it, nothing under
+11px, no control under 24px, the recent region's own scroll caps, the enable action above the fold).
+
+Updated: `popup-status.test.ts` for the new copy; `e2e/smoke.spec.ts` now also clicks each tab and
+asserts the popup does not scroll; `e2e/captures.spec.ts` replaces the single `enable-site` shot
+with `popup-protection`, `popup-sites` and `popup-wallets` at 420px, each asserting no page scroll
+before the shot.
+
+`entrypoints/popup/WalletLensSection.tsx` is gone; its state moved into `App.tsx` and its markup
+split across `SitesTab.tsx` and `WalletsTab.tsx`, which are pure and take props — that is what
+makes the Chromium layout test able to render a populated tab at all.
+
+## Verification
+
+- `pnpm verify`: typecheck clean across all three projects; **core 309, web 320, extension 812**
+  passed, 0 failed.
+- `pnpm -F extension build` OK (3.57 MB); `pnpm -F web build` OK.
+- `TRIPWIRE_E2E_PORT=3229 pnpm verify:e2e`: **30 passed, 5 skipped** (the capture-only specs), 0 failed.
+- Captures: 4 specs passed; `popup-protection`, `popup-sites` and `popup-wallets` regenerated at
+  420px and opened. No vertical page scroll in any default state.
+- Zero Nansen credits: everything ran in replay.
+
+## Deferred
+
+- "Checks run" and "blocks shown" tiles wait on a free local endpoint over the `checks` table.
+- The box is sized for the fullest tab (Sites), so Protection and Wallets have visible headroom in
+  their default states. A per-tab height would make the popup jump on every tab change, which is
+  worse than empty space.
+- Two `impeccable` radius advisories stand on the new file: the 2px tab underline (DESIGN.md
+  specifies it) and the 13px inner pill of the 16px segmented track (its concentric radius). Both
+  are carried verbatim from `lib/ui/theme.css` and are not suppressed.
