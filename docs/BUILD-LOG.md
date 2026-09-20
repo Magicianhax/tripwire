@@ -2165,3 +2165,153 @@ never anchored, a real non-toggle Swap primary still is.
   there, untouched by any round.
 - The deferred items in each round's own section stand as written; none of them became blocking on
   contact with the others.
+
+# Review fixes — whole-diff verdict FIX FIRST (2026-09-20)
+
+One reviewer verdict of FIX FIRST against the six-round wave plus its integration commit. Five
+commits on `feat/cockpit-ui`, one per theme, all on top of `1c3b918`. Every finding is fixed;
+nothing is deferred.
+
+## C-1 (Critical) — an unparseable Dexscreener body rendered as a definite "no pools"
+
+`parseTokenMarket` returned `null` for two different events, and `MarketStructure` printed one
+sentence for both: "Dexscreener lists no pools for this token on this chain." On a token trading
+in thirty pools that is a confident negative about data nobody read.
+
+What changed:
+
+- `apps/web/lib/dexscreener/token.ts:51` — the envelope now **requires** `pairs` (the token route
+  always sends it, `null` when there are none). An arbitrary JSON body used to satisfy an optional
+  key and parse as an empty answer.
+- `apps/web/lib/dexscreener/token.ts:107` — pools parse **per element**. `z.array(pairSchema)` was
+  all-or-nothing, so one malformed pool out of thirty failed the whole body. The readable pools are
+  kept; the rest are counted in `droppedPoolCount` (`:163`), and an entry whose `chainId` plainly
+  names another chain is not counted against this one.
+- `apps/extension/lib/api-types.ts:399` — `SpotMarketSection`'s two states are documented at the
+  boundary: `structure === null` is "unreadable", `poolCount === 0` is "answered: none".
+- `apps/extension/lib/ui/SpotBody.tsx:626,633` — three branches for three claims. Unreadable prints
+  "Dexscreener's answer couldn't be read, so market structure is unchecked. This says nothing about
+  the token's pools." A partial answer prints its figures plus how many entries were dropped.
+
+Pinned by: `apps/web/test/spot-round-2-1.test.ts` — "returns null only when the body is not a
+Dexscreener response at all", "keeps the readable pools when one entry is malformed, and says how
+many it dropped", "does not count a malformed entry that plainly belongs to another chain"; and
+`apps/extension/test/spot-round-2-1.test.tsx` — "says the answer was unreadable, not that there are
+no pools, when the structure is null" and "states how many entries it could not read".
+
+Judged differently: the reviewer left the tolerant per-element parse optional ("your call"). It is
+in, because without it the common case — one bad pool in a good body — still reaches the card as a
+null, and the honest copy for a null ("unchecked") would then hide twenty-nine readable pools.
+
+## I-2 (Important) — the tab strip spent on arrow-key selection
+
+`Tabs` used automatic activation, so arrowing across the expanded spot strip (Flow · Wallets ·
+Tape 1 · Risk · Holders 5 · Winners 5) cost 11 credits and `End` landed on Winners.
+
+- `apps/extension/lib/ui/Tabs.tsx:14` — the rule, stated once: arrows, Home and End move **focus
+  only**; Enter, Space or a click commits (`:51` `select`, `:74` the Enter/Space case). The roving
+  tab stop follows focus so Tab still leaves and re-enters where the user left off.
+- Applied to **every** strip, priced or free. The reviewer allowed unpriced strips to keep automatic
+  activation; a strip where Flow→Wallets commits and Wallets→Tape does not is two rules wearing one
+  strip, and the spot strip mixes both kinds.
+- `apps/extension/lib/ui/PerpBody.tsx:69` — the stale comment that stated the opposite rule now
+  points at `Tabs.tsx` instead of restating it.
+
+Pinned by: `apps/extension/test/popover.test.tsx` — the old test that pinned automatic activation is
+corrected ("moves focus only with arrow keys (wrapping), Home and End; the selection stays put") and
+a commit test added; `apps/extension/test/spot-round-2-1.test.tsx` — "arrows across the whole
+expanded strip without asking for one section" (zero `onNeedSections` calls over eight keypresses)
+and "asks for the focused tab's sections once, when Enter commits it". `e2e/smoke.spec.ts:175` now
+presses ArrowRight then Enter and asserts the intermediate not-selected state.
+
+## I-1 (Important) — "Show me where it is" reported a false negative on X
+
+Only the venue content script registered the locate listener, so on x.com `tabs.sendMessage`
+rejected and the popup said "Tripwire isn't showing anything on this tab" over a timeline of chips.
+
+- `apps/extension/entrypoints/venues.content/locate.ts:106` — `locateAnyMounted(mounts)` lights one
+  of many mounted displays, preferring one already on screen so the answer is not a scroll to the
+  top of a timeline. `.tw-wallet-marker` joins `DISPLAY_ROOTS` (`:32`).
+- `apps/extension/entrypoints/x.content/index.tsx:432` and
+  `apps/extension/entrypoints/wallet.content/index.tsx:75` register the listener;
+  `apps/extension/lib/wallet/lens.tsx:327` exposes `locate()`;
+  `apps/extension/lib/x/mounts.ts` gains `live()` (mounts of articles the page still has).
+- **A listener with nothing to light now stays silent instead of replying `false`**
+  (`venues.content/index.tsx:142`). More than one of these scripts runs on the same tab, and a
+  `false` would win the race against the one that actually found something. When none answers the
+  port closes, `sendMessage` rejects, and the popup's existing catch says the same honest thing.
+
+Judged differently: the reviewer asked only that the listener be registered. Registering three
+listeners that all answer `false` would have made the bug intermittent rather than fixed it, so the
+protocol changed with it.
+
+Pinned by: `apps/extension/test/placement-runner.test.tsx` — "reports found and lights a chip on a
+tab whose only display is chips", the wallet-marker case, and "never claims to have lit a card, a
+badge or nothing at all"; `apps/extension/test/mounts.test.ts` — `live()` excludes detached
+articles; `e2e/smoke.spec.ts:133` — the popup's own wire, driven from the service worker, on a page
+whose only display is a chip.
+
+## I-3 (Important) — the eager X chip fired for tokens the author never typed
+
+`pickTokens` ranks a quote, a link preview and an image description as token sources, and the first
+pick was eager whatever its origin. The parser strips `https://`, so a post that merely links to a
+dexscreener or birdeye token page carried that contract in its preview and paid a full chip check on
+scroll-into-view.
+
+- `apps/extension/lib/x/pick.ts:37` — `checksOnSight(picked)`, the whole credit rule in one place:
+  true only for origin `post`.
+- `apps/extension/entrypoints/x.content/index.tsx:170` uses it; the `attachTokenChip` doc states the
+  rule for both chips.
+
+Pinned by: `apps/extension/test/pick.test.ts` — `checksOnSight` is true only for the post's own body
+and false for a link-preview-only post as `pickTokens` actually reads it;
+`e2e/x-depth.spec.ts` — the quoted and link-preview posts mount UNCHECKED, `chip:` is never called
+for either, the click produces exactly one `panel:` call, and the page's only on-sight check is the
+one contract an author typed.
+
+## The minors
+
+- **M-4** `MAX_ENRICH_GROUPS` moves to `packages/core/src/spot-depth.ts:171`; `apps/web/lib/intel/markets.ts`
+  re-exports it and `apps/extension/lib/ui/MarketsView.tsx:12` imports it. The printed
+  price and the charged price were two independent constants. Pinned by
+  `apps/extension/test/markets.test.tsx` — "prices the enrichment press with core's cap, not a copy
+  of it" (a 40-chain catalog).
+- **M-7** `apps/web/lib/venues/index.ts:380` starts `hlPredictedFunding` instead of awaiting it, so
+  it flies alongside every venue request instead of delaying all of them by one serial round trip;
+  only the Hyperliquid row awaits it. No new test: a timing assertion against replay fixtures would
+  pin the harness, not the behaviour. The existing `perp-round-2-5` and `venues` suites still pin
+  that Hyperliquid's `nextFundingMs` comes from `predictedFundings`.
+- **M-1** `apps/extension/lib/ui/PredictionBody.tsx:390` prints a measured zero on "Other sides" as
+  `$0`, via the same `usd()` call the Yes/No branch makes — `usd` already dashes the null, which is
+  the unknown. Pinned by `prediction-round-2-2.test.tsx` — "prints a measured zero on Other sides
+  rather than an unknown dash".
+- **M-5** `apps/extension/lib/ui/PerpBody.tsx:633,669` — a failed win-rate row keeps its reason and
+  offers the press again with its price on it; only an answer or an in-flight request blocks a
+  retry. Pinned by `perp-round-2-5.test.tsx` — "keeps the failure on screen and offers the press
+  again, at its price" (fail, retry, succeed, two calls).
+- **M-2** `apps/extension/lib/ui/PredictionBody.tsx:276` — the ambiguous-event branch no longer
+  explains itself by naming "the market this page has selected". Pinned by
+  `prediction-round-2-2.test.tsx` — "does not claim a selected market on the branch where nothing is
+  selected".
+
+## Verification
+
+- `pnpm verify`: typecheck clean across all three projects; **core 309, web 320, extension 780**
+  passed, 0 failed.
+- `pnpm -F extension build` OK (3.55 MB); `pnpm -F web build` OK.
+- `TRIPWIRE_E2E_PORT=3228 pnpm verify:e2e`: **30 passed, 5 skipped** (the five capture-only specs),
+  0 failed.
+- Captures regenerated and opened: `x-post-sources` (the quoted and link-preview chips now read
+  UNCHECKED · open to check, and only the contract the author typed is CLEAR — I-3 as rendered),
+  `spot-market-structure` (the healthy 30-pool case is unchanged, with no dropped-entry sentence —
+  C-1 adds nothing to a good answer), `prediction-markets` and `prediction-card` (unchanged; both
+  captures sit on the selected-market branch, so M-2's copy change is covered by its unit test).
+  All four capture specs and `x-depth`'s pass.
+- Zero Nansen credits spent: everything ran in replay against existing fixtures.
+
+## Still open after this wave
+
+- The 11 pre-existing `theme.css` radius findings are still there, untouched — no fix in this wave
+  touched that file.
+- The "spent on this card" accounting line the earlier rounds raised is still a product decision and
+  is not invented here.
