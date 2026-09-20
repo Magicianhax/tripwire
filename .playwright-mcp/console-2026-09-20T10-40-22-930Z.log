@@ -1,0 +1,8 @@
+[   12349ms] [WARNING] Solflare was registered as a Standard Wallet. The Wallet Adapter for Solflare can be removed from your app. @ https://raydium.io/_next/static/chunks/pages/_app-44d531373bc07225.js:0
+[   16321ms] [ERROR] Framing 'blob:https://raydium.io/1c4428c0-0dc3-4369-bf87-da3d07a19126' violates the following report-only Content Security Policy directive: "frame-src 'self' https://*.walletconnect.org https://*.walletconnect.com https://v2.moongate.one https://buy.moonpay.com". The violation has been logged, but no further action has been taken.
+ @ https://raydium.io/_next/static/chunks/pages/_app-44d531373bc07225.js:0
+[   16322ms] [ERROR] Framing 'blob:https://raydium.io/1c4428c0-0dc3-4369-bf87-da3d07a19126' violates the following report-only Content Security Policy directive: "frame-src 'self' https://*.walletconnect.org https://*.walletconnect.com https://v2.moongate.one https://buy.moonpay.com". The violation has been logged, but no further action has been taken.
+ @ https://raydium.io/_next/static/chunks/pages/_app-44d531373bc07225.js:0
+[   23387ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://raydium.io/api/csp-report/:0
+[   23489ms] [WARNING] 2026-09-20T10:40:46.418Z Error resolving for market status watcher So11111111111111111111111111111111111111112_:
+cannot resolve symbol @ https://raydium.io/charting_library/charting_library/bundles/library.cb873585ffc0b08e6bdf.js:130

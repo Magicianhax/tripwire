@@ -1,0 +1,1820 @@
+- generic [ref=f78e1]:
+  - generic [ref=f78e2]:
+    - generic [ref=f78e3]:
+      - generic [ref=f78e4]:
+        - generic [ref=f78e5]:
+          - generic [ref=f78e7]:
+            - generic [ref=f78e8]: Birdeye Now Supports Arc -
+            - link "Explore Now! →" [ref=f78e10] [cursor=pointer]:
+              - /url: https://birdeye.so/arc
+          - generic [ref=f78e12]:
+            - generic [ref=f78e13]: Birdeye Trenches Now Supports Robinhood Chain
+            - link "Explore Now! →" [ref=f78e15] [cursor=pointer]:
+              - /url: https://birdeye.so/robinhood/new-listings
+          - generic [ref=f78e17]:
+            - generic [ref=f78e18]: The RWAs Dashboard is live.
+            - link "Explore Now! →" [ref=f78e20] [cursor=pointer]:
+              - /url: https://birdeye.so/find-gems?type=rwas&rwaDisplay=dashboard
+        - generic [ref=f78e22]:
+          - generic [ref=f78e23]: Birdeye Now Supports Arc -
+          - link "Explore Now! →" [ref=f78e25] [cursor=pointer]:
+            - /url: https://birdeye.so/arc
+        - generic [ref=f78e27]:
+          - generic [ref=f78e28]: Birdeye Trenches Now Supports Robinhood Chain
+          - link "Explore Now! →" [ref=f78e30] [cursor=pointer]:
+            - /url: https://birdeye.so/robinhood/new-listings
+        - generic [ref=f78e32]:
+          - generic [ref=f78e33]: The RWAs Dashboard is live.
+          - link "Explore Now! →" [ref=f78e35] [cursor=pointer]:
+            - /url: https://birdeye.so/find-gems?type=rwas&rwaDisplay=dashboard
+      - generic [ref=f78e36]:
+        - generic [ref=f78e38]:
+          - generic [ref=f78e39]: Birdeye Now Supports Arc -
+          - link "Explore Now! →" [ref=f78e41] [cursor=pointer]:
+            - /url: https://birdeye.so/arc
+        - generic [ref=f78e43]:
+          - generic [ref=f78e44]: Birdeye Trenches Now Supports Robinhood Chain
+          - link "Explore Now! →" [ref=f78e46] [cursor=pointer]:
+            - /url: https://birdeye.so/robinhood/new-listings
+        - generic [ref=f78e48]:
+          - generic [ref=f78e49]: The RWAs Dashboard is live.
+          - link "Explore Now! →" [ref=f78e51] [cursor=pointer]:
+            - /url: https://birdeye.so/find-gems?type=rwas&rwaDisplay=dashboard
+        - generic [ref=f78e53]:
+          - generic [ref=f78e54]: Birdeye Now Supports Arc -
+          - link "Explore Now! →" [ref=f78e56] [cursor=pointer]:
+            - /url: https://birdeye.so/arc
+        - generic [ref=f78e58]:
+          - generic [ref=f78e59]: Birdeye Trenches Now Supports Robinhood Chain
+          - link "Explore Now! →" [ref=f78e61] [cursor=pointer]:
+            - /url: https://birdeye.so/robinhood/new-listings
+        - generic [ref=f78e63]:
+          - generic [ref=f78e64]: The RWAs Dashboard is live.
+          - link "Explore Now! →" [ref=f78e66] [cursor=pointer]:
+            - /url: https://birdeye.so/find-gems?type=rwas&rwaDisplay=dashboard
+    - button "Close banner" [ref=f78e67] [cursor=pointer]
+  - banner [ref=f78e70]:
+    - generic [ref=f78e71]:
+      - generic [ref=f78e72]:
+        - link [ref=f78e73] [cursor=pointer]:
+          - /url: /solana
+          - img "Birdeye" [ref=f78e74]
+        - navigation "Main" [ref=f78e75]:
+          - list [ref=f78e77]:
+            - listitem [ref=f78e78]:
+              - button "Open app menu" [ref=f78e79] [cursor=pointer]
+      - navigation "Main" [ref=f78e85]:
+        - list [ref=f78e87]:
+          - listitem [ref=f78e88]:
+            - link "Trending" [ref=f78e89] [cursor=pointer]:
+              - /url: /solana/find-gems
+          - listitem [ref=f78e91]:
+            - link "Trenches" [ref=f78e92] [cursor=pointer]:
+              - /url: /solana/new-listings
+          - listitem [ref=f78e94]:
+            - link "Trackers New" [ref=f78e95] [cursor=pointer]:
+              - /url: /solana/trackers
+              - generic [ref=f78e96]:
+                - text: Trackers
+                - generic [ref=f78e97]: New
+          - listitem [ref=f78e98]:
+            - link "Supercharts" [ref=f78e99] [cursor=pointer]:
+              - /url: /solana/supercharts/So11111111111111111111111111111111111111112
+          - listitem [ref=f78e101]:
+            - link "Perps" [ref=f78e102] [cursor=pointer]:
+              - /url: /perps
+          - listitem [ref=f78e104]:
+            - link "Peak Beta" [ref=f78e105] [cursor=pointer]:
+              - /url: https://birdeye.so/peak?utm_source=bsonavbar&utm_medium=betatag&utm_campaign=betasignup&utm_id=beta
+              - generic [ref=f78e106]:
+                - text: Peak
+                - generic [ref=f78e107]: Beta
+          - listitem [ref=f78e108]:
+            - link "API" [ref=f78e109] [cursor=pointer]:
+              - /url: /data-api
+          - listitem [ref=f78e111]:
+            - button "More" [ref=f78e113] [cursor=pointer]
+    - generic [ref=f78e117]:
+      - generic [ref=f78e119] [cursor=pointer]:
+        - generic [ref=f78e123]: Search tokens, traders...
+        - generic [ref=f78e124]: /
+      - link [ref=f78e126] [cursor=pointer]:
+        - /url: /mobile
+        - button [ref=f78e127]
+      - navigation "Main" [ref=f78e130]:
+        - list [ref=f78e132]:
+          - listitem [ref=f78e133]:
+            - button "Open tools menu" [ref=f78e134] [cursor=pointer]
+      - button [ref=f78e142] [cursor=pointer]
+      - button "Log In" [ref=f78e145] [cursor=pointer]
+  - main [ref=f78e150]:
+    - generic [ref=f78e151]:
+      - generic [ref=f78e153]:
+        - generic [ref=f78e155]:
+          - button [ref=f78e156] [cursor=pointer]
+          - generic [ref=f78e164]:
+            - generic [ref=f78e165]: Trending
+            - generic [ref=f78e171]:
+              - generic [ref=f78e173]:
+                - link "Bonk verified Bonk -1.41%" [ref=f78e175] [cursor=pointer]:
+                  - /url: /solana/token/DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e176]:
+                    - generic [ref=f78e178]:
+                      - img "Bonk" [ref=f78e180]
+                      - img "verified" [ref=f78e183]
+                    - generic [ref=f78e184]:
+                      - generic [ref=f78e185]: Bonk
+                      - generic [ref=f78e186]: "-1.41%"
+                - link "🎒 🎒 +155%" [ref=f78e188] [cursor=pointer]:
+                  - /url: /solana/token/ZesMGYmokFiEuDvNzWeMhB7jxF6eUW8c512vwSKSTNK?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e189]:
+                    - img "🎒" [ref=f78e193]
+                    - generic [ref=f78e194]:
+                      - generic [ref=f78e195]: 🎒
+                      - generic [ref=f78e196]: +155%
+                - link "neet verified neet +4.06%" [ref=f78e198] [cursor=pointer]:
+                  - /url: /solana/token/Ce2gx9KGXJ6C9Mp5b5x1sn9Mg87JwEbrQby4Zqo3pump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e199]:
+                    - generic [ref=f78e201]:
+                      - img "neet" [ref=f78e203]
+                      - img "verified" [ref=f78e206]
+                    - generic [ref=f78e207]:
+                      - generic [ref=f78e208]: neet
+                      - generic [ref=f78e209]: +4.06%
+                - link "CODEC verified CODEC +18.98%" [ref=f78e211] [cursor=pointer]:
+                  - /url: /solana/token/69LjZUUzxj3Cb3Fxeo1X4QpYEQTboApkhXTysPpbpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e212]:
+                    - generic [ref=f78e214]:
+                      - img "CODEC" [ref=f78e216]
+                      - img "verified" [ref=f78e219]
+                    - generic [ref=f78e220]:
+                      - generic [ref=f78e221]: CODEC
+                      - generic [ref=f78e222]: +18.98%
+                - link "Fartcoin verified Fartcoin +1.25%" [ref=f78e224] [cursor=pointer]:
+                  - /url: /solana/token/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e225]:
+                    - generic [ref=f78e227]:
+                      - img "Fartcoin" [ref=f78e229]
+                      - img "verified" [ref=f78e232]
+                    - generic [ref=f78e233]:
+                      - generic [ref=f78e234]: Fartcoin
+                      - generic [ref=f78e235]: +1.25%
+                - link "WOW WOW +12.46%" [ref=f78e237] [cursor=pointer]:
+                  - /url: /solana/token/72yxYmhLgDGwdyi2b9GjDynBB6VuG3kDxNKqDbzXh5bi?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e238]:
+                    - img "WOW" [ref=f78e242]
+                    - generic [ref=f78e243]:
+                      - generic [ref=f78e244]: WOW
+                      - generic [ref=f78e245]: +12.46%
+                - link "AVA verified AVA +8.41%" [ref=f78e247] [cursor=pointer]:
+                  - /url: /solana/token/DKu9kykSfbN5LBfFXtNNDPaX35o4Fv6vJ9FKk7pZpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e248]:
+                    - generic [ref=f78e250]:
+                      - img "AVA" [ref=f78e252]
+                      - img "verified" [ref=f78e255]
+                    - generic [ref=f78e256]:
+                      - generic [ref=f78e257]: AVA
+                      - generic [ref=f78e258]: +8.41%
+                - link "STONK verified STONK +6.89%" [ref=f78e260] [cursor=pointer]:
+                  - /url: /solana/token/6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e261]:
+                    - generic [ref=f78e263]:
+                      - img "STONK" [ref=f78e265]
+                      - img "verified" [ref=f78e268]
+                    - generic [ref=f78e269]:
+                      - generic [ref=f78e270]: STONK
+                      - generic [ref=f78e271]: +6.89%
+                - link "STNK verified STNK +35.22%" [ref=f78e273] [cursor=pointer]:
+                  - /url: /solana/token/43VWkd99HjqkhFTZbWBpMpRhjG469nWa7x7uEsgSH7We?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e274]:
+                    - generic [ref=f78e276]:
+                      - img "STNK" [ref=f78e278]
+                      - img "verified" [ref=f78e281]
+                    - generic [ref=f78e282]:
+                      - generic [ref=f78e283]: STNK
+                      - generic [ref=f78e284]: +35.22%
+                - link "Jimothy verified Jimothy +11.58%" [ref=f78e286] [cursor=pointer]:
+                  - /url: /solana/token/Ge87EtsjwRQbHaqQmKRno69RFTwh9bfSsm99XNxTpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e287]:
+                    - generic [ref=f78e289]:
+                      - img "Jimothy" [ref=f78e291]
+                      - img "verified" [ref=f78e294]
+                    - generic [ref=f78e295]:
+                      - generic [ref=f78e296]: Jimothy
+                      - generic [ref=f78e297]: +11.58%
+                - link "MICHI verified MICHI +26.56%" [ref=f78e299] [cursor=pointer]:
+                  - /url: /solana/token/AywAYdNJnSLSXwKWYxDciPjqGRnwp4iZdQptuuQTpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e300]:
+                    - generic [ref=f78e302]:
+                      - img "MICHI" [ref=f78e304]
+                      - img "verified" [ref=f78e307]
+                    - generic [ref=f78e308]:
+                      - generic [ref=f78e309]: MICHI
+                      - generic [ref=f78e310]: +26.56%
+                - link "DBR verified DBR +1.21%" [ref=f78e312] [cursor=pointer]:
+                  - /url: /solana/token/DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e313]:
+                    - generic [ref=f78e315]:
+                      - img "DBR" [ref=f78e317]
+                      - img "verified" [ref=f78e320]
+                    - generic [ref=f78e321]:
+                      - generic [ref=f78e322]: DBR
+                      - generic [ref=f78e323]: +1.21%
+                - link "USDF USDF +66.72%" [ref=f78e325] [cursor=pointer]:
+                  - /url: /solana/token/DRMnFyekQiCTMrajtgsTycqp4ie6r1tZnh6qpAGjpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e326]:
+                    - img "USDF" [ref=f78e330]
+                    - generic [ref=f78e331]:
+                      - generic [ref=f78e332]: USDF
+                      - generic [ref=f78e333]: +66.72%
+                - link "TRX verified TRX +1.35%" [ref=f78e335] [cursor=pointer]:
+                  - /url: /solana/token/GbbesPbaYh5uiAZSYNXTc7w9jty1rpg3P9L4JeN4LkKc?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e336]:
+                    - generic [ref=f78e338]:
+                      - img "TRX" [ref=f78e340]
+                      - img "verified" [ref=f78e343]
+                    - generic [ref=f78e344]:
+                      - generic [ref=f78e345]: TRX
+                      - generic [ref=f78e346]: +1.35%
+                - link "Aiden Aiden +651%" [ref=f78e348] [cursor=pointer]:
+                  - /url: /solana/token/4i5FqkfYDAPcEVcXyuVyaaBcz3bpwJPqDkmaF36kpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e349]:
+                    - img "Aiden" [ref=f78e353]
+                    - generic [ref=f78e354]:
+                      - generic [ref=f78e355]: Aiden
+                      - generic [ref=f78e356]: +651%
+                - link "PYTHIA verified PYTHIA +103%" [ref=f78e358] [cursor=pointer]:
+                  - /url: /solana/token/CreiuhfwdWCN5mJbMJtA9bBpYQrQF2tCBuZwSPWfpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e359]:
+                    - generic [ref=f78e361]:
+                      - img "PYTHIA" [ref=f78e363]
+                      - img "verified" [ref=f78e366]
+                    - generic [ref=f78e367]:
+                      - generic [ref=f78e368]: PYTHIA
+                      - generic [ref=f78e369]: +103%
+                - link "GST verified GST +0.94%" [ref=f78e371] [cursor=pointer]:
+                  - /url: /solana/token/AFbX8oGjGpmVFywbVouvhQSRmiW2aR1mohfahi4Y2AdB?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e372]:
+                    - generic [ref=f78e374]:
+                      - img "GST" [ref=f78e376]
+                      - img "verified" [ref=f78e379]
+                    - generic [ref=f78e380]:
+                      - generic [ref=f78e381]: GST
+                      - generic [ref=f78e382]: +0.94%
+                - link "JTO verified JTO +8.03%" [ref=f78e384] [cursor=pointer]:
+                  - /url: /solana/token/jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e385]:
+                    - generic [ref=f78e387]:
+                      - img "JTO" [ref=f78e389]
+                      - img "verified" [ref=f78e392]
+                    - generic [ref=f78e393]:
+                      - generic [ref=f78e394]: JTO
+                      - generic [ref=f78e395]: +8.03%
+                - link "PYBOBO PYBOBO +1.14%" [ref=f78e397] [cursor=pointer]:
+                  - /url: /solana/token/D6xWgRCSHoMEB5fqPwk3p6Stxirn5ytm2WwboSTTx4oE?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e398]:
+                    - img "PYBOBO" [ref=f78e402]
+                    - generic [ref=f78e403]:
+                      - generic [ref=f78e404]: PYBOBO
+                      - generic [ref=f78e405]: +1.14%
+                - link "STONKCAT STONKCAT +9.61%" [ref=f78e407] [cursor=pointer]:
+                  - /url: /solana/token/DkPQvrx7CDYrL4HfHijz6GqZLYm7Pd4rm1kTiumLFwhS?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e408]:
+                    - img "STONKCAT" [ref=f78e412]
+                    - generic [ref=f78e413]:
+                      - generic [ref=f78e414]: STONKCAT
+                      - generic [ref=f78e415]: +9.61%
+              - generic [ref=f78e416]:
+                - link "Bonk verified Bonk -1.41%" [ref=f78e418] [cursor=pointer]:
+                  - /url: /solana/token/DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e419]:
+                    - generic [ref=f78e421]:
+                      - img "Bonk" [ref=f78e423]
+                      - img "verified" [ref=f78e426]
+                    - generic [ref=f78e427]:
+                      - generic [ref=f78e428]: Bonk
+                      - generic [ref=f78e429]: "-1.41%"
+                - link "🎒 🎒 +155%" [ref=f78e431] [cursor=pointer]:
+                  - /url: /solana/token/ZesMGYmokFiEuDvNzWeMhB7jxF6eUW8c512vwSKSTNK?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e432]:
+                    - img "🎒" [ref=f78e436]
+                    - generic [ref=f78e437]:
+                      - generic [ref=f78e438]: 🎒
+                      - generic [ref=f78e439]: +155%
+                - link "neet verified neet +4.06%" [ref=f78e441] [cursor=pointer]:
+                  - /url: /solana/token/Ce2gx9KGXJ6C9Mp5b5x1sn9Mg87JwEbrQby4Zqo3pump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e442]:
+                    - generic [ref=f78e444]:
+                      - img "neet" [ref=f78e446]
+                      - img "verified" [ref=f78e449]
+                    - generic [ref=f78e450]:
+                      - generic [ref=f78e451]: neet
+                      - generic [ref=f78e452]: +4.06%
+                - link "CODEC verified CODEC +18.98%" [ref=f78e454] [cursor=pointer]:
+                  - /url: /solana/token/69LjZUUzxj3Cb3Fxeo1X4QpYEQTboApkhXTysPpbpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e455]:
+                    - generic [ref=f78e457]:
+                      - img "CODEC" [ref=f78e459]
+                      - img "verified" [ref=f78e462]
+                    - generic [ref=f78e463]:
+                      - generic [ref=f78e464]: CODEC
+                      - generic [ref=f78e465]: +18.98%
+                - link "Fartcoin verified Fartcoin +1.25%" [ref=f78e467] [cursor=pointer]:
+                  - /url: /solana/token/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e468]:
+                    - generic [ref=f78e470]:
+                      - img "Fartcoin" [ref=f78e472]
+                      - img "verified" [ref=f78e475]
+                    - generic [ref=f78e476]:
+                      - generic [ref=f78e477]: Fartcoin
+                      - generic [ref=f78e478]: +1.25%
+                - link "WOW WOW +12.46%" [ref=f78e480] [cursor=pointer]:
+                  - /url: /solana/token/72yxYmhLgDGwdyi2b9GjDynBB6VuG3kDxNKqDbzXh5bi?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e481]:
+                    - img "WOW" [ref=f78e485]
+                    - generic [ref=f78e486]:
+                      - generic [ref=f78e487]: WOW
+                      - generic [ref=f78e488]: +12.46%
+                - link "AVA verified AVA +8.41%" [ref=f78e490] [cursor=pointer]:
+                  - /url: /solana/token/DKu9kykSfbN5LBfFXtNNDPaX35o4Fv6vJ9FKk7pZpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e491]:
+                    - generic [ref=f78e493]:
+                      - img "AVA" [ref=f78e495]
+                      - img "verified" [ref=f78e498]
+                    - generic [ref=f78e499]:
+                      - generic [ref=f78e500]: AVA
+                      - generic [ref=f78e501]: +8.41%
+                - link "STONK verified STONK +6.89%" [ref=f78e503] [cursor=pointer]:
+                  - /url: /solana/token/6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e504]:
+                    - generic [ref=f78e506]:
+                      - img "STONK" [ref=f78e508]
+                      - img "verified" [ref=f78e511]
+                    - generic [ref=f78e512]:
+                      - generic [ref=f78e513]: STONK
+                      - generic [ref=f78e514]: +6.89%
+                - link "STNK verified STNK +35.22%" [ref=f78e516] [cursor=pointer]:
+                  - /url: /solana/token/43VWkd99HjqkhFTZbWBpMpRhjG469nWa7x7uEsgSH7We?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e517]:
+                    - generic [ref=f78e519]:
+                      - img "STNK" [ref=f78e521]
+                      - img "verified" [ref=f78e524]
+                    - generic [ref=f78e525]:
+                      - generic [ref=f78e526]: STNK
+                      - generic [ref=f78e527]: +35.22%
+                - link "Jimothy verified Jimothy +11.58%" [ref=f78e529] [cursor=pointer]:
+                  - /url: /solana/token/Ge87EtsjwRQbHaqQmKRno69RFTwh9bfSsm99XNxTpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e530]:
+                    - generic [ref=f78e532]:
+                      - img "Jimothy" [ref=f78e534]
+                      - img "verified" [ref=f78e537]
+                    - generic [ref=f78e538]:
+                      - generic [ref=f78e539]: Jimothy
+                      - generic [ref=f78e540]: +11.58%
+                - link "MICHI verified MICHI +26.56%" [ref=f78e542] [cursor=pointer]:
+                  - /url: /solana/token/AywAYdNJnSLSXwKWYxDciPjqGRnwp4iZdQptuuQTpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e543]:
+                    - generic [ref=f78e545]:
+                      - img "MICHI" [ref=f78e547]
+                      - img "verified" [ref=f78e550]
+                    - generic [ref=f78e551]:
+                      - generic [ref=f78e552]: MICHI
+                      - generic [ref=f78e553]: +26.56%
+                - link "DBR verified DBR +1.21%" [ref=f78e555] [cursor=pointer]:
+                  - /url: /solana/token/DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e556]:
+                    - generic [ref=f78e558]:
+                      - img "DBR" [ref=f78e560]
+                      - img "verified" [ref=f78e563]
+                    - generic [ref=f78e564]:
+                      - generic [ref=f78e565]: DBR
+                      - generic [ref=f78e566]: +1.21%
+                - link "USDF USDF +66.72%" [ref=f78e568] [cursor=pointer]:
+                  - /url: /solana/token/DRMnFyekQiCTMrajtgsTycqp4ie6r1tZnh6qpAGjpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e569]:
+                    - img "USDF" [ref=f78e573]
+                    - generic [ref=f78e574]:
+                      - generic [ref=f78e575]: USDF
+                      - generic [ref=f78e576]: +66.72%
+                - link "TRX verified TRX +1.35%" [ref=f78e578] [cursor=pointer]:
+                  - /url: /solana/token/GbbesPbaYh5uiAZSYNXTc7w9jty1rpg3P9L4JeN4LkKc?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e579]:
+                    - generic [ref=f78e581]:
+                      - img "TRX" [ref=f78e583]
+                      - img "verified" [ref=f78e586]
+                    - generic [ref=f78e587]:
+                      - generic [ref=f78e588]: TRX
+                      - generic [ref=f78e589]: +1.35%
+                - link "Aiden Aiden +651%" [ref=f78e591] [cursor=pointer]:
+                  - /url: /solana/token/4i5FqkfYDAPcEVcXyuVyaaBcz3bpwJPqDkmaF36kpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e592]:
+                    - img "Aiden" [ref=f78e596]
+                    - generic [ref=f78e597]:
+                      - generic [ref=f78e598]: Aiden
+                      - generic [ref=f78e599]: +651%
+                - link "PYTHIA verified PYTHIA +103%" [ref=f78e601] [cursor=pointer]:
+                  - /url: /solana/token/CreiuhfwdWCN5mJbMJtA9bBpYQrQF2tCBuZwSPWfpump?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e602]:
+                    - generic [ref=f78e604]:
+                      - img "PYTHIA" [ref=f78e606]
+                      - img "verified" [ref=f78e609]
+                    - generic [ref=f78e610]:
+                      - generic [ref=f78e611]: PYTHIA
+                      - generic [ref=f78e612]: +103%
+                - link "GST verified GST +0.94%" [ref=f78e614] [cursor=pointer]:
+                  - /url: /solana/token/AFbX8oGjGpmVFywbVouvhQSRmiW2aR1mohfahi4Y2AdB?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e615]:
+                    - generic [ref=f78e617]:
+                      - img "GST" [ref=f78e619]
+                      - img "verified" [ref=f78e622]
+                    - generic [ref=f78e623]:
+                      - generic [ref=f78e624]: GST
+                      - generic [ref=f78e625]: +0.94%
+                - link "JTO verified JTO +8.03%" [ref=f78e627] [cursor=pointer]:
+                  - /url: /solana/token/jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e628]:
+                    - generic [ref=f78e630]:
+                      - img "JTO" [ref=f78e632]
+                      - img "verified" [ref=f78e635]
+                    - generic [ref=f78e636]:
+                      - generic [ref=f78e637]: JTO
+                      - generic [ref=f78e638]: +8.03%
+                - link "PYBOBO PYBOBO +1.14%" [ref=f78e640] [cursor=pointer]:
+                  - /url: /solana/token/D6xWgRCSHoMEB5fqPwk3p6Stxirn5ytm2WwboSTTx4oE?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e641]:
+                    - img "PYBOBO" [ref=f78e645]
+                    - generic [ref=f78e646]:
+                      - generic [ref=f78e647]: PYBOBO
+                      - generic [ref=f78e648]: +1.14%
+                - link "STONKCAT STONKCAT +9.61%" [ref=f78e650] [cursor=pointer]:
+                  - /url: /solana/token/DkPQvrx7CDYrL4HfHijz6GqZLYm7Pd4rm1kTiumLFwhS?entry_type=trending&entry_surface=token-page
+                  - generic [ref=f78e651]:
+                    - img "STONKCAT" [ref=f78e655]
+                    - generic [ref=f78e656]:
+                      - generic [ref=f78e657]: STONKCAT
+                      - generic [ref=f78e658]: +9.61%
+            - img [ref=f78e659] [cursor=pointer]
+          - generic [ref=f78e663]:
+            - generic [ref=f78e664]: New
+            - generic [ref=f78e669]:
+              - generic [ref=f78e671]:
+                - link "AllOUT AllOUT 0%" [ref=f78e673] [cursor=pointer]:
+                  - /url: /solana/token/9JvASFnD9WymiYDq8jFBuo6yzZto2KkjK7t4BkbK8ray
+                  - generic [ref=f78e674]:
+                    - img "AllOUT" [ref=f78e678]
+                    - generic [ref=f78e679]:
+                      - generic [ref=f78e680]: AllOUT
+                      - generic [ref=f78e681]: 0%
+                - link "RMS RMS 0%" [ref=f78e683] [cursor=pointer]:
+                  - /url: /solana/token/FwaqsvCDkeq3YUa6HNhStdAcZzq1VTwPk4g1hgaDDray
+                  - generic [ref=f78e684]:
+                    - img "RMS" [ref=f78e688]
+                    - generic [ref=f78e689]:
+                      - generic [ref=f78e690]: RMS
+                      - generic [ref=f78e691]: 0%
+                - link "GTAVI GTAVI 0%" [ref=f78e693] [cursor=pointer]:
+                  - /url: /solana/token/7CWH7xuEof7YkLAz3AVGKabXKbLUohc57R1vGoDLhray
+                  - generic [ref=f78e694]:
+                    - img "GTAVI" [ref=f78e698]
+                    - generic [ref=f78e699]:
+                      - generic [ref=f78e700]: GTAVI
+                      - generic [ref=f78e701]: 0%
+                - link "testl testl _" [ref=f78e703] [cursor=pointer]:
+                  - /url: /solana/token/DnX1cL9Cr5buxxZoAGqLkaMKuuk14yWno8TU2LHe2EDE
+                  - generic [ref=f78e704]:
+                    - img "testl" [ref=f78e708]
+                    - generic [ref=f78e709]:
+                      - generic [ref=f78e710]: testl
+                      - generic [ref=f78e711]: _
+                - link "🐐 🐐 0%" [ref=f78e713] [cursor=pointer]:
+                  - /url: /solana/token/E3CFx754A3stHVpqSo37N1THg62TaYkTgR9Xe1wuDray
+                  - generic [ref=f78e714]:
+                    - img "🐐" [ref=f78e718]
+                    - generic [ref=f78e719]:
+                      - generic [ref=f78e720]: 🐐
+                      - generic [ref=f78e721]: 0%
+                - link "RGN RGN _" [ref=f78e723] [cursor=pointer]:
+                  - /url: /solana/token/FA2kwPUPceCdS75HKa8o3JT6c9edj81APfU1zjMHeENv
+                  - generic [ref=f78e724]:
+                    - img "RGN" [ref=f78e728]
+                    - generic [ref=f78e729]:
+                      - generic [ref=f78e730]: RGN
+                      - generic [ref=f78e731]: _
+                - link "launch launch _" [ref=f78e733] [cursor=pointer]:
+                  - /url: /solana/token/8QH2mMA9XgUKpN8YejhdwoGxMdb32B5818yC1USvne7p
+                  - generic [ref=f78e734]:
+                    - img "launch" [ref=f78e738]
+                    - generic [ref=f78e739]:
+                      - generic [ref=f78e740]: launch
+                      - generic [ref=f78e741]: _
+                - link "RIP RIP 0%" [ref=f78e743] [cursor=pointer]:
+                  - /url: /solana/token/A8uAZh47wB6ZsNHc5ZSUxH3spvfQPms6YAjSdokm2ray
+                  - generic [ref=f78e744]:
+                    - img "RIP" [ref=f78e748]
+                    - generic [ref=f78e749]:
+                      - generic [ref=f78e750]: RIP
+                      - generic [ref=f78e751]: 0%
+                - link "$HARVEST $HARVEST 0%" [ref=f78e753] [cursor=pointer]:
+                  - /url: /solana/token/ERfuozhFKm8LQrCp2Uy7zfEEb5QvVdJGotDCYaSs4ray
+                  - generic [ref=f78e754]:
+                    - img "$HARVEST" [ref=f78e758]
+                    - generic [ref=f78e759]:
+                      - generic [ref=f78e760]: $HARVEST
+                      - generic [ref=f78e761]: 0%
+                - link "JCK JCK 0%" [ref=f78e763] [cursor=pointer]:
+                  - /url: /solana/token/6RhjNkku73hYRb5rUUJvK491F6tz82zzkTjqFTGGcftJ
+                  - generic [ref=f78e764]:
+                    - img "JCK" [ref=f78e768]
+                    - generic [ref=f78e769]:
+                      - generic [ref=f78e770]: JCK
+                      - generic [ref=f78e771]: 0%
+                - link "RGS RGS 0%" [ref=f78e773] [cursor=pointer]:
+                  - /url: /solana/token/HgcrVKXHbegLMbBfXf4zpnpwG9PetKjcJ6bZKn8yNoox
+                  - generic [ref=f78e774]:
+                    - img "RGS" [ref=f78e778]
+                    - generic [ref=f78e779]:
+                      - generic [ref=f78e780]: RGS
+                      - generic [ref=f78e781]: 0%
+                - link "BUNDED BUNDED 0%" [ref=f78e783] [cursor=pointer]:
+                  - /url: /solana/token/4qQYV3Nhc5WH4ksdMjhMhqogQjkoKeXCc5YE7cVpTRiX
+                  - generic [ref=f78e784]:
+                    - img "BUNDED" [ref=f78e788]
+                    - generic [ref=f78e789]:
+                      - generic [ref=f78e790]: BUNDED
+                      - generic [ref=f78e791]: 0%
+                - link "NOP NOP _" [ref=f78e793] [cursor=pointer]:
+                  - /url: /solana/token/6QFQPHszCRJLwTSHePoEsHuC33Got65rhJYzcUycTRiX
+                  - generic [ref=f78e794]:
+                    - img "NOP" [ref=f78e798]
+                    - generic [ref=f78e799]:
+                      - generic [ref=f78e800]: NOP
+                      - generic [ref=f78e801]: _
+                - link "GOPONY GOPONY _" [ref=f78e803] [cursor=pointer]:
+                  - /url: /solana/token/VT2CFwYGWwv4NMfHiXQspQnfhMnEXKGLACDisTtTRiX
+                  - generic [ref=f78e804]:
+                    - img "GOPONY" [ref=f78e808]
+                    - generic [ref=f78e809]:
+                      - generic [ref=f78e810]: GOPONY
+                      - generic [ref=f78e811]: _
+                - link "WUTBUN WUTBUN 0%" [ref=f78e813] [cursor=pointer]:
+                  - /url: /solana/token/ESQdVRppMm5cdEMtsJs1nrnK8GaebHTqTRyqHzskTRiX
+                  - generic [ref=f78e814]:
+                    - img "WUTBUN" [ref=f78e818]
+                    - generic [ref=f78e819]:
+                      - generic [ref=f78e820]: WUTBUN
+                      - generic [ref=f78e821]: 0%
+                - link "AURA AURA _" [ref=f78e823] [cursor=pointer]:
+                  - /url: /solana/token/GRUKyzSHiTL8S7PFqyXUNyyYc2ewNPV68orfS6PgTRiX
+                  - generic [ref=f78e824]:
+                    - img "AURA" [ref=f78e828]
+                    - generic [ref=f78e829]:
+                      - generic [ref=f78e830]: AURA
+                      - generic [ref=f78e831]: _
+                - link "FLYBRAIN FLYBRAIN _" [ref=f78e833] [cursor=pointer]:
+                  - /url: /solana/token/1S42LYdwceKSdKRgyhYBRm3TDYLao2kXR8T1PtMTRiX
+                  - generic [ref=f78e834]:
+                    - img "FLYBRAIN" [ref=f78e838]
+                    - generic [ref=f78e839]:
+                      - generic [ref=f78e840]: FLYBRAIN
+                      - generic [ref=f78e841]: _
+                - link "LAWNMOA LAWNMOA _" [ref=f78e843] [cursor=pointer]:
+                  - /url: /solana/token/9oDVZhKPR6qEkT3k1PMasEMVrTGAnrQfEHNv6z8MTRiX
+                  - generic [ref=f78e844]:
+                    - img "LAWNMOA" [ref=f78e848]
+                    - generic [ref=f78e849]:
+                      - generic [ref=f78e850]: LAWNMOA
+                      - generic [ref=f78e851]: _
+                - link "HUSH HUSH 0%" [ref=f78e853] [cursor=pointer]:
+                  - /url: /solana/token/CRWAs5QjQp1PCMSBp42Chg1yjpdbEbZQ7pkUetbHTRiX
+                  - generic [ref=f78e854]:
+                    - img "HUSH" [ref=f78e858]
+                    - generic [ref=f78e859]:
+                      - generic [ref=f78e860]: HUSH
+                      - generic [ref=f78e861]: 0%
+                - link "BONGUS BONGUS _" [ref=f78e863] [cursor=pointer]:
+                  - /url: /solana/token/4XTsSyZaDo7wuLCeoqPHDDaA6VeDsQ6jDyY2ZCFmTRiX
+                  - generic [ref=f78e864]:
+                    - img "BONGUS" [ref=f78e868]
+                    - generic [ref=f78e869]:
+                      - generic [ref=f78e870]: BONGUS
+                      - generic [ref=f78e871]: _
+                - link "ZIP ZIP _" [ref=f78e873] [cursor=pointer]:
+                  - /url: /solana/token/B649SkRNBbUa8Le3uws9PWijKFu8shKf9nUEzdapTRiX
+                  - generic [ref=f78e874]:
+                    - img "ZIP" [ref=f78e878]
+                    - generic [ref=f78e879]:
+                      - generic [ref=f78e880]: ZIP
+                      - generic [ref=f78e881]: _
+                - link "ZEF ZEF 0%" [ref=f78e883] [cursor=pointer]:
+                  - /url: /solana/token/DHyGLyCVm5AURBwwSXLooZozFvimtpuMTwuUGUbBTRiX
+                  - generic [ref=f78e884]:
+                    - img "ZEF" [ref=f78e888]
+                    - generic [ref=f78e889]:
+                      - generic [ref=f78e890]: ZEF
+                      - generic [ref=f78e891]: 0%
+                - link "CHOPPER CHOPPER _" [ref=f78e893] [cursor=pointer]:
+                  - /url: /solana/token/Ax9t3Tk3a5hGb2ADwvTZ9rAofFFYdYFFkzjSAJKyTRiX
+                  - generic [ref=f78e894]:
+                    - img "CHOPPER" [ref=f78e898]
+                    - generic [ref=f78e899]:
+                      - generic [ref=f78e900]: CHOPPER
+                      - generic [ref=f78e901]: _
+                - link "JFAP JFAP 0%" [ref=f78e903] [cursor=pointer]:
+                  - /url: /solana/token/9mSWZY8TfNTwFm8zN3GYnPEdpxmUZN6XXbn52PvPTRiX
+                  - generic [ref=f78e904]:
+                    - img "JFAP" [ref=f78e908]
+                    - generic [ref=f78e909]:
+                      - generic [ref=f78e910]: JFAP
+                      - generic [ref=f78e911]: 0%
+                - link "OWL OWL _" [ref=f78e913] [cursor=pointer]:
+                  - /url: /solana/token/Amh4zw7oFxGhbCMAJw15cZDhndv2pJwFrgPgs6HbTRiX
+                  - generic [ref=f78e914]:
+                    - img "OWL" [ref=f78e918]
+                    - generic [ref=f78e919]:
+                      - generic [ref=f78e920]: OWL
+                      - generic [ref=f78e921]: _
+                - link "EVI EVI -2.7%" [ref=f78e923] [cursor=pointer]:
+                  - /url: /solana/token/BCqgewmZPG2i8N4FyRvyKGjptLS4u7wGnujtu8usTRiX
+                  - generic [ref=f78e924]:
+                    - img "EVI" [ref=f78e928]
+                    - generic [ref=f78e929]:
+                      - generic [ref=f78e930]: EVI
+                      - generic [ref=f78e931]: "-2.7%"
+                - link "RENDER RENDER -2.23%" [ref=f78e933] [cursor=pointer]:
+                  - /url: /solana/token/FHruEoAQSRbqyMMFbJBumx8Eyc44CXzrYVxMURieTRiX
+                  - generic [ref=f78e934]:
+                    - img "RENDER" [ref=f78e938]
+                    - generic [ref=f78e939]:
+                      - generic [ref=f78e940]: RENDER
+                      - generic [ref=f78e941]: "-2.23%"
+                - link "MVP MVP +0.66%" [ref=f78e943] [cursor=pointer]:
+                  - /url: /solana/token/ArGXnPydDFokxRmPysRKMRRbn5jMwGWcrMf8vHY2TRiX
+                  - generic [ref=f78e944]:
+                    - img "MVP" [ref=f78e948]
+                    - generic [ref=f78e949]:
+                      - generic [ref=f78e950]: MVP
+                      - generic [ref=f78e951]: +0.66%
+                - link "BHOLE BHOLE -0.08%" [ref=f78e953] [cursor=pointer]:
+                  - /url: /solana/token/7PbXf7uPJ5gVJssTLzUdAnLYv48VNzwD6DLgZBnATRiX
+                  - generic [ref=f78e954]:
+                    - img "BHOLE" [ref=f78e958]
+                    - generic [ref=f78e959]:
+                      - generic [ref=f78e960]: BHOLE
+                      - generic [ref=f78e961]: "-0.08%"
+                - link "GLITCH GLITCH +11.05%" [ref=f78e963] [cursor=pointer]:
+                  - /url: /solana/token/2szShM7JTFjEKC5XX83aTcuXVHC31sqXNWFjrc2jTRiX
+                  - generic [ref=f78e964]:
+                    - img "GLITCH" [ref=f78e968]
+                    - generic [ref=f78e969]:
+                      - generic [ref=f78e970]: GLITCH
+                      - generic [ref=f78e971]: +11.05%
+              - generic [ref=f78e972]:
+                - link "AllOUT AllOUT 0%" [ref=f78e974] [cursor=pointer]:
+                  - /url: /solana/token/9JvASFnD9WymiYDq8jFBuo6yzZto2KkjK7t4BkbK8ray
+                  - generic [ref=f78e975]:
+                    - img "AllOUT" [ref=f78e979]
+                    - generic [ref=f78e980]:
+                      - generic [ref=f78e981]: AllOUT
+                      - generic [ref=f78e982]: 0%
+                - link "RMS RMS 0%" [ref=f78e984] [cursor=pointer]:
+                  - /url: /solana/token/FwaqsvCDkeq3YUa6HNhStdAcZzq1VTwPk4g1hgaDDray
+                  - generic [ref=f78e985]:
+                    - img "RMS" [ref=f78e989]
+                    - generic [ref=f78e990]:
+                      - generic [ref=f78e991]: RMS
+                      - generic [ref=f78e992]: 0%
+                - link "GTAVI GTAVI 0%" [ref=f78e994] [cursor=pointer]:
+                  - /url: /solana/token/7CWH7xuEof7YkLAz3AVGKabXKbLUohc57R1vGoDLhray
+                  - generic [ref=f78e995]:
+                    - img "GTAVI" [ref=f78e999]
+                    - generic [ref=f78e1000]:
+                      - generic [ref=f78e1001]: GTAVI
+                      - generic [ref=f78e1002]: 0%
+                - link "testl testl _" [ref=f78e1004] [cursor=pointer]:
+                  - /url: /solana/token/DnX1cL9Cr5buxxZoAGqLkaMKuuk14yWno8TU2LHe2EDE
+                  - generic [ref=f78e1005]:
+                    - img "testl" [ref=f78e1009]
+                    - generic [ref=f78e1010]:
+                      - generic [ref=f78e1011]: testl
+                      - generic [ref=f78e1012]: _
+                - link "🐐 🐐 0%" [ref=f78e1014] [cursor=pointer]:
+                  - /url: /solana/token/E3CFx754A3stHVpqSo37N1THg62TaYkTgR9Xe1wuDray
+                  - generic [ref=f78e1015]:
+                    - img "🐐" [ref=f78e1019]
+                    - generic [ref=f78e1020]:
+                      - generic [ref=f78e1021]: 🐐
+                      - generic [ref=f78e1022]: 0%
+                - link "RGN RGN _" [ref=f78e1024] [cursor=pointer]:
+                  - /url: /solana/token/FA2kwPUPceCdS75HKa8o3JT6c9edj81APfU1zjMHeENv
+                  - generic [ref=f78e1025]:
+                    - img "RGN" [ref=f78e1029]
+                    - generic [ref=f78e1030]:
+                      - generic [ref=f78e1031]: RGN
+                      - generic [ref=f78e1032]: _
+                - link "launch launch _" [ref=f78e1034] [cursor=pointer]:
+                  - /url: /solana/token/8QH2mMA9XgUKpN8YejhdwoGxMdb32B5818yC1USvne7p
+                  - generic [ref=f78e1035]:
+                    - img "launch" [ref=f78e1039]
+                    - generic [ref=f78e1040]:
+                      - generic [ref=f78e1041]: launch
+                      - generic [ref=f78e1042]: _
+                - link "RIP RIP 0%" [ref=f78e1044] [cursor=pointer]:
+                  - /url: /solana/token/A8uAZh47wB6ZsNHc5ZSUxH3spvfQPms6YAjSdokm2ray
+                  - generic [ref=f78e1045]:
+                    - img "RIP" [ref=f78e1049]
+                    - generic [ref=f78e1050]:
+                      - generic [ref=f78e1051]: RIP
+                      - generic [ref=f78e1052]: 0%
+                - link "$HARVEST $HARVEST 0%" [ref=f78e1054] [cursor=pointer]:
+                  - /url: /solana/token/ERfuozhFKm8LQrCp2Uy7zfEEb5QvVdJGotDCYaSs4ray
+                  - generic [ref=f78e1055]:
+                    - img "$HARVEST" [ref=f78e1059]
+                    - generic [ref=f78e1060]:
+                      - generic [ref=f78e1061]: $HARVEST
+                      - generic [ref=f78e1062]: 0%
+                - link "JCK JCK 0%" [ref=f78e1064] [cursor=pointer]:
+                  - /url: /solana/token/6RhjNkku73hYRb5rUUJvK491F6tz82zzkTjqFTGGcftJ
+                  - generic [ref=f78e1065]:
+                    - img "JCK" [ref=f78e1069]
+                    - generic [ref=f78e1070]:
+                      - generic [ref=f78e1071]: JCK
+                      - generic [ref=f78e1072]: 0%
+                - link "RGS RGS 0%" [ref=f78e1074] [cursor=pointer]:
+                  - /url: /solana/token/HgcrVKXHbegLMbBfXf4zpnpwG9PetKjcJ6bZKn8yNoox
+                  - generic [ref=f78e1075]:
+                    - img "RGS" [ref=f78e1079]
+                    - generic [ref=f78e1080]:
+                      - generic [ref=f78e1081]: RGS
+                      - generic [ref=f78e1082]: 0%
+                - link "BUNDED BUNDED 0%" [ref=f78e1084] [cursor=pointer]:
+                  - /url: /solana/token/4qQYV3Nhc5WH4ksdMjhMhqogQjkoKeXCc5YE7cVpTRiX
+                  - generic [ref=f78e1085]:
+                    - img "BUNDED" [ref=f78e1089]
+                    - generic [ref=f78e1090]:
+                      - generic [ref=f78e1091]: BUNDED
+                      - generic [ref=f78e1092]: 0%
+                - link "NOP NOP _" [ref=f78e1094] [cursor=pointer]:
+                  - /url: /solana/token/6QFQPHszCRJLwTSHePoEsHuC33Got65rhJYzcUycTRiX
+                  - generic [ref=f78e1095]:
+                    - img "NOP" [ref=f78e1099]
+                    - generic [ref=f78e1100]:
+                      - generic [ref=f78e1101]: NOP
+                      - generic [ref=f78e1102]: _
+                - link "GOPONY GOPONY _" [ref=f78e1104] [cursor=pointer]:
+                  - /url: /solana/token/VT2CFwYGWwv4NMfHiXQspQnfhMnEXKGLACDisTtTRiX
+                  - generic [ref=f78e1105]:
+                    - img "GOPONY" [ref=f78e1109]
+                    - generic [ref=f78e1110]:
+                      - generic [ref=f78e1111]: GOPONY
+                      - generic [ref=f78e1112]: _
+                - link "WUTBUN WUTBUN 0%" [ref=f78e1114] [cursor=pointer]:
+                  - /url: /solana/token/ESQdVRppMm5cdEMtsJs1nrnK8GaebHTqTRyqHzskTRiX
+                  - generic [ref=f78e1115]:
+                    - img "WUTBUN" [ref=f78e1119]
+                    - generic [ref=f78e1120]:
+                      - generic [ref=f78e1121]: WUTBUN
+                      - generic [ref=f78e1122]: 0%
+                - link "AURA AURA _" [ref=f78e1124] [cursor=pointer]:
+                  - /url: /solana/token/GRUKyzSHiTL8S7PFqyXUNyyYc2ewNPV68orfS6PgTRiX
+                  - generic [ref=f78e1125]:
+                    - img "AURA" [ref=f78e1129]
+                    - generic [ref=f78e1130]:
+                      - generic [ref=f78e1131]: AURA
+                      - generic [ref=f78e1132]: _
+                - link "FLYBRAIN FLYBRAIN _" [ref=f78e1134] [cursor=pointer]:
+                  - /url: /solana/token/1S42LYdwceKSdKRgyhYBRm3TDYLao2kXR8T1PtMTRiX
+                  - generic [ref=f78e1135]:
+                    - img "FLYBRAIN" [ref=f78e1139]
+                    - generic [ref=f78e1140]:
+                      - generic [ref=f78e1141]: FLYBRAIN
+                      - generic [ref=f78e1142]: _
+                - link "LAWNMOA LAWNMOA _" [ref=f78e1144] [cursor=pointer]:
+                  - /url: /solana/token/9oDVZhKPR6qEkT3k1PMasEMVrTGAnrQfEHNv6z8MTRiX
+                  - generic [ref=f78e1145]:
+                    - img "LAWNMOA" [ref=f78e1149]
+                    - generic [ref=f78e1150]:
+                      - generic [ref=f78e1151]: LAWNMOA
+                      - generic [ref=f78e1152]: _
+                - link "HUSH HUSH 0%" [ref=f78e1154] [cursor=pointer]:
+                  - /url: /solana/token/CRWAs5QjQp1PCMSBp42Chg1yjpdbEbZQ7pkUetbHTRiX
+                  - generic [ref=f78e1155]:
+                    - img "HUSH" [ref=f78e1159]
+                    - generic [ref=f78e1160]:
+                      - generic [ref=f78e1161]: HUSH
+                      - generic [ref=f78e1162]: 0%
+                - link "BONGUS BONGUS _" [ref=f78e1164] [cursor=pointer]:
+                  - /url: /solana/token/4XTsSyZaDo7wuLCeoqPHDDaA6VeDsQ6jDyY2ZCFmTRiX
+                  - generic [ref=f78e1165]:
+                    - img "BONGUS" [ref=f78e1169]
+                    - generic [ref=f78e1170]:
+                      - generic [ref=f78e1171]: BONGUS
+                      - generic [ref=f78e1172]: _
+                - link "ZIP ZIP _" [ref=f78e1174] [cursor=pointer]:
+                  - /url: /solana/token/B649SkRNBbUa8Le3uws9PWijKFu8shKf9nUEzdapTRiX
+                  - generic [ref=f78e1175]:
+                    - img "ZIP" [ref=f78e1179]
+                    - generic [ref=f78e1180]:
+                      - generic [ref=f78e1181]: ZIP
+                      - generic [ref=f78e1182]: _
+                - link "ZEF ZEF 0%" [ref=f78e1184] [cursor=pointer]:
+                  - /url: /solana/token/DHyGLyCVm5AURBwwSXLooZozFvimtpuMTwuUGUbBTRiX
+                  - generic [ref=f78e1185]:
+                    - img "ZEF" [ref=f78e1189]
+                    - generic [ref=f78e1190]:
+                      - generic [ref=f78e1191]: ZEF
+                      - generic [ref=f78e1192]: 0%
+                - link "CHOPPER CHOPPER _" [ref=f78e1194] [cursor=pointer]:
+                  - /url: /solana/token/Ax9t3Tk3a5hGb2ADwvTZ9rAofFFYdYFFkzjSAJKyTRiX
+                  - generic [ref=f78e1195]:
+                    - img "CHOPPER" [ref=f78e1199]
+                    - generic [ref=f78e1200]:
+                      - generic [ref=f78e1201]: CHOPPER
+                      - generic [ref=f78e1202]: _
+                - link "JFAP JFAP 0%" [ref=f78e1204] [cursor=pointer]:
+                  - /url: /solana/token/9mSWZY8TfNTwFm8zN3GYnPEdpxmUZN6XXbn52PvPTRiX
+                  - generic [ref=f78e1205]:
+                    - img "JFAP" [ref=f78e1209]
+                    - generic [ref=f78e1210]:
+                      - generic [ref=f78e1211]: JFAP
+                      - generic [ref=f78e1212]: 0%
+                - link "OWL OWL _" [ref=f78e1214] [cursor=pointer]:
+                  - /url: /solana/token/Amh4zw7oFxGhbCMAJw15cZDhndv2pJwFrgPgs6HbTRiX
+                  - generic [ref=f78e1215]:
+                    - img "OWL" [ref=f78e1219]
+                    - generic [ref=f78e1220]:
+                      - generic [ref=f78e1221]: OWL
+                      - generic [ref=f78e1222]: _
+                - link "EVI EVI -2.7%" [ref=f78e1224] [cursor=pointer]:
+                  - /url: /solana/token/BCqgewmZPG2i8N4FyRvyKGjptLS4u7wGnujtu8usTRiX
+                  - generic [ref=f78e1225]:
+                    - img "EVI" [ref=f78e1229]
+                    - generic [ref=f78e1230]:
+                      - generic [ref=f78e1231]: EVI
+                      - generic [ref=f78e1232]: "-2.7%"
+                - link "RENDER RENDER -2.23%" [ref=f78e1234] [cursor=pointer]:
+                  - /url: /solana/token/FHruEoAQSRbqyMMFbJBumx8Eyc44CXzrYVxMURieTRiX
+                  - generic [ref=f78e1235]:
+                    - img "RENDER" [ref=f78e1239]
+                    - generic [ref=f78e1240]:
+                      - generic [ref=f78e1241]: RENDER
+                      - generic [ref=f78e1242]: "-2.23%"
+                - link "MVP MVP +0.66%" [ref=f78e1244] [cursor=pointer]:
+                  - /url: /solana/token/ArGXnPydDFokxRmPysRKMRRbn5jMwGWcrMf8vHY2TRiX
+                  - generic [ref=f78e1245]:
+                    - img "MVP" [ref=f78e1249]
+                    - generic [ref=f78e1250]:
+                      - generic [ref=f78e1251]: MVP
+                      - generic [ref=f78e1252]: +0.66%
+                - link "BHOLE BHOLE -0.08%" [ref=f78e1254] [cursor=pointer]:
+                  - /url: /solana/token/7PbXf7uPJ5gVJssTLzUdAnLYv48VNzwD6DLgZBnATRiX
+                  - generic [ref=f78e1255]:
+                    - img "BHOLE" [ref=f78e1259]
+                    - generic [ref=f78e1260]:
+                      - generic [ref=f78e1261]: BHOLE
+                      - generic [ref=f78e1262]: "-0.08%"
+                - link "GLITCH GLITCH +11.05%" [ref=f78e1264] [cursor=pointer]:
+                  - /url: /solana/token/2szShM7JTFjEKC5XX83aTcuXVHC31sqXNWFjrc2jTRiX
+                  - generic [ref=f78e1265]:
+                    - img "GLITCH" [ref=f78e1269]
+                    - generic [ref=f78e1270]:
+                      - generic [ref=f78e1271]: GLITCH
+                      - generic [ref=f78e1272]: +11.05%
+            - img [ref=f78e1273] [cursor=pointer]
+        - generic [ref=f78e1277]:
+          - generic [ref=f78e1282]:
+            - generic [ref=f78e1285]:
+              - iframe [ref=f78e1289]:
+                - progressbar [ref=f82e3]
+              - button [ref=f78e1290] [cursor=pointer]
+            - generic [ref=f78e1298]:
+              - generic [ref=f78e1299]:
+                - generic [ref=f78e1300]:
+                  - button "Configure tabs" [ref=f78e1301] [cursor=pointer]
+                  - generic [ref=f78e1306]:
+                    - button "Trades" [ref=f78e1307] [cursor=pointer]
+                    - button "Security (1)" [ref=f78e1310] [cursor=pointer]:
+                      - generic [ref=f78e1311]: Security
+                      - generic [ref=f78e1312]: (1)
+                    - button "Holders (3.48K)" [ref=f78e1314] [cursor=pointer]:
+                      - generic [ref=f78e1315]: Holders
+                      - generic [ref=f78e1316]: (3.48K)
+                    - button "Top Traders" [ref=f78e1318] [cursor=pointer]
+                    - button "Dev Tokens (2)" [ref=f78e1321] [cursor=pointer]:
+                      - generic [ref=f78e1322]: Dev Tokens
+                      - generic [ref=f78e1323]: (2)
+                    - button "Markets" [ref=f78e1325] [cursor=pointer]
+                    - button "Positions" [ref=f78e1328] [cursor=pointer]
+                - generic [ref=f78e1331]:
+                  - button "Trades Panel" [ref=f78e1332] [cursor=pointer]
+                  - button "Display" [ref=f78e1336] [cursor=pointer]
+              - generic [ref=f78e1349]:
+                - generic [ref=f78e1351]:
+                  - table [ref=f78e1355]:
+                    - rowgroup [ref=f78e1356]:
+                      - row [ref=f78e1357]:
+                        - columnheader "Time" [ref=f78e1358]
+                        - columnheader "Type" [ref=f78e1362]
+                        - columnheader "Value" [ref=f78e1369]
+                        - columnheader "Price" [ref=f78e1376]
+                        - columnheader "Stryker" [ref=f78e1385]
+                        - columnheader "Paired Token" [ref=f78e1393]
+                        - columnheader [ref=f78e1396]:
+                          - button "Trader" [ref=f78e1399] [cursor=pointer]
+                    - rowgroup [ref=f78e1403]:
+                      - row [ref=f78e1404]:
+                        - cell [ref=f78e1405]:
+                          - code [ref=f78e1407]: 2s
+                        - cell "buy" [ref=f78e1408]
+                        - cell "$0.56" [ref=f78e1410]
+                        - cell "$0.00018088" [ref=f78e1413]
+                        - cell "+3.1K" [ref=f78e1415]
+                        - cell "-0.00520963" [ref=f78e1420]:
+                          - generic [ref=f78e1421]:
+                            - generic [ref=f78e1422]: "-0.00520963"
+                            - navigation [ref=f78e1423] [cursor=pointer]: SOL
+                        - cell [ref=f78e1424]:
+                          - generic [ref=f78e1425]:
+                            - generic [ref=f78e1427]:
+                              - link [ref=f78e1430] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/BahcMBKFfNheDWbwx1kpnZB6geh6rTjiS3Px9jC1Gt1S
+                                - code [ref=f78e1431]: BahcMB...Gt1S
+                              - generic [ref=f78e1432] [cursor=pointer]
+                            - link [ref=f78e1435] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/2BdWjE6T1frBEA5cwMZjZuNYadNYVnu124zok3qMpbNBGunAz7if1BSBNn8FMeje6BS4oQpwEZg2ncM1ZChKrpke
+                      - row [ref=f78e1439]:
+                        - cell [ref=f78e1440]:
+                          - code [ref=f78e1442]: 2s
+                        - cell "buy" [ref=f78e1443]
+                        - cell "$0.2" [ref=f78e1445]
+                        - cell "$0.00018089" [ref=f78e1448]
+                        - cell "+1.12K" [ref=f78e1450]
+                        - cell "-0.00189296" [ref=f78e1455]:
+                          - generic [ref=f78e1456]:
+                            - generic [ref=f78e1457]: "-0.00189296"
+                            - navigation [ref=f78e1458] [cursor=pointer]: SOL
+                        - cell [ref=f78e1459]:
+                          - generic [ref=f78e1460]:
+                            - generic [ref=f78e1462]:
+                              - link [ref=f78e1465] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/HTY86sG2UnaaCP7t4v7jFXdR1eMntZ9YgcQpAD4gMaXM
+                                - code [ref=f78e1466]: HTY86s...MaXM
+                              - generic [ref=f78e1467] [cursor=pointer]
+                            - link [ref=f78e1470] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/5Ug98TeGFGxKVZG4C9r8MMuZtt4Q9uQ1Jf7zcMvqSN7zU1Kw96wffNj8BrTGM54vJRwNaZZyyFtkkhtUCyMQ2yep
+                      - row [ref=f78e1474]:
+                        - cell [ref=f78e1475]:
+                          - code [ref=f78e1477]: 3s
+                        - cell "buy" [ref=f78e1478]
+                        - cell "$0.82" [ref=f78e1480]
+                        - cell "$0.00018091" [ref=f78e1483]
+                        - cell "+4.58K" [ref=f78e1485]
+                        - cell "-0.00768476" [ref=f78e1490]:
+                          - generic [ref=f78e1491]:
+                            - generic [ref=f78e1492]: "-0.00768476"
+                            - navigation [ref=f78e1493] [cursor=pointer]: SOL
+                        - cell [ref=f78e1494]:
+                          - generic [ref=f78e1495]:
+                            - generic [ref=f78e1497]:
+                              - link [ref=f78e1500] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/9yP12cGNaP73APoit64mmFTj4LPqjYgfGorTTW191oVq
+                                - code [ref=f78e1501]: 9yP12c...1oVq
+                              - generic [ref=f78e1502] [cursor=pointer]
+                            - link [ref=f78e1505] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/3gmcecn4phiZj69zxkdQihwzVSNQpLKtmk57Po85t3PaMGbPzRM8ZYZAfs4giHeZJ83qNRtEceCrdituK9V4dXRE
+                      - row [ref=f78e1509]:
+                        - cell [ref=f78e1510]:
+                          - code [ref=f78e1512]: 4s
+                        - cell "sell" [ref=f78e1513]
+                        - cell "$0.99" [ref=f78e1515]
+                        - cell "$0.00017848" [ref=f78e1518]
+                        - cell "-5.56K 2.5%" [ref=f78e1520]:
+                          - generic [ref=f78e1522]:
+                            - generic [ref=f78e1523]: "-5.56K"
+                            - generic [ref=f78e1525]: 2.5%
+                        - cell "+0.00919609" [ref=f78e1526]:
+                          - generic [ref=f78e1527]:
+                            - generic [ref=f78e1528]: "+0.00919609"
+                            - navigation [ref=f78e1529] [cursor=pointer]: SOL
+                        - cell [ref=f78e1530]:
+                          - generic [ref=f78e1531]:
+                            - generic [ref=f78e1533]:
+                              - link [ref=f78e1536] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/4kopbp1KNt9VkxCakPofowAdx3S4XRqYGFXVzKHybSyz
+                                - code [ref=f78e1537]: 4kopbp...bSyz
+                              - generic [ref=f78e1538] [cursor=pointer]
+                            - link [ref=f78e1541] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/4BBhVt93PR1ATZaNUmikTENHPC8tPm9Du2fFGr2U9nauRv5AtCR3wjbEMXAF5kJbNxJfnW9JEWpi873YBNjShazc
+                      - row [ref=f78e1545]:
+                        - cell [ref=f78e1546]:
+                          - code [ref=f78e1548]: 4s
+                        - cell "buy" [ref=f78e1549]
+                        - cell "$0.54" [ref=f78e1551]
+                        - cell "$0.00018092" [ref=f78e1554]
+                        - cell "+3.02K" [ref=f78e1556]
+                        - cell "-0.00507098" [ref=f78e1561]:
+                          - generic [ref=f78e1562]:
+                            - generic [ref=f78e1563]: "-0.00507098"
+                            - navigation [ref=f78e1564] [cursor=pointer]: SOL
+                        - cell [ref=f78e1565]:
+                          - generic [ref=f78e1566]:
+                            - generic [ref=f78e1568]:
+                              - link [ref=f78e1571] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/9yP12cGNaP73APoit64mmFTj4LPqjYgfGorTTW191oVq
+                                - code [ref=f78e1572]: 9yP12c...1oVq
+                              - generic [ref=f78e1573] [cursor=pointer]
+                            - link [ref=f78e1576] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/2AnFuWZ9ZQTzmfG4epsNNYbDeUPU4WdS9pzkZ1vGqozv2GV41YRRSi1DkUWBuAPS6WUB1dxXJp4o9oehJcG26jMW
+                      - row [ref=f78e1580]:
+                        - cell [ref=f78e1581]:
+                          - code [ref=f78e1583]: 4s
+                        - cell "buy" [ref=f78e1584]
+                        - cell "$0.48" [ref=f78e1586]
+                        - cell "$0.00018092" [ref=f78e1589]
+                        - cell "+2.68K" [ref=f78e1591]
+                        - cell "-0.00450193" [ref=f78e1596]:
+                          - generic [ref=f78e1597]:
+                            - generic [ref=f78e1598]: "-0.00450193"
+                            - navigation [ref=f78e1599] [cursor=pointer]: SOL
+                        - cell [ref=f78e1600]:
+                          - generic [ref=f78e1601]:
+                            - generic [ref=f78e1603]:
+                              - link [ref=f78e1606] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/9yP12cGNaP73APoit64mmFTj4LPqjYgfGorTTW191oVq
+                                - code [ref=f78e1607]: 9yP12c...1oVq
+                              - generic [ref=f78e1608] [cursor=pointer]
+                            - link [ref=f78e1611] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/2W9BiV9io8phH4P297uvjShvz8BjZoab4kpSpuqoFCxvLS2BBxNuCkGziigQaPa64JwTj23ppXjUSbqQ7pL3jwhJ
+                      - row [ref=f78e1615]:
+                        - cell [ref=f78e1616]:
+                          - code [ref=f78e1618]: 4s
+                        - cell "buy" [ref=f78e1619]
+                        - cell "$0.16" [ref=f78e1621]
+                        - cell "$0.00018159" [ref=f78e1624]
+                        - cell "+904.29" [ref=f78e1626]
+                        - cell "-0.00151528" [ref=f78e1631]:
+                          - generic [ref=f78e1632]:
+                            - generic [ref=f78e1633]: "-0.00151528"
+                            - navigation [ref=f78e1634] [cursor=pointer]: SOL
+                        - cell [ref=f78e1635]:
+                          - generic [ref=f78e1636]:
+                            - generic [ref=f78e1638]:
+                              - link [ref=f78e1641] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/CRwLwTnY7VBtDBzVHhaJZzs4e6rvjsLjnNffps9ss82S
+                                - code [ref=f78e1642]: CRwLwT...s82S
+                              - generic [ref=f78e1643] [cursor=pointer]
+                            - link [ref=f78e1646] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/4aKf8QSLrL4jynqgfwqjmWLy38YcmikgX8gCHqQBk7DcMf9TKtrAbJzVkKJYFnbFJTdCqx9mGcaDov4v7uGwDNR2
+                      - row [ref=f78e1650]:
+                        - cell [ref=f78e1651]:
+                          - code [ref=f78e1653]: 4s
+                        - cell "buy" [ref=f78e1654]
+                        - cell "$0.14" [ref=f78e1656]
+                        - cell "$0.00018091" [ref=f78e1659]
+                        - cell "+779.21" [ref=f78e1661]
+                        - cell "-0.00130559" [ref=f78e1666]:
+                          - generic [ref=f78e1667]:
+                            - generic [ref=f78e1668]: "-0.00130559"
+                            - navigation [ref=f78e1669] [cursor=pointer]: SOL
+                        - cell [ref=f78e1670]:
+                          - generic [ref=f78e1671]:
+                            - generic [ref=f78e1673]:
+                              - link [ref=f78e1676] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/13LcVvQpQYHb3GYJycYEedGbhL6F4M65iRqHc9TPytAe
+                                - code [ref=f78e1677]: 13LcVv...ytAe
+                              - generic [ref=f78e1678] [cursor=pointer]
+                            - link [ref=f78e1681] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/1GZkz1Tfc27QY6aNDysk411QB3i89dAEju8Rs8o5E7dB1eFKuTA1EAXFZuMzg2w2EtmBfRBo3pF639J5emi3mhc
+                      - row [ref=f78e1685]:
+                        - cell [ref=f78e1686]:
+                          - code [ref=f78e1688]: 4s
+                        - cell "buy" [ref=f78e1689]
+                        - cell "$0.14" [ref=f78e1691]
+                        - cell "$0.00018091" [ref=f78e1694]
+                        - cell "+779.2" [ref=f78e1696]
+                        - cell "-0.00130559" [ref=f78e1701]:
+                          - generic [ref=f78e1702]:
+                            - generic [ref=f78e1703]: "-0.00130559"
+                            - navigation [ref=f78e1704] [cursor=pointer]: SOL
+                        - cell [ref=f78e1705]:
+                          - generic [ref=f78e1706]:
+                            - generic [ref=f78e1708]:
+                              - link [ref=f78e1711] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/13LcVvQpQYHb3GYJycYEedGbhL6F4M65iRqHc9TPytAe
+                                - code [ref=f78e1712]: 13LcVv...ytAe
+                              - generic [ref=f78e1713] [cursor=pointer]
+                            - link [ref=f78e1716] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/2dB1rh8noohPuSDrypyGk43KxdTxUmHUztuGE4drdf6g7xpyxf6yUcJSwUR7LZWQdPsHv5jNYv8rMCNxx3qZLy1v
+                      - row [ref=f78e1720]:
+                        - cell [ref=f78e1721]:
+                          - code [ref=f78e1723]: 5s
+                        - cell "buy" [ref=f78e1724]
+                        - cell "$0.86" [ref=f78e1726]
+                        - cell "$0.00017840" [ref=f78e1729]
+                        - cell "+4.83K" [ref=f78e1731]
+                        - cell "-0.00795426" [ref=f78e1736]:
+                          - generic [ref=f78e1737]:
+                            - generic [ref=f78e1738]: "-0.00795426"
+                            - navigation [ref=f78e1739] [cursor=pointer]: SOL
+                        - cell [ref=f78e1740]:
+                          - generic [ref=f78e1741]:
+                            - generic [ref=f78e1743]:
+                              - link [ref=f78e1746] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/5mU9MbDrMkGUSzB5dVK178252X44ZHnfwTxEsCZPjxkp
+                                - code [ref=f78e1747]: 5mU9Mb...jxkp
+                              - generic [ref=f78e1748] [cursor=pointer]
+                            - link [ref=f78e1751] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/4JLLuWsUYz5ZGAvmoL39wub9Gds5H7qStgPGg59viBf8vWWsoMm43nmFc64pQDiGNUMFDp8VDYXSEYajkPSoe4Uz
+                      - row [ref=f78e1755]:
+                        - cell [ref=f78e1756]:
+                          - code [ref=f78e1758]: 5s
+                        - cell "sell" [ref=f78e1759]
+                        - cell "$1.03" [ref=f78e1761]
+                        - cell "$0.00017860" [ref=f78e1764]
+                        - cell "-5.8K 36.3%" [ref=f78e1766]:
+                          - generic [ref=f78e1768]:
+                            - generic [ref=f78e1769]: "-5.8K"
+                            - generic [ref=f78e1771]: 36.3%
+                        - cell "+0.00959657" [ref=f78e1772]:
+                          - generic [ref=f78e1773]:
+                            - generic [ref=f78e1774]: "+0.00959657"
+                            - navigation [ref=f78e1775] [cursor=pointer]: SOL
+                        - cell [ref=f78e1776]:
+                          - generic [ref=f78e1777]:
+                            - generic [ref=f78e1779]:
+                              - link [ref=f78e1782] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/13LcVvQpQYHb3GYJycYEedGbhL6F4M65iRqHc9TPytAe
+                                - code [ref=f78e1783]: 13LcVv...ytAe
+                              - generic [ref=f78e1784] [cursor=pointer]
+                            - link [ref=f78e1787] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/37kVwoRu8Qkob3ft9xA6vpLzhZFEP6nDqCRCdvXTnHXzMfZRagNL6PqUn3DDDP7wUzJeUVpY4UqJo4jvpgE3fndQ
+                      - row [ref=f78e1791]:
+                        - cell [ref=f78e1792]:
+                          - code [ref=f78e1794]: 5s
+                        - cell "buy" [ref=f78e1795]
+                        - cell "$0.82" [ref=f78e1797]
+                        - cell "$0.00017776" [ref=f78e1800]
+                        - cell "+4.62K" [ref=f78e1802]
+                        - cell "-0.00761278" [ref=f78e1807]:
+                          - generic [ref=f78e1808]:
+                            - generic [ref=f78e1809]: "-0.00761278"
+                            - navigation [ref=f78e1810] [cursor=pointer]: SOL
+                        - cell [ref=f78e1811]:
+                          - generic [ref=f78e1812]:
+                            - generic [ref=f78e1814]:
+                              - link [ref=f78e1817] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/5mU9MbDrMkGUSzB5dVK178252X44ZHnfwTxEsCZPjxkp
+                                - code [ref=f78e1818]: 5mU9Mb...jxkp
+                              - generic [ref=f78e1819] [cursor=pointer]
+                            - link [ref=f78e1822] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/4ubdCNMCudMJMC9p3xJBjGt8xHSN2mbJeMScoZjYTCBhT9z7w4b5RVaya3ukE9RkguemwKTu2L1twA753Yvn6dss
+                      - row [ref=f78e1826]:
+                        - cell [ref=f78e1827]:
+                          - code [ref=f78e1829]: 5s
+                        - cell "buy" [ref=f78e1830]
+                        - cell "$189.25" [ref=f78e1832]
+                        - cell "$0.00017934" [ref=f78e1835]
+                        - cell "+1.05M" [ref=f78e1837]
+                        - cell "-1.7527" [ref=f78e1842]:
+                          - generic [ref=f78e1843]:
+                            - generic [ref=f78e1844]: "-1.7527"
+                            - navigation [ref=f78e1845] [cursor=pointer]: SOL
+                        - cell [ref=f78e1846]:
+                          - generic [ref=f78e1847]:
+                            - generic [ref=f78e1849]:
+                              - link [ref=f78e1852] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/FYqh5Pv6zxAZp7Njw9s7Q5X7pp6qDFX5JdvX5vyw8AUK
+                                - code [ref=f78e1853]: FYqh5P...8AUK
+                              - generic [ref=f78e1854] [cursor=pointer]
+                            - link [ref=f78e1857] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/3ktmBpVoRDu7ZDaThV9MkR6HH7oJfNW7hLH9bkMRhPgADy5V6h7aHenmAm6Cg6JgJcPpy7JD2bkgooVDXdNg1iHD
+                      - row [ref=f78e1861]:
+                        - cell [ref=f78e1862]:
+                          - code [ref=f78e1864]: 5s
+                        - cell "buy" [ref=f78e1865]
+                        - cell "$0.23" [ref=f78e1867]
+                        - cell "$0.00018103" [ref=f78e1870]
+                        - cell "+1.29K" [ref=f78e1872]
+                        - cell "-0.00217599" [ref=f78e1877]:
+                          - generic [ref=f78e1878]:
+                            - generic [ref=f78e1879]: "-0.00217599"
+                            - navigation [ref=f78e1880] [cursor=pointer]: SOL
+                        - cell [ref=f78e1881]:
+                          - generic [ref=f78e1882]:
+                            - generic [ref=f78e1884]:
+                              - link [ref=f78e1887] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/5mU9MbDrMkGUSzB5dVK178252X44ZHnfwTxEsCZPjxkp
+                                - code [ref=f78e1888]: 5mU9Mb...jxkp
+                              - generic [ref=f78e1889] [cursor=pointer]
+                            - link [ref=f78e1892] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/4HWE75rTjjkjZu3EC5WeBrrstgGdFyDYneLjrffZM9tVr1iku6Xv9rrvhzRPEk7mjG1oFi3SNS8Vre6dZLdZKg7Y
+                      - row [ref=f78e1896]:
+                        - cell [ref=f78e1897]:
+                          - code [ref=f78e1899]: 6s
+                        - cell "buy" [ref=f78e1900]
+                        - cell "$0.14" [ref=f78e1902]
+                        - cell "$0.00017838" [ref=f78e1905]
+                        - cell "+787.43" [ref=f78e1907]
+                        - cell "-0.00129619" [ref=f78e1912]:
+                          - generic [ref=f78e1913]:
+                            - generic [ref=f78e1914]: "-0.00129619"
+                            - navigation [ref=f78e1915] [cursor=pointer]: SOL
+                        - cell [ref=f78e1916]:
+                          - generic [ref=f78e1917]:
+                            - generic [ref=f78e1919]:
+                              - link [ref=f78e1922] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/6rWmFTcAiz1bFiqaDjvDJ75B9JxJtvVL74NvCaTB47vK
+                                - code [ref=f78e1923]: 6rWmFT...47vK
+                              - generic [ref=f78e1924] [cursor=pointer]
+                            - link [ref=f78e1927] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/3p64UYNJWzHA78gkzdJghrHaigKYms6L1dLCoyvtDtZ7h8ouPGv5CLEzyThpwwhD7aGfKkWYxEHeqTjRibsjG5dV
+                      - row [ref=f78e1931]:
+                        - cell [ref=f78e1932]:
+                          - code [ref=f78e1934]: 6s
+                        - cell "buy" [ref=f78e1935]
+                        - cell "$0.16" [ref=f78e1937]
+                        - cell "$0.00017769" [ref=f78e1940]
+                        - cell "+914.3" [ref=f78e1942]
+                        - cell "-0.0015049" [ref=f78e1947]:
+                          - generic [ref=f78e1948]:
+                            - generic [ref=f78e1949]: "-0.0015049"
+                            - navigation [ref=f78e1950] [cursor=pointer]: SOL
+                        - cell [ref=f78e1951]:
+                          - generic [ref=f78e1952]:
+                            - generic [ref=f78e1954]:
+                              - link [ref=f78e1957] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/6rWmFTcAiz1bFiqaDjvDJ75B9JxJtvVL74NvCaTB47vK
+                                - code [ref=f78e1958]: 6rWmFT...47vK
+                              - generic [ref=f78e1959] [cursor=pointer]
+                            - link [ref=f78e1962] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/46gaW1UR8MTupcpqJozNEY9zGvjb1CMTULR1WGEsbVBVKm4vdZNiFSoZMDqJCzWbJTQM2jEuXumtApxSxJCw4QQX
+                      - row [ref=f78e1966]:
+                        - cell [ref=f78e1967]:
+                          - code [ref=f78e1969]: 6s
+                        - cell "buy" [ref=f78e1970]
+                        - cell "$0.7" [ref=f78e1972]
+                        - cell "$0.00017837" [ref=f78e1975]
+                        - cell "+3.92K" [ref=f78e1977]
+                        - cell "-0.00646084" [ref=f78e1982]:
+                          - generic [ref=f78e1983]:
+                            - generic [ref=f78e1984]: "-0.00646084"
+                            - navigation [ref=f78e1985] [cursor=pointer]: SOL
+                        - cell [ref=f78e1986]:
+                          - generic [ref=f78e1987]:
+                            - generic [ref=f78e1989]:
+                              - link [ref=f78e1992] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/5mU9MbDrMkGUSzB5dVK178252X44ZHnfwTxEsCZPjxkp
+                                - code [ref=f78e1993]: 5mU9Mb...jxkp
+                              - generic [ref=f78e1994] [cursor=pointer]
+                            - link [ref=f78e1997] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/2t7oos5JTnwQcc9ue7nVZRWQQNZEfittnPu4Jf6FLxm6rRZ6A5MthEHAyRdjAZNr2ionMzc4k9m9CWaBZwuW3skf
+                      - row [ref=f78e2001]:
+                        - cell [ref=f78e2002]:
+                          - code [ref=f78e2004]: 7s
+                        - cell "buy" [ref=f78e2005]
+                        - cell "$0.24" [ref=f78e2007]
+                        - cell "$0.00017766" [ref=f78e2010]
+                        - cell "+1.35K" [ref=f78e2012]
+                        - cell "-0.00223387" [ref=f78e2017]:
+                          - generic [ref=f78e2018]:
+                            - generic [ref=f78e2019]: "-0.00223387"
+                            - navigation [ref=f78e2020] [cursor=pointer]: SOL
+                        - cell [ref=f78e2021]:
+                          - generic [ref=f78e2022]:
+                            - generic [ref=f78e2024]:
+                              - link [ref=f78e2027] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/EsPRBBPQRwyPRPYN194YSKgTHc4t68LtxGL6Q7y1YSQW
+                                - code [ref=f78e2028]: EsPRBB...YSQW
+                              - generic [ref=f78e2029] [cursor=pointer]
+                            - link [ref=f78e2032] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/5KwUURNWXki3HATqUfC15n1nc6TzW3yweK78YGh6NkgXSEKZfZYGDua7GyE6d9X3dSZTTznXGJaPUsvBfFLJv2vr
+                      - row [ref=f78e2036]:
+                        - cell [ref=f78e2037]:
+                          - code [ref=f78e2039]: 7s
+                        - cell "sell" [ref=f78e2040]
+                        - cell "$0.66" [ref=f78e2042]
+                        - cell "$0.00017532" [ref=f78e2045]
+                        - cell "-3.79K 100%" [ref=f78e2047]:
+                          - generic [ref=f78e2049]:
+                            - generic [ref=f78e2050]: "-3.79K"
+                            - generic [ref=f78e2052]: 100%
+                        - cell "+0.00616272" [ref=f78e2053]:
+                          - generic [ref=f78e2054]:
+                            - generic [ref=f78e2055]: "+0.00616272"
+                            - navigation [ref=f78e2056] [cursor=pointer]: SOL
+                        - cell [ref=f78e2057]:
+                          - generic [ref=f78e2058]:
+                            - generic [ref=f78e2060]:
+                              - link [ref=f78e2063] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/FvUGtGuiahiDDwDSNA6fNZWGqeicyhN6QaXkmW9AYqBa
+                                - code [ref=f78e2064]: FvUGtG...YqBa
+                              - generic [ref=f78e2065] [cursor=pointer]
+                            - link [ref=f78e2068] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/5tjwv2AriHuZJBLKoo9C94drbXUi8wTrpJa9RASEfSUBwdjAnYYaatcB8ojSFxHqUKuKejmoNeBpnHsbE9VB4oZq
+                      - row [ref=f78e2072]:
+                        - cell [ref=f78e2073]:
+                          - code [ref=f78e2075]: 7s
+                        - cell "buy" [ref=f78e2076]
+                        - cell "$0.18" [ref=f78e2078]
+                        - cell "$0.00017771" [ref=f78e2081]
+                        - cell "+1.06K" [ref=f78e2083]
+                        - cell "-0.00174782" [ref=f78e2088]:
+                          - generic [ref=f78e2089]:
+                            - generic [ref=f78e2090]: "-0.00174782"
+                            - navigation [ref=f78e2091] [cursor=pointer]: SOL
+                        - cell [ref=f78e2092]:
+                          - generic [ref=f78e2093]:
+                            - generic [ref=f78e2095]:
+                              - link [ref=f78e2098] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/7dQuWzpwk2b4tcdzKReutHvDMiY6xzqo9pLed5U3dmqr
+                                - code [ref=f78e2099]: 7dQuWz...dmqr
+                              - generic [ref=f78e2100] [cursor=pointer]
+                            - link [ref=f78e2103] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/3RCwr98hhjXDtpfnc4WuVktfdUhxviSZoADVWrqaBiqaPd51byzauMpXPUs7PvkbdPAeHgrmw7ap4LcJwgGXPH74
+                      - row [ref=f78e2107]:
+                        - cell [ref=f78e2108]:
+                          - code [ref=f78e2110]: 7s
+                        - cell "buy" [ref=f78e2111]
+                        - cell "$0.67" [ref=f78e2113]
+                        - cell "$0.00017765" [ref=f78e2116]
+                        - cell "+3.81K" [ref=f78e2118]
+                        - cell "-0.00628202" [ref=f78e2123]:
+                          - generic [ref=f78e2124]:
+                            - generic [ref=f78e2125]: "-0.00628202"
+                            - navigation [ref=f78e2126] [cursor=pointer]: SOL
+                        - cell [ref=f78e2127]:
+                          - generic [ref=f78e2128]:
+                            - generic [ref=f78e2130]:
+                              - link [ref=f78e2133] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/GTiwRg25sMU38ZaBcFBn39xz9dty72TW4YvFWmQyYQHt
+                                - code [ref=f78e2134]: GTiwRg...YQHt
+                              - generic [ref=f78e2135] [cursor=pointer]
+                            - link [ref=f78e2138] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/3DM7cRgyC5hZspaHKQqqx8qNBL5QepLtUFD8k4j5E9QwkBXEzgP7HYAgYVwyBw1Wzapc6B5oYKgKYA6tQXkUXBdz
+                      - row [ref=f78e2142]:
+                        - cell [ref=f78e2143]:
+                          - code [ref=f78e2145]: 7s
+                        - cell "buy" [ref=f78e2146]
+                        - cell "$0.94" [ref=f78e2148]
+                        - cell "$0.00017767" [ref=f78e2151]
+                        - cell "+5.31K" [ref=f78e2153]
+                        - cell "-0.0087501" [ref=f78e2158]:
+                          - generic [ref=f78e2159]:
+                            - generic [ref=f78e2160]: "-0.0087501"
+                            - navigation [ref=f78e2161] [cursor=pointer]: SOL
+                        - cell [ref=f78e2162]:
+                          - generic [ref=f78e2163]:
+                            - generic [ref=f78e2165]:
+                              - link [ref=f78e2168] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/EsPRBBPQRwyPRPYN194YSKgTHc4t68LtxGL6Q7y1YSQW
+                                - code [ref=f78e2169]: EsPRBB...YSQW
+                              - generic [ref=f78e2170] [cursor=pointer]
+                            - link [ref=f78e2173] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/4F8HoTwXs47MDLeqDEXeTYdVi9chhz6Gj3aXtZ3xKZUkiRfVHVXJKxzd3t4PrGHhSVJVx2UV3cXyUuJx4uEq36ZZ
+                      - row [ref=f78e2177]:
+                        - cell [ref=f78e2178]:
+                          - code [ref=f78e2180]: 7s
+                        - cell "buy" [ref=f78e2181]
+                        - cell "$0.18" [ref=f78e2183]
+                        - cell "$0.00017768" [ref=f78e2186]
+                        - cell "+1.06K" [ref=f78e2188]
+                        - cell "-0.00174782" [ref=f78e2193]:
+                          - generic [ref=f78e2194]:
+                            - generic [ref=f78e2195]: "-0.00174782"
+                            - navigation [ref=f78e2196] [cursor=pointer]: SOL
+                        - cell [ref=f78e2197]:
+                          - generic [ref=f78e2198]:
+                            - generic [ref=f78e2200]:
+                              - link [ref=f78e2203] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/7dQuWzpwk2b4tcdzKReutHvDMiY6xzqo9pLed5U3dmqr
+                                - code [ref=f78e2204]: 7dQuWz...dmqr
+                              - generic [ref=f78e2205] [cursor=pointer]
+                            - link [ref=f78e2208] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/8xg6oENfVqxcjSLrTBSXcZWcv1bDbj3noq4jAwprcyX72V69HDVqAScUPe2Zqa6fyNFKqcfx25JaXNqDDNg8dry
+                      - row [ref=f78e2212]:
+                        - cell [ref=f78e2213]:
+                          - code [ref=f78e2215]: 7s
+                        - cell "buy" [ref=f78e2216]
+                        - cell "$0.7" [ref=f78e2218]
+                        - cell "$0.00017772" [ref=f78e2221]
+                        - cell "+3.96K" [ref=f78e2223]
+                        - cell "-0.00652112" [ref=f78e2228]:
+                          - generic [ref=f78e2229]:
+                            - generic [ref=f78e2230]: "-0.00652112"
+                            - navigation [ref=f78e2231] [cursor=pointer]: SOL
+                        - cell [ref=f78e2232]:
+                          - generic [ref=f78e2233]:
+                            - generic [ref=f78e2235]:
+                              - link [ref=f78e2238] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/EsPRBBPQRwyPRPYN194YSKgTHc4t68LtxGL6Q7y1YSQW
+                                - code [ref=f78e2239]: EsPRBB...YSQW
+                              - generic [ref=f78e2240] [cursor=pointer]
+                            - link [ref=f78e2243] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/5ybds6Zmvduno6w5YciNxPrpunvF4hVMTddnsXmHiQxTBH7oxwSu46cvd4QurcyveNs9fHFdsAsKcgkP1gqoajV4
+                      - row [ref=f78e2247]:
+                        - cell [ref=f78e2248]:
+                          - code [ref=f78e2250]: 8s
+                        - cell "buy" [ref=f78e2251]
+                        - cell "$0.34" [ref=f78e2253]
+                        - cell "$0.00017763" [ref=f78e2256]
+                        - cell "+1.95K" [ref=f78e2258]
+                        - cell "-0.00322383" [ref=f78e2263]:
+                          - generic [ref=f78e2264]:
+                            - generic [ref=f78e2265]: "-0.00322383"
+                            - navigation [ref=f78e2266] [cursor=pointer]: SOL
+                        - cell [ref=f78e2267]:
+                          - generic [ref=f78e2268]:
+                            - generic [ref=f78e2270]:
+                              - link [ref=f78e2273] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/FxsFUCsVXmbUy3eD9pDbBGCrDS8YCgkfpJNMfW54k9tr
+                                - code [ref=f78e2274]: FxsFUC...k9tr
+                              - generic [ref=f78e2275] [cursor=pointer]
+                            - link [ref=f78e2278] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/3qGpNR9zoMLaBJvmjb1z5TW49fogyRgBeKmhCL36Bk8KivfydsiYyxc5qQmGw2ZFrUjUmtQjdCnvF8JFZPGhGbiz
+                      - row [ref=f78e2282]:
+                        - cell [ref=f78e2283]:
+                          - code [ref=f78e2285]: 8s
+                        - cell "buy" [ref=f78e2286]
+                        - cell "$0.18" [ref=f78e2288]
+                        - cell "$0.00017761" [ref=f78e2291]
+                        - cell "+1.05K" [ref=f78e2293]
+                        - cell "-0.00174346" [ref=f78e2298]:
+                          - generic [ref=f78e2299]:
+                            - generic [ref=f78e2300]: "-0.00174346"
+                            - navigation [ref=f78e2301] [cursor=pointer]: SOL
+                        - cell [ref=f78e2302]:
+                          - generic [ref=f78e2303]:
+                            - generic [ref=f78e2305]:
+                              - link [ref=f78e2308] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/GTiwRg25sMU38ZaBcFBn39xz9dty72TW4YvFWmQyYQHt
+                                - code [ref=f78e2309]: GTiwRg...YQHt
+                              - generic [ref=f78e2310] [cursor=pointer]
+                            - link [ref=f78e2313] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/2mcoF8VYU2xKgMyqs8p9dpxf9BaQrvwgMpAo2jypnSi7PwJcAebqBn8sGpWeHXBpqvZBLtxzBRwpzjnTeCEqnKcd
+                      - row [ref=f78e2317]:
+                        - cell [ref=f78e2318]:
+                          - code [ref=f78e2320]: 8s
+                        - cell "buy" [ref=f78e2321]
+                        - cell "$0.62" [ref=f78e2323]
+                        - cell "$0.00017765" [ref=f78e2326]
+                        - cell "+3.53K" [ref=f78e2328]
+                        - cell "-0.0058214" [ref=f78e2333]:
+                          - generic [ref=f78e2334]:
+                            - generic [ref=f78e2335]: "-0.0058214"
+                            - navigation [ref=f78e2336] [cursor=pointer]: SOL
+                        - cell [ref=f78e2337]:
+                          - generic [ref=f78e2338]:
+                            - generic [ref=f78e2340]:
+                              - link [ref=f78e2343] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/FxsFUCsVXmbUy3eD9pDbBGCrDS8YCgkfpJNMfW54k9tr
+                                - code [ref=f78e2344]: FxsFUC...k9tr
+                              - generic [ref=f78e2345] [cursor=pointer]
+                            - link [ref=f78e2348] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/3v2jDYzAotW38rWA1HJLsvcRghbrnL4ciNdnMU2ZXQFYs3m1aJJyw73wytqLFc68BhRpgbx5peRimR8eNhrEm5HE
+                      - row [ref=f78e2352]:
+                        - cell [ref=f78e2353]:
+                          - code [ref=f78e2355]: 8s
+                        - cell "buy" [ref=f78e2356]
+                        - cell "$0.89" [ref=f78e2358]
+                        - cell "$0.00017762" [ref=f78e2361]
+                        - cell "+5.02K" [ref=f78e2363]
+                        - cell "-0.00827356" [ref=f78e2368]:
+                          - generic [ref=f78e2369]:
+                            - generic [ref=f78e2370]: "-0.00827356"
+                            - navigation [ref=f78e2371] [cursor=pointer]: SOL
+                        - cell [ref=f78e2372]:
+                          - generic [ref=f78e2373]:
+                            - generic [ref=f78e2375]:
+                              - link [ref=f78e2378] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/GTiwRg25sMU38ZaBcFBn39xz9dty72TW4YvFWmQyYQHt
+                                - code [ref=f78e2379]: GTiwRg...YQHt
+                              - generic [ref=f78e2380] [cursor=pointer]
+                            - link [ref=f78e2383] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/4UcHRxarXwYggMLpTVoPsfV9d7YBRgA2ZDEEvBwWaL6abmQbyuBiHZ8ax1WJTS4Kqww2yTk1QKmxCUsD2vsEUqAr
+                      - row [ref=f78e2387]:
+                        - cell [ref=f78e2388]:
+                          - code [ref=f78e2390]: 8s
+                        - cell "buy" [ref=f78e2391]
+                        - cell "$0.82" [ref=f78e2393]
+                        - cell "$0.00017764" [ref=f78e2396]
+                        - cell "+4.63K" [ref=f78e2398]
+                        - cell "-0.00763158" [ref=f78e2403]:
+                          - generic [ref=f78e2404]:
+                            - generic [ref=f78e2405]: "-0.00763158"
+                            - navigation [ref=f78e2406] [cursor=pointer]: SOL
+                        - cell [ref=f78e2407]:
+                          - generic [ref=f78e2408]:
+                            - generic [ref=f78e2410]:
+                              - link [ref=f78e2413] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/GTaCSTcsrPLVmgYMZwQuqGGZ1QqX1FfT9G7TtUuHFbRH
+                                - code [ref=f78e2414]: GTaCST...FbRH
+                              - generic [ref=f78e2415] [cursor=pointer]
+                            - link [ref=f78e2418] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/66vUKzijimtEGmTcrqkWx987h1uS5P9jJi9VBCnRyLF8aWv5QPBCLP1xqdrjkwG2bHhfLccEv1qVWPehBKC6XWxY
+                      - row [ref=f78e2422]:
+                        - cell [ref=f78e2423]:
+                          - code [ref=f78e2425]: 8s
+                        - cell "buy" [ref=f78e2426]
+                        - cell "$0.57" [ref=f78e2428]
+                        - cell "$0.00017761" [ref=f78e2431]
+                        - cell "+3.24K" [ref=f78e2433]
+                        - cell "-0.00533253" [ref=f78e2438]:
+                          - generic [ref=f78e2439]:
+                            - generic [ref=f78e2440]: "-0.00533253"
+                            - navigation [ref=f78e2441] [cursor=pointer]: SOL
+                        - cell [ref=f78e2442]:
+                          - generic [ref=f78e2443]:
+                            - generic [ref=f78e2445]:
+                              - link [ref=f78e2448] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/FxsFUCsVXmbUy3eD9pDbBGCrDS8YCgkfpJNMfW54k9tr
+                                - code [ref=f78e2449]: FxsFUC...k9tr
+                              - generic [ref=f78e2450] [cursor=pointer]
+                            - link [ref=f78e2453] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/26yF6MZd8r1doqRpDuec2PdmcCwbzTozbNXAeKhWmsP9ASryJrqD3ZQ9WTkYkp1sPBPhCSwaoixVaCjnYoMAgQWG
+                      - row [ref=f78e2457]:
+                        - cell [ref=f78e2458]:
+                          - code [ref=f78e2460]: 9s
+                        - cell "buy" [ref=f78e2461]
+                        - cell "$0.32" [ref=f78e2463]
+                        - cell "$0.00017761" [ref=f78e2466]
+                        - cell "+1.82K" [ref=f78e2468]
+                        - cell "-0.00300157" [ref=f78e2473]:
+                          - generic [ref=f78e2474]:
+                            - generic [ref=f78e2475]: "-0.00300157"
+                            - navigation [ref=f78e2476] [cursor=pointer]: SOL
+                        - cell [ref=f78e2477]:
+                          - generic [ref=f78e2478]:
+                            - generic [ref=f78e2480]:
+                              - link [ref=f78e2483] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/DtqdqJEAtQuTqXW5EfpszWoXJ1Myr8ugBmd2oGNrAJ41
+                                - code [ref=f78e2484]: DtqdqJ...AJ41
+                              - generic [ref=f78e2485] [cursor=pointer]
+                            - link [ref=f78e2488] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/33Vid2uFMi7asPwyRieRBSmVJopn2oAdqwDpdj8fHEYKyiAFKz8Eb9SjXMZcYDiWrDcoCRgbPudUv8UWSFuC3vci
+                      - row [ref=f78e2492]:
+                        - cell [ref=f78e2493]:
+                          - code [ref=f78e2495]: 9s
+                        - cell "buy" [ref=f78e2496]
+                        - cell "$0.19" [ref=f78e2498]
+                        - cell "$0.00017760" [ref=f78e2501]
+                        - cell "+1.07K" [ref=f78e2503]
+                        - cell "-0.00176883" [ref=f78e2508]:
+                          - generic [ref=f78e2509]:
+                            - generic [ref=f78e2510]: "-0.00176883"
+                            - navigation [ref=f78e2511] [cursor=pointer]: SOL
+                        - cell [ref=f78e2512]:
+                          - generic [ref=f78e2513]:
+                            - generic [ref=f78e2515]:
+                              - link [ref=f78e2518] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/AcT6CGQi6tdELi3yrLPxsAjndteZdV473VRsiGjrHKLn
+                                - code [ref=f78e2519]: AcT6CG...HKLn
+                              - generic [ref=f78e2520] [cursor=pointer]
+                            - link [ref=f78e2523] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/5rKCjtPJEzck6XVRYYnXQb4ZUQT5ZbjPC8zZozUKRWKmh5wDA5cg4J4PRBTkVGTB9cG3PgsrfBAzmu5z1RePGxGA
+                      - row [ref=f78e2527]:
+                        - cell [ref=f78e2528]:
+                          - code [ref=f78e2530]: 9s
+                        - cell "buy" [ref=f78e2531]
+                        - cell "$0.56" [ref=f78e2533]
+                        - cell "$0.00017759" [ref=f78e2536]
+                        - cell "+3.16K" [ref=f78e2538]
+                        - cell "-0.00520622" [ref=f78e2543]:
+                          - generic [ref=f78e2544]:
+                            - generic [ref=f78e2545]: "-0.00520622"
+                            - navigation [ref=f78e2546] [cursor=pointer]: SOL
+                        - cell [ref=f78e2547]:
+                          - generic [ref=f78e2548]:
+                            - generic [ref=f78e2550]:
+                              - link [ref=f78e2553] [cursor=pointer]:
+                                - /url: /solana/wallet-analyzer/FYfRCPY6ESpK6iigeKVJMoiijWAxCBynq4onPTGbPAAo
+                                - code [ref=f78e2554]: FYfRCP...PAAo
+                              - generic [ref=f78e2555] [cursor=pointer]
+                            - link [ref=f78e2558] [cursor=pointer]:
+                              - /url: https://solscan.io/tx/4dw2yEHoht2BWvcCxUyA1qjawRuCZuxqCYiX6FpkJfx8eYDBeaVyyf8yFHcyxaLZXSGWrAF3mcBBPiYtzveQDCBG
+                  - status [ref=f78e2562]
+                - link "Find Trades" [ref=f78e2564] [cursor=pointer]:
+                  - /url: /solana/find-trades?tokenAddress=G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump
+          - generic [ref=f78e2568]:
+            - generic [ref=f78e2569]:
+              - link "Improve this token's appearance with a Banner!" [ref=f78e2573] [cursor=pointer]:
+                - /url: https://docs.google.com/forms/d/e/1FAIpQLSeSWYrU2g8rl5qwTEHT2lDAtLuxvpvYJkLmrCrE9SB_r6nnRQ/viewform
+              - generic [ref=f78e2577]:
+                - generic [ref=f78e2579]:
+                  - generic [ref=f78e2580]:
+                    - generic [ref=f78e2581] [cursor=pointer]:
+                      - generic [ref=f78e2584]:
+                        - img "solana" [ref=f78e2587]
+                        - img "Stryker" [ref=f78e2589]
+                      - generic [ref=f78e2590]: "11"
+                    - generic [ref=f78e2593]:
+                      - generic [ref=f78e2594]:
+                        - button [ref=f78e2596] [cursor=pointer]:
+                          - heading "Stryker" [level=1] [ref=f78e2597]
+                        - img "pump.fun" [ref=f78e2605]
+                        - img "Grade E" [ref=f78e2608]
+                      - generic [ref=f78e2609]:
+                        - generic [ref=f78e2610]: Stryker the Cat
+                        - generic [ref=f78e2611]: 22h
+                  - generic [ref=f78e2612]:
+                    - button [ref=f78e2613] [cursor=pointer]
+                    - button [ref=f78e2618] [cursor=pointer]
+                - generic [ref=f78e2622]:
+                  - generic [ref=f78e2623]:
+                    - link [ref=f78e2624] [cursor=pointer]:
+                      - /url: https://strykercat.info
+                    - generic [ref=f78e2629]:
+                      - link [ref=f78e2630] [cursor=pointer]:
+                        - /url: https://twitter.com/StrykerCatX
+                      - link [ref=f78e2633] [cursor=pointer]:
+                        - /url: https://x.com/search?q=(Stryker%20or%20G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump)
+                    - link [ref=f78e2637] [cursor=pointer]:
+                      - /url: https://coingecko.com/en/coins/stryker-the-cat
+                    - link [ref=f78e2658] [cursor=pointer]:
+                      - /url: https://t.me/strykercat
+                    - button "More info" [ref=f78e2661] [cursor=pointer]
+                  - generic [ref=f78e2664]:
+                    - link [ref=f78e2666] [cursor=pointer]:
+                      - /url: https://solscan.io/token/G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump
+                      - code [ref=f78e2667]: G9QZ...pump
+                    - img [ref=f78e2668] [cursor=pointer]
+            - generic [ref=f78e2671]:
+              - generic [ref=f78e2672]:
+                - generic [ref=f78e2673]: Price USD
+                - generic [ref=f78e2674]: $0.00017846
+              - generic [ref=f78e2676]:
+                - generic [ref=f78e2677]: Price
+                - generic [ref=f78e2678]:
+                  - generic [ref=f78e2679]: 0.0₅16529
+                  - generic [ref=f78e2680]: SOL
+            - generic [ref=f78e2682]:
+              - generic [ref=f78e2683]:
+                - generic [ref=f78e2684]: Liquidity
+                - generic [ref=f78e2685]: $40.64K
+              - generic [ref=f78e2687]:
+                - generic [ref=f78e2688]: Market Cap
+                - generic [ref=f78e2689]: $177.34K
+              - generic [ref=f78e2691]:
+                - generic [ref=f78e2692]: FDV
+                - generic [ref=f78e2693]: $177.34K
+            - generic [ref=f78e2695]:
+              - generic [ref=f78e2697]:
+                - generic [ref=f78e2698]:
+                  - button "5m -8.11%" [ref=f78e2699] [cursor=pointer]:
+                    - generic [ref=f78e2700]: 5m
+                    - generic [ref=f78e2701]: "-8.11%"
+                  - button "1h -28.43%" [ref=f78e2702] [cursor=pointer]:
+                    - generic [ref=f78e2703]: 1h
+                    - generic [ref=f78e2704]: "-28.43%"
+                  - button "4h -76.01%" [ref=f78e2705] [cursor=pointer]:
+                    - generic [ref=f78e2706]: 4h
+                    - generic [ref=f78e2707]: "-76.01%"
+                  - button "24h +42.91%" [ref=f78e2708] [cursor=pointer]:
+                    - generic [ref=f78e2709]: 24h
+                    - generic [ref=f78e2710]: +42.91%
+                - generic [ref=f78e2713]:
+                  - generic [ref=f78e2714]:
+                    - generic [ref=f78e2715]: 24h Vol
+                    - generic [ref=f78e2716]: Buy
+                    - generic [ref=f78e2717]: Sell
+                    - generic [ref=f78e2718]: Net
+                  - generic [ref=f78e2719]:
+                    - generic [ref=f78e2720]: $5.41M
+                    - generic [ref=f78e2722]: $2M
+                    - generic [ref=f78e2724]: $2M
+                    - generic [ref=f78e2726]: +$43K
+                  - generic [ref=f78e2732]:
+                    - generic [ref=f78e2733]: 24h Txns
+                    - generic [ref=f78e2734]: Buy
+                    - generic [ref=f78e2735]: Sell
+                    - generic [ref=f78e2736]: Net
+                  - generic [ref=f78e2737]:
+                    - generic [ref=f78e2738]: 284.7K
+                    - generic [ref=f78e2739]: 179K
+                    - generic [ref=f78e2740]: 105K
+                    - generic [ref=f78e2741]: +74K
+              - generic [ref=f78e2750]:
+                - generic [ref=f78e2751]:
+                  - generic [ref=f78e2752]:
+                    - button "Buy" [ref=f78e2753] [cursor=pointer]
+                    - button "Sell" [ref=f78e2754] [cursor=pointer]
+                  - button [ref=f78e2755] [cursor=pointer]
+                - generic [ref=f78e2760]:
+                  - generic [ref=f78e2761]:
+                    - generic [ref=f78e2762]:
+                      - generic [ref=f78e2763]: Market
+                      - generic "Coming soon" [ref=f78e2764]: Limit
+                    - generic [ref=f78e2765]:
+                      - generic [ref=f78e2768] [cursor=pointer]: "0"
+                      - img "SOL" [ref=f78e2772]
+                  - generic [ref=f78e2773]:
+                    - generic [ref=f78e2774]:
+                      - generic [ref=f78e2775]: Amount
+                      - textbox "0" [ref=f78e2776]
+                      - combobox [ref=f78e2778] [cursor=pointer]:
+                        - img "SOL" [ref=f78e2783]
+                    - generic [ref=f78e2786]:
+                      - button "0.01" [ref=f78e2787] [cursor=pointer]
+                      - button "0.1" [ref=f78e2788] [cursor=pointer]
+                      - button "0.5" [ref=f78e2789] [cursor=pointer]
+                      - button "1" [ref=f78e2790] [cursor=pointer]
+                      - button "Edit amounts" [ref=f78e2791] [cursor=pointer]
+                  - generic [ref=f78e2794]:
+                    - generic [ref=f78e2795]:
+                      - generic [ref=f78e2796]: Auto
+                      - generic [ref=f78e2802]: Auto
+                      - generic [ref=f78e2807]: Auto
+                    - generic [ref=f78e2812]:
+                      - generic [ref=f78e2815]: "0"
+                      - img "Stryker" [ref=f78e2819]
+                  - generic [ref=f78e2820]:
+                    - generic [ref=f78e2821]: You Receive (est)
+                    - img "Stryker" [ref=f78e2828] [cursor=pointer]
+                  - button "Connect Wallet" [ref=f78e2831] [cursor=pointer]
+                  - generic [ref=f78e2832]:
+                    - generic [ref=f78e2833]:
+                      - generic [ref=f78e2834]: Bought
+                      - generic [ref=f78e2835]: $0
+                    - generic [ref=f78e2836]:
+                      - generic [ref=f78e2837]: Sold
+                      - generic [ref=f78e2838]: $0
+                    - generic [ref=f78e2839]:
+                      - generic [ref=f78e2840]: Remaining
+                      - generic [ref=f78e2841]: $0
+                    - generic [ref=f78e2842]:
+                      - generic [ref=f78e2843]: PnL
+                      - generic [ref=f78e2844]: $0
+                  - generic [ref=f78e2847]:
+                    - generic [ref=f78e2848]:
+                      - button "Ultra" [ref=f78e2849] [cursor=pointer]
+                      - button "Preset 1" [ref=f78e2851] [cursor=pointer]
+                      - button "Preset 2" [ref=f78e2853] [cursor=pointer]
+                      - button "Preset 3" [ref=f78e2855] [cursor=pointer]
+                    - button "Edit preset settings" [ref=f78e2857] [cursor=pointer]
+              - generic [ref=f78e2860]:
+                - generic [ref=f78e2861]:
+                  - generic [ref=f78e2862]: Token Info
+                  - button [ref=f78e2863] [cursor=pointer]
+                - generic [ref=f78e2867]:
+                  - generic [ref=f78e2909]:
+                    - generic [ref=f78e2910]:
+                      - generic [ref=f78e2911]: CA
+                      - generic [ref=f78e2916]:
+                        - link [ref=f78e2918] [cursor=pointer]:
+                          - /url: https://solscan.io/token/G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump
+                          - code [ref=f78e2919]: G9QZfE...pump
+                        - img [ref=f78e2920] [cursor=pointer]
+                    - generic [ref=f78e2923]:
+                      - generic [ref=f78e2924]:
+                        - generic [ref=f78e2925]: DA
+                        - generic [ref=f78e2931]:
+                          - link [ref=f78e2933] [cursor=pointer]:
+                            - /url: https://solscan.io/token/7WQjH7ai4zHPg1gA9UQb4zGPq1NUz3MESCs5SNjvuQ2Z
+                            - code [ref=f78e2934]: 7WQjH7...uQ2Z
+                          - img [ref=f78e2935] [cursor=pointer]
+                      - generic [ref=f78e2938]:
+                        - link "0d 0.203039" [ref=f78e2939] [cursor=pointer]:
+                          - /url: https://solscan.io/tx/3CyF8Bgut53GCUoYuhd1tT8K6Qt2HqC8gSNZ7jhd3rqgBzzu6PLEZnVgfyvzqkVfVuyWz7px3YB4RscBkptnbkk2
+                          - generic [ref=f78e2940]:
+                            - generic [ref=f78e2941]: 0d
+                            - generic [ref=f78e2945]: "0.203039"
+                        - link [ref=f78e2951] [cursor=pointer]:
+                          - /url: https://solscan.io/token/14LjUpb4e1ojSURAE97GFDbBjtMWQyaVm54bzonMtyhQ
+                          - code [ref=f78e2952]: 14LjUp...tyhQ
+                    - generic [ref=f78e2953]:
+                      - generic [ref=f78e2954]:
+                        - generic [ref=f78e2955]: Circulating supply
+                        - generic [ref=f78e2956]: 993,718,364.3
+                      - generic [ref=f78e2957]:
+                        - generic [ref=f78e2958]: Total supply
+                        - generic [ref=f78e2959]: 993,718,364.3
+                      - generic [ref=f78e2960]:
+                        - generic [ref=f78e2961]: Markets
+                        - generic [ref=f78e2962]: "2"
+                  - generic [ref=f78e2963]:
+                    - generic [ref=f78e2964]:
+                      - link [ref=f78e2965] [cursor=pointer]:
+                        - /url: /tv-widget-builder/G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump?chain=solana
+                        - button "Embed Chart" [ref=f78e2966]
+                      - button "Alert" [ref=f78e2971] [cursor=pointer]
+                    - generic [ref=f78e2975]:
+                      - button "Update" [ref=f78e2976] [cursor=pointer]
+                      - link [ref=f78e2982] [cursor=pointer]:
+                        - /url: https://docs.birdeye.so/reference/get-defi-token_overview?utm_source=bso&utm_medium=token+detail&utm_campaign=internal&utm_id=bso
+                        - button "Token API" [ref=f78e2983]
+      - generic [ref=f78e2988]:
+        - generic [ref=f78e2990] [cursor=pointer]
+        - generic [ref=f78e2994] [cursor=pointer]
+        - generic [ref=f78e2998] [cursor=pointer]
+        - generic [ref=f78e3003] [cursor=pointer]
+        - generic [ref=f78e3007] [cursor=pointer]
+        - button [expanded] [ref=f78e3011] [cursor=pointer]
+        - generic [ref=f78e3015] [cursor=pointer]
+  - region "Notifications (F8)":
+    - list
+  - alert [ref=f78e3019]
+  - dialog [ref=f78e3021]:
+    - generic [ref=f78e3022]:
+      - paragraph [ref=f78e3023]: Token Layout
+      - generic [ref=f78e3024]: New
+    - button "Terminal" [active] [ref=f78e3026] [cursor=pointer]
+    - button "Compact" [ref=f78e3030] [cursor=pointer]
+    - button "Classic" [ref=f78e3036] [cursor=pointer]

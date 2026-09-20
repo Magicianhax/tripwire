@@ -1,0 +1,89 @@
+- generic [ref=f103e1]:
+  - generic [ref=f103e3]:
+    - generic [ref=f103e4]:
+      - link [ref=f103e6] [cursor=pointer]:
+        - /url: /swap/
+      - generic [ref=f103e12]:
+        - link [ref=f103e13] [cursor=pointer]:
+          - /url: /swap/
+          - generic [ref=f103e14]: Swap
+        - link [ref=f103e15] [cursor=pointer]:
+          - /url: /liquidity-pools/
+          - generic [ref=f103e16]: Liquidity
+        - link [ref=f103e17] [cursor=pointer]:
+          - /url: /portfolio/
+          - generic [ref=f103e18]: Portfolio
+        - link [ref=f103e19] [cursor=pointer]:
+          - /url: https://perps.raydium.io
+          - generic [ref=f103e20]: Perpetuals
+        - link [ref=f103e21] [cursor=pointer]:
+          - /url: /launchpad/
+          - generic [ref=f103e22]: Launchlab
+        - button [ref=f103e24] [cursor=pointer]:
+          - generic: More
+      - generic [ref=f103e25]:
+        - generic [ref=f103e26] [cursor=pointer]
+        - generic [ref=f103e29] [cursor=pointer]
+        - button [ref=f103e34] [cursor=pointer]: Connect Wallet
+    - generic [ref=f103e37]:
+      - generic [ref=f103e39]:
+        - tablist [ref=f103e41]:
+          - tab [selected] [ref=f103e42] [cursor=pointer]: Market
+          - tab [ref=f103e43] [cursor=pointer]: Limit
+        - generic [ref=f103e44]:
+          - button [ref=f103e46] [cursor=pointer]: 0.5%
+          - generic [ref=f103e50] [cursor=pointer]
+          - generic [ref=f103e55] [cursor=pointer]
+          - generic [ref=f103e63] [cursor=pointer]
+          - generic [ref=f103e69] [cursor=pointer]
+      - generic [ref=f103e77]:
+        - generic [ref=f103e78]:
+          - generic [ref=f103e79]:
+            - generic [ref=f103e80]:
+              - generic [ref=f103e81]: From
+              - paragraph [ref=f103e86] [cursor=pointer]: "0"
+              - generic [ref=f103e87]:
+                - button [ref=f103e88] [cursor=pointer]: Max
+                - button [ref=f103e89] [cursor=pointer]: 50%
+            - generic [ref=f103e90]:
+              - paragraph [ref=f103e98] [cursor=pointer]: SOL
+              - textbox [ref=f103e102]
+              - paragraph [ref=f103e104]: ~$0
+          - generic [ref=f103e105] [cursor=pointer]
+          - generic [ref=f103e109]:
+            - generic [ref=f103e110]:
+              - generic [ref=f103e111]: To
+              - paragraph [ref=f103e116] [cursor=pointer]: "0"
+              - generic [ref=f103e117]:
+                - button [ref=f103e118] [cursor=pointer]: Max
+                - button [ref=f103e119] [cursor=pointer]: 50%
+            - generic [ref=f103e120]:
+              - generic [ref=f103e122] [cursor=pointer]
+              - textbox [ref=f103e129]
+              - paragraph [ref=f103e131]: ~$0
+        - button [ref=f103e132] [cursor=pointer]: Connect Wallet
+      - generic [ref=f103e144]:
+        - paragraph [ref=f103e145]: SOL /
+        - generic [ref=f103e146] [cursor=pointer]
+        - paragraph [ref=f103e149]: 26/09/20 10:09
+  - alert [ref=f103e150]
+  - generic:
+    - region
+    - region
+    - region
+    - region
+    - region
+    - region
+  - dialog [ref=f103e153]:
+    - paragraph [ref=f103e154]: Disclaimer
+    - generic [ref=f103e156]:
+      - generic [ref=f103e157]:
+        - paragraph [ref=f103e158]: This website-hosted user interface (this "Interface") is an open source frontend software portal to the Raydium protocol, a decentralized and community-driven collection of blockchain-enabled smart contracts and tools (the "Raydium Protocol"). This Interface and the Raydium Protocol are made available by the Raydium Holding Foundation, however all transactions conducted on the protocol are run by related permissionless smart contracts. As the Interface is open-sourced and the Raydium Protocol and its related smart contracts are accessible by any user, entity or third party, there are a number of third party web and mobile user-interfaces that allow for interaction with the Raydium Protocol.
+        - paragraph [ref=f103e159]: THIS INTERFACE AND THE RAYDIUM PROTOCOL ARE PROVIDED "AS IS", AT YOUR OWN RISK, AND WITHOUT WARRANTIES OF ANY KIND. The Raydium Holding Foundation does not provide, own, or control the Raydium Protocol or any transactions conducted on the protocol or via related smart contracts. By using or accessing this Interface or the Raydium Protocol and related smart contracts, you agree that no developer or entity involved in creating, deploying or maintaining this Interface or the Raydium Protocol will be liable for any claims or damages whatsoever associated with your use, inability to use, or your interaction with other users of, this Interface or the Raydium Protocol, including any direct, indirect, incidental, special, exemplary, punitive or consequential damages, or loss of profits, digital assets, tokens, or anything else of value.
+        - paragraph [ref=f103e160]: The Raydium Protocol is not available to residents of Belarus, the Central African Republic, The Democratic Republic of Congo, the Democratic People's Republic of Korea, the Crimea, Donetsk People's Republic, and Luhansk People's Republic regions of Ukraine, Cuba, Iran, Libya, Somalia, Sudan, South Sudan, Syria, the USA, Yemen, Zimbabwe and any other jurisdiction in which accessing or using the Raydium Protocol is prohibited (the "Prohibited Jurisdictions").
+        - paragraph [ref=f103e161]: By using or accessing this Interface, the Raydium Protocol, or related smart contracts, you represent that you are not located in, incorporated or established in, or a citizen or resident of the Prohibited Jurisdictions. You also represent that you are not subject to sanctions or otherwise designated on any list of prohibited or restricted parties or excluded or denied persons, including but not limited to the lists maintained by the United States' Department of Treasury's Office of Foreign Assets Control, the United Nations Security Council, the European Union or its Member States, or any other government authority.
+      - generic [ref=f103e163] [cursor=pointer]:
+        - checkbox "Agree to terms" [active] [ref=f103e164]
+        - paragraph [ref=f103e167]: Agree to terms
+    - contentinfo [ref=f103e168]:
+      - button "Enter Raydium" [disabled] [ref=f103e170]

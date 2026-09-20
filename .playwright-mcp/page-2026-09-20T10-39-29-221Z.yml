@@ -1,0 +1,978 @@
+- generic [active]:
+  - generic [ref=f74e1]:
+    - navigation [ref=f74e2]:
+      - generic [ref=f74e4]:
+        - link [ref=f74e5] [cursor=pointer]:
+          - /url: /
+          - heading [level=1] [ref=f74e6]
+        - button "Collapse menu" [ref=f74e21] [cursor=pointer]
+      - button "Search /" [ref=f74e26] [cursor=pointer]:
+        - generic [ref=f74e29]:
+          - generic [ref=f74e30]: Search
+          - generic [ref=f74e31]: /
+      - generic [ref=f74e32]:
+        - generic [ref=f74e34]:
+          - button "Get the App!" [ref=f74e35] [cursor=pointer]
+          - list [ref=f74e41]:
+            - listitem [ref=f74e42]:
+              - link "Watchlist" [ref=f74e43] [cursor=pointer]:
+                - /url: /watchlist
+            - listitem [ref=f74e47]:
+              - button "Alerts" [ref=f74e48] [cursor=pointer]
+            - listitem
+            - listitem [ref=f74e52]:
+              - link "Multicharts" [ref=f74e53] [cursor=pointer]:
+                - /url: /multicharts
+            - listitem [ref=f74e57]:
+              - link "New Pairs" [ref=f74e58] [cursor=pointer]:
+                - /url: /new-pairs
+            - listitem [ref=f74e62]:
+              - link "Gainers & Losers" [ref=f74e63] [cursor=pointer]:
+                - /url: /gainers
+            - listitem [ref=f74e68]:
+              - link "API" [ref=f74e69] [cursor=pointer]:
+                - /url: https://docs.dexscreener.com/api/reference
+            - listitem [ref=f74e73]:
+              - link "Advertise" [ref=f74e74] [cursor=pointer]:
+                - /url: https://marketplace.dexscreener.com/product/ad
+          - separator [ref=f74e78]
+          - list [ref=f74e79]:
+            - listitem [ref=f74e80]:
+              - link "Solana Solana" [ref=f74e81] [cursor=pointer]:
+                - /url: /solana
+                - img "Solana" [ref=f74e82]
+                - generic [ref=f74e83]: Solana
+            - listitem [ref=f74e84]:
+              - link "Robinhood Robinhood" [ref=f74e85] [cursor=pointer]:
+                - /url: /robinhood
+                - img "Robinhood" [ref=f74e86]
+                - generic [ref=f74e87]: Robinhood
+            - listitem [ref=f74e88]:
+              - link "BSC BSC" [ref=f74e89] [cursor=pointer]:
+                - /url: /bsc
+                - img "BSC" [ref=f74e90]
+                - generic [ref=f74e91]: BSC
+            - listitem [ref=f74e92]:
+              - link "Ethereum Ethereum" [ref=f74e93] [cursor=pointer]:
+                - /url: /ethereum
+                - img "Ethereum" [ref=f74e94]
+                - generic [ref=f74e95]: Ethereum
+            - listitem [ref=f74e96]:
+              - link "Arc Arc" [ref=f74e97] [cursor=pointer]:
+                - /url: /arc
+                - img "Arc" [ref=f74e98]
+                - generic [ref=f74e99]: Arc
+            - listitem [ref=f74e100]:
+              - link "Base Base" [ref=f74e101] [cursor=pointer]:
+                - /url: /base
+                - img "Base" [ref=f74e102]
+                - generic [ref=f74e103]: Base
+            - listitem [ref=f74e104]:
+              - link "Polygon Polygon" [ref=f74e105] [cursor=pointer]:
+                - /url: /polygon
+                - img "Polygon" [ref=f74e106]
+                - generic [ref=f74e107]: Polygon
+            - listitem [ref=f74e108]:
+              - link "PulseChain PulseChain" [ref=f74e109] [cursor=pointer]:
+                - /url: /pulsechain
+                - img "PulseChain" [ref=f74e110]
+                - generic [ref=f74e111]: PulseChain
+            - listitem [ref=f74e112]:
+              - link "HyperEVM HyperEVM" [ref=f74e113] [cursor=pointer]:
+                - /url: /hyperevm
+                - img "HyperEVM" [ref=f74e114]
+                - generic [ref=f74e115]: HyperEVM
+            - listitem [ref=f74e116]:
+              - link "TON TON" [ref=f74e117] [cursor=pointer]:
+                - /url: /ton
+                - img "TON" [ref=f74e118]
+                - generic [ref=f74e119]: TON
+            - listitem [ref=f74e120]:
+              - link "Avalanche Avalanche" [ref=f74e121] [cursor=pointer]:
+                - /url: /avalanche
+                - img "Avalanche" [ref=f74e122]
+                - generic [ref=f74e123]: Avalanche
+            - listitem [ref=f74e124]:
+              - link "Sui Sui" [ref=f74e125] [cursor=pointer]:
+                - /url: /sui
+                - img "Sui" [ref=f74e126]
+                - generic [ref=f74e127]: Sui
+            - listitem [ref=f74e128]:
+              - link "Arbitrum Arbitrum" [ref=f74e129] [cursor=pointer]:
+                - /url: /arbitrum
+                - img "Arbitrum" [ref=f74e130]
+                - generic [ref=f74e131]: Arbitrum
+            - listitem [ref=f74e132]:
+              - link "Cronos Cronos" [ref=f74e133] [cursor=pointer]:
+                - /url: /cronos
+                - img "Cronos" [ref=f74e134]
+                - generic [ref=f74e135]: Cronos
+            - listitem [ref=f74e136]:
+              - link "Ink Ink" [ref=f74e137] [cursor=pointer]:
+                - /url: /ink
+                - img "Ink" [ref=f74e138]
+                - generic [ref=f74e139]: Ink
+            - listitem [ref=f74e140]:
+              - link "XRPL XRPL" [ref=f74e141] [cursor=pointer]:
+                - /url: /xrpl
+                - img "XRPL" [ref=f74e142]
+                - generic [ref=f74e143]: XRPL
+            - listitem [ref=f74e144]:
+              - link "NEAR NEAR" [ref=f74e145] [cursor=pointer]:
+                - /url: /near
+                - img "NEAR" [ref=f74e146]
+                - generic [ref=f74e147]: NEAR
+            - listitem [ref=f74e148]:
+              - link "Hyperliquid Hyperliquid" [ref=f74e149] [cursor=pointer]:
+                - /url: /hyperliquid
+                - img "Hyperliquid" [ref=f74e150]
+                - generic [ref=f74e151]: Hyperliquid
+            - listitem [ref=f74e152]:
+              - link "Sonic Sonic" [ref=f74e153] [cursor=pointer]:
+                - /url: /sonic
+                - img "Sonic" [ref=f74e154]
+                - generic [ref=f74e155]: Sonic
+            - listitem [ref=f74e156]:
+              - link "Monad Monad" [ref=f74e157] [cursor=pointer]:
+                - /url: /monad
+                - img "Monad" [ref=f74e158]
+                - generic [ref=f74e159]: Monad
+            - listitem [ref=f74e160]:
+              - link "World Chain World Chain" [ref=f74e161] [cursor=pointer]:
+                - /url: /worldchain
+                - img "World Chain" [ref=f74e162]
+                - generic [ref=f74e163]: World Chain
+            - listitem [ref=f74e164]:
+              - link "Hedera Hedera" [ref=f74e165] [cursor=pointer]:
+                - /url: /hedera
+                - img "Hedera" [ref=f74e166]
+                - generic [ref=f74e167]: Hedera
+            - listitem [ref=f74e168]:
+              - link "Tron Tron" [ref=f74e169] [cursor=pointer]:
+                - /url: /tron
+                - img "Tron" [ref=f74e170]
+                - generic [ref=f74e171]: Tron
+            - listitem [ref=f74e172]:
+              - link "Abstract Abstract" [ref=f74e173] [cursor=pointer]:
+                - /url: /abstract
+                - img "Abstract" [ref=f74e174]
+                - generic [ref=f74e175]: Abstract
+            - listitem [ref=f74e176]:
+              - link "Mantle Mantle" [ref=f74e177] [cursor=pointer]:
+                - /url: /mantle
+                - img "Mantle" [ref=f74e178]
+                - generic [ref=f74e179]: Mantle
+            - listitem [ref=f74e180]:
+              - link "Stable Stable" [ref=f74e181] [cursor=pointer]:
+                - /url: /stable
+                - img "Stable" [ref=f74e182]
+                - generic [ref=f74e183]: Stable
+            - listitem [ref=f74e184]:
+              - link "Injective Injective" [ref=f74e185] [cursor=pointer]:
+                - /url: /injective
+                - img "Injective" [ref=f74e186]
+                - generic [ref=f74e187]: Injective
+            - listitem [ref=f74e188]:
+              - link "Starknet Starknet" [ref=f74e189] [cursor=pointer]:
+                - /url: /starknet
+                - img "Starknet" [ref=f74e190]
+                - generic [ref=f74e191]: Starknet
+            - listitem [ref=f74e192]:
+              - link "Optimism Optimism" [ref=f74e193] [cursor=pointer]:
+                - /url: /optimism
+                - img "Optimism" [ref=f74e194]
+                - generic [ref=f74e195]: Optimism
+            - listitem [ref=f74e196]:
+              - link "MultiversX MultiversX" [ref=f74e197] [cursor=pointer]:
+                - /url: /multiversx
+                - img "MultiversX" [ref=f74e198]
+                - generic [ref=f74e199]: MultiversX
+            - listitem [ref=f74e200]:
+              - link "Flare Flare" [ref=f74e201] [cursor=pointer]:
+                - /url: /flare
+                - img "Flare" [ref=f74e202]
+                - generic [ref=f74e203]: Flare
+            - listitem [ref=f74e204]:
+              - link "Linea Linea" [ref=f74e205] [cursor=pointer]:
+                - /url: /linea
+                - img "Linea" [ref=f74e206]
+                - generic [ref=f74e207]: Linea
+            - listitem [ref=f74e208]:
+              - link "Plasma Plasma" [ref=f74e209] [cursor=pointer]:
+                - /url: /plasma
+                - img "Plasma" [ref=f74e210]
+                - generic [ref=f74e211]: Plasma
+            - listitem [ref=f74e212]:
+              - link "Algorand Algorand" [ref=f74e213] [cursor=pointer]:
+                - /url: /algorand
+                - img "Algorand" [ref=f74e214]
+                - generic [ref=f74e215]: Algorand
+            - listitem [ref=f74e216]:
+              - link "ICP ICP" [ref=f74e217] [cursor=pointer]:
+                - /url: /icp
+                - img "ICP" [ref=f74e218]
+                - generic [ref=f74e219]: ICP
+            - listitem [ref=f74e220]:
+              - link "Aptos Aptos" [ref=f74e221] [cursor=pointer]:
+                - /url: /aptos
+                - img "Aptos" [ref=f74e222]
+                - generic [ref=f74e223]: Aptos
+            - listitem [ref=f74e224]:
+              - link "Berachain Berachain" [ref=f74e225] [cursor=pointer]:
+                - /url: /berachain
+                - img "Berachain" [ref=f74e226]
+                - generic [ref=f74e227]: Berachain
+            - listitem [ref=f74e228]:
+              - link "Sei V2 Sei V2" [ref=f74e229] [cursor=pointer]:
+                - /url: /seiv2
+                - img "Sei V2" [ref=f74e230]
+                - generic [ref=f74e231]: Sei V2
+            - listitem [ref=f74e232]:
+              - link "zkSync zkSync" [ref=f74e233] [cursor=pointer]:
+                - /url: /zksync
+                - img "zkSync" [ref=f74e234]
+                - generic [ref=f74e235]: zkSync
+            - listitem [ref=f74e236]:
+              - link "MegaETH MegaETH" [ref=f74e237] [cursor=pointer]:
+                - /url: /megaeth
+                - img "MegaETH" [ref=f74e238]
+                - generic [ref=f74e239]: MegaETH
+            - listitem [ref=f74e240]:
+              - link "Cardano Cardano" [ref=f74e241] [cursor=pointer]:
+                - /url: /cardano
+                - img "Cardano" [ref=f74e242]
+                - generic [ref=f74e243]: Cardano
+            - listitem [ref=f74e244]:
+              - link "Unichain Unichain" [ref=f74e245] [cursor=pointer]:
+                - /url: /unichain
+                - img "Unichain" [ref=f74e246]
+                - generic [ref=f74e247]: Unichain
+            - listitem [ref=f74e248]:
+              - link "Stacks Stacks" [ref=f74e249] [cursor=pointer]:
+                - /url: /stacks
+                - img "Stacks" [ref=f74e250]
+                - generic [ref=f74e251]: Stacks
+            - listitem [ref=f74e252]:
+              - link "Metis Metis" [ref=f74e253] [cursor=pointer]:
+                - /url: /metis
+                - img "Metis" [ref=f74e254]
+                - generic [ref=f74e255]: Metis
+            - listitem [ref=f74e256]:
+              - link "Fantom Fantom" [ref=f74e257] [cursor=pointer]:
+                - /url: /fantom
+                - img "Fantom" [ref=f74e258]
+                - generic [ref=f74e259]: Fantom
+            - listitem [ref=f74e260]:
+              - link "Celo Celo" [ref=f74e261] [cursor=pointer]:
+                - /url: /celo
+                - img "Celo" [ref=f74e262]
+                - generic [ref=f74e263]: Celo
+            - listitem [ref=f74e264]:
+              - link "opBNB opBNB" [ref=f74e265] [cursor=pointer]:
+                - /url: /opbnb
+                - img "opBNB" [ref=f74e266]
+                - generic [ref=f74e267]: opBNB
+            - listitem [ref=f74e268]:
+              - link "Blast Blast" [ref=f74e269] [cursor=pointer]:
+                - /url: /blast
+                - img "Blast" [ref=f74e270]
+                - generic [ref=f74e271]: Blast
+            - listitem [ref=f74e272]:
+              - link "Beam Beam" [ref=f74e273] [cursor=pointer]:
+                - /url: /beam
+                - img "Beam" [ref=f74e274]
+                - generic [ref=f74e275]: Beam
+            - listitem [ref=f74e276]:
+              - link "ApeChain ApeChain" [ref=f74e277] [cursor=pointer]:
+                - /url: /apechain
+                - img "ApeChain" [ref=f74e278]
+                - generic [ref=f74e279]: ApeChain
+            - listitem [ref=f74e280]:
+              - link "Katana Katana" [ref=f74e281] [cursor=pointer]:
+                - /url: /katana
+                - img "Katana" [ref=f74e282]
+                - generic [ref=f74e283]: Katana
+            - listitem [ref=f74e284]:
+              - link "Soneium Soneium" [ref=f74e285] [cursor=pointer]:
+                - /url: /soneium
+                - img "Soneium" [ref=f74e286]
+                - generic [ref=f74e287]: Soneium
+            - listitem [ref=f74e288]:
+              - link "Flow EVM Flow EVM" [ref=f74e289] [cursor=pointer]:
+                - /url: /flowevm
+                - img "Flow EVM" [ref=f74e290]
+                - generic [ref=f74e291]: Flow EVM
+            - listitem [ref=f74e292]:
+              - link "Scroll Scroll" [ref=f74e293] [cursor=pointer]:
+                - /url: /scroll
+                - img "Scroll" [ref=f74e294]
+                - generic [ref=f74e295]: Scroll
+            - listitem [ref=f74e296]:
+              - link "Conflux Conflux" [ref=f74e297] [cursor=pointer]:
+                - /url: /conflux
+                - img "Conflux" [ref=f74e298]
+                - generic [ref=f74e299]: Conflux
+            - listitem [ref=f74e300]:
+              - link "Story Story" [ref=f74e301] [cursor=pointer]:
+                - /url: /story
+                - img "Story" [ref=f74e302]
+                - generic [ref=f74e303]: Story
+            - listitem [ref=f74e304]:
+              - link "Manta Manta" [ref=f74e305] [cursor=pointer]:
+                - /url: /manta
+                - img "Manta" [ref=f74e306]
+                - generic [ref=f74e307]: Manta
+            - listitem [ref=f74e308]:
+              - link "Fuse Fuse" [ref=f74e309] [cursor=pointer]:
+                - /url: /fuse
+                - img "Fuse" [ref=f74e310]
+                - generic [ref=f74e311]: Fuse
+            - listitem [ref=f74e312]:
+              - link "Merlin Chain Merlin Chain" [ref=f74e313] [cursor=pointer]:
+                - /url: /merlinchain
+                - img "Merlin Chain" [ref=f74e314]
+                - generic [ref=f74e315]: Merlin Chain
+            - listitem [ref=f74e316]:
+              - link "Kava Kava" [ref=f74e317] [cursor=pointer]:
+                - /url: /kava
+                - img "Kava" [ref=f74e318]
+                - generic [ref=f74e319]: Kava
+            - listitem [ref=f74e320]:
+              - link "Movement Movement" [ref=f74e321] [cursor=pointer]:
+                - /url: /movement
+                - img "Movement" [ref=f74e322]
+                - generic [ref=f74e323]: Movement
+            - listitem [ref=f74e324]:
+              - link "Polkadot Polkadot" [ref=f74e325] [cursor=pointer]:
+                - /url: /polkadot
+                - img "Polkadot" [ref=f74e326]
+                - generic [ref=f74e327]: Polkadot
+            - listitem [ref=f74e328]:
+              - link "Step Network Step Network" [ref=f74e329] [cursor=pointer]:
+                - /url: /stepnetwork
+                - img "Step Network" [ref=f74e330]
+                - generic [ref=f74e331]: Step Network
+            - listitem [ref=f74e332]:
+              - link "Telos Telos" [ref=f74e333] [cursor=pointer]:
+                - /url: /telos
+                - img "Telos" [ref=f74e334]
+                - generic [ref=f74e335]: Telos
+        - generic [ref=f74e337]:
+          - generic [ref=f74e338]:
+            - generic [ref=f74e339]:
+              - link "Watchlist" [ref=f74e340] [cursor=pointer]:
+                - /url: /watchlist
+              - button "Minimize watchlist" [ref=f74e343] [cursor=pointer]
+              - button "Expand watchlist" [ref=f74e346] [cursor=pointer]
+            - button [ref=f74e350] [cursor=pointer]
+          - generic [ref=f74e354]: Nothing in this list yet...
+        - button "anon Sign-in" [ref=f74e358] [cursor=pointer]:
+          - generic [ref=f74e359]: anon
+          - generic [ref=f74e363]: Sign-in
+      - generic [ref=f74e370]:
+        - link "Twitter" [ref=f74e371] [cursor=pointer]:
+          - /url: https://twitter.com/dexscreener
+        - link "Telegram" [ref=f74e374] [cursor=pointer]:
+          - /url: https://telegram.me/dexscreenerchat
+        - link "Telegram" [ref=f74e377] [cursor=pointer]:
+          - /url: https://discord.gg/XNgMb5tQN7
+        - button "Lights on" [ref=f74e380] [cursor=pointer]
+    - main [ref=f74e383]:
+      - generic [ref=f74e385]:
+        - generic [ref=f74e387]:
+          - generic [ref=f74e390]:
+            - button [ref=f74e391] [cursor=pointer]
+            - heading "Stryker the Cat" [level=2] [ref=f74e393]
+            - button "More" [ref=f74e396] [cursor=pointer]
+          - generic [ref=f74e399]:
+            - generic [ref=f74e401]:
+              - generic [ref=f74e402]:
+                - heading "Stryker Copy token address / SOL" [level=2] [ref=f74e403]:
+                  - generic [ref=f74e404]: Stryker
+                  - img "Copy token address" [ref=f74e405]
+                  - generic [ref=f74e407]: /
+                  - generic [ref=f74e408]: SOL
+                - generic [ref=f74e409]: 22h
+                - generic [ref=f74e412]: "#1"
+                - generic [ref=f74e415]: "500"
+              - list [ref=f74e419]:
+                - link "Solana" [ref=f74e420] [cursor=pointer]:
+                  - /url: /solana
+                - link "PumpSwap" [ref=f74e425] [cursor=pointer]:
+                  - /url: /solana/pumpswap
+                - generic [ref=f74e428]:
+                  - generic [ref=f74e429]: via
+                  - link "Pump.fun" [ref=f74e430] [cursor=pointer]:
+                    - /url: /solana/pumpfun
+            - generic [ref=f74e432]:
+              - generic [ref=f74e436] [cursor=pointer]:
+                - link "Website" [ref=f74e437]:
+                  - /url: https://strykercat.info
+                - link "Twitter" [ref=f74e442]:
+                  - /url: https://x.com/StrykerCatX
+                - link "Telegram" [ref=f74e447]:
+                  - /url: https://t.me/strykercat
+                - button "More" [ref=f74e452]
+              - generic [ref=f74e456]:
+                - generic [ref=f74e457]:
+                  - generic [ref=f74e458]:
+                    - generic [ref=f74e459]:
+                      - generic [ref=f74e460]: Price USD
+                      - generic [ref=f74e461]: $0.0001824
+                    - generic [ref=f74e463]:
+                      - generic [ref=f74e464]: Price
+                      - generic "0.000001713 SOL" [ref=f74e468]: 0.051713 SOL
+                  - generic [ref=f74e469]:
+                    - generic [ref=f74e470]:
+                      - generic [ref=f74e471]: Liquidity
+                      - generic [ref=f74e473]:
+                        - text: $41K
+                        - progressbar [ref=f74e476] [cursor=pointer]
+                    - generic [ref=f74e483]:
+                      - generic [ref=f74e484]: FDV
+                      - generic [ref=f74e485]: $181K
+                    - generic [ref=f74e486]:
+                      - generic [ref=f74e487]: Mkt Cap
+                      - generic [ref=f74e488]: $181K
+                - generic [ref=f74e489]:
+                  - tablist [ref=f74e490]:
+                    - tab "5M -4.88%" [ref=f74e491] [cursor=pointer]:
+                      - generic [ref=f74e492]:
+                        - generic [ref=f74e493]: 5M
+                        - generic [ref=f74e494]: "-4.88%"
+                    - tab "1H -30.39%" [ref=f74e495] [cursor=pointer]:
+                      - generic [ref=f74e496]:
+                        - generic [ref=f74e497]: 1H
+                        - generic [ref=f74e498]: "-30.39%"
+                    - tab "6H -71.67%" [ref=f74e499] [cursor=pointer]:
+                      - generic [ref=f74e500]:
+                        - generic [ref=f74e501]: 6H
+                        - generic [ref=f74e502]: "-71.67%"
+                    - tab "24H 46.44%" [selected] [ref=f74e503] [cursor=pointer]:
+                      - generic [ref=f74e504]:
+                        - generic [ref=f74e505]: 24H
+                        - generic [ref=f74e506]: 46.44%
+                  - tabpanel "24H 46.44%" [ref=f74e508]:
+                    - generic [ref=f74e509]:
+                      - generic [ref=f74e510]:
+                        - generic [ref=f74e511]: Txns
+                        - generic [ref=f74e512]: 284,382
+                      - generic [ref=f74e513]:
+                        - generic [ref=f74e514]: Volume
+                        - generic [ref=f74e515]: $5.4M
+                      - generic [ref=f74e516]:
+                        - generic [ref=f74e517]: Traders
+                        - generic [ref=f74e518]: 12,584
+                    - generic [ref=f74e519]:
+                      - generic [ref=f74e521]:
+                        - generic [ref=f74e522]:
+                          - generic [ref=f74e523]: Buys
+                          - generic [ref=f74e524]: 179,182
+                        - generic [ref=f74e525]:
+                          - generic [ref=f74e526]: Sells
+                          - generic [ref=f74e527]: 105,200
+                      - generic [ref=f74e533]:
+                        - generic [ref=f74e534]:
+                          - generic [ref=f74e535]: Buy Vol
+                          - generic [ref=f74e536]: $2.7M
+                        - generic [ref=f74e537]:
+                          - generic [ref=f74e538]: Sell Vol
+                          - generic [ref=f74e539]: $2.6M
+                      - generic [ref=f74e545]:
+                        - generic [ref=f74e546]:
+                          - generic [ref=f74e547]: Buyers
+                          - generic [ref=f74e548]: 12,532
+                        - generic [ref=f74e549]:
+                          - generic [ref=f74e550]: Sellers
+                          - generic [ref=f74e551]: 10,629
+                - generic [ref=f74e556]:
+                  - generic [ref=f74e557]:
+                    - button [ref=f74e559] [cursor=pointer]
+                    - button "Alerts" [ref=f74e563] [cursor=pointer]
+                  - generic [ref=f74e569]:
+                    - button [ref=f74e570] [cursor=pointer]
+                    - button [ref=f74e574] [cursor=pointer]
+                - generic [ref=f74e579]:
+                  - generic [ref=f74e580]:
+                    - link [ref=f74e582] [cursor=pointer]:
+                      - /url: https://playrainbet.com/tifvd5btc
+                      - iframe [ref=f74e583]
+                    - button "Hide ad" [ref=f74e585] [cursor=pointer]
+                  - generic:
+                    - generic:
+                      - generic: Loading...
+                      - generic: Loading...
+            - generic [ref=f74e587]:
+              - generic [ref=f74e588]:
+                - generic [ref=f74e589]:
+                  - generic [ref=f74e590]: Pair created
+                  - generic [ref=f74e591]: 22h 15m ago
+                - generic [ref=f74e593]:
+                  - generic [ref=f74e594]: Pooled Stryker
+                  - generic [ref=f74e595]: 117,450,329
+                  - generic [ref=f74e596]: $21K
+                - generic [ref=f74e598]:
+                  - generic [ref=f74e599]: Pooled SOL
+                  - generic [ref=f74e600]: "183.30"
+                  - generic [ref=f74e601]: $19K
+                - generic [ref=f74e603]:
+                  - generic "EyeeG5fzZEigSQv7jUdxydePnsPL382KyVfXAANXVmeD" [ref=f74e604]: Pair
+                  - generic [ref=f74e605]:
+                    - button [ref=f74e606] [cursor=pointer]
+                    - link [ref=f74e610] [cursor=pointer]:
+                      - /url: https://solscan.io/account/EyeeG5fzZEigSQv7jUdxydePnsPL382KyVfXAANXVmeD
+                - generic [ref=f74e615]:
+                  - generic "G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump" [ref=f74e616]: Stryker
+                  - generic [ref=f74e617]:
+                    - button [ref=f74e618] [cursor=pointer]
+                    - link [ref=f74e622] [cursor=pointer]:
+                      - /url: https://solscan.io/token/G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump
+                - generic [ref=f74e627]:
+                  - generic "So11111111111111111111111111111111111111112" [ref=f74e628]: SOL
+                  - generic [ref=f74e629]:
+                    - button [ref=f74e630] [cursor=pointer]
+                    - link [ref=f74e634] [cursor=pointer]:
+                      - /url: https://solscan.io/token/So11111111111111111111111111111111111111112
+              - generic [ref=f74e638]:
+                - button [ref=f74e640] [cursor=pointer]
+                - button [ref=f74e644] [cursor=pointer]
+            - generic [ref=f74e649]:
+              - generic [ref=f74e652]:
+                - generic [ref=f74e653]: Audit
+                - generic [ref=f74e654]: No issues
+              - generic [ref=f74e663]:
+                - text: Warning! Audits may not be 100% accurate!
+                - generic [ref=f74e664]: More.
+              - group [ref=f74e665] [cursor=pointer]:
+                - generic [ref=f74e666]: Boost
+                - generic [ref=f74e670]: "500"
+              - group [ref=f74e671]:
+                - button "22" [ref=f74e672] [cursor=pointer]
+                - button "9" [ref=f74e703] [cursor=pointer]
+                - button "4" [ref=f74e713] [cursor=pointer]
+                - button "10" [ref=f74e731] [cursor=pointer]
+            - generic [ref=f74e745]:
+              - link [ref=f74e746] [cursor=pointer]:
+                - /url: https://marketplace.dexscreener.com/product/token-community-takeover/order?chainId=solana&tokenAddress=G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump
+                - generic [ref=f74e763]:
+                  - text: Claim Your DEX Screener
+                  - strong [ref=f74e764]: Token Profile
+              - generic [ref=f74e765]:
+                - button [ref=f74e768] [cursor=pointer]:
+                  - img "Stryker the Cat" [ref=f74e769]
+                - generic [ref=f74e770]:
+                  - heading "Stryker the Cat" [level=3] [ref=f74e771]
+                  - list [ref=f74e774]:
+                    - link "Website" [ref=f74e775] [cursor=pointer]:
+                      - /url: https://strykercat.info
+                    - link "Twitter" [ref=f74e780] [cursor=pointer]:
+                      - /url: https://x.com/StrykerCatX
+                    - link "Telegram" [ref=f74e785] [cursor=pointer]:
+                      - /url: https://t.me/strykercat
+                    - link "TikTok" [ref=f74e790] [cursor=pointer]:
+                      - /url: https://www.tiktok.com/@strykerthecat
+                  - paragraph [ref=f74e795]: Stryker is the giant wild-looking cat ready to conquer the meme market.
+            - generic [ref=f74e797]:
+              - generic [ref=f74e798]:
+                - textbox [ref=f74e799]: "1"
+                - generic "Stryker" [ref=f74e801]
+              - generic [ref=f74e805]:
+                - textbox [ref=f74e806]: "0.0001824"
+                - generic [ref=f74e808]:
+                  - button "USD" [ref=f74e809] [cursor=pointer]
+                  - button "SOL" [ref=f74e814] [cursor=pointer]
+            - generic [ref=f74e820]:
+              - button [ref=f74e821] [cursor=pointer]
+              - link "Crypto charts by TradingView" [ref=f74e826] [cursor=pointer]:
+                - /url: https://www.tradingview.com/markets/cryptocurrencies/
+        - generic [ref=f74e827]:
+          - generic [ref=f74e828]:
+            - generic [ref=f74e830]:
+              - generic [ref=f74e831]: Loading chart settings...
+              - iframe [ref=f74e838]:
+                - progressbar [ref=f77e3]
+            - generic [ref=f74e841]:
+              - generic [ref=f74e842]:
+                - generic [ref=f74e845]:
+                  - button "Transactions" [ref=f74e846] [cursor=pointer]
+                  - button [ref=f74e851] [cursor=pointer]
+                  - button [ref=f74e855] [cursor=pointer]
+                  - button [ref=f74e859] [cursor=pointer]
+                  - button [ref=f74e863] [cursor=pointer]
+                - generic [ref=f74e867]:
+                  - button "Minimize" [ref=f74e868] [cursor=pointer]
+                  - button "Maximize" [ref=f74e871] [cursor=pointer]
+              - table [ref=f74e879]:
+                - rowgroup [ref=f74e880]:
+                  - row [ref=f74e881]:
+                    - columnheader [ref=f74e882]:
+                      - button [ref=f74e883] [cursor=pointer]
+                      - button "Toggle relative time" [ref=f74e887] [cursor=pointer]
+                    - columnheader [ref=f74e890]:
+                      - button [ref=f74e891] [cursor=pointer]
+                    - columnheader [ref=f74e895]:
+                      - button [ref=f74e896] [cursor=pointer]
+                    - columnheader [ref=f74e900]:
+                      - button "Stryker" [ref=f74e901] [cursor=pointer]
+                    - columnheader [ref=f74e906]:
+                      - button "SOL" [ref=f74e907] [cursor=pointer]
+                    - columnheader "Price Toggle USD/native price" [ref=f74e912]:
+                      - generic [ref=f74e913]:
+                        - generic [ref=f74e914]: Price
+                        - button "Toggle USD/native price" [ref=f74e916] [cursor=pointer]
+                    - columnheader [ref=f74e919]:
+                      - button [ref=f74e920] [cursor=pointer]
+                    - columnheader "Txn" [ref=f74e924]
+                - rowgroup [ref=f74e926]:
+                  - row [ref=f74e927]:
+                    - cell "1s ago Buy 0.76 4,200.16 0.007084 $0.0001824 UeUyiy Filter by this trader" [ref=f74e928]:
+                      - generic [ref=f74e929]: 1s ago
+                      - generic [ref=f74e932]: Buy
+                      - generic [ref=f74e938]: "0.76"
+                      - generic [ref=f74e939]: 4,200.16
+                      - generic [ref=f74e940]: "0.007084"
+                      - generic [ref=f74e941]: $0.0001824
+                      - generic [ref=f74e942]:
+                        - link "UeUyiy" [ref=f74e947] [cursor=pointer]:
+                          - /url: https://solscan.io/account/6TczRAHHLcUP1W5cgTKQ1dji8w6kaDDq59mTkpUeUyiy
+                        - button "Filter by this trader" [ref=f74e952] [cursor=pointer]
+                      - link "Open in block explorer" [ref=f74e956] [cursor=pointer]:
+                        - /url: https://solscan.io/tx/3e12oPXpXr2rBeVmDQFdkwHUheKJVvBqXocqsxKuQ76xbG1QWH6ZxK3VcdVsVWBoWhCe2Nmn5DAo37QqnT3bmgrq
+                  - row [ref=f74e959]:
+                    - cell "1s ago Sell 0.60 3,374.96 0.005615 $0.0001800 dXwzwK Filter by this trader" [ref=f74e960]:
+                      - generic [ref=f74e961]: 1s ago
+                      - generic [ref=f74e964]: Sell
+                      - generic [ref=f74e970]: "0.60"
+                      - generic [ref=f74e971]: 3,374.96
+                      - generic [ref=f74e972]: "0.005615"
+                      - generic [ref=f74e973]: $0.0001800
+                      - generic [ref=f74e974]:
+                        - link "dXwzwK" [ref=f74e979] [cursor=pointer]:
+                          - /url: https://solscan.io/account/6hj78uqntC9aP8aJ87WJqg5JkVQSitREf49jDVdXwzwK
+                        - button "Filter by this trader" [ref=f74e983] [cursor=pointer]
+                      - link "Open in block explorer" [ref=f74e987] [cursor=pointer]:
+                        - /url: https://solscan.io/tx/5TTrRnUYpzdQBsrH6gRKcHaB5E5uvw2WqNNbJaEiqaaPf2fRqsZnM3tcqwAmsjr1wUibc33VS7uWXjSQZWtbKBME
+                  - row [ref=f74e990]:
+                    - cell "1s ago Buy 1.06 5,826.030 0.009826 $0.0001824 UeUyiy Filter by this trader" [ref=f74e991]:
+                      - generic [ref=f74e992]: 1s ago
+                      - generic [ref=f74e995]: Buy
+                      - generic [ref=f74e1001]: "1.06"
+                      - generic [ref=f74e1002]: 5,826.030
+                      - generic [ref=f74e1003]: "0.009826"
+                      - generic [ref=f74e1004]: $0.0001824
+                      - generic [ref=f74e1005]:
+                        - link "UeUyiy" [ref=f74e1010] [cursor=pointer]:
+                          - /url: https://solscan.io/account/6TczRAHHLcUP1W5cgTKQ1dji8w6kaDDq59mTkpUeUyiy
+                        - button "Filter by this trader" [ref=f74e1015] [cursor=pointer]
+                      - link "Open in block explorer" [ref=f74e1019] [cursor=pointer]:
+                        - /url: https://solscan.io/tx/3ZRwMBqz56bYsWm5kXu6r1URyS1W8s17jqTxjg9SZMNQHMjk3xg6mRjrDMndpF56D63vgvJnbcXeKTPTTbZos2as
+                  - row [ref=f74e1022]:
+                    - cell "1s ago Sell 1.01 5,632.62 0.009372 $0.0001800 vuQxxA Filter by this trader" [ref=f74e1023]:
+                      - generic [ref=f74e1024]: 1s ago
+                      - generic [ref=f74e1027]: Sell
+                      - generic [ref=f74e1033]: "1.01"
+                      - generic [ref=f74e1034]: 5,632.62
+                      - generic [ref=f74e1035]: "0.009372"
+                      - generic [ref=f74e1036]: $0.0001800
+                      - generic [ref=f74e1037]:
+                        - link "vuQxxA" [ref=f74e1042] [cursor=pointer]:
+                          - /url: https://solscan.io/account/62s1UCJ9fEwUKriJjbE1E2UzV2poC1LwLHpy4LvuQxxA
+                        - button "Filter by this trader" [ref=f74e1047] [cursor=pointer]
+                      - link "Open in block explorer" [ref=f74e1051] [cursor=pointer]:
+                        - /url: https://solscan.io/tx/4pfCG7gTrPkFvhaScZdvSxttWiK9zRE5tvfBs95Vw3fD8E64aRs7TPn833ohCpfoXv4nEZqP5RsdJtF1FM6EcNtP
+                  - row [ref=f74e1054]:
+                    - cell "1s ago Buy 0.79 4,367.63 0.007366 $0.0001824 UeUyiy Filter by this trader" [ref=f74e1055]:
+                      - generic [ref=f74e1056]: 1s ago
+                      - generic [ref=f74e1059]: Buy
+                      - generic [ref=f74e1065]: "0.79"
+                      - generic [ref=f74e1066]: 4,367.63
+                      - generic [ref=f74e1067]: "0.007366"
+                      - generic [ref=f74e1068]: $0.0001824
+                      - generic [ref=f74e1069]:
+                        - link "UeUyiy" [ref=f74e1074] [cursor=pointer]:
+                          - /url: https://solscan.io/account/6TczRAHHLcUP1W5cgTKQ1dji8w6kaDDq59mTkpUeUyiy
+                        - button "Filter by this trader" [ref=f74e1079] [cursor=pointer]
+                      - link "Open in block explorer" [ref=f74e1083] [cursor=pointer]:
+                        - /url: https://solscan.io/tx/4JExspYgsr56K657AdmmxxSGkt9v7eCL8sxnQBxjuWUhCgCtQEVKET4H7KATBgW34TsRMgYSND2LhA5K6NLtGbYM
+                  - row [ref=f74e1086]:
+                    - cell "1s ago Buy 0.41 2,296.48 0.003873 $0.0001824 s1M2GP Filter by this trader" [ref=f74e1087]:
+                      - generic [ref=f74e1088]: 1s ago
+                      - generic [ref=f74e1091]: Buy
+                      - generic [ref=f74e1097]: "0.41"
+                      - generic [ref=f74e1098]: 2,296.48
+                      - generic [ref=f74e1099]: "0.003873"
+                      - generic [ref=f74e1100]: $0.0001824
+                      - generic [ref=f74e1101]:
+                        - link "s1M2GP" [ref=f74e1106] [cursor=pointer]:
+                          - /url: https://solscan.io/account/7F4a3DdfEUjXLCA4LozTjK9UEBgZucqnzLAJW2s1M2GP
+                        - button "Filter by this trader" [ref=f74e1111] [cursor=pointer]
+                      - link "Open in block explorer" [ref=f74e1115] [cursor=pointer]:
+                        - /url: https://solscan.io/tx/4vxXAEk2NSyJBrdRfJAGzK8dH16B1jCsxYVwGpSTZ1FaCym3K9MxdSoMXwf5kgMTiXybCd7eRyoSj6oEDoEvpfsR
+                  - row [ref=f74e1118]:
+                    - cell "2s ago Buy 0.73 4,036.68 0.006808 $0.0001824 UeUyiy Filter by this trader" [ref=f74e1119]:
+                      - generic [ref=f74e1120]: 2s ago
+                      - generic [ref=f74e1123]: Buy
+                      - generic [ref=f74e1129]: "0.73"
+                      - generic [ref=f74e1130]: 4,036.68
+                      - generic [ref=f74e1131]: "0.006808"
+                      - generic [ref=f74e1132]: $0.0001824
+                      - generic [ref=f74e1133]:
+                        - link "UeUyiy" [ref=f74e1138] [cursor=pointer]:
+                          - /url: https://solscan.io/account/6TczRAHHLcUP1W5cgTKQ1dji8w6kaDDq59mTkpUeUyiy
+                        - button "Filter by this trader" [ref=f74e1143] [cursor=pointer]
+                      - link "Open in block explorer" [ref=f74e1147] [cursor=pointer]:
+                        - /url: https://solscan.io/tx/5mf1Kw8wt7eosXV8KGaWdaJsECWkP9gzdA7DKFncQFHj76KVkyc1ryQf8HkUYhram33RABUeUFddeFf5sXiUS2hT
+                  - row [ref=f74e1150]:
+                    - cell "2s ago Buy 1.04 5,752.77 0.009701 $0.0001824 s1M2GP Filter by this trader" [ref=f74e1151]:
+                      - generic [ref=f74e1152]: 2s ago
+                      - generic [ref=f74e1155]: Buy
+                      - generic [ref=f74e1161]: "1.04"
+                      - generic [ref=f74e1162]: 5,752.77
+                      - generic [ref=f74e1163]: "0.009701"
+                      - generic [ref=f74e1164]: $0.0001824
+                      - generic [ref=f74e1165]:
+                        - link "s1M2GP" [ref=f74e1170] [cursor=pointer]:
+                          - /url: https://solscan.io/account/7F4a3DdfEUjXLCA4LozTjK9UEBgZucqnzLAJW2s1M2GP
+                        - button "Filter by this trader" [ref=f74e1175] [cursor=pointer]
+                      - link "Open in block explorer" [ref=f74e1179] [cursor=pointer]:
+                        - /url: https://solscan.io/tx/28d14HQGpGdTJKm4FidDf2HtTxkbSBUWqbBaSLtRAiVLzkUaz3Pa3r7FB1V9wcgtawfwf4pNA4ESotRuMf9tymsP
+                  - row [ref=f74e1182]:
+                    - cell [ref=f74e1183]
+          - generic [ref=f74e1191]:
+            - generic [ref=f74e1196]:
+              - link [ref=f74e1197] [cursor=pointer]:
+                - /url: https://metawin.com/t/dexscreener-2
+              - link "#1 Stryker the Cat Stryker 500 57% 22h" [ref=f74e1200] [cursor=pointer]:
+                - /url: /solana/eyeeg5fzzeigsqv7judxydepnspl382kyvfxaanxvmed
+                - generic [ref=f74e1201]:
+                  - generic [ref=f74e1202]: "#1"
+                  - img "Stryker the Cat" [ref=f74e1203]
+                  - generic [ref=f74e1204]: Stryker
+                  - generic [ref=f74e1205]: "500"
+                  - generic [ref=f74e1208]: 57%
+                  - generic [ref=f74e1209]: 22h
+              - link "#2 Jean Phil JEANPHIL 10K% 15h" [ref=f74e1212] [cursor=pointer]:
+                - /url: /solana/4r8cimnjwdnoes3fqi1ccpfjygpxazahawphrn3rzenj
+                - generic [ref=f74e1213]:
+                  - generic [ref=f74e1214]: "#2"
+                  - img "Jean Phil" [ref=f74e1215]
+                  - generic [ref=f74e1216]: JEANPHIL
+                  - generic [ref=f74e1217]: 10K%
+                  - generic [ref=f74e1218]: 15h
+              - link "#3 QUEEF 2K% 5h" [ref=f74e1221] [cursor=pointer]:
+                - /url: /solana/az82r741qr3k6xa2xcik2aqecqpgqwu3tbg7wjcde4kk
+                - generic [ref=f74e1222]:
+                  - generic [ref=f74e1223]: "#3"
+                  - generic [ref=f74e1224]: QUEEF
+                  - generic [ref=f74e1225]: 2K%
+                  - generic [ref=f74e1226]: 5h
+              - link "#4 Paid PAID -29%" [ref=f74e1229] [cursor=pointer]:
+                - /url: /solana/6e3jzltf4tqbwzm3f7a66jf8tfzn6mrqvrbdfgcnwara
+                - generic [ref=f74e1230]:
+                  - generic [ref=f74e1231]: "#4"
+                  - img "Paid" [ref=f74e1232]
+                  - generic [ref=f74e1233]: PAID
+                  - generic [ref=f74e1234]: "-29%"
+              - link "#5 Hecker HECKER 100 109% 20h" [ref=f74e1235] [cursor=pointer]:
+                - /url: /solana/eqtmcgyjebeapyvfish9jwtaoktperzkvvps2mmxgxn3
+                - generic [ref=f74e1236]:
+                  - generic [ref=f74e1237]: "#5"
+                  - img "Hecker" [ref=f74e1238]
+                  - generic [ref=f74e1239]: HECKER
+                  - generic [ref=f74e1240]: "100"
+                  - generic [ref=f74e1243]: 109%
+                  - generic [ref=f74e1244]: 20h
+              - link "#6 Catecoin CATE -6%" [ref=f74e1247] [cursor=pointer]:
+                - /url: /solana/hmzvseemtzhhvznw9uwbag85hctmfnkbhzux16cy7ca3
+                - generic [ref=f74e1248]:
+                  - generic [ref=f74e1249]: "#6"
+                  - img "Catecoin" [ref=f74e1250]
+                  - generic [ref=f74e1251]: CATE
+                  - generic [ref=f74e1252]: "-6%"
+              - link "#7 Trends TRENDS 15%" [ref=f74e1253] [cursor=pointer]:
+                - /url: /solana/hbhcope5qm7jjvppxsdrejztqg8ydw1pmzrypiqgjky7
+                - generic [ref=f74e1254]:
+                  - generic [ref=f74e1255]: "#7"
+                  - img "Trends" [ref=f74e1256]
+                  - generic [ref=f74e1257]: TRENDS
+                  - generic [ref=f74e1258]: 15%
+              - link "#8 Stealth Cat MCAT 698% 3h" [ref=f74e1259] [cursor=pointer]:
+                - /url: /solana/hixdx348flzfzcwef9eecsdcyvz7hp4hp1zkc14dcftd
+                - generic [ref=f74e1260]:
+                  - generic [ref=f74e1261]: "#8"
+                  - img "Stealth Cat" [ref=f74e1262]
+                  - generic [ref=f74e1263]: MCAT
+                  - generic [ref=f74e1264]: 698%
+                  - generic [ref=f74e1265]: 3h
+              - link "#9 Donated DONATED 696% 6h" [ref=f74e1268] [cursor=pointer]:
+                - /url: /solana/851g7ejbavunfn3qcu951tdzkqzk17xple2jczuqtees
+                - generic [ref=f74e1269]:
+                  - generic [ref=f74e1270]: "#9"
+                  - img "Donated" [ref=f74e1271]
+                  - generic [ref=f74e1272]: DONATED
+                  - generic [ref=f74e1273]: 696%
+                  - generic [ref=f74e1274]: 6h
+              - link "#10 ひきこもり HIKIKOMORI 367% 3h" [ref=f74e1277] [cursor=pointer]:
+                - /url: /solana/2kbmty1mmuqts9eb7pv8xoddb4e1oxknazrb9ufjiyvq
+                - generic [ref=f74e1278]:
+                  - generic [ref=f74e1279]: "#10"
+                  - img "ひきこもり" [ref=f74e1280]
+                  - generic [ref=f74e1281]: HIKIKOMORI
+                  - generic [ref=f74e1282]: 367%
+                  - generic [ref=f74e1283]: 3h
+              - link "#11 TIPPED TIPPED 689% 17h" [ref=f74e1286] [cursor=pointer]:
+                - /url: /solana/cjieb7fumhefmaefjaxqjnkvxnmvabm3dhhp8rtgbeg1
+                - generic [ref=f74e1287]:
+                  - generic [ref=f74e1288]: "#11"
+                  - img "TIPPED" [ref=f74e1289]
+                  - generic [ref=f74e1290]: TIPPED
+                  - generic [ref=f74e1291]: 689%
+                  - generic [ref=f74e1292]: 17h
+              - link "#12 Tokens Tokens 30 275% 14h" [ref=f74e1295] [cursor=pointer]:
+                - /url: /solana/cc1efpiwyod6rnj198hhvqn9vnmn73m1vxehy8ab3994
+                - generic [ref=f74e1296]:
+                  - generic [ref=f74e1297]: "#12"
+                  - img "Tokens" [ref=f74e1298]
+                  - generic [ref=f74e1299]: Tokens
+                  - generic [ref=f74e1300]: "30"
+                  - generic [ref=f74e1303]: 275%
+                  - generic [ref=f74e1304]: 14h
+              - link "#13 Ponder PONDER 333% 8h" [ref=f74e1307] [cursor=pointer]:
+                - /url: /solana/gznj5nlbeb5tkjxtce7yubh5yp29nq1mvr3ysp86zlhp
+                - generic [ref=f74e1308]:
+                  - generic [ref=f74e1309]: "#13"
+                  - img "Ponder" [ref=f74e1310]
+                  - generic [ref=f74e1311]: PONDER
+                  - generic [ref=f74e1312]: 333%
+                  - generic [ref=f74e1313]: 8h
+              - link "#14 baton baton 50 30%" [ref=f74e1316] [cursor=pointer]:
+                - /url: /solana/cb7zrgplhji3th7htxykeqbxvnjppetvckxuwakbuhxu
+                - generic [ref=f74e1317]:
+                  - generic [ref=f74e1318]: "#14"
+                  - img "baton" [ref=f74e1319]
+                  - generic [ref=f74e1320]: baton
+                  - generic [ref=f74e1321]: "50"
+                  - generic [ref=f74e1324]: 30%
+              - link "#15 WOJAK 6K%" [ref=f74e1325] [cursor=pointer]:
+                - /url: /solana/bwh4rgbianta3rzbrw8pznmstkdcb2thjq4v8p5x9syc
+                - generic [ref=f74e1326]:
+                  - generic [ref=f74e1327]: "#15"
+                  - generic [ref=f74e1328]: WOJAK
+                  - generic [ref=f74e1329]: 6K%
+              - link "#16 NotInEmploymentEducationTraining neet 4%" [ref=f74e1330] [cursor=pointer]:
+                - /url: /solana/5wnu5qhdprgrl37ffcd6tmmqzugqgxwafgz477rshthy
+                - generic [ref=f74e1331]:
+                  - generic [ref=f74e1332]: "#16"
+                  - img "NotInEmploymentEducationTraining" [ref=f74e1333]
+                  - generic [ref=f74e1334]: neet
+                  - generic [ref=f74e1335]: 4%
+              - link "#17 CALI CALI 235%" [ref=f74e1336] [cursor=pointer]:
+                - /url: /solana/2i2iulr7uwk1sdrb17t5futimnfql7fyy7rh69brzihc
+                - generic [ref=f74e1337]:
+                  - generic [ref=f74e1338]: "#17"
+                  - img "CALI" [ref=f74e1339]
+                  - generic [ref=f74e1340]: CALI
+                  - generic [ref=f74e1341]: 235%
+              - link "#18 STONK STONK 8%" [ref=f74e1342] [cursor=pointer]:
+                - /url: /solana/zxtpi4btawx3mgdapoezkmd1hxx8cdecfrqxmwvsclx
+                - generic [ref=f74e1343]:
+                  - generic [ref=f74e1344]: "#18"
+                  - img "STONK" [ref=f74e1345]
+                  - generic [ref=f74e1346]: STONK
+                  - generic [ref=f74e1347]: 8%
+              - link "#19 Feels Good Man FEELSGOOD 30%" [ref=f74e1348] [cursor=pointer]:
+                - /url: /solana/51ngr5xc9xyud12ax2v1lnherctn9l3b89dhsdelv22q
+                - generic [ref=f74e1349]:
+                  - generic [ref=f74e1350]: "#19"
+                  - img "Feels Good Man" [ref=f74e1351]
+                  - generic [ref=f74e1352]: FEELSGOOD
+                  - generic [ref=f74e1353]: 30%
+              - link "#20 Just a Backpack 🎒 160%" [ref=f74e1354] [cursor=pointer]:
+                - /url: /solana/cw5jbqcaw9btdetxs2hzsdunhyaaxpx9mgkfzyimsebh
+                - generic [ref=f74e1355]:
+                  - generic [ref=f74e1356]: "#20"
+                  - img "Just a Backpack" [ref=f74e1357]
+                  - generic [ref=f74e1358]: 🎒
+                  - generic [ref=f74e1359]: 160%
+              - link "#21 Leopardus Tilcayo TIGRINO 2%" [ref=f74e1360] [cursor=pointer]:
+                - /url: /solana/2fwy38cjcchcvysa9cd5safaeptzqwn2ssfip43hnshu
+                - generic [ref=f74e1361]:
+                  - generic [ref=f74e1362]: "#21"
+                  - img "Leopardus Tilcayo" [ref=f74e1363]
+                  - generic [ref=f74e1364]: TIGRINO
+                  - generic [ref=f74e1365]: 2%
+              - link "#22 Fartcoin Fartcoin 1%" [ref=f74e1366] [cursor=pointer]:
+                - /url: /solana/bzc9nzfmqkxr6fz1dbph7bdf9broyef6pnzesp7v5iiw
+                - generic [ref=f74e1367]:
+                  - generic [ref=f74e1368]: "#22"
+                  - img "Fartcoin" [ref=f74e1369]
+                  - generic [ref=f74e1370]: Fartcoin
+                  - generic [ref=f74e1371]: 1%
+              - link "#23 The Goose Killer HOLT 169% 3h" [ref=f74e1372] [cursor=pointer]:
+                - /url: /solana/pqedkztyxek1zcx8jnrixr6a3odqarte9c4srauwocr
+                - generic [ref=f74e1373]:
+                  - generic [ref=f74e1374]: "#23"
+                  - img "The Goose Killer" [ref=f74e1375]
+                  - generic [ref=f74e1376]: HOLT
+                  - generic [ref=f74e1377]: 169%
+                  - generic [ref=f74e1378]: 3h
+              - link "#24 Wojak WOJAK 26%" [ref=f74e1381] [cursor=pointer]:
+                - /url: /solana/fdry5i5kuadz1ik8gps26qjj9rw9mpufxmeggc2hnsp7
+                - generic [ref=f74e1382]:
+                  - generic [ref=f74e1383]: "#24"
+                  - img "Wojak" [ref=f74e1384]
+                  - generic [ref=f74e1385]: WOJAK
+                  - generic [ref=f74e1386]: 26%
+              - link "#25 PEPE BROCK PEPENOM 12%" [ref=f74e1387] [cursor=pointer]:
+                - /url: /solana/bd4wkg3xebkj4xrw8skxmmj4w65gk3x8yd7aovubjisz
+                - generic [ref=f74e1388]:
+                  - generic [ref=f74e1389]: "#25"
+                  - img "PEPE BROCK" [ref=f74e1390]
+                  - generic [ref=f74e1391]: PEPENOM
+                  - generic [ref=f74e1392]: 12%
+              - link "#26 fomo pay fomopay 145% 12h" [ref=f74e1393] [cursor=pointer]:
+                - /url: /solana/5jydjbnsrtftme6c2nvhmpxkjgsdgtaww4lodthube74
+                - generic [ref=f74e1394]:
+                  - generic [ref=f74e1395]: "#26"
+                  - img "fomo pay" [ref=f74e1396]
+                  - generic [ref=f74e1397]: fomopay
+                  - generic [ref=f74e1398]: 145%
+                  - generic [ref=f74e1399]: 12h
+              - link "#27 Reflex Monster FLEX 152%" [ref=f74e1402] [cursor=pointer]:
+                - /url: /solana/8qwgwpdfbbmnhdg76bdmtvlesqtg9cewuggy6wgkhtb9
+                - generic [ref=f74e1403]:
+                  - generic [ref=f74e1404]: "#27"
+                  - img "Reflex Monster" [ref=f74e1405]
+                  - generic [ref=f74e1406]: FLEX
+                  - generic [ref=f74e1407]: 152%
+              - link "#28 Backpack BP 27%" [ref=f74e1408] [cursor=pointer]:
+                - /url: /solana/6qz7thwqvcjf3hydglukalbuk6eyjkezxzmwlaeiwfjd
+                - generic [ref=f74e1409]:
+                  - generic [ref=f74e1410]: "#28"
+                  - img "Backpack" [ref=f74e1411]
+                  - generic [ref=f74e1412]: BP
+                  - generic [ref=f74e1413]: 27%
+              - link "#29 INU INU 100 -18%" [ref=f74e1414] [cursor=pointer]:
+                - /url: /solana/eqnkemjn4mbwkjtwf5dqed31ax8szm51suyhbe8piwqj
+                - generic [ref=f74e1415]:
+                  - generic [ref=f74e1416]: "#29"
+                  - img "INU" [ref=f74e1417]
+                  - generic [ref=f74e1418]: INU
+                  - generic [ref=f74e1419]: "100"
+                  - generic [ref=f74e1422]: "-18%"
+              - link "#30 Hotel Lobby Lobby 112% 1h" [ref=f74e1423] [cursor=pointer]:
+                - /url: /solana/b3qkplfqmioyc5yaahtkrcrzrtbfdcpztxcxhwd83urk
+                - generic [ref=f74e1424]:
+                  - generic [ref=f74e1425]: "#30"
+                  - img "Hotel Lobby" [ref=f74e1426]
+                  - generic [ref=f74e1427]: Lobby
+                  - generic [ref=f74e1428]: 112%
+                  - generic [ref=f74e1429]: 1h
+            - button [ref=f74e1433] [cursor=pointer]
+  - generic:
+    - region "Notifications-top"
+    - region "Notifications-top-left"
+    - region "Notifications-top-right"
+    - region "Notifications-bottom-left"
+    - region "Notifications-bottom"
+    - region "Notifications-bottom-right"

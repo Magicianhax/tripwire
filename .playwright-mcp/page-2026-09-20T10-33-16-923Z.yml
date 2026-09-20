@@ -1,0 +1,80 @@
+- banner [ref=f13e4]:
+  - generic [ref=f13e6]:
+    - button "Search anything /" [ref=f13e8] [cursor=pointer]:
+      - generic [ref=f13e9]: Search anything
+      - generic [ref=f13e12]: /
+    - generic [ref=f13e13]:
+      - link "Rewards" [ref=f13e14] [cursor=pointer]:
+        - /url: /rewards
+      - button "Open settings" [ref=f13e17] [cursor=pointer]
+      - button "Connect" [ref=f13e19] [cursor=pointer]
+  - complementary [ref=f13e20]:
+    - generic [ref=f13e21]:
+      - link "Go to Home" [ref=f13e22] [cursor=pointer]:
+        - /url: /
+      - button "Toggle sidebar"
+    - generic [ref=f13e33]:
+      - generic [ref=f13e35]:
+        - generic [ref=f13e37]:
+          - button "Trade" [disabled] [expanded]
+          - generic [ref=f13e39]:
+            - generic [ref=f13e40]:
+              - link "Spot" [ref=f13e41] [cursor=pointer]:
+                - /url: /spot
+              - button "Pin to top nav"
+            - generic [ref=f13e45]:
+              - link "Perps" [ref=f13e46] [cursor=pointer]:
+                - /url: /perps
+              - button "Pin to top nav"
+            - generic [ref=f13e52]:
+              - link "Predict" [ref=f13e53] [cursor=pointer]:
+                - /url: /prediction
+              - button "Pin to top nav"
+            - generic [ref=f13e56]:
+              - link "Gacha" [ref=f13e57] [cursor=pointer]:
+                - /url: /gacha
+              - button "Pin to top nav"
+        - generic [ref=f13e61]:
+          - button "Earn" [disabled] [expanded]
+          - generic [ref=f13e63]:
+            - generic [ref=f13e64]:
+              - link "Lend" [ref=f13e65] [cursor=pointer]:
+                - /url: /lend/earn
+              - button "Pin to top nav"
+            - generic [ref=f13e68]:
+              - link "Offerbook" [ref=f13e69] [cursor=pointer]:
+                - /url: https://offerbook.jup.ag
+                - generic [ref=f13e72]: Beta
+              - button "Pin to top nav"
+            - generic [ref=f13e74]:
+              - link "Stake SOL" [ref=f13e75] [cursor=pointer]:
+                - /url: /stake
+              - button "Pin to top nav"
+            - generic [ref=f13e79]:
+              - link "Stake JUP" [ref=f13e80] [cursor=pointer]:
+                - /url: https://vote.jup.ag/
+              - button "Pin to top nav"
+        - generic [ref=f13e91]:
+          - button "Manage" [disabled] [expanded]
+          - generic [ref=f13e93]:
+            - generic [ref=f13e94]:
+              - link "Portfolio" [ref=f13e95] [cursor=pointer]:
+                - /url: /portfolio
+              - button "Pin to top nav"
+            - generic [ref=f13e98]:
+              - link "Send" [ref=f13e99] [cursor=pointer]:
+                - /url: /send
+              - button "Pin to top nav"
+            - generic [ref=f13e102]:
+              - link "Deposit" [ref=f13e103] [cursor=pointer]:
+                - /url: /deposit
+              - button "Pin to top nav"
+            - generic [ref=f13e106]:
+              - link "Spend" [ref=f13e107] [cursor=pointer]:
+                - /url: https://jupiter.global/
+              - button "Pin to top nav"
+        - navigation [ref=f13e112]:
+          - list [ref=f13e113]:
+            - listitem [ref=f13e114]:
+              - button "More" [ref=f13e115] [cursor=pointer]
+      - button "Get Help" [ref=f13e119] [cursor=pointer]

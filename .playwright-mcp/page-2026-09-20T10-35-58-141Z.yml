@@ -1,0 +1,28 @@
+- generic [active] [ref=f30e1]:
+  - banner [ref=f30e2]:
+    - button "Products" [ref=f30e4] [cursor=pointer]:
+      - img "Jumper" [ref=f30e6]
+  - main [ref=f30e18]:
+    - generic [ref=f30e19]:
+      - generic [ref=f30e22]:
+        - heading "Find the best route" [level=1] [ref=f30e23]
+        - paragraph [ref=f30e24]:
+          - link "4x audited" [ref=f30e25] [cursor=pointer]:
+            - /url: https://jumper.xyz
+          - text: multi-chain liquidity aggregator
+        - generic [ref=f30e26]:
+          - generic [ref=f30e27] [cursor=pointer]:
+            - paragraph: "0"
+            - paragraph: Chains
+          - generic [ref=f30e28] [cursor=pointer]:
+            - paragraph: "0"
+            - paragraph: Bridges
+          - generic [ref=f30e29] [cursor=pointer]:
+            - paragraph: "0"
+            - paragraph: DEXs
+        - button "Open welcome screen" [ref=f30e30] [cursor=pointer]:
+          - paragraph [ref=f30e31]: Get started
+      - generic [ref=f30e63] [cursor=pointer]:
+        - button
+        - button
+  - alert [ref=f30e64]

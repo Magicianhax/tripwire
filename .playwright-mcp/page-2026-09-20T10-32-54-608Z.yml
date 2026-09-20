@@ -1,0 +1,126 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - button "Search anything /" [ref=e8] [cursor=pointer]:
+        - generic [ref=e9]: Search anything
+        - generic [ref=e12]: /
+      - generic [ref=e13]:
+        - link "Rewards" [ref=e14] [cursor=pointer]:
+          - /url: /rewards
+        - button "Open settings" [ref=e17] [cursor=pointer]
+        - button "Connect" [ref=e19] [cursor=pointer]
+    - generic [ref=e21]:
+      - button "Configure token bar" [ref=e22] [cursor=pointer]
+      - group [ref=e24]:
+        - button "Watchlist" [ref=e25] [cursor=pointer]
+        - button "Positions" [ref=e27] [cursor=pointer]
+        - button "Recently visited tokens" [ref=e29] [cursor=pointer]
+    - complementary [ref=e31]:
+      - generic [ref=e32]:
+        - link "Go to Home" [ref=e33] [cursor=pointer]:
+          - /url: /
+        - button "Toggle sidebar"
+      - generic [ref=e44]:
+        - generic [ref=e46]:
+          - generic [ref=e48]:
+            - button "Trade" [disabled] [expanded]
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - link "Spot" [ref=e52] [cursor=pointer]:
+                  - /url: /spot
+                - button "Pin to top nav"
+              - generic [ref=e56]:
+                - link "Perps" [ref=e57] [cursor=pointer]:
+                  - /url: /perps
+                - button "Pin to top nav"
+              - generic [ref=e63]:
+                - link "Predict" [ref=e64] [cursor=pointer]:
+                  - /url: /prediction
+                - button "Pin to top nav"
+              - generic [ref=e67]:
+                - link "Gacha" [ref=e68] [cursor=pointer]:
+                  - /url: /gacha
+                - button "Pin to top nav"
+          - generic [ref=e72]:
+            - button "Earn" [disabled] [expanded]
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - link "Lend" [ref=e76] [cursor=pointer]:
+                  - /url: /lend/earn
+                - button "Pin to top nav"
+              - generic [ref=e79]:
+                - link "Offerbook" [ref=e80] [cursor=pointer]:
+                  - /url: https://offerbook.jup.ag
+                  - generic [ref=e83]: Beta
+                - button "Pin to top nav"
+              - generic [ref=e85]:
+                - link "Stake SOL" [ref=e86] [cursor=pointer]:
+                  - /url: /stake
+                - button "Pin to top nav"
+              - generic [ref=e90]:
+                - link "Stake JUP" [ref=e91] [cursor=pointer]:
+                  - /url: https://vote.jup.ag/
+                - button "Pin to top nav"
+          - generic [ref=e102]:
+            - button "Manage" [disabled] [expanded]
+            - generic [ref=e104]:
+              - generic [ref=e105]:
+                - link "Portfolio" [ref=e106] [cursor=pointer]:
+                  - /url: /portfolio
+                - button "Pin to top nav"
+              - generic [ref=e109]:
+                - link "Send" [ref=e110] [cursor=pointer]:
+                  - /url: /send
+                - button "Pin to top nav"
+              - generic [ref=e113]:
+                - link "Deposit" [ref=e114] [cursor=pointer]:
+                  - /url: /deposit
+                - button "Pin to top nav"
+              - generic [ref=e117]:
+                - link "Spend" [ref=e118] [cursor=pointer]:
+                  - /url: https://jupiter.global/
+                - button "Pin to top nav"
+          - navigation [ref=e123]:
+            - list [ref=e124]:
+              - listitem [ref=e125]:
+                - button "More" [ref=e126] [cursor=pointer]
+        - button "Get Help" [ref=e130] [cursor=pointer]
+  - generic [ref=e136]:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - paragraph [ref=e137]: View History
+            - button "Connect" [ref=e139] [cursor=pointer]
+    - generic [ref=e142]:
+      - generic [ref=e145]:
+        - generic [ref=e146]:
+          - group [ref=e149]:
+            - button "Market" [pressed] [ref=e150] [cursor=pointer]
+            - combobox "Limit" [ref=e151] [cursor=pointer]
+            - textbox [aria-hidden] [ref=e154]: take-profit
+            - button "DCA" [ref=e155] [cursor=pointer]
+          - generic [ref=e157]:
+            - generic [ref=e158]:
+              - generic [ref=e163]: Ultra
+              - generic [aria-hidden]:
+                - generic: Ultra
+              - generic [aria-hidden]:
+                - generic: Ultra
+            - button "Open swap settings" [ref=e164] [cursor=pointer]
+        - generic [ref=e169]:
+          - generic [ref=e170]:
+            - generic [ref=e171]:
+              - generic [ref=e172]: Sell
+              - textbox "Sell amount" [ref=e176]:
+                - /placeholder: "0.0"
+            - button "Switch sell and buy assets" [ref=e181] [cursor=pointer]
+            - generic [ref=e189]:
+              - generic [ref=e190]: Buy
+              - button "paste Paste CA" [ref=e191] [cursor=pointer]:
+                - generic "paste" [ref=e192]
+                - generic [ref=e193]: Paste CA
+          - button "Connect" [ref=e200] [cursor=pointer]
+      - generic [ref=e202]:
+        - button "Show Chart" [ref=e203] [cursor=pointer]
+        - button "Show History" [ref=e208] [cursor=pointer]

@@ -1,0 +1,1155 @@
+- generic [active] [ref=f107e1]:
+  - generic [ref=f107e2]:
+    - generic [ref=f107e3]:
+      - heading "GMGN.AI | The Fastest Multi-Chain Meme Trading Terminal" [level=2] [ref=f107e4]
+      - paragraph [ref=f107e5]: GMGN.AI is a MEME token trading platform supporting Solana, BSC, Base, and Ethereum — covering new token monitoring, security auditing, holder analysis, smart money copy trading, wallet P&L analytics, and automated trade execution, widely used for early-stage on-chain project discovery and quantitative trading.
+      - heading "Core Features" [level=3] [ref=f107e6]
+      - list [ref=f107e7]:
+        - listitem [ref=f107e8]:
+          - strong [ref=f107e9]: Real-Time New Token Monitoring
+          - paragraph [ref=f107e10]: Continuously scans launchpads including Pump.fun, FourMeme, Raydium, and letsbonk with filters for market cap, volume, and creation time — helping users enter positions at early low-cap stages.
+        - listitem [ref=f107e11]:
+          - strong [ref=f107e12]: Live Trending Token Rankings
+          - paragraph [ref=f107e13]: Leaderboard updated every minute based on buy/sell count, trading volume, price change, and holder growth — reflecting real-time market momentum and capital flow.
+        - listitem [ref=f107e14]:
+          - strong [ref=f107e15]: Token Holder Structure Analysis
+          - paragraph [ref=f107e16]: "Real-time calculation of four key metrics: insider/rat wallet ratio, bundle buy ratio, DEV holdings %, and Top 10 wallet concentration."
+        - listitem [ref=f107e17]:
+          - strong [ref=f107e18]: Automated Token Security Audit
+          - paragraph [ref=f107e19]: "Auto-checks every token for: LP burned status, honeypot detection, contract renounced status, and mintable flag."
+        - listitem [ref=f107e20]:
+          - strong [ref=f107e21]: Smart Money Copy Trading
+          - paragraph [ref=f107e22]: Identifies high-win-rate wallets on-chain and enables one-click copy trading that automatically mirrors their buy/sell actions and position sizing.
+        - listitem [ref=f107e23]:
+          - strong [ref=f107e24]: KOL & Wallet Tracker with Real-Time Alerts
+          - paragraph [ref=f107e25]: Custom watchlist with real-time push notifications for every on-chain event — buys, sells, position adds, and full exits — from tracked wallets and KOLs.
+        - listitem [ref=f107e26]:
+          - strong [ref=f107e27]: Zero-Latency Trading & Automated Strategies
+          - paragraph [ref=f107e28]: Zero-latency on-chain trade execution with Take Profit, Stop Loss, Trailing Take Profit / Trailing Stop Loss, and multi-wallet batch order support.
+        - listitem [ref=f107e29]:
+          - strong [ref=f107e30]: Wallet P&L Analytics
+          - paragraph [ref=f107e31]: "Enter any wallet address to instantly generate: realized/unrealized PnL, win rate and risk/reward ratio, current holdings valuation, full trade history, and developer wallet token creation records with all-time high (ATH) market cap per token."
+        - listitem [ref=f107e32]:
+          - strong [ref=f107e33]: Trading Data API & AI-Native Skills
+          - paragraph [ref=f107e34]: Five structured API categories — token data, wallet data, market data, trade execution, and signal tracking — packaged as standardized AI Skills directly callable by Claude, GPT, and other AI Agents via natural language for on-chain data queries and trade execution.
+    - generic [ref=f107e36]:
+      - generic [ref=f107e37]:
+        - banner [ref=f107e38]:
+          - generic [ref=f107e39]:
+            - link [ref=f107e41] [cursor=pointer]:
+              - /url: /?chain=sol
+              - img "logo" [ref=f107e42]
+            - navigation "Main navigation" [ref=f107e44]:
+              - link "Trenches" [ref=f107e45] [cursor=pointer]:
+                - /url: /?chain=sol
+              - link "Trending" [ref=f107e46] [cursor=pointer]:
+                - /url: /trend?chain=sol
+              - link "CopyTrade" [ref=f107e47] [cursor=pointer]:
+                - /url: /trade?chain=sol
+              - link "Monitor" [ref=f107e48] [cursor=pointer]:
+                - /url: /monitor?chain=sol
+              - link "Track" [ref=f107e49] [cursor=pointer]:
+                - /url: /follow?chain=sol
+              - link "Portfolio" [ref=f107e50] [cursor=pointer]:
+                - /url: /portfolio?chain=sol
+              - link "Rewards" [ref=f107e51] [cursor=pointer]:
+                - /url: /rewards?chain=sol
+              - link "Up/Down" [ref=f107e52] [cursor=pointer]:
+                - /url: https://future.news/updown
+              - link "Perpetual" [ref=f107e53] [cursor=pointer]:
+                - /url: /perpetual/BTC.PERP_USDC
+                - generic [ref=f107e54]:
+                  - text: Perpetual
+                  - generic [aria-hidden]: Beta
+          - generic [ref=f107e55]:
+            - generic [ref=f107e58]:
+              - generic [ref=f107e59]:
+                - img [aria-hidden] [ref=f107e61]:
+                  - generic [ref=f107e62]: 
+                - textbox "Search name, CA, wallet" [ref=f107e63]
+                - generic [ref=f107e64]: /
+              - group "Search name, CA, wallet"
+            - generic [ref=f107e67] [cursor=pointer]:
+              - img [aria-hidden] [ref=f107e69]:
+                - generic [ref=f107e70]: 
+              - generic [ref=f107e71]: Cooking
+            - generic [ref=f107e75]:
+              - link "API" [ref=f107e76] [cursor=pointer]:
+                - /url: /ai
+                - img [aria-hidden] [ref=f107e77]:
+                  - generic [ref=f107e78]: 
+              - button [ref=f107e80] [cursor=pointer]:
+                - link "APP" [ref=f107e81]:
+                  - /url: /app
+            - generic [ref=f107e84]:
+              - button "SOL" [ref=f107e85] [cursor=pointer]:
+                - generic [ref=f107e87]:
+                  - generic [ref=f107e88]: SOL
+                  - img [aria-hidden] [ref=f107e89]:
+                    - generic [ref=f107e90]: 
+              - generic [ref=f107e91]:
+                - link [ref=f107e92] [cursor=pointer]:
+                  - /url: /watchlists
+                  - img [aria-hidden] [ref=f107e94]:
+                    - generic [ref=f107e95]: 
+                - button [ref=f107e96] [cursor=pointer]:
+                  - img [aria-hidden] [ref=f107e97]:
+                    - generic [ref=f107e98]: 
+            - generic [ref=f107e100]:
+              - button "Sign Up" [ref=f107e101] [cursor=pointer]
+              - button "Log In" [ref=f107e103] [cursor=pointer]
+        - generic [ref=f107e105]:
+          - img [aria-hidden] [ref=f107e107] [cursor=pointer]:
+            - generic [ref=f107e108]: 
+          - generic [ref=f107e110]:
+            - img [aria-hidden] [ref=f107e112] [cursor=pointer]:
+              - generic [ref=f107e113]: 
+            - img [aria-hidden] [ref=f107e115] [cursor=pointer]:
+              - generic [ref=f107e116]: 
+            - img [aria-hidden] [ref=f107e118] [cursor=pointer]:
+              - generic [ref=f107e119]: 
+          - button [ref=f107e121] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e123]:
+              - generic [ref=f107e124]: 
+          - generic [ref=f107e128]:
+            - generic [ref=f107e130] [cursor=pointer]:
+              - generic [ref=f107e132]:
+                - combobox [ref=f107e134]
+                - text: All
+              - generic [aria-hidden]:
+                - img [aria-hidden]:
+                  - generic: 
+            - group
+      - main [ref=f107e138]:
+        - generic [ref=f107e140]:
+          - generic [ref=f107e141]:
+            - button "Track P1 You are not logged in to GMGN Log in" [ref=f107e142] [cursor=pointer]:
+              - img [aria-hidden] [ref=f107e144]:
+                - generic [ref=f107e145]: 
+              - generic [ref=f107e147]:
+                - generic [ref=f107e148]:
+                  - generic [ref=f107e149]:
+                    - button [ref=f107e151]:
+                      - img [aria-hidden] [ref=f107e153]:
+                        - generic [ref=f107e154]: 
+                    - img [aria-hidden] [ref=f107e157]:
+                      - generic [ref=f107e158]: 
+                    - generic [ref=f107e159]:
+                      - tablist [ref=f107e160]:
+                        - generic [ref=f107e162]:
+                          - tab "Wallet" [ref=f107e164]
+                          - tab "Track" [selected] [ref=f107e166]
+                          - tab "Callout" [ref=f107e168]
+                          - tab "Monitor" [ref=f107e170]
+                          - tab "Renames" [ref=f107e172]
+                      - generic:
+                        - generic:
+                          - tabpanel "Track"
+                    - generic [ref=f107e173]:
+                      - img [aria-hidden] [ref=f107e176]:
+                        - generic [ref=f107e177]: 
+                      - generic [ref=f107e178]:
+                        - img [aria-hidden] [ref=f107e180]:
+                          - generic [ref=f107e181]: 
+                        - img [aria-hidden] [ref=f107e183]:
+                          - generic [ref=f107e184]: 
+                        - img [aria-hidden] [ref=f107e186]:
+                          - generic [ref=f107e187]: 
+                  - generic [ref=f107e188]:
+                    - generic [ref=f107e189]:
+                      - button [ref=f107e193]:
+                        - button [ref=f107e194]:
+                          - img [aria-hidden] [ref=f107e196]:
+                            - generic [ref=f107e197]: 
+                      - generic [ref=f107e199]:
+                        - img [aria-hidden] [ref=f107e202]:
+                          - generic [ref=f107e203]: 
+                        - button [ref=f107e204]:
+                          - img [aria-hidden] [ref=f107e206]:
+                            - generic [ref=f107e207]: 
+                        - img [aria-hidden] [ref=f107e209]:
+                          - generic [ref=f107e210]: 
+                    - generic [ref=f107e211]:
+                      - textbox "0" [ref=f107e216]
+                      - generic [ref=f107e218]:
+                        - generic:
+                          - generic:
+                            - generic: P1
+                            - generic:
+                              - img [aria-hidden]:
+                                - generic: 
+                - generic [ref=f107e222]:
+                  - text: You are not logged in to GMGN
+                  - generic [ref=f107e223]: Log in
+                - status [ref=f107e224]
+            - status [ref=f107e235]
+          - generic [ref=f107e236]:
+            - button "X Tracker Recommended APP Only CA 14 CA / Symbol / X URL You are not logged in to GMGN Log in No data" [ref=f107e237] [cursor=pointer]:
+              - img [aria-hidden] [ref=f107e239]:
+                - generic [ref=f107e240]: 
+              - generic [ref=f107e243]:
+                - generic [ref=f107e245]:
+                  - generic [ref=f107e246]:
+                    - tablist [ref=f107e247]:
+                      - generic [ref=f107e249]:
+                        - tab "X Tracker" [selected] [ref=f107e251]
+                        - tab "TG Tracker" [ref=f107e253]
+                    - generic:
+                      - generic:
+                        - tabpanel "X Tracker"
+                  - generic [ref=f107e255]:
+                    - img [aria-hidden] [ref=f107e257]:
+                      - generic [ref=f107e258]: 
+                    - img [aria-hidden] [ref=f107e261]:
+                      - generic [ref=f107e262]: 
+                    - img [aria-hidden] [ref=f107e265]:
+                      - generic [ref=f107e266]: 
+                    - generic [ref=f107e267]:
+                      - img [aria-hidden] [ref=f107e269]:
+                        - generic [ref=f107e270]: 
+                      - img [aria-hidden] [ref=f107e272]:
+                        - generic [ref=f107e273]: 
+                      - img [aria-hidden] [ref=f107e275]:
+                        - generic [ref=f107e276]: 
+                - generic [ref=f107e277]:
+                  - generic [ref=f107e278]:
+                    - generic [ref=f107e279]:
+                      - generic [ref=f107e280]:
+                        - tablist [ref=f107e281]:
+                          - generic [ref=f107e283]:
+                            - tab "Mine" [ref=f107e285]
+                            - tab "Featured" [ref=f107e287]
+                            - tab "Recommended" [selected] [ref=f107e289]
+                        - generic:
+                          - generic:
+                            - tabpanel "Recommended"
+                      - button [ref=f107e290]:
+                        - link "APP" [ref=f107e291]:
+                          - /url: /app
+                    - generic [ref=f107e295]:
+                      - generic [ref=f107e296]:
+                        - generic [ref=f107e297]:
+                          - img [aria-hidden] [ref=f107e299]:
+                            - generic [ref=f107e300]: 
+                          - generic [ref=f107e301]: Only CA
+                        - img [aria-hidden] [ref=f107e303]:
+                          - generic [ref=f107e304]: 
+                        - img [aria-hidden] [ref=f107e306]:
+                          - generic [ref=f107e307]: 
+                        - img [aria-hidden] [ref=f107e309]:
+                          - generic [ref=f107e310]: 
+                      - generic [ref=f107e311]:
+                        - generic [ref=f107e312]:
+                          - img [aria-hidden] [ref=f107e313]:
+                            - generic [ref=f107e314]: 
+                          - generic [ref=f107e315]: "14"
+                        - generic [ref=f107e317]:
+                          - generic [ref=f107e318]:
+                            - img [aria-hidden] [ref=f107e320]:
+                              - generic [ref=f107e321]: 
+                            - textbox "CA / Symbol / X URL" [ref=f107e322]
+                          - group "CA / Symbol / X URL"
+                  - generic [ref=f107e323]:
+                    - text: You are not logged in to GMGN
+                    - generic [ref=f107e324]: Log in
+                  - generic: No data
+            - status [ref=f107e328]
+        - generic [ref=f107e329]:
+          - generic [ref=f107e330]:
+            - generic [ref=f107e333]:
+              - generic [ref=f107e341]:
+                - generic [ref=f107e342]:
+                  - generic [ref=f107e343] [cursor=pointer]: 1s
+                  - generic [ref=f107e344] [cursor=pointer]: 30s
+                  - generic [ref=f107e345] [cursor=pointer]: 1m
+                  - generic [ref=f107e346] [cursor=pointer]: 1H
+                  - generic [ref=f107e347] [cursor=pointer]: 4H
+                  - generic [ref=f107e348] [cursor=pointer]: 1D
+                  - button [ref=f107e349] [cursor=pointer]:
+                    - generic:
+                      - generic:
+                        - img [aria-hidden]:
+                          - generic: 
+                - button "Multicharts" [ref=f107e351] [cursor=pointer]
+                - generic [ref=f107e356] [cursor=pointer]:
+                  - generic:
+                    - generic:
+                      - img [aria-hidden]:
+                        - generic: 
+                - img [aria-hidden] [ref=f107e357] [cursor=pointer]:
+                  - generic [ref=f107e358]: 
+                - button "Display" [ref=f107e360] [cursor=pointer]:
+                  - generic [ref=f107e361]:
+                    - generic [ref=f107e362]: Display
+                    - img [aria-hidden] [ref=f107e363]:
+                      - generic [ref=f107e364]: 
+                - generic [ref=f107e366] [cursor=pointer]:
+                  - generic [ref=f107e367]: Price
+                  - text: /
+                  - generic [ref=f107e368]: MC
+                - generic [ref=f107e370] [cursor=pointer]:
+                  - generic [ref=f107e371]: USD
+                  - text: /
+                  - generic [ref=f107e372]: SOL
+                - generic [ref=f107e374] [cursor=pointer]:
+                  - generic:
+                    - img [aria-hidden]:
+                      - generic: 
+                - button [ref=f107e375] [cursor=pointer]:
+                  - img [aria-hidden] [ref=f107e376]:
+                    - generic [ref=f107e377]: 
+                - img [aria-hidden] [ref=f107e379] [cursor=pointer]:
+                  - generic [ref=f107e380]: 
+              - generic [ref=f107e391]:
+                - tablist [ref=f107e392]:
+                  - generic [ref=f107e394]:
+                    - tab [selected] [ref=f107e396] [cursor=pointer]:
+                      - generic [ref=f107e397]:
+                        - generic [ref=f107e398]: Trades
+                        - img [aria-hidden] [ref=f107e401]:
+                          - generic [ref=f107e402]: 
+                    - tab "Positions" [ref=f107e404] [cursor=pointer]:
+                      - generic [ref=f107e405]:
+                        - generic [ref=f107e406]: Positions
+                        - img [aria-hidden] [ref=f107e408]:
+                          - generic [ref=f107e409]: 
+                    - tab "Holders 3.52K" [ref=f107e411] [cursor=pointer]:
+                      - generic [ref=f107e412]:
+                        - generic [ref=f107e414]:
+                          - text: Holders
+                          - generic [ref=f107e415]: 3.52K
+                        - img [aria-hidden] [ref=f107e417]:
+                          - generic [ref=f107e418]: 
+                    - tab "Top Traders" [ref=f107e420] [cursor=pointer]:
+                      - generic [ref=f107e421]:
+                        - generic [ref=f107e422]: Top Traders
+                        - img [aria-hidden] [ref=f107e424]:
+                          - generic [ref=f107e425]: 
+                    - tab "Dev Token 1" [ref=f107e427] [cursor=pointer]:
+                      - generic [ref=f107e428]:
+                        - generic [ref=f107e429]: Dev Token 1
+                        - img [aria-hidden] [ref=f107e432]:
+                          - generic [ref=f107e433]: 
+                  - generic [ref=f107e435]:
+                    - button "Instant trade" [ref=f107e436] [cursor=pointer]:
+                      - img [aria-hidden] [ref=f107e437]:
+                        - generic [ref=f107e438]: 
+                    - button "Callout" [ref=f107e440] [cursor=pointer]:
+                      - img [aria-hidden] [ref=f107e441]:
+                        - generic [ref=f107e442]: 
+                    - generic "Bubble" [ref=f107e444] [cursor=pointer]:
+                      - img [aria-hidden] [ref=f107e445]:
+                        - generic [ref=f107e446]: 
+                    - img [aria-hidden] [ref=f107e448] [cursor=pointer]:
+                      - generic [ref=f107e449]: 
+                    - img [aria-hidden] [ref=f107e451] [cursor=pointer]:
+                      - generic [ref=f107e452]: 
+                - tabpanel "Trades" [ref=f107e455]:
+                  - generic [ref=f107e464]:
+                    - generic [ref=f107e466]:
+                      - generic [ref=f107e467]:
+                        - generic [ref=f107e468]:
+                          - img [aria-hidden] [ref=f107e470] [cursor=pointer]:
+                            - generic [ref=f107e471]: 
+                          - generic [ref=f107e472]: Age
+                        - generic [ref=f107e474]:
+                          - img [aria-hidden] [ref=f107e476] [cursor=pointer]:
+                            - generic [ref=f107e477]: 
+                          - img [aria-hidden] [ref=f107e479] [cursor=pointer]:
+                            - generic [ref=f107e480]: 
+                        - generic [ref=f107e481]:
+                          - img [aria-hidden] [ref=f107e483] [cursor=pointer]:
+                            - generic [ref=f107e484]: 
+                          - button [ref=f107e485] [cursor=pointer]:
+                            - img [aria-hidden] [ref=f107e487]:
+                              - generic [ref=f107e488]: 
+                      - generic [ref=f107e490] [cursor=pointer]:
+                        - generic [ref=f107e491]: Type
+                        - button [ref=f107e492]:
+                          - button [ref=f107e493]:
+                            - img [aria-hidden] [ref=f107e495]:
+                              - generic [ref=f107e496]: 
+                      - generic [ref=f107e499] [cursor=pointer]:
+                        - text: MC
+                        - img [aria-hidden] [ref=f107e500]:
+                          - generic [ref=f107e501]: 
+                      - generic [ref=f107e502]: Amount
+                      - generic [ref=f107e506]:
+                        - text: Total
+                        - generic [ref=f107e507] [cursor=pointer]:
+                          - text: USD
+                          - img [aria-hidden] [ref=f107e508]:
+                            - generic [ref=f107e509]: 
+                        - button [ref=f107e510] [cursor=pointer]:
+                          - button [ref=f107e511]:
+                            - img [aria-hidden] [ref=f107e513]:
+                              - generic [ref=f107e514]: 
+                      - generic [ref=f107e515]: Gas
+                      - generic [ref=f107e518]:
+                        - generic [ref=f107e520] [cursor=pointer]:
+                          - text: Trader
+                          - button [ref=f107e521]:
+                            - button [ref=f107e522]:
+                              - img [aria-hidden] [ref=f107e524]:
+                                - generic [ref=f107e525]: 
+                        - generic [ref=f107e526]: DEV
+                    - generic [ref=f107e529]:
+                      - generic [ref=f107e530]:
+                        - generic [ref=f107e534] [cursor=pointer]:
+                          - link "3s" [ref=f107e538]:
+                            - /url: https://solscan.io/tx/HpxnJn2VNWgBfzE9mxkbsbjHMdLVxvihtv8raswGtocPU8K5T4QzseFAgvwfh4iBPXprPjiUBxWeKvenSYj7nEJ
+                          - generic [ref=f107e540]: Sell
+                          - generic "$180K" [ref=f107e543]
+                          - generic [ref=f107e544]: 5.45K
+                          - generic [ref=f107e546]: $0.988
+                          - generic [ref=f107e548]: $0.002
+                          - generic [ref=f107e551]:
+                            - link "GYLK...BNfC 147" [ref=f107e553]:
+                              - /url: /sol/address/GYLKmM4m4kyctRGg3B6ANcSrxzrodTy5DNmhYuikBNfC
+                              - img [aria-hidden] [ref=f107e556]:
+                                - generic [ref=f107e557]: 
+                              - generic [ref=f107e561]:
+                                - link "GYLK...BNfC" [ref=f107e562]:
+                                  - /url: /sol/address/GYLKmM4m4kyctRGg3B6ANcSrxzrodTy5DNmhYuikBNfC
+                                - img [aria-hidden] [ref=f107e565]:
+                                  - generic [ref=f107e566]: 
+                              - generic [ref=f107e567]: "147"
+                            - generic [ref=f107e569]:
+                              - img [aria-hidden] [ref=f107e571]:
+                                - generic [ref=f107e572]: 
+                              - link [ref=f107e573]:
+                                - /url: https://solscan.io/tx/HpxnJn2VNWgBfzE9mxkbsbjHMdLVxvihtv8raswGtocPU8K5T4QzseFAgvwfh4iBPXprPjiUBxWeKvenSYj7nEJ
+                                - img [aria-hidden] [ref=f107e574]:
+                                  - generic [ref=f107e575]: 
+                        - generic [ref=f107e579] [cursor=pointer]:
+                          - link "3s" [ref=f107e583]:
+                            - /url: https://solscan.io/tx/36QQzL3h9XU1xDHJUcBxEbsvyRo6kGNFVpZdtWtECNMvBvDrcGPKpaxHSgwffoEKL7zyovVxymW6xK4iz4qkgUUR
+                          - generic [ref=f107e585]: Sell
+                          - generic "$180K" [ref=f107e588]
+                          - generic [ref=f107e589]: 5.57K
+                          - generic [ref=f107e591]: $1.01
+                          - generic [ref=f107e593]: $0.002
+                          - generic [ref=f107e596]:
+                            - link "C761...bDjd 78" [ref=f107e598]:
+                              - /url: /sol/address/C761XsJNPfy3vXfUKDRuN5PxXJkhrxEudhVTAkTubDjd
+                              - img [aria-hidden] [ref=f107e599]:
+                                - generic [ref=f107e600]: 
+                              - img [aria-hidden] [ref=f107e603]:
+                                - generic [ref=f107e604]: 
+                              - generic [ref=f107e608]:
+                                - link "C761...bDjd" [ref=f107e609]:
+                                  - /url: /sol/address/C761XsJNPfy3vXfUKDRuN5PxXJkhrxEudhVTAkTubDjd
+                                - img [aria-hidden] [ref=f107e612]:
+                                  - generic [ref=f107e613]: 
+                              - generic [ref=f107e614]: "78"
+                            - generic [ref=f107e616]:
+                              - img [aria-hidden] [ref=f107e618]:
+                                - generic [ref=f107e619]: 
+                              - link [ref=f107e620]:
+                                - /url: https://solscan.io/tx/36QQzL3h9XU1xDHJUcBxEbsvyRo6kGNFVpZdtWtECNMvBvDrcGPKpaxHSgwffoEKL7zyovVxymW6xK4iz4qkgUUR
+                                - img [aria-hidden] [ref=f107e621]:
+                                  - generic [ref=f107e622]: 
+                        - generic [ref=f107e626] [cursor=pointer]:
+                          - link "3s" [ref=f107e630]:
+                            - /url: https://solscan.io/tx/3D8W4DFs7kRrt3g9oPSfVPTFVx8SDxwcvzrXieiuHQnHmXqN1yvkAZzNkKwLeTxoNzuV3d5LcZAvQi9Dqkyah6rd
+                          - generic [ref=f107e632]: Sell
+                          - generic "$180K" [ref=f107e635]
+                          - generic [ref=f107e636]: 5.03K
+                          - generic [ref=f107e638]: $0.911
+                          - generic [ref=f107e640]: $0.002
+                          - generic [ref=f107e643]:
+                            - link "C761...bDjd 78" [ref=f107e645]:
+                              - /url: /sol/address/C761XsJNPfy3vXfUKDRuN5PxXJkhrxEudhVTAkTubDjd
+                              - img [aria-hidden] [ref=f107e648]:
+                                - generic [ref=f107e649]: 
+                              - generic [ref=f107e653]:
+                                - link "C761...bDjd" [ref=f107e654]:
+                                  - /url: /sol/address/C761XsJNPfy3vXfUKDRuN5PxXJkhrxEudhVTAkTubDjd
+                                - img [aria-hidden] [ref=f107e657]:
+                                  - generic [ref=f107e658]: 
+                              - generic [ref=f107e659]: "78"
+                            - generic [ref=f107e661]:
+                              - img [aria-hidden] [ref=f107e663]:
+                                - generic [ref=f107e664]: 
+                              - link [ref=f107e665]:
+                                - /url: https://solscan.io/tx/3D8W4DFs7kRrt3g9oPSfVPTFVx8SDxwcvzrXieiuHQnHmXqN1yvkAZzNkKwLeTxoNzuV3d5LcZAvQi9Dqkyah6rd
+                                - img [aria-hidden] [ref=f107e666]:
+                                  - generic [ref=f107e667]: 
+                        - generic [ref=f107e671] [cursor=pointer]:
+                          - link "4s" [ref=f107e675]:
+                            - /url: https://solscan.io/tx/2Zah2XZ2pxepLcVr8AqfWKywgD1PB1Wm94fUy47QpnHok7rh7fDMJLWDAX2Y97RgJXNt3jLfQKsQAKBzieq7ZCLH
+                          - generic [ref=f107e677]: Sell
+                          - generic "$180K" [ref=f107e680]
+                          - generic [ref=f107e681]: 4.99K
+                          - generic [ref=f107e683]: $0.905
+                          - generic [ref=f107e685]: $0.002
+                          - generic [ref=f107e688]:
+                            - link "C761...bDjd 78" [ref=f107e690]:
+                              - /url: /sol/address/C761XsJNPfy3vXfUKDRuN5PxXJkhrxEudhVTAkTubDjd
+                              - img [aria-hidden] [ref=f107e693]:
+                                - generic [ref=f107e694]: 
+                              - generic [ref=f107e698]:
+                                - link "C761...bDjd" [ref=f107e699]:
+                                  - /url: /sol/address/C761XsJNPfy3vXfUKDRuN5PxXJkhrxEudhVTAkTubDjd
+                                - img [aria-hidden] [ref=f107e702]:
+                                  - generic [ref=f107e703]: 
+                              - generic [ref=f107e704]: "78"
+                            - generic [ref=f107e706]:
+                              - img [aria-hidden] [ref=f107e708]:
+                                - generic [ref=f107e709]: 
+                              - link [ref=f107e710]:
+                                - /url: https://solscan.io/tx/2Zah2XZ2pxepLcVr8AqfWKywgD1PB1Wm94fUy47QpnHok7rh7fDMJLWDAX2Y97RgJXNt3jLfQKsQAKBzieq7ZCLH
+                                - img [aria-hidden] [ref=f107e711]:
+                                  - generic [ref=f107e712]: 
+                        - generic [ref=f107e716] [cursor=pointer]:
+                          - link "4s" [ref=f107e720]:
+                            - /url: https://solscan.io/tx/PiGAhqBUSQxscR25RRtoD8zJeb5qnM1rXMA6NDDA5xCQBuCp4eBLRYXpzHYyjQf6JudzAsw4AqAK44wbpu9UUFS
+                          - generic [ref=f107e722]: Sell
+                          - generic "$180K" [ref=f107e725]
+                          - generic [ref=f107e726]: 5.03K
+                          - generic [ref=f107e728]: $0.911
+                          - generic [ref=f107e730]: $0.002
+                          - generic [ref=f107e733]:
+                            - link "7p6J...YSob 127" [ref=f107e735]:
+                              - /url: /sol/address/7p6Jk1B9j3NXqNwkg2uGW4a1fPSongHssrXicjDTYSob
+                              - img [aria-hidden] [ref=f107e738]:
+                                - generic [ref=f107e739]: 
+                              - generic [ref=f107e743]:
+                                - link "7p6J...YSob" [ref=f107e744]:
+                                  - /url: /sol/address/7p6Jk1B9j3NXqNwkg2uGW4a1fPSongHssrXicjDTYSob
+                                - img [aria-hidden] [ref=f107e747]:
+                                  - generic [ref=f107e748]: 
+                              - generic [ref=f107e749]: "127"
+                            - generic [ref=f107e751]:
+                              - img [aria-hidden] [ref=f107e753]:
+                                - generic [ref=f107e754]: 
+                              - link [ref=f107e755]:
+                                - /url: https://solscan.io/tx/PiGAhqBUSQxscR25RRtoD8zJeb5qnM1rXMA6NDDA5xCQBuCp4eBLRYXpzHYyjQf6JudzAsw4AqAK44wbpu9UUFS
+                                - img [aria-hidden] [ref=f107e756]:
+                                  - generic [ref=f107e757]: 
+                        - generic [ref=f107e761] [cursor=pointer]:
+                          - link "4s" [ref=f107e765]:
+                            - /url: https://solscan.io/tx/KXteujHCoiHgnc8dCfZ173TZYNWL1NrwPAaFfznpedRRwhzRay6HEx8dUU4KQET3h3f25qVbGp4R487yF3VDZPf
+                          - generic [ref=f107e767]: Buy
+                          - generic "$182K" [ref=f107e770]
+                          - generic [ref=f107e771]: 3.78K
+                          - generic [ref=f107e773]: $0.695
+                          - generic [ref=f107e775]: $0.002
+                          - generic [ref=f107e778]:
+                            - link "47Yq...29pD 68" [ref=f107e780]:
+                              - /url: /sol/address/47YqCJ2zmqJAh6CuFgtYxFaBhmKJJZxiR5Bshqw729pD
+                              - generic [ref=f107e781]:
+                                - img [aria-hidden] [ref=f107e783]:
+                                  - generic [ref=f107e784]: 
+                                - img [aria-hidden] [ref=f107e786]:
+                                  - generic [ref=f107e787]: 
+                              - generic [ref=f107e791]:
+                                - link "47Yq...29pD" [ref=f107e792]:
+                                  - /url: /sol/address/47YqCJ2zmqJAh6CuFgtYxFaBhmKJJZxiR5Bshqw729pD
+                                - img [aria-hidden] [ref=f107e795]:
+                                  - generic [ref=f107e796]: 
+                              - generic [ref=f107e797]: "68"
+                            - generic [ref=f107e799]:
+                              - img [aria-hidden] [ref=f107e801]:
+                                - generic [ref=f107e802]: 
+                              - link [ref=f107e803]:
+                                - /url: https://solscan.io/tx/KXteujHCoiHgnc8dCfZ173TZYNWL1NrwPAaFfznpedRRwhzRay6HEx8dUU4KQET3h3f25qVbGp4R487yF3VDZPf
+                                - img [aria-hidden] [ref=f107e804]:
+                                  - generic [ref=f107e805]: 
+                        - generic [ref=f107e809] [cursor=pointer]:
+                          - link "4s" [ref=f107e813]:
+                            - /url: https://solscan.io/tx/394Pzwn4fWJzDbB95vF4Bxxjf3wKW6LZYHkyAAtTTn2kUndd2tEajXWDFKb43V1eesLt4PVeq1V1uZYA1uXmaoq1
+                          - generic [ref=f107e815]: Buy
+                          - generic "$182K" [ref=f107e818]
+                          - generic [ref=f107e819]: 2.6K
+                          - generic [ref=f107e821]: $0.478
+                          - generic [ref=f107e823]: $0.002
+                          - generic [ref=f107e826]:
+                            - link "4Uy5...d9sk 41" [ref=f107e828]:
+                              - /url: /sol/address/4Uy5w3XJyUv6WqbiBa1Nkj1nNNP7dqzDz6BwWUXVd9sk
+                              - img [aria-hidden] [ref=f107e829]:
+                                - generic [ref=f107e830]: 
+                              - generic [ref=f107e831]:
+                                - img [aria-hidden] [ref=f107e833]:
+                                  - generic [ref=f107e834]: 
+                                - img [aria-hidden] [ref=f107e836]:
+                                  - generic [ref=f107e837]: 
+                              - generic [ref=f107e841]:
+                                - link "4Uy5...d9sk" [ref=f107e842]:
+                                  - /url: /sol/address/4Uy5w3XJyUv6WqbiBa1Nkj1nNNP7dqzDz6BwWUXVd9sk
+                                - img [aria-hidden] [ref=f107e845]:
+                                  - generic [ref=f107e846]: 
+                              - generic [ref=f107e847]: "41"
+                            - generic [ref=f107e849]:
+                              - img [aria-hidden] [ref=f107e851]:
+                                - generic [ref=f107e852]: 
+                              - link [ref=f107e853]:
+                                - /url: https://solscan.io/tx/394Pzwn4fWJzDbB95vF4Bxxjf3wKW6LZYHkyAAtTTn2kUndd2tEajXWDFKb43V1eesLt4PVeq1V1uZYA1uXmaoq1
+                                - img [aria-hidden] [ref=f107e854]:
+                                  - generic [ref=f107e855]: 
+                        - generic [ref=f107e859] [cursor=pointer]:
+                          - link "4s" [ref=f107e863]:
+                            - /url: https://solscan.io/tx/2jAP84JuW7hEioLimLFhuEek5Fpv5c3Xjf4tEk1vGbWr67AnSwBHYZN3f4GgNpQzdf2dNHkphSeugVbxKaqSTkKF
+                          - generic [ref=f107e865]: Buy
+                          - generic "$182K" [ref=f107e868]
+                          - generic [ref=f107e869]: "996.46"
+                          - generic [ref=f107e871]: $0.183
+                          - generic [ref=f107e873]: $0.002
+                          - generic [ref=f107e876]:
+                            - link "47Yq...29pD 68" [ref=f107e878]:
+                              - /url: /sol/address/47YqCJ2zmqJAh6CuFgtYxFaBhmKJJZxiR5Bshqw729pD
+                              - img [aria-hidden] [ref=f107e879]:
+                                - generic [ref=f107e880]: 
+                              - generic [ref=f107e881]:
+                                - img [aria-hidden] [ref=f107e883]:
+                                  - generic [ref=f107e884]: 
+                                - img [aria-hidden] [ref=f107e886]:
+                                  - generic [ref=f107e887]: 
+                              - generic [ref=f107e891]:
+                                - link "47Yq...29pD" [ref=f107e892]:
+                                  - /url: /sol/address/47YqCJ2zmqJAh6CuFgtYxFaBhmKJJZxiR5Bshqw729pD
+                                - img [aria-hidden] [ref=f107e895]:
+                                  - generic [ref=f107e896]: 
+                              - generic [ref=f107e897]: "68"
+                            - generic [ref=f107e899]:
+                              - img [aria-hidden] [ref=f107e901]:
+                                - generic [ref=f107e902]: 
+                              - link [ref=f107e903]:
+                                - /url: https://solscan.io/tx/2jAP84JuW7hEioLimLFhuEek5Fpv5c3Xjf4tEk1vGbWr67AnSwBHYZN3f4GgNpQzdf2dNHkphSeugVbxKaqSTkKF
+                                - img [aria-hidden] [ref=f107e904]:
+                                  - generic [ref=f107e905]: 
+                        - generic [ref=f107e909] [cursor=pointer]:
+                          - link "4s" [ref=f107e913]:
+                            - /url: https://solscan.io/tx/325XL3ijxwsfmo6q9kPUtMAsD4fDFVJaHY6cdPDUUYDrVW9MaA8h7yr58yShAzAg6QrtFB36SLiYnd5jFic1BH1X
+                          - generic [ref=f107e915]: Buy
+                          - generic "$182K" [ref=f107e918]
+                          - generic [ref=f107e919]: 2.73K
+                          - generic [ref=f107e921]: $0.502
+                          - generic [ref=f107e923]: $0.002
+                          - generic [ref=f107e926]:
+                            - link "Hzth...EhLW 32" [ref=f107e928]:
+                              - /url: /sol/address/HzthVnMQPtdcq1FxHnE6KarkkYRqkLDTjUCf1Xz3EhLW
+                              - generic [ref=f107e929]:
+                                - img [aria-hidden] [ref=f107e931]:
+                                  - generic [ref=f107e932]: 
+                                - img [aria-hidden] [ref=f107e934]:
+                                  - generic [ref=f107e935]: 
+                              - generic [ref=f107e939]:
+                                - link "Hzth...EhLW" [ref=f107e940]:
+                                  - /url: /sol/address/HzthVnMQPtdcq1FxHnE6KarkkYRqkLDTjUCf1Xz3EhLW
+                                - img [aria-hidden] [ref=f107e943]:
+                                  - generic [ref=f107e944]: 
+                              - generic [ref=f107e945]: "32"
+                            - generic [ref=f107e947]:
+                              - img [aria-hidden] [ref=f107e949]:
+                                - generic [ref=f107e950]: 
+                              - link [ref=f107e951]:
+                                - /url: https://solscan.io/tx/325XL3ijxwsfmo6q9kPUtMAsD4fDFVJaHY6cdPDUUYDrVW9MaA8h7yr58yShAzAg6QrtFB36SLiYnd5jFic1BH1X
+                                - img [aria-hidden] [ref=f107e952]:
+                                  - generic [ref=f107e953]: 
+                        - generic [ref=f107e957] [cursor=pointer]:
+                          - link "4s" [ref=f107e961]:
+                            - /url: https://solscan.io/tx/4AkDb6qcpzF4BZF9Di63JjBEjzZjLw68UDtGFLWuB9M9LF634VqGfasEXx2YBqKJs2EwaY7KWYbKMMYcN97n7y69
+                          - generic [ref=f107e963]: Buy
+                          - generic "$182K" [ref=f107e966]
+                          - generic [ref=f107e967]: "663.93"
+                          - generic [ref=f107e969]: $0.122
+                          - generic [ref=f107e971]: $0.002
+                          - generic [ref=f107e974]:
+                            - link "Hzth...EhLW 32" [ref=f107e976]:
+                              - /url: /sol/address/HzthVnMQPtdcq1FxHnE6KarkkYRqkLDTjUCf1Xz3EhLW
+                              - generic [ref=f107e977]:
+                                - img [aria-hidden] [ref=f107e979]:
+                                  - generic [ref=f107e980]: 
+                                - img [aria-hidden] [ref=f107e982]:
+                                  - generic [ref=f107e983]: 
+                              - generic [ref=f107e987]:
+                                - link "Hzth...EhLW" [ref=f107e988]:
+                                  - /url: /sol/address/HzthVnMQPtdcq1FxHnE6KarkkYRqkLDTjUCf1Xz3EhLW
+                                - img [aria-hidden] [ref=f107e991]:
+                                  - generic [ref=f107e992]: 
+                              - generic [ref=f107e993]: "32"
+                            - generic [ref=f107e995]:
+                              - img [aria-hidden] [ref=f107e997]:
+                                - generic [ref=f107e998]: 
+                              - link [ref=f107e999]:
+                                - /url: https://solscan.io/tx/4AkDb6qcpzF4BZF9Di63JjBEjzZjLw68UDtGFLWuB9M9LF634VqGfasEXx2YBqKJs2EwaY7KWYbKMMYcN97n7y69
+                                - img [aria-hidden] [ref=f107e1000]:
+                                  - generic [ref=f107e1001]: 
+                        - generic [ref=f107e1005] [cursor=pointer]:
+                          - link "5s" [ref=f107e1009]:
+                            - /url: https://solscan.io/tx/4WauX2NNRoBKhbxyz5WQFagEYnDzJa5teDESWm1qJPBXm97r4ULBUhHeXicAjaVDYA6XrEf2KM45G4N9RLZK271i
+                          - generic [ref=f107e1011]: Buy
+                          - generic "$182K" [ref=f107e1014]
+                          - generic [ref=f107e1015]: "863.59"
+                          - generic [ref=f107e1017]: $0.158
+                          - generic [ref=f107e1019]: $0.002
+                          - generic [ref=f107e1022]:
+                            - link "7AZu...BpUC 133" [ref=f107e1024]:
+                              - /url: /sol/address/7AZuzVwnND1fF59eevdCMZt9XmFhJTviNp7jYRVuBpUC
+                              - generic [ref=f107e1025]:
+                                - img [aria-hidden] [ref=f107e1027]:
+                                  - generic [ref=f107e1028]: 
+                                - img [aria-hidden] [ref=f107e1030]:
+                                  - generic [ref=f107e1031]: 
+                              - generic [ref=f107e1035]:
+                                - link "7AZu...BpUC" [ref=f107e1036]:
+                                  - /url: /sol/address/7AZuzVwnND1fF59eevdCMZt9XmFhJTviNp7jYRVuBpUC
+                                - img [aria-hidden] [ref=f107e1039]:
+                                  - generic [ref=f107e1040]: 
+                              - generic [ref=f107e1041]: "133"
+                            - generic [ref=f107e1043]:
+                              - img [aria-hidden] [ref=f107e1045]:
+                                - generic [ref=f107e1046]: 
+                              - link [ref=f107e1047]:
+                                - /url: https://solscan.io/tx/4WauX2NNRoBKhbxyz5WQFagEYnDzJa5teDESWm1qJPBXm97r4ULBUhHeXicAjaVDYA6XrEf2KM45G4N9RLZK271i
+                                - img [aria-hidden] [ref=f107e1048]:
+                                  - generic [ref=f107e1049]: 
+                        - generic [ref=f107e1053] [cursor=pointer]:
+                          - link "0s" [ref=f107e1057]:
+                            - /url: https://solscan.io/tx/2y7JRob7KqXRUWBSa7qozKMTtj5L7NZLZAUVm8GVftExAkwpSLLq6sHQhWCyanioj8E2wxvS3u9NAViL75BTMFEe
+                          - generic [ref=f107e1059]: Buy
+                          - generic "$182K" [ref=f107e1062]
+                          - generic [ref=f107e1063]: 4.59K
+                          - generic [ref=f107e1065]: $0.842
+                          - generic [ref=f107e1067]: $0.002
+                          - generic [ref=f107e1070]:
+                            - link "4bMk...qzfm --" [ref=f107e1072]:
+                              - /url: /sol/address/4bMkDj9xCTRMP84dKwnN5cYjWcwmJZTDJe3Cyvwgqzfm
+                              - img [aria-hidden] [ref=f107e1073]:
+                                - generic [ref=f107e1074]: 
+                              - generic [ref=f107e1078]:
+                                - link "4bMk...qzfm" [ref=f107e1079]:
+                                  - /url: /sol/address/4bMkDj9xCTRMP84dKwnN5cYjWcwmJZTDJe3Cyvwgqzfm
+                                - img [aria-hidden] [ref=f107e1082]:
+                                  - generic [ref=f107e1083]: 
+                              - generic [ref=f107e1084]: "--"
+                            - generic [ref=f107e1086]:
+                              - img [aria-hidden] [ref=f107e1088]:
+                                - generic [ref=f107e1089]: 
+                              - link [ref=f107e1090]:
+                                - /url: https://solscan.io/tx/2y7JRob7KqXRUWBSa7qozKMTtj5L7NZLZAUVm8GVftExAkwpSLLq6sHQhWCyanioj8E2wxvS3u9NAViL75BTMFEe
+                                - img [aria-hidden] [ref=f107e1091]:
+                                  - generic [ref=f107e1092]: 
+                        - generic [ref=f107e1096] [cursor=pointer]:
+                          - link "0s" [ref=f107e1100]:
+                            - /url: https://solscan.io/tx/48d8Y99aEsp8qPbb8n2edvWZzo1eYMBadhDjMjuaDN27gL4s1XAgFesVy9W5MQgPG8NjyRXqSbRBoANSNaWArzTB
+                          - generic [ref=f107e1102]: Buy
+                          - generic "$182K" [ref=f107e1105]
+                          - generic [ref=f107e1106]: 2.98K
+                          - generic [ref=f107e1108]: $0.545
+                          - generic [ref=f107e1110]: $0.002
+                          - generic [ref=f107e1113]:
+                            - link "HSCh...P2kH --" [ref=f107e1115]:
+                              - /url: /sol/address/HSCh9aquMeTQvsR2QMpiTL6t6jH3QeABjpesMpYUP2kH
+                              - generic [ref=f107e1119]:
+                                - link "HSCh...P2kH" [ref=f107e1120]:
+                                  - /url: /sol/address/HSCh9aquMeTQvsR2QMpiTL6t6jH3QeABjpesMpYUP2kH
+                                - img [aria-hidden] [ref=f107e1123]:
+                                  - generic [ref=f107e1124]: 
+                              - generic [ref=f107e1125]: "--"
+                            - generic [ref=f107e1127]:
+                              - img [aria-hidden] [ref=f107e1129]:
+                                - generic [ref=f107e1130]: 
+                              - link [ref=f107e1131]:
+                                - /url: https://solscan.io/tx/48d8Y99aEsp8qPbb8n2edvWZzo1eYMBadhDjMjuaDN27gL4s1XAgFesVy9W5MQgPG8NjyRXqSbRBoANSNaWArzTB
+                                - img [aria-hidden] [ref=f107e1132]:
+                                  - generic [ref=f107e1133]: 
+                        - generic [ref=f107e1137] [cursor=pointer]:
+                          - link "0s" [ref=f107e1141]:
+                            - /url: https://solscan.io/tx/2Zya3WrwFhQTwaCJrptCPt4uQJLTQPStKVc4Hpk4Uu5JBVn3hL1CLBLaULJeTy1bsCP8E7CgU5k2uuFg8wFjX7ve
+                          - generic [ref=f107e1143]: Sell
+                          - generic "$179K" [ref=f107e1146]
+                          - generic [ref=f107e1147]: 5.28K
+                          - generic [ref=f107e1149]: $0.954
+                          - generic [ref=f107e1151]: $0.002
+                          - generic [ref=f107e1154]:
+                            - link "5x7t...mdPy 92" [ref=f107e1156]:
+                              - /url: /sol/address/5x7tz282jT4TEgX2yAfJMCh6gEPDnsCxXR7rHcXfmdPy
+                              - img [aria-hidden] [ref=f107e1159]:
+                                - generic [ref=f107e1160]: 
+                              - generic [ref=f107e1164]:
+                                - link "5x7t...mdPy" [ref=f107e1165]:
+                                  - /url: /sol/address/5x7tz282jT4TEgX2yAfJMCh6gEPDnsCxXR7rHcXfmdPy
+                                - img [aria-hidden] [ref=f107e1168]:
+                                  - generic [ref=f107e1169]: 
+                              - generic [ref=f107e1170]: "92"
+                            - generic [ref=f107e1172]:
+                              - img [aria-hidden] [ref=f107e1174]:
+                                - generic [ref=f107e1175]: 
+                              - link [ref=f107e1176]:
+                                - /url: https://solscan.io/tx/2Zya3WrwFhQTwaCJrptCPt4uQJLTQPStKVc4Hpk4Uu5JBVn3hL1CLBLaULJeTy1bsCP8E7CgU5k2uuFg8wFjX7ve
+                                - img [aria-hidden] [ref=f107e1177]:
+                                  - generic [ref=f107e1178]: 
+                        - generic [ref=f107e1182] [cursor=pointer]:
+                          - link "1s" [ref=f107e1186]:
+                            - /url: https://solscan.io/tx/5Gn5BHeB1Aq6796tU7n4PMRTMtnv2nfTuqkRG7x3CzZrLSKBH3qiaPHmdEceKNSwZRfAbXfwymVpa3sKbMVeNMcv
+                          - generic [ref=f107e1188]: Buy
+                          - generic "$182K" [ref=f107e1191]
+                          - generic [ref=f107e1192]: 2.49K
+                          - generic [ref=f107e1194]: $0.456
+                          - generic [ref=f107e1196]: $0.002
+                          - generic [ref=f107e1199]:
+                            - link "HSCh...P2kH 18" [ref=f107e1201]:
+                              - /url: /sol/address/HSCh9aquMeTQvsR2QMpiTL6t6jH3QeABjpesMpYUP2kH
+                              - img [aria-hidden] [ref=f107e1204]:
+                                - generic [ref=f107e1205]: 
+                              - generic [ref=f107e1209]:
+                                - link "HSCh...P2kH" [ref=f107e1210]:
+                                  - /url: /sol/address/HSCh9aquMeTQvsR2QMpiTL6t6jH3QeABjpesMpYUP2kH
+                                - img [aria-hidden] [ref=f107e1213]:
+                                  - generic [ref=f107e1214]: 
+                              - generic [ref=f107e1215]: "18"
+                            - generic [ref=f107e1217]:
+                              - img [aria-hidden] [ref=f107e1219]:
+                                - generic [ref=f107e1220]: 
+                              - link [ref=f107e1221]:
+                                - /url: https://solscan.io/tx/5Gn5BHeB1Aq6796tU7n4PMRTMtnv2nfTuqkRG7x3CzZrLSKBH3qiaPHmdEceKNSwZRfAbXfwymVpa3sKbMVeNMcv
+                                - img [aria-hidden] [ref=f107e1222]:
+                                  - generic [ref=f107e1223]: 
+                        - generic [ref=f107e1227] [cursor=pointer]:
+                          - link "2s" [ref=f107e1231]:
+                            - /url: https://solscan.io/tx/3Z7tZSy9HTHY5EdKGk6C3Dfgctn2f2PxkihwirrXG9xwBd7cSHXMrNMFF75o8dRr5GVhH4FwXS1LDcqsP7RdvrK6
+                          - generic [ref=f107e1233]: Buy
+                          - generic "$182K" [ref=f107e1236]
+                          - generic [ref=f107e1237]: 2.54K
+                          - generic [ref=f107e1239]: $0.465
+                          - generic [ref=f107e1241]: $0.002
+                          - generic [ref=f107e1244]:
+                            - link "HSCh...P2kH 18" [ref=f107e1246]:
+                              - /url: /sol/address/HSCh9aquMeTQvsR2QMpiTL6t6jH3QeABjpesMpYUP2kH
+                              - img [aria-hidden] [ref=f107e1249]:
+                                - generic [ref=f107e1250]: 
+                              - generic [ref=f107e1254]:
+                                - link "HSCh...P2kH" [ref=f107e1255]:
+                                  - /url: /sol/address/HSCh9aquMeTQvsR2QMpiTL6t6jH3QeABjpesMpYUP2kH
+                                - img [aria-hidden] [ref=f107e1258]:
+                                  - generic [ref=f107e1259]: 
+                              - generic [ref=f107e1260]: "18"
+                            - generic [ref=f107e1262]:
+                              - img [aria-hidden] [ref=f107e1264]:
+                                - generic [ref=f107e1265]: 
+                              - link [ref=f107e1266]:
+                                - /url: https://solscan.io/tx/3Z7tZSy9HTHY5EdKGk6C3Dfgctn2f2PxkihwirrXG9xwBd7cSHXMrNMFF75o8dRr5GVhH4FwXS1LDcqsP7RdvrK6
+                                - img [aria-hidden] [ref=f107e1267]:
+                                  - generic [ref=f107e1268]: 
+                        - generic [ref=f107e1272] [cursor=pointer]:
+                          - link "1s" [ref=f107e1276]:
+                            - /url: https://solscan.io/tx/i4YwbXATSM7tdgMbNt8jbXkHMMvrandYYLG14ibhvPZaCop1NGP29TyKtEymKS5XU2RmEtbhrwh8BAhfCykJmfg
+                          - generic [ref=f107e1278]: Buy
+                          - generic "$182K" [ref=f107e1281]
+                          - generic [ref=f107e1282]: 5.7K
+                          - generic [ref=f107e1284]: $1.044
+                          - generic [ref=f107e1286]: $0.002
+                          - generic [ref=f107e1289]:
+                            - link "HSCh...P2kH 18" [ref=f107e1291]:
+                              - /url: /sol/address/HSCh9aquMeTQvsR2QMpiTL6t6jH3QeABjpesMpYUP2kH
+                              - img [aria-hidden] [ref=f107e1292]:
+                                - generic [ref=f107e1293]: 
+                              - img [aria-hidden] [ref=f107e1296]:
+                                - generic [ref=f107e1297]: 
+                              - generic [ref=f107e1301]:
+                                - link "HSCh...P2kH" [ref=f107e1302]:
+                                  - /url: /sol/address/HSCh9aquMeTQvsR2QMpiTL6t6jH3QeABjpesMpYUP2kH
+                                - img [aria-hidden] [ref=f107e1305]:
+                                  - generic [ref=f107e1306]: 
+                              - generic [ref=f107e1307]: "18"
+                            - generic [ref=f107e1309]:
+                              - img [aria-hidden] [ref=f107e1311]:
+                                - generic [ref=f107e1312]: 
+                              - link [ref=f107e1313]:
+                                - /url: https://solscan.io/tx/i4YwbXATSM7tdgMbNt8jbXkHMMvrandYYLG14ibhvPZaCop1NGP29TyKtEymKS5XU2RmEtbhrwh8BAhfCykJmfg
+                                - img [aria-hidden] [ref=f107e1314]:
+                                  - generic [ref=f107e1315]: 
+                        - generic [ref=f107e1319] [cursor=pointer]:
+                          - link "1s" [ref=f107e1323]:
+                            - /url: https://solscan.io/tx/eAn1n1WVTh776UhAZrP7PgLSm6ZG6NNDxqR2pFgrZrUSwjL7gATQVZVHpyJz7YqkAjZMY1hnTWfs2xC5KzL9ZP2
+                          - generic [ref=f107e1325]: Buy
+                          - generic "$182K" [ref=f107e1328]
+                          - generic [ref=f107e1329]: 1.24K
+                          - generic [ref=f107e1331]: $0.227
+                          - generic [ref=f107e1333]: $0.002
+                          - generic [ref=f107e1336]:
+                            - link "51Ap...ET9k 86" [ref=f107e1338]:
+                              - /url: /sol/address/51ApX8xAN8zJ9pVxqkPd83TrbRA4mVCksh2qw31YET9k
+                              - img [aria-hidden] [ref=f107e1339]:
+                                - generic [ref=f107e1340]: 
+                              - img [aria-hidden] [ref=f107e1343]:
+                                - generic [ref=f107e1344]: 
+                              - generic [ref=f107e1348]:
+                                - link "51Ap...ET9k" [ref=f107e1349]:
+                                  - /url: /sol/address/51ApX8xAN8zJ9pVxqkPd83TrbRA4mVCksh2qw31YET9k
+                                - img [aria-hidden] [ref=f107e1352]:
+                                  - generic [ref=f107e1353]: 
+                              - generic [ref=f107e1354]: "86"
+                            - generic [ref=f107e1356]:
+                              - img [aria-hidden] [ref=f107e1358]:
+                                - generic [ref=f107e1359]: 
+                              - link [ref=f107e1360]:
+                                - /url: https://solscan.io/tx/eAn1n1WVTh776UhAZrP7PgLSm6ZG6NNDxqR2pFgrZrUSwjL7gATQVZVHpyJz7YqkAjZMY1hnTWfs2xC5KzL9ZP2
+                                - img [aria-hidden] [ref=f107e1361]:
+                                  - generic [ref=f107e1362]: 
+                        - generic [ref=f107e1366] [cursor=pointer]:
+                          - link "2s" [ref=f107e1370]:
+                            - /url: https://solscan.io/tx/4yCfCvx3K1W51A3KUTGuSF72r99Z3wToLhoNbZb6zsDGW6XGdRCrRUMS3VKkDS8bYyqx5C4MZiWMu6VzdstRiJUy
+                          - generic [ref=f107e1372]: Buy
+                          - generic "$182K" [ref=f107e1375]
+                          - generic [ref=f107e1376]: 4.24K
+                          - generic [ref=f107e1378]: $0.777
+                          - generic [ref=f107e1380]: $0.002
+                          - generic [ref=f107e1383]:
+                            - link "C761...bDjd 78" [ref=f107e1385]:
+                              - /url: /sol/address/C761XsJNPfy3vXfUKDRuN5PxXJkhrxEudhVTAkTubDjd
+                              - img [aria-hidden] [ref=f107e1386]:
+                                - generic [ref=f107e1387]: 
+                              - img [aria-hidden] [ref=f107e1390]:
+                                - generic [ref=f107e1391]: 
+                              - generic [ref=f107e1395]:
+                                - link "C761...bDjd" [ref=f107e1396]:
+                                  - /url: /sol/address/C761XsJNPfy3vXfUKDRuN5PxXJkhrxEudhVTAkTubDjd
+                                - img [aria-hidden] [ref=f107e1399]:
+                                  - generic [ref=f107e1400]: 
+                              - generic [ref=f107e1401]: "78"
+                            - generic [ref=f107e1403]:
+                              - img [aria-hidden] [ref=f107e1405]:
+                                - generic [ref=f107e1406]: 
+                              - link [ref=f107e1407]:
+                                - /url: https://solscan.io/tx/4yCfCvx3K1W51A3KUTGuSF72r99Z3wToLhoNbZb6zsDGW6XGdRCrRUMS3VKkDS8bYyqx5C4MZiWMu6VzdstRiJUy
+                                - img [aria-hidden] [ref=f107e1408]:
+                                  - generic [ref=f107e1409]: 
+                        - generic [ref=f107e1413] [cursor=pointer]:
+                          - link "2s" [ref=f107e1417]:
+                            - /url: https://solscan.io/tx/5n6tobh2VZTBLcK8Ck9hmrfVBJjc5wEHUq6S3pXa7dqkKU1g8QWo3fyqXoxTaNUhz2AzFgf8anuEgvjYNZkGXwwp
+                          - generic [ref=f107e1419]: Sell
+                          - generic "$179K" [ref=f107e1422]
+                          - generic [ref=f107e1423]: 185.8K
+                          - generic [ref=f107e1425]: $33.64
+                          - generic [ref=f107e1427]: $0.002
+                          - generic [ref=f107e1430]:
+                            - link "4Say...AjLM 1" [ref=f107e1432]:
+                              - /url: /sol/address/4SayvfsPNNhFyDtQBfGqWCuA1F8BUgiuS3dmKDCgAjLM
+                              - img [aria-hidden] [ref=f107e1433]:
+                                - generic [ref=f107e1434]: 
+                              - generic [ref=f107e1438]:
+                                - link "4Say...AjLM" [ref=f107e1439]:
+                                  - /url: /sol/address/4SayvfsPNNhFyDtQBfGqWCuA1F8BUgiuS3dmKDCgAjLM
+                                - img [aria-hidden] [ref=f107e1442]:
+                                  - generic [ref=f107e1443]: 
+                              - generic [ref=f107e1444]: "1"
+                            - generic [ref=f107e1446]:
+                              - img [aria-hidden] [ref=f107e1448]:
+                                - generic [ref=f107e1449]: 
+                              - link [ref=f107e1450]:
+                                - /url: https://solscan.io/tx/5n6tobh2VZTBLcK8Ck9hmrfVBJjc5wEHUq6S3pXa7dqkKU1g8QWo3fyqXoxTaNUhz2AzFgf8anuEgvjYNZkGXwwp
+                                - img [aria-hidden] [ref=f107e1451]:
+                                  - generic [ref=f107e1452]: 
+                      - generic [ref=f107e1453] [cursor=pointer]: loading...
+            - generic [ref=f107e1454]:
+              - img [aria-hidden] [ref=f107e1457] [cursor=pointer]:
+                - generic [ref=f107e1458]: 
+              - img [aria-hidden] [ref=f107e1460] [cursor=pointer]:
+                - generic [ref=f107e1461]: 
+          - iframe [ref=f107e1462]:
+            - generic [ref=f108e1]:
+              - contentinfo:
+                - paragraph: TradingView is interactive and has commands to use with a screen reader. The following is a list of keyboard commands available to interact on the platform
+                - list:
+                  - listitem: Start using keyboard navigation mode. Press Alt + Z
+                  - listitem: Quick search. Press Ctrl + K
+                  - listitem: Change symbol. Start typing symbol name
+                  - listitem: Change interval. Press number or comma
+                  - listitem: Indicators, Metrics and Strategies. Press slash
+                  - listitem: Open layout. Press period
+              - generic [ref=f108e2]:
+                - generic [ref=f108e3]:
+                  - toolbar [ref=f108e4]:
+                    - generic [ref=f108e8]:
+                      - generic [ref=f108e9]:
+                        - generic [ref=f108e12]:
+                          - button "Cross" [ref=f108e14]
+                          - button "Cursors" [pressed] [ref=f108e20]
+                        - generic [ref=f108e26]:
+                          - button "Trendline" [ref=f108e28]
+                          - button "Trend tools" [ref=f108e34]
+                        - generic [ref=f108e40]:
+                          - button "Fib retracement" [ref=f108e42]
+                          - button "Gann and Fibonacci tools" [ref=f108e51]
+                        - generic [ref=f108e57]:
+                          - button "XABCD pattern" [ref=f108e59]
+                          - button "Patterns" [ref=f108e65]
+                        - generic [ref=f108e71]:
+                          - button "Long position" [ref=f108e73]
+                          - button "Forecasting and measurement tools" [ref=f108e77]
+                        - generic [ref=f108e83]:
+                          - button "Brush" [ref=f108e85]
+                          - button "Geometric shapes" [ref=f108e91]
+                        - generic [ref=f108e97]:
+                          - button "Text" [ref=f108e99]
+                          - button "Annotation tools" [ref=f108e103]
+                        - generic [ref=f108e108]:
+                          - button "Icon" [ref=f108e110]
+                          - button "Icons" [ref=f108e114]
+                      - generic [ref=f108e118]:
+                        - button "Measure" [ref=f108e119]
+                        - button "Zoom in" [ref=f108e123]
+                      - generic [ref=f108e130]:
+                        - generic [ref=f108e133]:
+                          - button "Magnet mode snaps drawings placed near price bars to the closest OHLC value" [ref=f108e135]
+                          - button "Magnets" [ref=f108e141]
+                        - button "Keep drawing" [ref=f108e145]
+                        - button "Lock all drawings" [ref=f108e149]
+                        - generic [ref=f108e154]:
+                          - button "Hide all drawings" [ref=f108e156]
+                          - button "Hide options" [ref=f108e160]
+                        - generic [ref=f108e165]:
+                          - button "New drawings are replicated to all charts in the layout and shown when the same ticker is selected" [pressed] [ref=f108e167]
+                          - button "Sync drawings options" [pressed] [ref=f108e171]
+                      - generic [ref=f108e177]:
+                        - button "Remove 0 drawings" [ref=f108e179]
+                        - button "Remove options" [ref=f108e183]
+                  - button "Hide drawings toolbar" [ref=f108e189]
+                - generic [ref=f108e194]:
+                  - 'region "Chart #1" [ref=f108e197]':
+                    - generic [ref=f108e201]:
+                      - generic:
+                        - generic:
+                          - toolbar:
+                            - generic:
+                              - generic [ref=f108e202]:
+                                - generic [ref=f108e203]: Stryker
+                                - generic [ref=f108e205]:
+                                  - text: ·
+                                  - generic [ref=f108e206]: "1"
+                                - generic [ref=f108e207]:
+                                  - text: ·
+                                  - generic [ref=f108e208]: GMGN
+                              - generic:
+                                - generic:
+                                  - button "More"
+                            - generic [ref=f108e210]:
+                              - generic [ref=f108e211]:
+                                - generic [ref=f108e212]: O
+                                - generic [ref=f108e213]: 177.69K
+                              - generic [ref=f108e214]:
+                                - generic [ref=f108e215]: H
+                                - generic [ref=f108e216]: 187.33K
+                              - generic [ref=f108e217]:
+                                - generic [ref=f108e218]: L
+                                - generic [ref=f108e219]: 174.19K
+                              - generic [ref=f108e220]:
+                                - generic [ref=f108e221]: C
+                                - generic [ref=f108e222]: 179.71K
+                              - generic [ref=f108e223]: +2.01K (+1.14%)
+                        - generic:
+                          - button "Hide indicator legend" [ref=f108e230]
+                          - generic:
+                            - toolbar:
+                              - generic:
+                                - generic [ref=f108e234]: Volume
+                                - generic:
+                                  - generic:
+                                    - button "Hide"
+                                    - button "Settings"
+                                    - button "Remove"
+                                    - button "More"
+                              - generic "Volume" [ref=f108e240]: 1.31 K
+                      - generic "Chart for sol/G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump/USD/MCAP, 1 minute" [ref=f108e242]
+                  - toolbar [ref=f108e256]:
+                    - generic [ref=f108e258]:
+                      - generic [ref=f108e259]:
+                        - button "1 day in 5 minutes intervals" [ref=f108e260]:
+                          - generic [ref=f108e261]: 1d
+                        - button "7 days in 30 minutes intervals" [ref=f108e262]:
+                          - generic [ref=f108e263]: 7d
+                        - button "30 days in 4 hours intervals" [ref=f108e264]:
+                          - generic [ref=f108e265]: 30d
+                        - button "180 days in 12 hours intervals" [ref=f108e266]:
+                          - generic [ref=f108e267]: 180d
+                      - button "Go to" [ref=f108e269]
+                    - generic [ref=f108e273]:
+                      - button "Timezone" [ref=f108e276]:
+                        - generic [ref=f108e277]: 15:40:56 UTC+5
+                      - button "Toggle Percentage" [ref=f108e281]
+                      - button "Toggle Log Scale" [ref=f108e289]:
+                        - generic [ref=f108e290]: log
+                      - button "Toggle Auto Scale" [pressed] [ref=f108e292]:
+                        - generic [ref=f108e293]: auto
+              - alert
+      - contentinfo [ref=f107e1463]:
+        - generic [ref=f107e1465]:
+          - img [aria-hidden] [ref=f107e1467] [cursor=pointer]:
+            - generic [ref=f107e1468]: 
+          - generic [ref=f107e1469] [cursor=pointer]: Trenches
+          - generic [ref=f107e1471] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1472]:
+              - generic [ref=f107e1473]: 
+            - generic [ref=f107e1474]: Wallet Tracker
+          - generic [ref=f107e1475] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1476]:
+              - generic [ref=f107e1477]: 
+            - generic [ref=f107e1478]: Social Tracker
+          - generic [ref=f107e1479] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1480]:
+              - generic [ref=f107e1481]: 
+            - generic [ref=f107e1482]: Holding
+          - generic [ref=f107e1483] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1484]:
+              - generic [ref=f107e1485]: 
+            - generic [ref=f107e1486]: Watchlist
+          - generic [ref=f107e1487] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1488]:
+              - generic [ref=f107e1489]: 
+            - generic [ref=f107e1490]: Trending
+          - generic [ref=f107e1491] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1492]:
+              - generic [ref=f107e1493]: 
+            - generic [ref=f107e1494]: Rank
+          - generic [ref=f107e1495] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1496]:
+              - generic [ref=f107e1497]: 
+            - generic [ref=f107e1498]: PnL
+          - generic [ref=f107e1499] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1500]:
+              - generic [ref=f107e1501]: 
+            - generic [ref=f107e1502]: Signal
+          - generic [ref=f107e1503] [cursor=pointer]:
+            - img [aria-hidden] [ref=f107e1504]:
+              - generic [ref=f107e1505]: 
+            - generic [ref=f107e1506]: Callout
+          - button [ref=f107e1508] [cursor=pointer]:
+            - generic [ref=f107e1509]:
+              - img "Pump.fun Icon" [ref=f107e1510]
+              - img "Bonk Icon" [ref=f107e1511]
+              - img "Moonshot Icon" [ref=f107e1512]
+          - button "$80.3K" [ref=f107e1514] [cursor=pointer]
+          - button "$107.97" [ref=f107e1517] [cursor=pointer]
+          - button "$748.63" [ref=f107e1520] [cursor=pointer]:
+            - generic [ref=f107e1521]:
+              - img [aria-hidden] [ref=f107e1522]:
+                - generic [ref=f107e1523]: 
+              - generic [ref=f107e1524]: $748.63
+          - button "$2.57K" [ref=f107e1525] [cursor=pointer]:
+            - generic [ref=f107e1526]:
+              - img [aria-hidden] [ref=f107e1527]:
+                - generic [ref=f107e1528]: 
+              - generic [ref=f107e1529]: $2.57K
+        - generic [ref=f107e1530]:
+          - generic [ref=f107e1532]:
+            - generic [ref=f107e1535]: Stable
+            - generic [ref=f107e1536]: 126 MS
+            - generic [ref=f107e1538]: 11 FPS
+          - button "About" [ref=f107e1539] [cursor=pointer]:
+            - generic [ref=f107e1540]:
+              - img [aria-hidden] [ref=f107e1541]:
+                - generic [ref=f107e1542]: 
+              - generic [ref=f107e1543]: About
+              - img [aria-hidden] [ref=f107e1544]:
+                - generic [ref=f107e1545]: 
+  - alert [ref=f107e1546]: Stryker ↑ $182.16K | GMGN.AI | The Fastest Multi-Chain Meme Trading Terminal
+  - generic:
+    - region "Notifications-top"
+    - region "Notifications-top-left"
+    - region "Notifications-top-right"
+    - region "Notifications-bottom-left"
+    - region "Notifications-bottom"
+    - region "Notifications-bottom-right"

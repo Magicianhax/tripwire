@@ -1,0 +1,2 @@
+[    3805ms] [LOG] [] test @ https://jup.ag/assets/-v2-trade-route-C_dL1irG.js:1
+[   10219ms] [WARNING] 2026-09-20T10:33:26.066Z SymbolInfo validation for SOLUSD: field has_no_volume is deprecated, use visible_plots_set instead @ https://static.jup.ag/tv/charting_library/bundles/library.a50e5cd0e299c98bc5fe.js:129

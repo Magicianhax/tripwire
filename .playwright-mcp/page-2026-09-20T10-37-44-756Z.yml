@@ -1,0 +1,589 @@
+- generic [ref=f50e1]:
+  - generic [ref=f50e2]:
+    - generic [ref=f50e3]:
+      - link "Skip to main content" [ref=f50e4] [cursor=pointer]:
+        - /url: "#__pm_main"
+      - navigation "Main" [ref=f50e5]:
+        - generic [ref=f50e6]:
+          - link "Polymarket Logo" [ref=f50e8] [cursor=pointer]:
+            - /url: /
+            - img "Polymarket" [ref=f50e9]
+          - textbox "Search" [ref=f50e19]:
+            - /placeholder: Search polymarkets...
+          - generic [ref=f50e20]:
+            - button "How it works" [ref=f50e21] [cursor=pointer]
+            - generic [ref=f50e23]:
+              - generic [ref=f50e25]:
+                - button "Log in" [ref=f50e26] [cursor=pointer]
+                - button "Sign up" [ref=f50e29] [cursor=pointer]
+              - button "Open user menu" [ref=f50e33] [cursor=pointer]
+        - generic [ref=f50e38]:
+          - generic [ref=f50e40]:
+            - link "Trending" [ref=f50e41] [cursor=pointer]:
+              - /url: /
+            - link "Combos Combos" [ref=f50e48] [cursor=pointer]:
+              - /url: /combos
+              - generic [ref=f50e49]:
+                - img "Combos" [ref=f50e51]
+                - generic [ref=f50e54]: Combos
+            - link "Perps" [ref=f50e55] [cursor=pointer]:
+              - /url: /perps
+            - link "Breaking" [ref=f50e61] [cursor=pointer]:
+              - /url: /breaking
+            - link "New" [ref=f50e64] [cursor=pointer]:
+              - /url: /new
+            - link "Politics" [ref=f50e68] [cursor=pointer]:
+              - /url: /politics
+            - link "Sports" [ref=f50e71] [cursor=pointer]:
+              - /url: /sports/live
+            - link "Crypto" [ref=f50e74] [cursor=pointer]:
+              - /url: /crypto
+            - link "Esports" [ref=f50e77] [cursor=pointer]:
+              - /url: /esports
+            - link "Iran" [ref=f50e80] [cursor=pointer]:
+              - /url: /iran
+            - link "Finance" [ref=f50e83] [cursor=pointer]:
+              - /url: /finance
+            - link "Geopolitics" [ref=f50e86] [cursor=pointer]:
+              - /url: /geopolitics
+            - link "Tech" [ref=f50e89] [cursor=pointer]:
+              - /url: /tech
+            - link "Culture" [ref=f50e92] [cursor=pointer]:
+              - /url: /pop-culture
+            - link "Economy" [ref=f50e95] [cursor=pointer]:
+              - /url: /economy
+            - link "Weather" [ref=f50e98] [cursor=pointer]:
+              - /url: /weather
+            - link "Mentions" [ref=f50e101] [cursor=pointer]:
+              - /url: /mentions
+            - link "Elections" [ref=f50e104] [cursor=pointer]:
+              - /url: /elections
+            - link "Art" [ref=f50e107] [cursor=pointer]:
+              - /url: /pop-culture/art
+            - button "Open more navigation links" [ref=f50e110] [cursor=pointer]: More
+          - button "Scroll right" [ref=f50e113] [cursor=pointer]
+      - generic [ref=f50e114]:
+        - generic [ref=f50e116]:
+          - main [ref=f50e117]:
+            - generic [ref=f50e121]:
+              - generic [ref=f50e125]:
+                - generic [ref=f50e126]:
+                  - img "icon for Clarity Act (H.R.3633) signed into law in 2026?" [ref=f50e130]
+                  - generic [ref=f50e131]:
+                    - generic [ref=f50e133]:
+                      - link "Crypto" [ref=f50e134] [cursor=pointer]:
+                        - /url: /crypto
+                      - generic [ref=f50e135]: ·
+                      - link "Trump" [ref=f50e136] [cursor=pointer]:
+                        - /url: /predictions/trump
+                    - heading "Clarity Act (H.R.3633) signed into law in 2026?" [level=1] [ref=f50e137]
+                - generic [ref=f50e140]:
+                  - button [ref=f50e141] [cursor=pointer]
+                  - button [ref=f50e142] [cursor=pointer]
+                  - button "Add to favorites" [ref=f50e147] [cursor=pointer]
+              - generic [ref=f50e151]:
+                - generic [ref=f50e153]:
+                  - generic [ref=f50e155]:
+                    - generic [ref=f50e161]:
+                      - generic [ref=f50e162]: 7% chance
+                      - generic [ref=f50e168]:
+                        - generic [ref=f50e169]:
+                          - generic [ref=f50e170]: "0"
+                          - generic [ref=f50e171]: "1"
+                          - generic [ref=f50e172]: "2"
+                          - generic [ref=f50e173]: "3"
+                          - generic [ref=f50e174]: "4"
+                          - generic [ref=f50e175]: "5"
+                          - generic [ref=f50e176]: "6"
+                          - generic [ref=f50e177]: "7"
+                          - generic [ref=f50e178]: "8"
+                          - generic [ref=f50e179]: "9"
+                        - generic [ref=f50e180]:
+                          - generic [ref=f50e181]: "0"
+                          - generic [ref=f50e182]: "1"
+                          - generic [ref=f50e183]: "2"
+                          - generic [ref=f50e184]: "3"
+                          - generic [ref=f50e185]: "4"
+                          - generic [ref=f50e186]: "5"
+                          - generic [ref=f50e187]: "6"
+                          - generic [ref=f50e188]: "7"
+                          - generic [ref=f50e189]: "8"
+                          - generic [ref=f50e190]: "9"
+                        - generic [ref=f50e191]: "%"
+                    - img "Polymarket" [ref=f50e193]
+                  - generic [ref=f50e197]:
+                    - img [ref=f50e198]:
+                      - generic [ref=f50e200]:
+                        - generic [ref=f50e203]:
+                          - img [ref=f50e205]:
+                            - generic [ref=f50e206]: Mar
+                          - img [ref=f50e208]:
+                            - generic [ref=f50e209]: Apr
+                          - img [ref=f50e211]:
+                            - generic [ref=f50e212]: May
+                          - img [ref=f50e214]:
+                            - generic [ref=f50e215]: Jun
+                          - img [ref=f50e217]:
+                            - generic [ref=f50e218]: Jul
+                          - img [ref=f50e220]:
+                            - generic [ref=f50e221]: Aug
+                          - img [ref=f50e223]:
+                            - generic [ref=f50e224]: Sep
+                        - generic [ref=f50e227]:
+                          - img [ref=f50e229]:
+                            - generic [ref=f50e230]: 0%
+                          - img [ref=f50e232]:
+                            - generic [ref=f50e233]: 25%
+                          - img [ref=f50e235]:
+                            - generic [ref=f50e236]: 50%
+                          - img [ref=f50e238]:
+                            - generic [ref=f50e239]: 75%
+                          - img [ref=f50e241]:
+                            - generic [ref=f50e242]: 100%
+                    - generic: "Source: Polymarket.com"
+                  - generic [ref=f50e250]:
+                    - generic [ref=f50e251]:
+                      - paragraph [ref=f50e253]: $22,489,117 Vol.
+                      - generic [ref=f50e255]: Dec 31, 2026
+                    - generic [ref=f50e260]:
+                      - tablist "Select chart window" [ref=f50e264]:
+                        - tab "1H" [ref=f50e265] [cursor=pointer]
+                        - tab "6H" [ref=f50e266] [cursor=pointer]
+                        - tab "1D" [ref=f50e267] [cursor=pointer]
+                        - tab "1W" [ref=f50e268] [cursor=pointer]
+                        - tab "1M" [ref=f50e269] [cursor=pointer]
+                        - tab "ALL" [selected] [ref=f50e270] [cursor=pointer]
+                      - generic [ref=f50e271]:
+                        - button [ref=f50e273] [cursor=pointer]
+                        - button [ref=f50e280] [cursor=pointer]
+                - button "Expand Order Book section" [ref=f50e287] [cursor=pointer]:
+                  - heading "Order Book" [level=3] [ref=f50e293]
+              - generic [ref=f50e299]:
+                - generic [ref=f50e300]: This market will resolve to "Yes" if the Digital Asset Market Clarity Act of 2025 (H.R.3633) is passed by both chambers of the U.S. Congress and signed into law by December 31, 2026, 11:59 PM ET. Otherwise, this market will resolve to "No". The primary resolution source is Congress.gov’s legislation tracker (https://www.congress.gov/bill/119th-congress/house-bill/3633) and other official information from the government of the United States, however other credible reporting may be used.
+                - tablist "Market information" [ref=f50e301]:
+                  - generic [ref=f50e304]:
+                    - heading [level=2] [ref=f50e305]:
+                      - button "Rules" [ref=f50e306] [cursor=pointer]
+                    - heading [level=2] [ref=f50e307]:
+                      - button "Market Context" [ref=f50e308] [cursor=pointer]
+                - tabpanel "Rules" [ref=f50e310]:
+                  - generic [ref=f50e311]:
+                    - generic [ref=f50e312]:
+                      - generic [ref=f50e313]:
+                        - paragraph [ref=f50e317]: Additional context
+                        - paragraph [ref=f50e318]: Updated Jul 29
+                      - paragraph [ref=f50e321]: A bill will be considered to have been signed into law as of the date it was enacted under any mechanism, regardless of whether the President has personally signed it.
+                    - generic [ref=f50e322]:
+                      - generic [ref=f50e323]:
+                        - generic [ref=f50e324]:
+                          - text: This market will resolve to "Yes" if the Digital Asset Market Clarity Act of 2025 (H.R.3633) is passed by both chambers of the U.S. Congress and signed into law by December 31, 2026, 11:59 PM ET. Otherwise, this market will resolve to "No".The primary resolution source is
+                          - link "Congress.gov" [ref=f50e325] [cursor=pointer]:
+                            - /url: https://Congress.gov
+                          - text: ’s legislation tracker (
+                          - link "https://www.congress.gov/bill/119th-congress/house-bill/3633" [ref=f50e326] [cursor=pointer]:
+                            - /url: https://www.congress.gov/bill/119th-congress/house-bill/3633
+                          - text: ) and other official information from the government of the United States, however other credible reporting may be used.
+                        - generic [ref=f50e327]:
+                          - text: This market will resolve to "Yes" if the Digital Asset Market Clarity Act of 2025 (H.R.3633) is passed by both chambers of the U.S. Congress and signed into law by December 31, 2026, 11:59 PM ET. Otherwise, this market will resolve to "No". The primary resolution source is
+                          - link "Congress.gov" [ref=f50e328] [cursor=pointer]:
+                            - /url: https://Congress.gov
+                          - text: ’s legislation tracker (
+                          - link "https://www.congress.gov/bill/119th-congress/house-bill/3633" [ref=f50e329] [cursor=pointer]:
+                            - /url: https://www.congress.gov/bill/119th-congress/house-bill/3633
+                          - text: ) and other official information from the government of the United States, however other credible reporting may be used.
+                      - paragraph [ref=f50e331]: "Market Opened: Jan 11, 2026, 6:22 PM ET"
+                      - generic [ref=f50e341]:
+                        - paragraph [ref=f50e342]: Resolver
+                        - link "0x65070BE91..." [ref=f50e343] [cursor=pointer]:
+                          - /url: https://polygonscan.com/address/0x65070BE91477460D8A7AeEb94ef92fe056C2f2A7
+                      - link [ref=f50e347] [cursor=pointer]:
+                        - /url: https://oracle.uma.xyz/propose?project=Polymarket&transactionHash=0xc2226615fbe233f47400889a2540622fb60adcd9650a7975947339441de708f2&eventIndex=420
+                        - button "Propose resolution" [ref=f50e348]
+              - generic [ref=f50e351]:
+                - heading [level=2] [ref=f50e352]:
+                  - button "Comments (380)" [ref=f50e353] [cursor=pointer]:
+                    - text: Comments
+                    - generic [ref=f50e354]: (380)
+                - heading [level=2] [ref=f50e355]:
+                  - button "Top Holders" [ref=f50e356] [cursor=pointer]
+                - heading [level=2] [ref=f50e357]:
+                  - button "Positions" [ref=f50e358] [cursor=pointer]
+                - heading [level=2] [ref=f50e359]:
+                  - button "Activity" [ref=f50e360] [cursor=pointer]
+              - generic [ref=f50e364]:
+                - generic [ref=f50e365]:
+                  - generic [ref=f50e369]:
+                    - textbox "Add a comment..." [ref=f50e370]
+                    - generic [ref=f50e371]:
+                      - button [ref=f50e372] [cursor=pointer]
+                      - button [ref=f50e378] [cursor=pointer]
+                      - button "Post" [disabled]
+                  - generic [ref=f50e385]:
+                    - generic [ref=f50e386]:
+                      - button "sort-comments-by" [ref=f50e387] [cursor=pointer]:
+                        - generic [ref=f50e388]: Newest
+                      - generic [ref=f50e391] [cursor=pointer]:
+                        - checkbox "Holders" [ref=f50e392]
+                        - paragraph [ref=f50e393]: Holders
+                    - paragraph [ref=f50e399]: Beware of external links.
+                  - button [ref=f50e407] [cursor=pointer]
+                  - button [ref=f50e421] [cursor=pointer]
+                  - button [ref=f50e435] [cursor=pointer]
+                  - button [ref=f50e449] [cursor=pointer]
+                  - button [ref=f50e463] [cursor=pointer]
+                  - button [ref=f50e477] [cursor=pointer]
+                  - button [ref=f50e491] [cursor=pointer]
+                  - button [ref=f50e505] [cursor=pointer]
+                  - button [ref=f50e519] [cursor=pointer]
+                  - button [ref=f50e533] [cursor=pointer]
+                - generic [ref=f50e540]:
+                  - heading "Frequently Asked Questions" [level=2] [ref=f50e541]
+                  - generic [ref=f50e542]:
+                    - generic [ref=f50e543]:
+                      - heading [level=3] [ref=f50e544]:
+                        - button "What is the \"Clarity Act (H.R.3633) signed into law in 2026?\" prediction market?" [ref=f50e545] [cursor=pointer]
+                      - region "What is the \"Clarity Act (H.R.3633) signed into law in 2026?\" prediction market?":
+                        - generic [ref=f50e548]: "\"Clarity Act (H.R.3633) signed into law in 2026?\" is a prediction market on Polymarket where traders buy and sell \"Yes\" or \"No\" shares based on whether they believe this event will happen. The current crowd-sourced probability is 7% for \"Yes.\" For example, if \"Yes\" is priced at 7¢, the market collectively assigns a 7% chance that this event will occur. These odds shift continuously as traders react to new developments and information. Shares in the correct outcome are redeemable for $1 each upon market resolution."
+                    - generic [ref=f50e549]:
+                      - heading [level=3] [ref=f50e550]:
+                        - button "How much trading activity has \"Clarity Act (H.R.3633) signed into law in 2026?\" generated on Polymarket?" [ref=f50e551] [cursor=pointer]
+                      - region "How much trading activity has \"Clarity Act (H.R.3633) signed into law in 2026?\" generated on Polymarket?":
+                        - generic [ref=f50e554]: As of today, "Clarity Act (H.R.3633) signed into law in 2026?" has generated $22.5 million in total trading volume since the market launched on Jan 11, 2026. This level of trading activity reflects strong engagement from the Polymarket community and helps ensure that the current odds are informed by a deep pool of market participants. You can track live price movements and trade on any outcome directly on this page.
+                    - generic [ref=f50e555]:
+                      - heading [level=3] [ref=f50e556]:
+                        - button "How do I trade on \"Clarity Act (H.R.3633) signed into law in 2026?\"?" [ref=f50e557] [cursor=pointer]
+                      - region "How do I trade on \"Clarity Act (H.R.3633) signed into law in 2026?\"?":
+                        - generic [ref=f50e560]: To trade on "Clarity Act (H.R.3633) signed into law in 2026?," simply choose whether you believe the answer is "Yes" or "No." Each side has a current price that reflects the market's implied probability. Enter your amount and click "Trade." If you buy "Yes" shares and the outcome resolves as "Yes," each share pays out $1. If it resolves as "No," your "Yes" shares pay $0. You can also sell your shares at any time before resolution if you want to lock in a profit or cut a loss.
+                    - generic [ref=f50e561]:
+                      - heading [level=3] [ref=f50e562]:
+                        - button "What are the current odds for \"Clarity Act (H.R.3633) signed into law in 2026?\"?" [ref=f50e563] [cursor=pointer]
+                      - region "What are the current odds for \"Clarity Act (H.R.3633) signed into law in 2026?\"?":
+                        - generic [ref=f50e566]: The current probability for "Clarity Act (H.R.3633) signed into law in 2026?" is 7% for "Yes." This means the Polymarket crowd currently believes there is a 7% chance that this event will occur. These odds update in real-time based on actual trades, providing a continuously updated signal of what the market expects to happen.
+                    - generic [ref=f50e567]:
+                      - heading [level=3] [ref=f50e568]:
+                        - button "How will \"Clarity Act (H.R.3633) signed into law in 2026?\" be resolved?" [ref=f50e569] [cursor=pointer]
+                      - region "How will \"Clarity Act (H.R.3633) signed into law in 2026?\" be resolved?":
+                        - generic [ref=f50e572]: The resolution rules for "Clarity Act (H.R.3633) signed into law in 2026?" define exactly what needs to happen for each outcome to be declared a winner — including the official data sources used to determine the result. You can review the complete resolution criteria in the "Rules" section on this page above the comments. We recommend reading the rules carefully before trading, as they specify the precise conditions, edge cases, and sources that govern how this market is settled.
+                  - button "View more" [ref=f50e573] [cursor=pointer]
+          - generic [ref=f50e581]:
+            - generic [ref=f50e583]:
+              - generic [ref=f50e584]:
+                - generic [ref=f50e585]:
+                  - img "icon for Clarity Act (H.R.3633) signed into law in 2026?" [ref=f50e588]
+                  - generic [ref=f50e589]:
+                    - generic [ref=f50e590]: Clarity Act (H.R.3633) signed into law in 2026?
+                    - generic [ref=f50e591]: "No"
+                - generic [ref=f50e593]:
+                  - radiogroup [ref=f50e594]:
+                    - radio "Buy" [checked] [ref=f50e595] [cursor=pointer]
+                    - radio "Sell" [ref=f50e597] [cursor=pointer]
+                  - button "Market" [ref=f50e598] [cursor=pointer]
+              - radiogroup [ref=f50e603]:
+                - radio "Yes 7.5¢" [ref=f50e605] [cursor=pointer]:
+                  - generic:
+                    - generic:
+                      - generic: "Yes"
+                      - generic: 7.5¢
+                - radio "No 93.2¢" [checked] [ref=f50e607] [cursor=pointer]:
+                  - generic:
+                    - generic:
+                      - generic: "No"
+                      - generic: 93.2¢
+              - generic [ref=f50e611]:
+                - generic [ref=f50e617]:
+                  - generic [ref=f50e618]:
+                    - paragraph [ref=f50e621]: Amount
+                    - generic [ref=f50e624]:
+                      - generic: $
+                      - textbox "$0" [active] [ref=f50e625]
+                  - generic [ref=f50e628]:
+                    - button "+$1" [ref=f50e629] [cursor=pointer]
+                    - button "+$5" [ref=f50e630] [cursor=pointer]
+                    - button "+$10" [ref=f50e631] [cursor=pointer]
+                    - button "+$100" [ref=f50e632] [cursor=pointer]
+                - button "Trade" [ref=f50e636] [cursor=pointer]
+            - button [ref=f50e638]:
+              - text: By trading, you agree to the
+              - link "Terms of Use" [ref=f50e639] [cursor=pointer]:
+                - /url: /tos
+              - text: .
+            - generic [ref=f50e641]:
+              - generic [ref=f50e646]:
+                - button "All" [ref=f50e647] [cursor=pointer]
+                - button "Trump" [ref=f50e648] [cursor=pointer]
+                - button "Crypto" [ref=f50e649] [cursor=pointer]
+                - button "Congress" [ref=f50e650] [cursor=pointer]
+              - generic [ref=f50e651]:
+                - link "icon for Will Credit-card routing competition become law this year? Will Credit-card routing competition become law this year? 48%" [ref=f50e652] [cursor=pointer]:
+                  - /url: /event/which-bills-will-become-law-in-2026
+                  - generic [ref=f50e653]:
+                    - img "icon for Will Credit-card routing competition become law this year?" [ref=f50e656]
+                    - paragraph [ref=f50e658]: Will Credit-card routing competition become law this year?
+                    - generic [ref=f50e659]: 48%
+                - link "icon for Crypto Market Structure legislation becomes law in 2026? Crypto Market Structure legislation becomes law in 2026? 16%" [ref=f50e662] [cursor=pointer]:
+                  - /url: /event/crypto-market-structure-legislation-becomes-law-in-2026-20260727223933088
+                  - generic [ref=f50e663]:
+                    - img "icon for Crypto Market Structure legislation becomes law in 2026?" [ref=f50e666]
+                    - paragraph [ref=f50e668]: Crypto Market Structure legislation becomes law in 2026?
+                    - generic [ref=f50e669]: 16%
+                - link "icon for Will the Senate pass the Clarity Act by October 31? Will the Senate pass the Clarity Act by October 31? 8%" [ref=f50e672] [cursor=pointer]:
+                  - /url: /event/senate-passes-clarity-act-byptptpt
+                  - generic [ref=f50e673]:
+                    - img "icon for Will the Senate pass the Clarity Act by October 31?" [ref=f50e676]
+                    - paragraph [ref=f50e678]: Will the Senate pass the Clarity Act by October 31?
+                    - generic [ref=f50e679]: 8%
+        - contentinfo [ref=f50e683]:
+          - generic [ref=f50e685]:
+            - generic [ref=f50e686]:
+              - link [ref=f50e687] [cursor=pointer]:
+                - /url: /
+                - img "Polymarket" [ref=f50e688]
+              - paragraph [ref=f50e689]: The World's Largest Prediction Market™
+            - generic [ref=f50e690]:
+              - generic [ref=f50e692]:
+                - heading "Related topics" [level=3] [ref=f50e693]
+                - generic [ref=f50e694]:
+                  - link "Trump Predictions & odds" [ref=f50e695] [cursor=pointer]:
+                    - /url: /predictions/trump
+                    - text: Trump
+                    - generic [ref=f50e696]: Predictions & odds
+                  - link "Congress Predictions & odds" [ref=f50e697] [cursor=pointer]:
+                    - /url: /predictions/congress
+                    - text: Congress
+                    - generic [ref=f50e698]: Predictions & odds
+                  - link "Meet Predictions & odds" [ref=f50e699] [cursor=pointer]:
+                    - /url: /predictions/meet
+                    - text: Meet
+                    - generic [ref=f50e700]: Predictions & odds
+                  - link "Epstein Predictions & odds" [ref=f50e701] [cursor=pointer]:
+                    - /url: /predictions/epstein
+                    - text: Epstein
+                    - generic [ref=f50e702]: Predictions & odds
+                  - link "Mayor Predictions & odds" [ref=f50e703] [cursor=pointer]:
+                    - /url: /predictions/mayor
+                    - text: Mayor
+                    - generic [ref=f50e704]: Predictions & odds
+                  - link "England Predictions & odds" [ref=f50e705] [cursor=pointer]:
+                    - /url: /predictions/england
+                    - text: England
+                    - generic [ref=f50e706]: Predictions & odds
+                  - link "Courts Predictions & odds" [ref=f50e707] [cursor=pointer]:
+                    - /url: /predictions/courts
+                    - text: Courts
+                    - generic [ref=f50e708]: Predictions & odds
+                  - link "Cuba Predictions & odds" [ref=f50e709] [cursor=pointer]:
+                    - /url: /predictions/cuba
+                    - text: Cuba
+                    - generic [ref=f50e710]: Predictions & odds
+                  - link "Bulgaria Predictions & odds" [ref=f50e711] [cursor=pointer]:
+                    - /url: /predictions/bulgaria
+                    - text: Bulgaria
+                    - generic [ref=f50e712]: Predictions & odds
+                  - link "Resign Predictions & odds" [ref=f50e713] [cursor=pointer]:
+                    - /url: /predictions/resign
+                    - text: Resign
+                    - generic [ref=f50e714]: Predictions & odds
+                  - generic [ref=f50e715]:
+                    - generic [ref=f50e717]:
+                      - link [ref=f50e718] [cursor=pointer]:
+                        - /url: /predictions/scotus
+                        - text: SCOTUS
+                        - generic [ref=f50e719]: Predictions & odds
+                      - link [ref=f50e720] [cursor=pointer]:
+                        - /url: /predictions/uk
+                        - text: UK
+                        - generic [ref=f50e721]: Predictions & odds
+                      - link [ref=f50e722] [cursor=pointer]:
+                        - /url: /predictions/taxes
+                        - text: Taxes
+                        - generic [ref=f50e723]: Predictions & odds
+                      - link [ref=f50e724] [cursor=pointer]:
+                        - /url: /predictions/starmer
+                        - text: Starmer
+                        - generic [ref=f50e725]: Predictions & odds
+                      - link [ref=f50e726] [cursor=pointer]:
+                        - /url: /predictions/massachusetts
+                        - text: Massachusetts
+                        - generic [ref=f50e727]: Predictions & odds
+                      - link [ref=f50e728] [cursor=pointer]:
+                        - /url: /predictions/podcast
+                        - text: Podcast
+                        - generic [ref=f50e729]: Predictions & odds
+                      - link [ref=f50e730] [cursor=pointer]:
+                        - /url: /predictions/biden
+                        - text: Biden
+                        - generic [ref=f50e731]: Predictions & odds
+                      - link [ref=f50e732] [cursor=pointer]:
+                        - /url: /predictions/mamdani
+                        - text: Mamdani
+                        - generic [ref=f50e733]: Predictions & odds
+                      - link [ref=f50e734] [cursor=pointer]:
+                        - /url: /predictions/bill
+                        - text: Bill
+                        - generic [ref=f50e735]: Predictions & odds
+                      - link [ref=f50e736] [cursor=pointer]:
+                        - /url: /predictions/hegseth
+                        - text: Hegseth
+                        - generic [ref=f50e737]: Predictions & odds
+                    - button "View more" [ref=f50e738] [cursor=pointer]
+              - generic [ref=f50e743]:
+                - heading "Popular Politics markets" [level=3] [ref=f50e744]
+                - generic [ref=f50e745]:
+                  - link "US-Iran ceasefire continues through...?" [ref=f50e746] [cursor=pointer]:
+                    - /url: /event/us-iran-ceasefire-continues-throughptptpt
+                  - link "Venezuela leader end of 2026?" [ref=f50e747] [cursor=pointer]:
+                    - /url: /event/venezuela-leader-end-of-2026
+                  - link "US announces end of Iranian blockade by...?" [ref=f50e748] [cursor=pointer]:
+                    - /url: /event/us-announces-end-of-iranian-blockade-byptptpt-20260713152715080
+                  - link "Will the U.S. invade Iran before 2027?" [ref=f50e749] [cursor=pointer]:
+                    - /url: /event/will-the-us-invade-iran-before-2027
+                  - link "Trump out as President by September 30?" [ref=f50e750] [cursor=pointer]:
+                    - /url: /event/dtrump-out-as-president-by-september-30
+                  - link "Trump x Greenland deal signed by...?" [ref=f50e751] [cursor=pointer]:
+                    - /url: /event/trump-x-greenland-deal-signed-by-december-31
+                  - link "Where will the next next round of US-Iran peace talks be...?" [ref=f50e752] [cursor=pointer]:
+                    - /url: /event/where-will-the-next-next-round-of-us-iran-peace-talks-beptptpt-20260623023740663
+                  - link "Fed Decision in October?" [ref=f50e753] [cursor=pointer]:
+                    - /url: /event/fed-decision-in-october-20260617190323537
+                  - link "Will Xi Jinping visit US by...?" [ref=f50e754] [cursor=pointer]:
+                    - /url: /event/will-xi-jinping-visit-us-before-2027
+                  - link "NATO x Russia military clash by...?" [ref=f50e755] [cursor=pointer]:
+                    - /url: /event/nato-x-russia-military-clash-in-2025
+                  - generic [ref=f50e756]:
+                    - generic [ref=f50e758]:
+                      - link [ref=f50e759] [cursor=pointer]:
+                        - /url: /event/next-round-of-us-iran-peace-talks-byptptpt-20260623022722982
+                        - text: Next round of US-Iran peace talks by...?
+                      - link [ref=f50e760] [cursor=pointer]:
+                        - /url: /event/who-will-be-removed-from-chinese-military-companies-list-by-june-30-2027-20260706223230550
+                        - text: Who will be removed from Chinese Military Companies list by June 30, 2027?
+                      - link [ref=f50e761] [cursor=pointer]:
+                        - /url: /event/will-the-iranian-regime-fall-by-the-end-of-2026
+                        - text: Will the Iranian regime fall before 2027?
+                      - link [ref=f50e762] [cursor=pointer]:
+                        - /url: /event/russia-x-ukraine-ceasefire-agreement-by
+                        - text: Russia x Ukraine ceasefire agreement by...?
+                      - link [ref=f50e763] [cursor=pointer]:
+                        - /url: /event/will-trump-acquire-greenland-before-2027
+                        - text: Will Trump acquire Greenland before 2027?
+                      - link [ref=f50e764] [cursor=pointer]:
+                        - /url: /event/fed-decision-in-december-20260729232808632
+                        - text: Fed Decision in December?
+                      - link [ref=f50e765] [cursor=pointer]:
+                        - /url: /event/iran-oman-hormuz-management-agreement-byptptpt-20260804222725871
+                        - text: Iran-Oman Hormuz Management Agreement by...?
+                      - link [ref=f50e766] [cursor=pointer]:
+                        - /url: /event/will-trump-visit-greenland-by-march-31
+                        - text: Will Trump visit Greenland by...?
+                      - link [ref=f50e767] [cursor=pointer]:
+                        - /url: /event/trump-invokes-war-powers-in-yemen-by-september-30
+                        - text: Trump invokes war powers in Yemen by September 30?
+                      - link [ref=f50e768] [cursor=pointer]:
+                        - /url: /event/iran-agrees-to-end-enrichment-of-uranium-by-december-31
+                        - text: Iran agrees to end enrichment of uranium by December 31?
+                    - button "View more" [ref=f50e769] [cursor=pointer]
+              - generic [ref=f50e774]:
+                - heading "New Politics markets" [level=3] [ref=f50e775]
+                - generic [ref=f50e776]:
+                  - 'link "Donald Trump # Truth Social posts September 22 - September 29, 2026?" [ref=f50e777] [cursor=pointer]':
+                    - /url: /event/donald-trump-of-truth-social-posts-september-22-september-29-2026
+                  - link "Greenland deal text released by...?" [ref=f50e778] [cursor=pointer]:
+                    - /url: /event/greenland-deal-text-released-byptptpt
+                  - link "Trump meets with Greenland PM by...?" [ref=f50e779] [cursor=pointer]:
+                    - /url: /event/trump-meets-with-greenland-pm-byptptpt
+                  - link "Trump meets with Danish PM by...?" [ref=f50e780] [cursor=pointer]:
+                    - /url: /event/trump-meets-with-danish-pm-byptptpt
+                  - link "What will Trump post this week? (September 21 - September 27)" [ref=f50e781] [cursor=pointer]:
+                    - /url: /event/what-will-trump-post-this-week-september-21-september-27-2026
+                  - link "What will Trump say this week? (September 21 - September 27)" [ref=f50e782] [cursor=pointer]:
+                    - /url: /event/what-will-trump-say-this-week-september-21-september-27-20260927
+                  - link "Trump bans more news outlets from White House by September 30?" [ref=f50e783] [cursor=pointer]:
+                    - /url: /event/trump-bans-more-news-outlets-from-white-house-by-september-30
+                  - link "CNN, Politico, or MS NOW unbanned from White House by September 30?" [ref=f50e784] [cursor=pointer]:
+                    - /url: /event/cnn-politico-or-ms-now-unbanned-from-white-house-by-september-30
+                  - link "Trump meets with Netanyahu by...?" [ref=f50e785] [cursor=pointer]:
+                    - /url: /event/trump-meets-with-netanyahu-by-20260917
+                  - link "Will Trump insult Xi by end of US Visit?" [ref=f50e786] [cursor=pointer]:
+                    - /url: /event/will-trump-insult-xi-by-end-of-us-visit
+                  - generic [ref=f50e787]:
+                    - generic [ref=f50e789]:
+                      - link [ref=f50e790] [cursor=pointer]:
+                        - /url: /event/what-will-trump-say-during-the-united-nations-general-assembly
+                        - text: What will Trump say during the United Nations General Assembly?
+                      - link [ref=f50e791] [cursor=pointer]:
+                        - /url: /event/trump-issues-ai-restrictions-executive-order-byptptpt
+                        - text: Trump issues AI Restrictions Executive Order by...?
+                      - link [ref=f50e792] [cursor=pointer]:
+                        - /url: /event/kennedy-center-demolition-announced-byptptpt
+                        - text: Kennedy Center demolition announced by...?
+                      - link [ref=f50e793] [cursor=pointer]:
+                        - /url: /event/trump-publicly-insults-warsh-by
+                        - text: Trump publicly insults Warsh by...?
+                      - link [ref=f50e794] [cursor=pointer]:
+                        - /url: /event/us-iran-ceasefire-continues-throughptptpt
+                        - text: US-Iran ceasefire continues through...?
+                      - link [ref=f50e795] [cursor=pointer]:
+                        - /url: /event/trump-endorses-chinas-claim-to-taiwan-by-end-of-xi-summit
+                        - text: Trump endorses China's claim to Taiwan by end of Xi summit?
+                      - link [ref=f50e796] [cursor=pointer]:
+                        - /url: /event/how-long-will-trump-and-xi-shake-hands-20260916
+                        - text: How long will Trump and Xi shake hands?
+                      - link [ref=f50e797] [cursor=pointer]:
+                        - /url: /event/will-trump-and-xi-hug-at-their-summit-20260916
+                        - text: Will Trump and Xi hug at their summit?
+                      - link [ref=f50e798] [cursor=pointer]:
+                        - /url: /event/will-trump-and-xi-kiss-at-their-summit-20260916
+                        - text: Will Trump and Xi kiss at their summit?
+                      - link [ref=f50e799] [cursor=pointer]:
+                        - /url: /event/who-will-be-trumps-next-army-secretary
+                        - text: Who will be Trump's next Army Secretary?
+                    - button "View more" [ref=f50e800] [cursor=pointer]
+            - generic [ref=f50e804]:
+              - generic [ref=f50e805]:
+                - generic [ref=f50e806]:
+                  - link "Email" [ref=f50e807] [cursor=pointer]:
+                    - /url: mailto:hello@polymarket.com
+                  - link "X (Twitter)" [ref=f50e812] [cursor=pointer]:
+                    - /url: https://x.com/Polymarket
+                  - link "Instagram" [ref=f50e815] [cursor=pointer]:
+                    - /url: https://www.instagram.com/polymarket
+                  - link "Discord" [ref=f50e821] [cursor=pointer]:
+                    - /url: https://discord.gg/Polymarket
+                  - link "TikTok" [ref=f50e824] [cursor=pointer]:
+                    - /url: https://www.tiktok.com/@polymarket
+                - generic [ref=f50e827]:
+                  - generic [ref=f50e828]: Adventure One QSS Inc. © 2026
+                  - generic [ref=f50e829]: ·
+                  - link "Privacy" [ref=f50e830] [cursor=pointer]:
+                    - /url: /privacy
+                  - generic [ref=f50e831]: ·
+                  - link "Terms of Use" [ref=f50e832] [cursor=pointer]:
+                    - /url: https://polymarket.com/tos
+                  - generic [ref=f50e833]: ·
+                  - link "Market Integrity" [ref=f50e834] [cursor=pointer]:
+                    - /url: https://integrity.polymarket.com/
+                  - generic [ref=f50e835]: ·
+                  - link "Transparency" [ref=f50e836] [cursor=pointer]:
+                    - /url: /transparency
+                  - generic [ref=f50e837]: ·
+                  - link "Help Center" [ref=f50e838] [cursor=pointer]:
+                    - /url: https://help.polymarket.com
+                  - generic [ref=f50e839]: ·
+                  - link "Docs" [ref=f50e840] [cursor=pointer]:
+                    - /url: https://docs.polymarket.com
+                - button "English" [ref=f50e841] [cursor=pointer]
+              - paragraph [ref=f50e848]:
+                - text: Polymarket operates globally through separate legal entities.
+                - link "Polymarket US" [ref=f50e849] [cursor=pointer]:
+                  - /url: https://polymarket.us/
+                - text: is operated by QCX LLC d/b/a Polymarket US, a CFTC-regulated Designated Contract Market. This international platform is not regulated by the CFTC and operates independently. Trading involves substantial risk of loss. See our
+                - link "Terms of Service" [ref=f50e850] [cursor=pointer]:
+                  - /url: https://polymarket.com/tos
+                - text: "&"
+                - link "Privacy Policy" [ref=f50e851] [cursor=pointer]:
+                  - /url: https://polymarket.com/privacy
+                - text: .
+    - region "Notifications (F8)":
+      - list
+  - alert [ref=f50e852]
+  - generic [ref=f50e853]: Sep

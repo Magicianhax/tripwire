@@ -1,0 +1,336 @@
+- generic [ref=f111e3]:
+  - link "Skip to main content" [ref=f111e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f111e5]:
+    - banner [ref=f111e7]:
+      - generic [ref=f111e8]:
+        - generic [ref=f111e9]:
+          - link "1inch home" [ref=f111e10] [cursor=pointer]:
+            - /url: /
+          - button "Personal" [ref=f111e14] [cursor=pointer]
+        - generic [ref=f111e20]:
+          - link "Swap" [ref=f111e21] [cursor=pointer]:
+            - /url: /swap
+          - link "Trade" [ref=f111e23] [cursor=pointer]:
+            - /url: /trade
+          - link "Terminal" [ref=f111e28] [cursor=pointer]:
+            - /url: /terminal
+          - link "Aqua" [ref=f111e30] [cursor=pointer]:
+            - /url: /aqua
+          - link "Portfolio" [ref=f111e36] [cursor=pointer]:
+            - /url: /portfolio/overview?withActiveWallet=true
+        - generic [ref=f111e37]:
+          - button "Connect wallet" [ref=f111e40] [cursor=pointer]
+          - button "Open menu" [ref=f111e42] [cursor=pointer]
+    - generic [ref=f111e48]:
+      - main [ref=f111e49]:
+        - generic [ref=f111e50]:
+          - generic [ref=f111e51]:
+            - generic [ref=f111e55]:
+              - heading "Swap crypto tokens at the best rates" [level=1] [ref=f111e56]
+              - paragraph
+              - button "Swap crypto" [ref=f111e59] [cursor=pointer]
+            - generic [ref=f111e62]:
+              - generic [ref=f111e65]:
+                - heading "Cross-chain swaps" [level=2] [ref=f111e66]
+                - generic [ref=f111e67]: Move assets between 18+ networks, without bridging.
+              - generic [ref=f111e68]:
+                - generic:
+                  - generic:
+                    - link "Open":
+                      - /url: /swap
+              - generic [ref=f111e70]:
+                - generic [ref=f111e71]:
+                  - button "01, Slide 1" [ref=f111e72] [cursor=pointer]: "01"
+                  - button "02, Slide 2" [ref=f111e73] [cursor=pointer]: "02"
+                  - button "03, Slide 3" [ref=f111e74] [cursor=pointer]: "03"
+                - button "Get started" [ref=f111e75] [cursor=pointer]
+          - generic [ref=f111e76]:
+            - generic [ref=f111e80]:
+              - heading "Get the best rates on crypto token swaps" [level=2] [ref=f111e85]
+              - generic [ref=f111e87]:
+                - generic [ref=f111e90] [cursor=pointer]:
+                  - link [ref=f111e91]:
+                    - /url: /swap?src=501:SoNative11111111111111111111111111111111111&dst=1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                    - heading "SOL → ETH" [level=3] [ref=f111e93]
+                    - generic [ref=f111e95]:
+                      - paragraph [ref=f111e96]: 1 SOL
+                      - paragraph [ref=f111e101]: — ETH
+                  - generic: Swap
+                - generic [ref=f111e104] [cursor=pointer]:
+                  - link [ref=f111e105]:
+                    - /url: /swap?src=1:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599&dst=1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                    - heading "WBTC → ETH" [level=3] [ref=f111e107]
+                    - generic [ref=f111e109]:
+                      - paragraph [ref=f111e110]: 1 WBTC
+                      - paragraph [ref=f111e115]: — ETH
+                  - generic: Swap
+                - generic [ref=f111e118] [cursor=pointer]:
+                  - link [ref=f111e119]:
+                    - /url: /swap?src=56:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&dst=56:0x55d398326f99059ff775485246999027b3197955
+                    - heading "BNB → USDT" [level=3] [ref=f111e121]
+                    - generic [ref=f111e123]:
+                      - paragraph [ref=f111e124]: 1 BNB
+                      - paragraph [ref=f111e129]: — USDT
+                  - generic: Swap
+                - generic [ref=f111e132] [cursor=pointer]:
+                  - link [ref=f111e133]:
+                    - /url: /swap?src=56:0x4338665cbb7b2485a8855a139b75d5e34ab0db94&dst=56:0x55d398326f99059ff775485246999027b3197955
+                    - heading "LTC → USDT" [level=3] [ref=f111e135]
+                    - generic [ref=f111e137]:
+                      - paragraph [ref=f111e138]: 1 LTC
+                      - paragraph [ref=f111e143]: — USDT
+                  - generic: Swap
+                - generic [ref=f111e146] [cursor=pointer]:
+                  - link [ref=f111e147]:
+                    - /url: /swap?src=56:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&dst=56:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
+                    - heading "BNB → USDC" [level=3] [ref=f111e149]
+                    - generic [ref=f111e151]:
+                      - paragraph [ref=f111e152]: 1 BNB
+                      - paragraph [ref=f111e157]: — USDC
+                  - generic: Swap
+                - generic [ref=f111e160] [cursor=pointer]:
+                  - link [ref=f111e161]:
+                    - /url: /swap?src=43114:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&dst=43114:0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
+                    - heading "AVAX → USDT" [level=3] [ref=f111e163]
+                    - generic [ref=f111e165]:
+                      - paragraph [ref=f111e166]: 1 AVAX
+                      - paragraph [ref=f111e171]: — USDT
+                  - generic: Swap
+                - generic [ref=f111e174] [cursor=pointer]:
+                  - link [ref=f111e175]:
+                    - /url: /swap?src=1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&dst=1:0x57e114b691db790c35207b2e685d4a43181e6061
+                    - heading "USDC → ENA" [level=3] [ref=f111e177]
+                    - generic [ref=f111e179]:
+                      - paragraph [ref=f111e180]: 100 USDC
+                      - paragraph [ref=f111e185]: — ENA
+                  - generic: Swap
+                - generic [ref=f111e188] [cursor=pointer]:
+                  - link [ref=f111e189]:
+                    - /url: /swap?src=43114:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&dst=43114:0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
+                    - heading "AVAX → USDT" [level=3] [ref=f111e191]
+                    - generic [ref=f111e193]:
+                      - paragraph [ref=f111e194]: 1 AVAX
+                      - paragraph [ref=f111e199]: — USDT
+                  - generic: Swap
+            - generic [ref=f111e202]:
+              - heading "Swap tokens across 18+ chains - without bridging" [level=2] [ref=f111e204]
+              - generic [ref=f111e205]:
+                - generic "Ethereum network layer" [ref=f111e206]: Ethereum
+                - generic "Binance network layer" [ref=f111e210]: Binance
+                - generic "Polygon network layer" [ref=f111e214]: Polygon
+                - generic "Optimism network layer" [ref=f111e218]: Optimism
+                - generic "Arbitrum network layer" [ref=f111e222]: Arbitrum
+                - generic "Gnosis network layer" [ref=f111e226]: Gnosis
+                - generic "Avalanche network layer" [ref=f111e230]: Avalanche
+                - generic "ZkSyncEra network layer" [ref=f111e234]: ZkSyncEra
+                - generic "Base network layer" [ref=f111e238]: Base
+                - generic "Linea network layer" [ref=f111e242]: Linea
+                - generic "Unichain network layer" [ref=f111e246]: Unichain
+                - generic "Sonic network layer" [ref=f111e250]: Sonic
+                - generic "Solana network layer" [ref=f111e254]: Solana
+            - generic [ref=f111e259]:
+              - img "Crypto token swap interface on 1inch" [ref=f111e260]
+              - generic [ref=f111e263]:
+                - generic [ref=f111e266]:
+                  - heading "1inch powers DeFi" [level=2] [ref=f111e267]
+                  - paragraph [ref=f111e268]: From the first DEX aggregator to intent-based cross-chain swaps - 1inch is building the future of finance.
+                - generic [ref=f111e271]:
+                  - generic [ref=f111e272]:
+                    - generic [ref=f111e273]: $814B+
+                    - heading "Swap volume" [level=3] [ref=f111e274]
+                  - generic [ref=f111e275]:
+                    - generic [ref=f111e276]: 266M+
+                    - heading "Total swaps" [level=3] [ref=f111e277]
+                  - generic [ref=f111e278]:
+                    - generic [ref=f111e279]: 27M+
+                    - heading "Wallets connected" [level=3] [ref=f111e280]
+            - generic [ref=f111e283]:
+              - generic [ref=f111e286]:
+                - heading "Bulletproof DeFi security" [level=2] [ref=f111e287]
+                - paragraph [ref=f111e288]: Protect your crypto against front-running, sandwich attacks and asset loss with MEV protection, wallet screening & more.
+              - generic [ref=f111e289]:
+                - generic [ref=f111e291]:
+                  - generic [ref=f111e292]:
+                    - button [ref=f111e293] [cursor=pointer]:
+                      - heading "Risk management" [level=3] [ref=f111e294]
+                    - button [ref=f111e295] [cursor=pointer]:
+                      - heading "Scam protection" [level=3] [ref=f111e296]
+                    - button [ref=f111e297] [cursor=pointer]:
+                      - heading "Brand abuse takedowns" [level=3] [ref=f111e298]
+                  - paragraph [ref=f111e299]: Wallet scanning, risk scoring and blocklists keep you safe from bad actors.
+                  - link "Learn more about security" [ref=f111e300] [cursor=pointer]:
+                    - /url: /security
+                - generic [ref=f111e306]:
+                  - img "ZeroShadow logo" [ref=f111e309]
+                  - img "TRM Labs logo" [ref=f111e312]
+            - generic [ref=f111e317]:
+              - heading [level=2] [ref=f111e322]:
+                - paragraph [ref=f111e323]: One ecosystem
+                - paragraph [ref=f111e324]: for everything you do with crypto
+              - generic [ref=f111e327]:
+                - generic [ref=f111e331]:
+                  - generic [ref=f111e332]:
+                    - heading "1inch Wallet" [level=3] [ref=f111e333]
+                    - heading "Run crypto from your pocket" [level=4] [ref=f111e334]
+                    - paragraph [ref=f111e335]: Secure, swap & track tokens in one DeFi wallet app.
+                  - button "Get Wallet" [ref=f111e336] [cursor=pointer]
+                - generic [ref=f111e340]:
+                  - generic [ref=f111e341]:
+                    - heading "1inch Portfolio" [level=3] [ref=f111e342]
+                    - heading "Track your crypto portfolio" [level=4] [ref=f111e343]
+                    - paragraph [ref=f111e344]: Manage your digital assets, analyze PnL & liquidity protocols, and discover DeFi staking.
+                  - button "Explore" [ref=f111e345] [cursor=pointer]
+                - generic [ref=f111e349]:
+                  - generic [ref=f111e350]:
+                    - heading "1inch Card" [level=3] [ref=f111e351]
+                    - heading "Pay with crypto, every day" [level=4] [ref=f111e352]
+                    - paragraph [ref=f111e353]: Spend tokens with Apple Pay & Google Pay, borrow against digital assets and get crypto cashback.
+                  - button "Get your card" [ref=f111e354] [cursor=pointer]
+                - generic [ref=f111e358]:
+                  - generic [ref=f111e359]:
+                    - heading "1inch Business" [level=3] [ref=f111e360]
+                    - heading "Build & scale with the complete Web3 API suite" [level=4] [ref=f111e361]
+                    - paragraph [ref=f111e362]: Precision DeFi technology for every function, from token swaps to RPC nodes.
+                  - button "Integrate" [ref=f111e363] [cursor=pointer]
+            - generic [ref=f111e367]:
+              - heading "Questions? Answers." [level=2] [ref=f111e370]
+              - generic [ref=f111e371]:
+                - generic [ref=f111e372]:
+                  - heading [level=3] [ref=f111e373]:
+                    - button "What is DeFi?" [ref=f111e374] [cursor=pointer]
+                  - generic:
+                    - paragraph: DeFi (decentralized finance) is an infrastructure of financial services based on blockchain technology that lets people trade, lend, borrow and earn interest directly, without banks or intermediaries.
+                - generic [ref=f111e381]:
+                  - heading [level=3] [ref=f111e382]:
+                    - button "What is a DeFi exchange?" [ref=f111e383] [cursor=pointer]
+                  - generic:
+                    - paragraph: A DeFi exchange is a decentralized platform that enables users to trade cryptocurrencies directly with each other using smart contracts, without intermediaries like banks or centralized exchanges. It gives traders full control over their funds and enables peer-to-peer transactions on the blockchain.
+                - generic [ref=f111e390]:
+                  - heading [level=3] [ref=f111e391]:
+                    - button "Is 1inch a DeFi exchange?" [ref=f111e392] [cursor=pointer]
+                  - generic:
+                    - paragraph: 1inch Swap began as a DEX aggregator, combining liquidity across multiple exchanges to find users the best swap rates. Now, it’s a lot more - with intent-based swaps and cross-chain functionality built on atomic execution to keep assets safe. But it’s still built on the principle of uniting liquidity from across the ecosystem to make crypto swaps more efficient and return better token prices.
+                - generic [ref=f111e399]:
+                  - heading [level=3] [ref=f111e400]:
+                    - button "Is 1inch available in the USA?" [ref=f111e401] [cursor=pointer]
+                  - generic:
+                    - paragraph: Yes. 1inch products are available in the USA, directly and without a workaround or VPN. This includes the 1inch swap aggregator, APIs and shared liquidity platform Aqua. Some products, features or assets may not be available in every US state. 1inch is also available across Europe, Asia and most other regions, except where access is restricted by sanctions or other applicable limitations.
+                - generic [ref=f111e408]:
+                  - heading [level=3] [ref=f111e409]:
+                    - button "Where is 1inch available?" [ref=f111e410] [cursor=pointer]
+                  - generic:
+                    - paragraph: 1inch products are available to users in the USA, Europe, Asia and most other regions, except those subject to sanctions or where access is otherwise restricted. Certain products, features or assets may not be available in all jurisdictions, including some US states.
+                - generic [ref=f111e417]:
+                  - heading [level=3] [ref=f111e418]:
+                    - button "Do I need a VPN to access 1inch?" [ref=f111e419] [cursor=pointer]
+                  - generic:
+                    - paragraph: No, you don’t need a VPN or workaround to access 1inch in the USA, Europe or any region where access is not restricted. Where access is restricted, using a VPN or any other means to circumvent those restrictions is strictly prohibited.
+                - button "Show more" [ref=f111e426] [cursor=pointer]
+            - button "Stop guessing. Take control." [ref=f111e434] [cursor=pointer]
+      - contentinfo [ref=f111e437]:
+        - generic [ref=f111e438]:
+          - generic [ref=f111e439]:
+            - generic [ref=f111e440]:
+              - img "1inch logo" [ref=f111e441]
+              - generic [ref=f111e442]:
+                - link "YouTube" [ref=f111e443] [cursor=pointer]:
+                  - /url: https://www.youtube.com/channel/UCk0nvK4bHpteQXZKv7lkq5w
+                - link "GitHub" [ref=f111e446] [cursor=pointer]:
+                  - /url: https://github.com/1inch
+                - link "Telegram" [ref=f111e449] [cursor=pointer]:
+                  - /url: https://t.me/OneInchNetworkNews
+                - link "1inch Blog" [ref=f111e452] [cursor=pointer]:
+                  - /url: /blog
+                - link "Reddit" [ref=f111e455] [cursor=pointer]:
+                  - /url: https://www.reddit.com/r/1inch/
+                - link "X" [ref=f111e458] [cursor=pointer]:
+                  - /url: https://x.com/intent/follow?screen_name=1inch
+                - link "Discord" [ref=f111e461] [cursor=pointer]:
+                  - /url: https://discord.com/invite/1inch
+            - generic [ref=f111e464]:
+              - generic [ref=f111e465]:
+                - generic [ref=f111e466]:
+                  - button "Products" [ref=f111e467] [cursor=pointer]
+                  - list [ref=f111e471]:
+                    - listitem [ref=f111e472]:
+                      - link "Swap" [ref=f111e473] [cursor=pointer]:
+                        - /url: /swap
+                    - listitem [ref=f111e474]:
+                      - link "Wallet" [ref=f111e475] [cursor=pointer]:
+                        - /url: /wallet
+                    - listitem [ref=f111e476]:
+                      - link "Portfolio" [ref=f111e477] [cursor=pointer]:
+                        - /url: /portfolio
+                    - listitem [ref=f111e478]:
+                      - link "Card" [ref=f111e479] [cursor=pointer]:
+                        - /url: /card
+                    - listitem [ref=f111e480]:
+                      - link "Aqua" [ref=f111e481] [cursor=pointer]:
+                        - /url: /aqua
+                    - listitem [ref=f111e482]:
+                      - link "Tokens" [ref=f111e483] [cursor=pointer]:
+                        - /url: /tokens
+                - generic [ref=f111e484]:
+                  - button "Company" [ref=f111e485] [cursor=pointer]
+                  - list [ref=f111e489]:
+                    - listitem [ref=f111e490]:
+                      - link "About" [ref=f111e491] [cursor=pointer]:
+                        - /url: /about
+                    - listitem [ref=f111e492]:
+                      - link "Press room" [ref=f111e493] [cursor=pointer]:
+                        - /url: /press-room
+                    - listitem [ref=f111e494]:
+                      - link "Security" [ref=f111e495] [cursor=pointer]:
+                        - /url: /security
+                    - listitem [ref=f111e496]:
+                      - link "Blog" [ref=f111e497] [cursor=pointer]:
+                        - /url: /blog
+                    - listitem [ref=f111e498]:
+                      - link "Careers" [ref=f111e499] [cursor=pointer]:
+                        - /url: /careers
+                - generic [ref=f111e500]:
+                  - button "Need help?" [ref=f111e501] [cursor=pointer]
+                  - list [ref=f111e505]:
+                    - listitem [ref=f111e506]:
+                      - link "Documentation" [ref=f111e507] [cursor=pointer]:
+                        - /url: https://business.1inch.com/portal/documentation/overview
+                    - listitem [ref=f111e508]:
+                      - link "Learn" [ref=f111e509] [cursor=pointer]:
+                        - /url: /learn
+                    - listitem [ref=f111e510]:
+                      - link "Help Center" [ref=f111e511] [cursor=pointer]:
+                        - /url: https://help.1inch.com/en/
+                    - listitem [ref=f111e512]:
+                      - link "Talk to us" [ref=f111e513] [cursor=pointer]:
+                        - /url: "#intercom"
+                    - listitem [ref=f111e514]:
+                      - link "Suggest a feature" [ref=f111e515] [cursor=pointer]:
+                        - /url: https://submit.1inch.com/b/feature-requests/
+                - generic [ref=f111e516]:
+                  - button "1inch Network" [ref=f111e517] [cursor=pointer]
+                  - list [ref=f111e521]:
+                    - listitem [ref=f111e522]:
+                      - link "Staking" [ref=f111e523] [cursor=pointer]:
+                        - /url: https://1inch.network/staking
+                    - listitem [ref=f111e524]:
+                      - link "Delegation" [ref=f111e525] [cursor=pointer]:
+                        - /url: https://1inch.network/delegation
+                    - listitem [ref=f111e526]:
+                      - link "Governance" [ref=f111e527] [cursor=pointer]:
+                        - /url: https://gov.1inch.network/
+              - generic [ref=f111e528]:
+                - paragraph [ref=f111e529]: Get the latest updates
+                - button "Subscribe" [ref=f111e530] [cursor=pointer]
+                - paragraph [ref=f111e531]:
+                  - generic [ref=f111e532]:
+                    - text: By subscribing, you agree to receive 1inch updates and marketing emails. You can unsubscribe anytime.
+                    - link "Privacy Policy." [ref=f111e533] [cursor=pointer]:
+                      - /url: /assets/1inch_com_privacy_policy.pdf
+          - generic [ref=f111e536]:
+            - generic [ref=f111e537]:
+              - link "Terms of Use" [ref=f111e538] [cursor=pointer]:
+                - /url: /assets/1inch_com_terms_of_use.pdf
+              - link "Privacy Policy" [ref=f111e539] [cursor=pointer]:
+                - /url: /assets/1inch_com_privacy_policy.pdf
+            - paragraph [ref=f111e540]: Built by Degensoft
