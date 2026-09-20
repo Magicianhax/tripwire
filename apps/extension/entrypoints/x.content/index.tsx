@@ -21,9 +21,10 @@ import { createBadgeController } from "../../lib/x/author-badges";
 import { createResultCache } from "../../lib/x/cache";
 import { createMountTracker } from "../../lib/x/mounts";
 import { createPanelToggle } from "../../lib/x/panel-toggle";
-import { chipErrorHeadline, chipHeadline } from "../../lib/x/headline";
-import { chainForAddress, pickToken, type ChipToken } from "../../lib/x/pick";
+import { alsoMentioned, chipErrorHeadline, chipHeadline, originPrefix, sourceNote } from "../../lib/x/headline";
+import { chainForAddress, pickTokens, type ChipToken, type PickedToken } from "../../lib/x/pick";
 import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
+import { chipAnchor } from "../../lib/x/anchor";
 import { createQueue } from "../../lib/x/queue";
 import { createProfileDiscovery, parseProfile } from "../../lib/x/profile";
 
@@ -33,6 +34,29 @@ const VIEWPORT_MARGIN = "600px 0px";
 const SWEEP_DEBOUNCE_MS = 1000;
 /** The evidence card floats above X's own header and menus. */
 const POPOVER_Z_INDEX = 2_147_483_000;
+/**
+ * The chip's shadow host, styled from inside the shadow root because WXT's own
+ * `:host { all: initial !important }` reset beats any outer inline style.
+ *
+ * The cap is the anchor-fit rule (non-negotiable #5). X lays a post out in a grid column whose
+ * `min-width` is `auto`, so the pill's intrinsic width becomes that column's minimum — and the
+ * finding is deliberately `nowrap`, so a long one drags the whole post wider than the timeline
+ * and the page grows a horizontal scrollbar. A pixel cap bounds what the chip can contribute;
+ * the finding keeps its ellipsis, its `title` and the card behind it.
+ *
+ * The cap is a plain pixel value on purpose: Chrome treats `min(100%, 420px)` as indefinite
+ * while it computes an intrinsic contribution, so the percentage form leaves the blowout in
+ * place. `.tw-chip`'s own `max-width: 100%` still keeps the pill inside a column narrower than
+ * the cap, so the two rules bound it from both sides.
+ *
+ * `inline-block` is what lets a post's second chip sit beside the first instead of under it.
+ */
+const chipHostCss = (extra = ""): string =>
+  `:host { display: inline-block !important; max-width: 420px !important; ${extra} }`;
+/** The gap between two chips sits on the first one's right, not the second one's left: at 380px
+ * two chips usually wrap onto separate lines in X's column, and a left margin would indent the
+ * wrapped one out of alignment with the first. A trailing right margin is invisible there. */
+const FIRST_OF_TWO_CSS = chipHostCss("margin-right: 6px !important;");
 
 /** Clicks anywhere inside a mounted Tripwire shadow-root UI must never reach X's own
  * click-to-open-tweet handlers. */
@@ -62,6 +86,22 @@ export default defineContentScript({
 
     const discovered = new WeakSet<Element>();
     const processed = new WeakSet<Element>();
+    // A post's second chip spends nothing until it is opened, but it is still DOM on a timeline
+    // that can be thousands of posts long: it is not built until the post is actually on screen.
+    const visibleWaiters = new WeakMap<Element, () => void>();
+    const visible = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        visible.unobserve(entry.target);
+        visibleWaiters.get(entry.target)?.();
+        visibleWaiters.delete(entry.target);
+      }
+    });
+    const whenVisible = (el: Element): Promise<void> =>
+      new Promise((done) => {
+        visibleWaiters.set(el, done);
+        visible.observe(el);
+      });
     // Chip/panel mounts per tweet article, unmounted once X drops the article from the DOM.
     const mounts = createMountTracker();
     // Author badges (Nansen label, linked Hyperliquid/Polymarket wallets) next to the username.
@@ -112,25 +152,65 @@ export default defineContentScript({
       // Badges are about the author, so they run for every post, token or not.
       void runContentTask(ctx, () => badges.attach(article, tweet));
 
-      const token = pickToken(tweet.tokens);
-      if (!token) return;
+      // Every token the post puts on screen, not just the first in its own body: a quoted post,
+      // a link preview and an image description are token sources too. Capped at two.
+      const picks = pickTokens(tweet.sources);
+      const first = picks[0];
+      if (!first) return;
 
-      const tweetTextEl = article.querySelector('[data-testid="tweetText"]');
-      if (!tweetTextEl) return;
+      // Never `article.querySelector('[data-testid="tweetText"]')`: on a post with no body of
+      // its own that returns the *quoted* post's text element, and the chip would mount inside
+      // someone else's post.
+      const anchor = chipAnchor(article, first.origin);
+      if (!anchor) return;
+
+      const host = await attachTokenChip(article, tweet, first, anchor.el, anchor.append, true, picks.length > 1);
+      const second = picks[1];
+      if (!second || !host) return;
+      // The second chip costs nothing until it is opened, and it is not even built until the
+      // post is actually on screen.
+      void runContentTask(ctx, async () => {
+        await whenVisible(article);
+        if (ctx.isInvalid || !article.isConnected || !host.isConnected) return;
+        await attachTokenChip(article, tweet, second, host, "after", false);
+      });
+    }
+
+    /**
+     * One token's chip, and the card it opens. Returns the chip's shadow host so the next
+     * token's chip can be appended after it rather than ahead of it.
+     *
+     * `eager` is the credit decision. The first chip pays for its own `postIntel("chip")` check
+     * on sight, as it always has. A second chip does not: it mounts as an explicit unchecked
+     * affordance and spends only when the reader opens it.
+     */
+    async function attachTokenChip(
+      article: Element,
+      tweet: ParsedTweet,
+      picked: PickedToken,
+      anchorEl: Element,
+      append: "after" | "before",
+      eager: boolean,
+      hasSibling = false,
+    ): Promise<HTMLElement | null> {
+      const { token, origin } = picked;
+      const css = hasSibling ? FIRST_OF_TWO_CSS : chipHostCss();
 
       // A cashtag names an asset search, not a chain/contract. Start with explicit market
       // choice instead of presenting one chain's automatically selected verdict as universal.
       if (token.kind === "cashtag") {
-        if (article.isConnected) await attachMarketsOnly({ctx,mounts,article,anchor:tweetTextEl,symbol:token.symbol,zIndex:POPOVER_Z_INDEX,stopHostClicks});
-        return;
+        if (!article.isConnected) return null;
+        return await attachMarketsOnly({ctx,mounts,article,anchor:anchorEl,append,symbol:token.symbol,origin,css,zIndex:POPOVER_Z_INDEX,stopHostClicks});
       }
 
-      const resolved = await resolveTarget(token, tweet.text);
-      if (!resolved) return;
+      // The chain hint reads the post's own words plus the words the token itself came from, so
+      // a "on base" inside a quoted post still reaches the address it sits next to.
+      const resolved = await resolveTarget(token, `${tweet.text} ${picked.text}`);
+      if (!resolved) return null;
       const replay = await getReplay();
       if (!article.isConnected || ctx.isInvalid) {
         processed.delete(article); // scrolled away while resolving; retry if X re-inserts it
-        return;
+        return null;
       }
       const { target, symbol } = resolved;
       // This address is a token, not a wallet: the wallet lens must not also mark it.
@@ -142,13 +222,16 @@ export default defineContentScript({
       let chipName = chipLabel(symbol, null);
 
       let expanded = false;
-      let lastVerdict: Verdict | "LOADING" = "LOADING";
-      let lastHeadline = "";
+      // A second chip has not been checked and does not pretend otherwise: UNCHECKED with the
+      // reason, never a verdict pill that could be mistaken for CLEAR.
+      let checked = eager;
+      let lastVerdict: Verdict | "LOADING" = eager ? "LOADING" : "UNCHECKED";
+      let lastHeadline = eager ? "" : alsoMentioned(origin);
       let panelDataPromise: Promise<[ApiResult<PostIntelResponse>, ApiResult<PersonIntelResponse>]> | null = null;
 
       const chipMount = await mountReact(
         ctx,
-        { position: "inline", anchor: tweetTextEl, append: "after" },
+        { position: "inline", anchor: anchorEl, append, css },
         <Chip verdict={lastVerdict} symbol={chipName.text} isSymbol={chipName.isSymbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void runContentTask(ctx, panel.toggle)} />,
       );
       stopHostClicks(chipMount.ui.shadowHost);
@@ -179,6 +262,12 @@ export default defineContentScript({
          * moves when its numbers land, because the skeleton reserved the height.
          */
         async open(isCurrent) {
+          // An unchecked second chip announces its check the moment it is asked for one, so the
+          // pill never sits on UNCHECKED while the call it just paid for is in flight.
+          if (!checked) {
+            lastVerdict = "LOADING";
+            renderChip();
+          }
           // The chip's own button: the card opens beside it, clicks on it toggle instead of
           // counting as "outside", and focus returns to it on close.
           const chipButton = chipMount.ui.shadow.querySelector<HTMLButtonElement>(".tw-chip");
@@ -235,8 +324,9 @@ export default defineContentScript({
                     return result.ok ? result.data.panel : null;
                   }}
                   // Only once the lookup has answered: "No Nansen label for @x" is a claim, and
-                  // the card must not make it before it knows.
-                  author={personResult ? badges.authorSection(tweet, personResult.ok && personResult.data.entity !== null, badgeResult?.ok ? badgeResult.data : null) : null}
+                  // the card must not make it before it knows. The source note travels with it:
+                  // a label line about an author who never typed this token is the same claim.
+                  author={personResult ? badges.authorSection(tweet, personResult.ok && personResult.data.entity !== null, badgeResult?.ok ? badgeResult.data : null, sourceNote(picked, cardTitle, tweet.handle)) : null}
                 />
               </Popover>
             );
@@ -267,6 +357,14 @@ export default defineContentScript({
               lastHeadline = chipErrorHeadline(intel.status, intel.error);
               panelDataPromise = null;
               renderChip();
+            } else if (!checked) {
+              // The second chip's only check is the one the reader just asked for: its verdict
+              // comes from the card's own answer rather than a second paid call.
+              checked = true;
+              lastVerdict = intel.data.verdict;
+              lastHeadline = originPrefix(origin, chipHeadline(intel.data));
+              chipName = chipLabel(symbol, intel.data.panel.token?.symbol);
+              renderChip();
             }
             panelMount?.update(cardNode());
           });
@@ -277,17 +375,22 @@ export default defineContentScript({
         onRemoved: (m) => mounts.untrack(article, m),
       });
 
-      const chipResult = await getChipIntel(target, tweet.timeIso);
-      if (chipResult.ok) {
-        lastVerdict = chipResult.data.verdict;
-        lastHeadline = chipHeadline(chipResult.data);
-        // A failed or empty tokenInformation leaves the short address standing.
-        chipName = chipLabel(symbol, chipResult.data.panel.token?.symbol);
-      } else {
-        lastVerdict = "UNCHECKED";
-        lastHeadline = chipErrorHeadline(chipResult.status, chipResult.error);
+      if (eager) {
+        void runContentTask(ctx, async () => {
+          const chipResult = await getChipIntel(target, tweet.timeIso);
+          if (chipResult.ok) {
+            lastVerdict = chipResult.data.verdict;
+            lastHeadline = originPrefix(origin, chipHeadline(chipResult.data));
+            // A failed or empty tokenInformation leaves the short address standing.
+            chipName = chipLabel(symbol, chipResult.data.panel.token?.symbol);
+          } else {
+            lastVerdict = "UNCHECKED";
+            lastHeadline = chipErrorHeadline(chipResult.status, chipResult.error);
+          }
+          renderChip();
+        });
       }
-      renderChip();
+      return chipMount.ui.shadowHost;
     }
 
     const io = new IntersectionObserver(
@@ -340,6 +443,7 @@ export default defineContentScript({
       if (sweepTimer) clearTimeout(sweepTimer);
       mo.disconnect();
       io.disconnect();
+      visible.disconnect();
       clearInterval(profileTimer);
       profiles.stop();
     });

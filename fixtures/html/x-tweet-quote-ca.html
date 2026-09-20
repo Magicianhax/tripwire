@@ -1,0 +1,23 @@
+<!-- A media-free outer post with no text of its own, quoting a post that carries a contract
+     address. X wraps a quote in a `div[role="link"]` rather than a nested <article>, which is
+     the shape x-tweet-quote.html does not cover. -->
+<article data-testid="tweet" tabindex="-1">
+  <div data-testid="User-Name">
+    <div><a href="/quotefan"><span>Quote Fan</span></a></div>
+    <div><a href="/quotefan"><span>@quotefan</span></a></div>
+  </div>
+  <a href="/quotefan/status/1836452718293747999" role="link">
+    <time datetime="2026-09-18T10:30:00.000Z">2h</time>
+  </a>
+  <div id="quote-wrapper" role="link" tabindex="0">
+    <div data-testid="User-Name">
+      <div><a href="/innerposter"><span>Inner Poster</span></a></div>
+      <div><a href="/innerposter"><span>@innerposter</span></a></div>
+    </div>
+    <time datetime="2026-09-17T10:30:00.000Z">1d</time>
+    <div data-testid="tweetText" lang="en">
+      <span>aping this one on base: EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm</span>
+    </div>
+  </div>
+  <div id="action-bar" role="group" aria-label="3 replies, 2 reposts"><span>3</span><span>2</span></div>
+</article>

@@ -97,11 +97,19 @@ export function createBadgeController({ ctx, mounts, stopHostClicks, zIndex }: B
     return null;
   }
 
-  /** The "Link wallet" block for the post card's author section, plus the no-label line. */
-  function authorSection(tweet: ParsedTweet, hasNansenLabel: boolean, badges: AuthorBadgesResponse | null): ReactNode {
+  /**
+   * The "Link wallet" block for the post card's author section, plus the no-label line.
+   *
+   * `sourceNote` states where the card's token came from when it was not this author's own
+   * words (a quoted post, a link preview, an image description). It sits above the label line
+   * on purpose: "No Nansen label for @x" next to a token @x never typed is the attribution
+   * error this section exists to avoid.
+   */
+  function authorSection(tweet: ParsedTweet, hasNansenLabel: boolean, badges: AuthorBadgesResponse | null, sourceNote?: string | null): ReactNode {
     if (!tweet.handle) return null;
     return (
       <div className="tw-card-author">
+        {sourceNote ? <p className="tw-empty">{sourceNote}</p> : null}
         {hasNansenLabel ? null : <p className="tw-empty">No Nansen label for @{tweet.handle}.</p>}
         <LinkWallet
           handle={tweet.handle}

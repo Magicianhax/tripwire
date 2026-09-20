@@ -1,24 +1,39 @@
 import { describe, expect, it } from "vitest";
-import { chainForAddress, pickToken } from "../lib/x/pick";
+import type { TokenBag, TokenSource } from "../lib/x/parse";
+import { chainForAddress, pickTokens } from "../lib/x/pick";
 
 const SOL_CA = { chain: "solana" as const, address: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm" };
 const EVM_CA = { chain: "evm" as const, address: "0x6982508145454ce325ddbe47a25d4ec3d2311933" };
 
-describe("pickToken", () => {
+/** One post body, the shape every pre-2.4 tweet had. */
+const body = (tokens: TokenBag): TokenSource[] =>
+  tokens.cashtags.length || tokens.addresses.length ? [{ origin: "post", handle: null, text: "", tokens }] : [];
+
+describe("pickTokens", () => {
   it("prefers the contract address over a cashtag (shills pair a namesake ticker with the real CA)", () => {
-    expect(pickToken({ cashtags: ["WIF"], addresses: [SOL_CA] })).toEqual({ kind: "address", address: SOL_CA });
+    expect(pickTokens(body({ cashtags: ["WIF"], addresses: [SOL_CA] }))[0]).toMatchObject({
+      token: { kind: "address", address: SOL_CA },
+      origin: "post",
+    });
   });
 
-  it("uses the first address when there are several", () => {
-    expect(pickToken({ cashtags: [], addresses: [EVM_CA, SOL_CA] })).toEqual({ kind: "address", address: EVM_CA });
+  it("keeps both addresses when there are several, most recently typed first", () => {
+    const picks = pickTokens(body({ cashtags: [], addresses: [EVM_CA, SOL_CA] }));
+    expect(picks.map((p) => p.token)).toEqual([
+      { kind: "address", address: EVM_CA },
+      { kind: "address", address: SOL_CA },
+    ]);
   });
 
-  it("falls back to the first cashtag when the post has no address", () => {
-    expect(pickToken({ cashtags: ["PEPE", "WIF"], addresses: [] })).toEqual({ kind: "cashtag", symbol: "PEPE" });
+  it("falls back to cashtags when the post has no address", () => {
+    expect(pickTokens(body({ cashtags: ["PEPE", "WIF"], addresses: [] }))[0]!.token).toEqual({
+      kind: "cashtag",
+      symbol: "PEPE",
+    });
   });
 
-  it("returns null for a post with neither", () => {
-    expect(pickToken({ cashtags: [], addresses: [] })).toBeNull();
+  it("returns nothing for a post with neither", () => {
+    expect(pickTokens(body({ cashtags: [], addresses: [] }))).toEqual([]);
   });
 });
 

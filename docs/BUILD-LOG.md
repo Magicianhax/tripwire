@@ -1216,3 +1216,215 @@ Both measured caveats are on screen rather than in a comment: the rows carry no 
 **`profiler/address/pnl` accepts `chain: "all"` and its rows do not say which chain they are.** Probed on the first live call, as the brief required. One call covers a multi-chain wallet, which is the good half. The rows carry no `chain` field — the recorded wallet has three `ETH` rows at the same native sentinel address, which `pnl-summary` independently shows to be Ethereum, Base and Arbitrum — so the card never attributes a row to a chain, never links one to a token page, never merges same-symbol rows, and says on screen that a repeated symbol means two different positions. The alternative, a per-chain fan-out, would have cost a credit per chain to recover a label the user can get from the Holdings view for nothing.
 
 **An empty DeFi answer is UNCHECKED, and the token figure is renamed rather than added to.** `portfolio/defi-holdings` returned all zeros for all three public wallets tried, has no documented Solana support, and would double-count if summed into `current-balance` (which already lists aTokens, stETH and LP receipts). So the zero answer renders as "no DeFi positions returned, which is not a balance of $0", debts sit on their own line instead of being netted, and the portfolio tile is relabelled "Tokens" so the two figures are visibly different questions rather than two halves of one.
+
+---
+
+# Round 2.2 — prediction: multi-market events and multi-outcome coverage
+
+Branch `feat/cockpit-ui`, alongside Rounds 2.1, 2.3 and 2.5 in the same tree. Brief: `docs/IMPROVEMENT-PLAN.md` §3, Round 2.2. **0 Nansen credits spent**, building it and at runtime: every new read in this round is Polymarket's own public Gamma API, which is free. A prediction card costs exactly what Round 1.2 left it costing.
+
+## The two measurements this round exists for
+
+Both taken live against `gamma-api.polymarket.com` on 2026-09-20, 0 credits, and both recorded as fixtures rather than quoted from the plan.
+
+- **44 of the 100 highest-24h-volume open markets are not Yes/No.** The plan's audit said 33; it is 44 today. All 44 are two-outcome markets named something else: NFL and esports moneylines (`["Vikings", "Bears"]`, `["Vitality", "FURIA"]`), spreads (`["Ravens", "Saints"]`) and totals. **None of the 100 had more than two outcomes**, which is why the three-or-more path ships generalised but explicitly uncalibrated (`docs/CALIBRATION.md` §8.4.3). Every one of the 44 was blanked by `isYesNoMarket` before this round.
+- **`/events?slug=nfl-no-bal-2026-09-20` returns 329 open markets**, each with 88 fields. The plan estimated 34. That is the difference between "render the list" and "rank it, cap it, and say what it is a slice of", and it is why `MARKET_OPTIONS_CAP` exists.
+
+And one trap, confirmed live rather than reasoned about: market **4384973, "Spread: BAL (-8.5)", outcomes `["BAL", "NO"]`** — where NO is New Orleans. `yesNoSide("NO")` returns `"no"`, so every side-reading path in the old code would have filed a football team under the no side of a Yes/No comparison. It is now the round's primary fixture.
+
+## Fixtures and credits
+
+`scripts/record-prediction-event-fixtures.mjs` records two new files and **touches nothing Round 1.2 recorded** (the first attempt reused `record-prediction-fixtures.mjs` and overwrote `gammaMarket.json` and `clobBook.json`, which moved prices that Round 1.2's tests assert by value; that was reverted and the recorder was split instead):
+
+- `fixtures/nansen/gammaMarketOutcomes.json` — market 4384973, the `["BAL", "NO"]` case.
+- `fixtures/nansen/gammaEvent.json` — the recorded Bitcoin market's own event, 11 open strike rungs, which is what the picker draws and what replay's sibling lookup reads.
+
+The recorder refuses to write a Yes/No market into the non-Yes/No fixture and refuses an event with fewer than two open markets, so a future re-record cannot quietly turn either file into something that proves nothing. **0 Nansen credits**, and the round's 10-credit budget was not opened.
+
+## Per item
+
+### 2.2.1 — a market's outcomes are whatever the market says they are
+
+`judge()` (`apps/web/lib/intel/prediction.ts:295`) no longer requires `["Yes","No"]`. It requires an outcome set of length ≥ 2, and `"Not a Yes/No market"` is replaced by `"Market outcomes unavailable"` — a market that sent no usable set is still UNCHECKED, because there is then nothing to check *against*.
+
+Everything downstream is keyed on that set rather than on the words yes and no:
+
+- `outcomeIndexOf(side, outcomes)` (`packages/core/src/signals/prediction.ts:123`) resolves a side string against the market's own outcomes, exactly and case-insensitively or not at all. A duplicated outcome name is ambiguous and matches nothing. `yesNoSide` stays, with a comment naming the market it is wrong on, and is now only reachable on a set that really is Yes then No.
+- `targetOutcomeIndex(target, outcomes)` (`:145`) decides which outcome the page is buying. The page's raw label wins; the legacy `outcome: "yes" | "no"` flag is consulted **only** on a Yes/No set. So on `["BAL", "NO"]` a page that read "NO" resolves to index 1, New Orleans.
+- `provenWinnerWeights` (`:212`) replaces `provenWinnerSplit` on the card path, returning money per outcome plus `unmatchedUsd`. `provenWinnerSplit` is kept, unchanged, for the two-sided callers.
+- `sideTotals(holders, outcomes?)` (`:273`) gains `byOutcome` and `unmatchedUsd`, and **nulls `yesUsd`/`noUsd` on any set that is not Yes/No** — the field that would otherwise have carried New Orleans' money.
+
+The signal's mapping did not move. `value > 70` is high, `> 50` is warn, `null` is UNCHECKED, `presets.ts` is untouched, and a Yes/No market computes byte-for-byte what it computed before. What changed is which markets produce a value at all, which is new population rather than a new threshold, and it is written up as `docs/CALIBRATION.md` §8.4.
+
+*Tests:* `packages/core/test/prediction-outcomes.test.ts` (19 cases, built on the recorded `["BAL","NO"]` market, including "a Yes/No market computes exactly what it computed before"); `apps/web/test/prediction-round-2-2.test.ts`, seven resolution and signal cases.
+
+### 2.2.2 — the card stops printing the word "Yes" over a Ravens price
+
+`bestBid`, `bestAsk` and `yesPrice` are quoted for **outcome 0**, which on two thirds of the book is Yes and on the rest is BAL or Ravens or Over. `PredictionMarket` gains `outcomes` and `outcomePrices`, and `apps/extension/lib/ui/PredictionBody.tsx:30` (`outcomeName`) labels the headline from `outcomes[0]`. There is deliberately **no fallback to "Yes"**: a market that somehow arrives without its set gets "Outcome 1", which is ugly and true.
+
+`OutcomeLine` (`PredictionBody.tsx:121`) is new and is the only place the card states the thing a wrong answer would block the wrong trade on: the outcome set, and which one the page has selected. Its three states are "The page has NO selected", "Nothing is selected on the page, so this market is unchecked", and "The page offered Over, which is not one of them, so this market is unchecked". None of them fills a gap with a default.
+
+The Proven winners tab renders per outcome. Mint is the outcome the page is buying and red is everything else, which is what the signal measures; with nothing selected there is no "your side", so the bar falls back to Gamma's order and the legend names both. The sampled-money tiles are named from the set, keeping "Yes side" / "No side" on a Yes/No market because "Ravens side" reads wrong. `unmatchedUsd` gets its own line rather than being folded into an outcome.
+
+*Tests:* `apps/extension/test/prediction-round-2-2.test.tsx`, four outcome-naming cases and four proven-winner cases.
+
+### 2.2.3 — the adapter reads an outcome it has never seen before
+
+`apps/extension/lib/adapters/polymarket.ts`. `outcomeGroup` now finds the live `#outcome-buttons` radiogroup by id first (the only identifier that does not depend on what the outcomes are called), keeps the Yes/No shape as the second rule, and adds a third: a non-Buy/Sell radiogroup of `.trading-button` radios, which is how a `["Ravens", "Saints"]` market's control is found at all.
+
+`outcomeLabelOf` (`:69`) reads one control's name as the page spells it. The live button renders name and price as two sibling spans ("Yes" + "21¢"), so the first element child is the name; a flat button has the price run onto the text and it is stripped. The result goes on the wire as `outcomeLabel` and is never interpreted in the extension.
+
+The legacy `outcome` flag is set **only when the whole control reads Yes and No** (`isYesNoPair`, `:144`). The backend already refuses to read the flag off a non-Yes/No market, but the adapter can tell from the page too, and putting "no" on the wire for New Orleans is a misleading word waiting for the next reader.
+
+`PredictionTarget` gains `outcomeLabel` (`packages/core/src/types.ts:16`) and `PredictionTargetSchema` caps it at 80 characters and refuses control characters (`schemas.ts:31`) — it is free text off a hostile page.
+
+*Tests:* `prediction-round-2-2.test.tsx`, six adapter cases including "reads NO as the page's word, and never as the legacy no flag" and "with nothing selected it reports no outcome at all rather than the first one"; the four existing polymarket cases in `adapters-live.test.ts` now assert the label alongside the flag.
+
+### 2.2.4 — the event picker, at 0 credits
+
+`judge()` already had the event's markets in hand when it answered "Pick a market"; it now returns them too, mapped by `toOption` to ten fields (`prediction.ts:310`) rather than Gamma's 88, ordered by 24h volume descending and capped at `MARKET_OPTIONS_CAP` (50). A market Gamma sent no 24h volume for sorts **last** rather than as zero.
+
+`siblingOptions(eventSlug, excludeMarketId)` (`prediction.ts:267`) does the same for a market that *did* resolve. It is a second free Gamma GET with its own cache key (`gammaSiblings1|<slug>`), it is made **only in panel mode**, it excludes the market already on screen, and a failure is caught so it costs the card a section rather than a verdict.
+
+`MarketPicker` (`PredictionBody.tsx:258`) renders the rows behind a free Markets tab on a resolved market, and as the whole body when the slug was an ambiguous event — there is no evidence to tab through there, because nothing was fetched for any of them. It reuses `.tw-market-options` and `usePagination` from the market explorer, so the round ships **zero new CSS**.
+
+*Tests:* `prediction-round-2-2.test.ts`, ten picker and sibling cases (including the 329-row cap and "a chip never fetches them; a panel does"); `prediction-round-2-2.test.tsx`, seven render cases.
+
+### 2.2.5 — the trades tab states a quantity at a price
+
+`size` and `price` were already in `PmTrade` and dropped by the card. The row now reads `Buy NO · 1,234 @ 78.5¢ · $969 · 2m ago`, in the four-column grid `.tw-trade-list` already had, and the caption states the window: "The last 15 trades this market returned, newest first. Not the market's whole tape."
+
+## The ruling this round turns on
+
+**The picker is evidence. The page decides what is being traded.**
+
+The plan asked for the picked market to "round-trip to the extension" so "the block decision follows the user's pick". It does round-trip — through the page, not through the card. Each picker row is a link to `polymarket.com/event/<event>?marketSlug=<slug>`, which is the selector polymarket.com's own links use and which `readTarget` has read since Round 1.4; opening one gets that market checked on its own page with its own verdict. The card never re-points the guard at a market the page is not on.
+
+That is the safer half of the same feature, and the reason is the failure it forecloses. A card control that changed which market the block screen defends would mean the strip over the trade button and the market being checked could disagree, silently, at exactly the moment a user is clicking Buy. "Getting that wrong blocks the wrong trade" is the plan's own sentence, and the cheapest way not to get it wrong is to have no second source of truth about it. The section says so on screen: "Tripwire checks the market this page has selected, so these are not checked and this card's verdict does not change."
+
+The cost of the ruling is real and is not hidden: a user on an ambiguous event page must open a market to get it checked, rather than picking one in the card. An in-card drill-in is still possible — `MarketsView`/`MarketEvidence` is the shipped pattern for it — but it belongs to `Panel.tsx` and the venues content script, which this round does not own.
+
+## Craft pass
+
+- **Zero new CSS.** The picker is `.tw-market-options`, `.tw-market-option`, `.tw-market-metrics` and `.tw-pager`, all shipped for the market explorer, which is also why it already behaves at 440px (one column) and expands to two.
+- **A picker is not a wall.** Three rows compact, six expanded, paginated with the existing control, and the aside says "50 of 329 by 24h volume" when the backend capped it. A 329-row list with no order is worse than no list.
+- **Rows link out, in a new tab.** Same-tab navigation from a floating card would throw away the page the user is standing on. `rel="noopener noreferrer"`, and the origin is a hard-coded literal with both slugs `encodeURIComponent`-ed, so nothing off Gamma can escape into the path.
+- **Prices in the picker are labelled per outcome** ("Yes 99.9¢ · No 0.05¢") and captioned as Polymarket's cached snapshot, because they are `outcomePrices` and not the live book the Book tab reads. Two different prices for one outcome is the failure Round 1.2.2 was written to avoid.
+- Copy carries no spaced em dashes; the 1.2.6 caption was split into two sentences rather than hinged on one. `ListTree` is Lucide; no emoji; the smallest new type is `0.75rem` (12px, above the 11px floor); every figure carries `tw-fig`; the only new interactive elements are `.tw-link-btn` and the existing pager.
+
+## Verification
+
+- `pnpm verify`: **typecheck blocked in a file this round does not own** — `apps/web/lib/hyperliquid/perp.ts(190,5): error TS2353: 'change24hPct' does not exist in type 'PerpVenueQuote'`, an in-flight Round 2.5 edit against a `packages/core/src/perp-venues.ts` that has not landed yet. `packages/core` and `apps/extension` typecheck clean.
+- Tests, per package: **core 308 passed (18 files)**, **web 316 passed (25 files)**. Extension: **719 of 722 passed**; the three failures are `spot-round-2-1.test.tsx` (Round 2.1's tab list), `mount.test.tsx` (shadow CSS is 83,039 bytes against an 80,000 budget — this round adds **no CSS at all**; `theme.css` is +278 lines from other rounds in this tree) and `wallet-round-2-3.test.tsx` (Round 2.3's relation copy). None is in a file this round touches.
+- `pnpm -F extension build`: OK, 3.55 MB output.
+- `pnpm -F web build`: fails on the same Round 2.5 typecheck error above. Turbopack also prints a pre-existing `fs.readFileSync` tracing warning for `prediction.ts`'s replay fixture read; the call was refactored into a `fixture()` helper this round but its shape is unchanged from Round 1.2, so the warning is not new.
+- Fixtures: `node scripts/record-prediction-event-fixtures.mjs`, 0 Nansen credits, both files written and both asserted against in the new suites.
+
+## Deferred, and why
+
+- **In-card re-guard on a picked market.** Needs `Panel.tsx` and the venues content script, neither of which this round owns, and it carries the "block over the wrong trade" risk the ruling above forecloses. The links are the safe version of the same trip.
+- **A prediction price chart.** `depth.ts` has no prediction chart section; the free CLOB `prices-history` source and the `perpChartSection` template are both ready, and the work is a new depth section rather than a change to anything here.
+- **Trades-tab counterparties.** `size` and `price` shipped because they were already on the wire; `buyer`, `seller`, `outcome_index` and `tx_hash` need `PmTrade` widened in `packages/core/src/nansen-types.ts`, which four other rounds are editing right now. The `holderKey` matching rule it needs is noted in the plan and unchanged.
+- **Page sizes (`per_page` to 1000) and `prediction-market/market-screener`.** Both touch `apps/web/lib/nansen/endpoints.ts`, a shared file under concurrent edit, and neither is needed by the outcome or picker work. The screener's whole risk is addressing by question text, which is a round of its own.
+- **Three-or-more-outcome rendering beyond the bar.** Generalised and tested, but unobserved in the top 100, so the bar is the only treatment; a real multi-outcome market would probably want a ranked list.
+
+## Notes for the next round
+
+- **`negRisk` is the multi-outcome signal Gamma actually carries**, and the expanded card already prints it as a "Multi-outcome" tile. A true multi-outcome market on Polymarket is usually a neg-risk *event* of two-outcome markets, not one market with four outcomes — which is why the picker, not the outcome set, is what covers candidate and strike markets.
+- **The event slug on a market and the market slug are frequently identical** (`nfl-no-bal-2026-09-20` is both). `resolveMarket` tries `/markets?slug=` first, so those resolve directly and never reach the picker; only a true ladder (`bitcoin-above-on-september-20-2026`) is ambiguous.
+- `siblingOptions` caches per event, so every rung of a strike ladder that a user opens shares one Gamma response for an hour.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**A prediction market's outcomes are read from the market, never from the side string.** Polymarket market 4384973 is "Spread: BAL (-8.5)" with outcomes `["BAL", "NO"]`, where NO is New Orleans. Any code that asks "is this side yes or no?" gets a football team wrong, and the wrong answer is not a blank card: it is a proven-winner comparison computed against the wrong half of the book, feeding a rule that can block a trade. So the resolved market's `outcomes` array is the only authority — `outcomeIndexOf` matches a side against it exactly and case-insensitively or returns nothing, `sideTotals` nulls its Yes/No fields on any other set, and the legacy `outcome: "yes" | "no"` target flag is consulted only when the set really is Yes then No. This widened coverage from 56 to 100 of Polymarket's 100 highest-volume open markets without loosening a single rule: an outcome that cannot be resolved against the set is UNCHECKED, exactly as an unpicked one always was.
+
+**The page decides which market is being traded; the card may only show the others.** The plan asked the event picker to re-point the guard at the market the user selects. It does not. Each row links to that market through `?marketSlug=`, polymarket.com's own selector, so the guard follows the page and the block screen can never defend a different market from the one being checked. A card control that moved the target would create a second source of truth about what is about to be traded, and the two would disagree exactly when a user is mid-click. The picker states on screen that it is evidence and that the card's verdict does not change, and an ambiguous event stays UNCHECKED with `market: null` while nothing is selected.
+
+**A list the user cannot read is not evidence.** `/events?slug=nfl-no-bal-2026-09-20` returns 329 open markets of 88 fields each. The backend maps them to ten fields, orders them by 24h volume, caps the list at 50 and tells the card the total it is a slice of; a market with no 24h volume sorts last rather than as zero. The alternative — carrying tens of thousands of keys through the cache and across the bridge to draw six figures per row — costs payload on every card and gives the reader a wall instead of a choice.
+
+---
+
+# Round 2.4 — X surface depth: the token is not always in the post
+
+Branch `feat/cockpit-ui`, alongside five other rounds in the same tree. Brief: `docs/IMPROVEMENT-PLAN.md` §3, Round 2.4. **0 Nansen credits spent.** The budget was 5 in one recording run and none were needed: this round reads the page, not the API, and every backend call it makes is one the chip already made. The four new DOM fixtures are hand-written from X's documented `data-testid` surface, not recorded.
+
+The audit's finding, restated: a post's token can be in a quoted tweet, in a link preview or in an image description; a post can name several tokens and we picked one; and the chip's anchor was a plain `article.querySelector('[data-testid="tweetText"]')` that returns the **quoted** post's text element when the outer post has none. All four are now handled, and each one is stated on screen, so a verdict about a token is never read as a claim about someone who never typed it.
+
+## Per item
+
+### Quoted-tweet bodies, and the latent anchor bug in the same commit
+
+`parseTweet` (`apps/extension/lib/x/parse.ts:139`) no longer discards a quote: it returns a `sources: TokenSource[]` list alongside the outer post's own `tokens`, and a quoted body is one entry carrying the quoted account's handle. Identity is untouched — handle, display name, time and status id are still strictly the outer post's, now through `isOuterOwn` (`parse.ts:57`) rather than the old `belongsToOuter`.
+
+That change is what makes quote detection work on the **live** site. `belongsToOuter` assumed X nests a whole `article[data-testid="tweet"]` inside a quote, which is what `fixtures/html/x-tweet-quote.html` does; x.com wraps a quote in a `div[role="link"]` instead, and under that shape every quoted element "belonged to the outer tweet". `quoteHostOf` (`parse.ts:47`) walks parents for either wrapper, and deliberately matches `div[role="link"]` rather than `[role="link"]` because the outer post's own timestamp sits inside an `a[role="link"]`. Both shapes are now fixtured (`x-tweet-quote.html`, `x-tweet-quote-ca.html`) and both are tested.
+
+The anchor bug the brief required in the same commit is now `apps/extension/lib/x/anchor.ts:23`. On a post with no body of its own the old selector returned the quoted post's text element, so the chip would have mounted **inside someone else's post**. `chipAnchor` filters every candidate through `isOuterOwn`, and follows the token's own source first: a previewed token's chip sits under the preview, a quoted one under the quote, then the post's own text, then the action bar (`[role="group"]`, with the chip placed *before* it so it stays inside the post). Every candidate is a block row of the post's own column, so anchor fit is unchanged.
+
+*Tests:* `apps/extension/test/x-sources.test.ts`, "reads the quoted body of a div[role=link] quote while handle, name and time stay outer", "reads the quoted body of a nested-article quote too", and the five `chipAnchor` cases.
+
+### Link previews, media and image-only posts
+
+`tokensFrom` (`parse.ts:103`) takes a `stripSchemes` flag, used for a link preview's copy and an image description and for nothing else. `extractTokens` drops whole `https://…` runs before scanning for addresses, which is right for a post body and wrong for a preview whose entire detail line is a URL; removing just the scheme leaves the path for the word scanner. The post's own body keeps core's stricter behaviour byte for byte.
+
+Selectors are deliberately shallow: `[data-testid="card.wrapper"]` read as one `textContent`, and `[data-testid="tweetPhoto"] img[alt]` (`imageText`, `parse.ts:118`). The brief asked for a live card capture first; none was taken this round, so rather than depend on `card.layoutLarge.detail` and its siblings — the parts of X's card markup that actually churn — the parser reads the wrapper whole. That is the selector-rot mitigation, and it is stated here so the next reader does not assume a capture exists.
+
+A card title is set by the site being linked to, and alt text is free-form, so both are attacker-controlled: a token extracted from either can be a decoy the post never mentions. That is what the provenance copy below is for.
+
+*Tests:* "recovers a mint from a link preview whose only copy is an https URL", "reads an image-only post's alt text and nothing else", "does not invent a card source for a post that has none".
+
+### More than one token per post
+
+`pickTokens` (`apps/extension/lib/x/pick.ts:39`) replaces `pickToken`. The documented anti-shill rule is unchanged and now global: a contract address beats a cashtag **across** sources, because a contract in a quoted post is still the thing a buyer pastes. Within one kind, the post's own words outrank a quote, a preview and an image description (`ORIGIN_RANK`, `pick.ts:24`). Duplicates collapse on a case-insensitive address key, so a post that quotes itself is not paid for twice.
+
+All three of the brief's conditions ship. **Cap of two** (`MAX_CHIPS`, `pick.ts:20`). **Viewport gate:** the second chip is not built until its post actually intersects the viewport (`whenVisible`, `apps/extension/entrypoints/x.content/index.tsx:100`), a second observer at zero margin rather than the 600px one that drives discovery. **Spends only on click:** `attachTokenChip(..., eager)` (`index.tsx:187`) makes exactly one chip pay for `postIntel("chip")`; the second mounts as UNCHECKED reading "Also mentioned. Open to check.", and when it is opened it takes its verdict from the card's own panel call (`index.tsx:360`) rather than buying a second chip-mode check. A rotation post therefore costs what it cost before until the reader asks for more.
+
+*Tests:* "caps a rotation post at two chips and de-dupes a token repeated across sources"; `apps/extension/e2e/x-depth.spec.ts` records every `/api/post-intel` body and asserts that no call names the second token until it is clicked, then exactly one `panel:` call.
+
+### Provenance, so a verdict is never read as an accusation
+
+Three render sites, because the claim can be misread at three sizes.
+
+- The chip's value line is prefixed with its source (`originPrefix`, `apps/extension/lib/x/headline.ts:34`): "Quoted post · …", "Link preview · …", "Image description · …". A post-origin token is unprefixed, so nothing changes for the common case.
+- The evidence card's author block carries one sentence naming the quoted account (`sourceNote`, `headline.ts:54`, rendered at `apps/extension/lib/x/author-badges.tsx:108`): "$WIF comes from the quoted post by @innerposter, not from @quotefan's own words." It sits **above** "No Nansen label for @quotefan", because that line beside a token @quotefan never typed is the attribution error this round exists to prevent. With no handle parsed the clause degrades to "the post's own words" rather than printing a bare `@`.
+- The markets-only chip for a cashtag says the same thing in its value and its accessible name (`apps/extension/lib/x/market-only.tsx:34`), since `MarketsOnlyCard` belongs to another round's agent and was left alone.
+
+*Tests:* `x-sources.test.ts` "provenance copy" (five cases including the empty-handle one); `apps/extension/test/x-provenance.test.tsx` renders the author block and pins the order of the two lines, that nothing is added when the author did type the token, and the end-to-end path from a parsed quote to the sentence.
+
+## Craft pass
+
+- **A chip could scroll X sideways, and this round would have made it happen.** X lays a post out in a grid column whose `min-width` is `auto`, so a chip's intrinsic width becomes the column's minimum — and `.tw-chip-value` is `nowrap` by design, so a long finding drags the whole post wider than the timeline and the page grows a horizontal scrollbar (non-negotiable #5). The existing chip never reached it because its headlines were short; a prefixed one does. Fixed by capping the shadow host at 420px from **inside** the shadow root (`chipHostCss`, `index.tsx:54`), because WXT's own `:host { all: initial !important }` reset beats any outer inline style. `.tw-chip`'s existing `max-width: 100%` still keeps the pill inside a narrower column, so the two rules bound it from both sides. The e2e asserts `scrollWidth <= clientWidth` with four chips on screen.
+- **The cap is a plain pixel value on purpose.** `max-width: min(100%, 420px)` was tried first and does nothing: Chrome treats the expression as indefinite while computing an intrinsic contribution, so the blowout survived it. Measured, not reasoned about.
+- **The gap between two chips sits on the first one's right.** At 420px two chips wrap onto separate lines in X's column, and a `margin-left` on the second indented the wrapped chip out of alignment with the first, which the capture showed plainly. A trailing `margin-right` on the first (`FIRST_OF_TWO_CSS`, `index.tsx:59`) is invisible when they wrap and correct when they do not.
+- **The second chip announces its check.** Opening it sets the pill to LOADING before the card mounts, so it never sits on UNCHECKED while the call the reader just paid for is in flight.
+- Copy is short because the chip has one line beside an UNCHECKED pill: "Also mentioned. Open to check." is asserted at 30 characters or fewer. No emoji, no spaced em dashes, nothing below 11px, no new colour, no new CSS in the shared theme. In replay the development-only Replay badge takes about 55px and clips the last word; the full string stays in the pill's `title` and in its accessible name.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 308, web 316, extension 762** tests passed. One earlier run failed `test/chip-contrast.test.tsx` on an `afterAll` browser-close hook timeout while other agents were building in the same tree; it passes alone and passed on the rerun.
+- `pnpm -F web build` and `pnpm -F extension build`: both OK. The web build was broken twice mid-round by other agents' in-flight files (`lib/intel/prediction.ts`, `lib/hyperliquid/perp.ts`); neither was touched here and both cleared.
+- `TRIPWIRE_E2E_PORT=3224 … playwright test`: **27 passed, 5 capture-only skipped, 2 failed.** `e2e/x-depth.spec.ts` passes. The two failures are `smoke.spec.ts:25` (Dexscreener dock) and `smoke.spec.ts:667` (perp Traders tab), both on surfaces another agent is mid-change on and neither touched by this round.
+- Captures: `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3224 … x-depth`. **New:** `x-post-sources` (three posts whose token is not in the body, plus the unchecked second chip) and `x-popover-quoted` (the card with the attribution line). Both were opened; three findings came out of them — the wrapped-chip indent, the chip anchored above the preview it came from rather than below it, and the over-long second-chip copy — and all three are fixed above. No existing capture shows an X chip, so none needed regenerating.
+- `git diff --check`: clean.
+
+## Deferred, and why
+
+- **`author_holds_token` (2.4, bullet 5) and author-matching recall (bullet 6).** Both live outside this round's paths: the signal is `packages/core/src/signals/spot.ts`, the author threading is `apps/web/app/api/post-intel/route.ts` and `buildSpotIntel`, and the recall change is one token in `apps/web/lib/intel/person.ts`. Five other implementers are in this tree and those files belong to them. The extension-side half that would be needed (`chipHeadline` growing an author clause) is deliberately not written ahead of a backend that cannot fill it.
+- **Badging a quoted author.** `attachAt` already takes an arbitrary anchor, so this is mostly selector work — and it is the one item in the bullet that the plan's own §6 argues against: a labelled account quoted disapprovingly would be decorated as if it were being promoted, inside the outer author's post. Shipping the badge is a smaller change than un-shipping the endorsement it implies. Not built.
+- **A live X card capture.** The brief asked for one before the link-preview selectors ship. It could not be taken from this session, so the parser was narrowed to the two testids that do not churn instead. The capture is still the right thing to take before the deep card selectors are ever used.
+- **`socialContext` (the retweeter row) and thread grouping.** Untouched: X exposes no stable thread id, so "same thread" would be inferred from author plus status ancestry and will mis-group a reply chain.
+
+## Notes for the next round
+
+- `TokenSource` carries the words a token was read from, and `chainForAddress` now sees the post body **plus** that source text, so "on base" inside a quoted post reaches the address beside it. Any future chain hint should read `picked.text`, not `tweet.text`.
+- `chipAnchor` takes the origin as its second argument. A new source kind needs a case there or its chip silently falls back to the post body.
+- The 420px host cap is the only thing standing between a long chip headline and a sideways scroll on x.com. Anything that lengthens `chipHeadline` should re-run `x-depth.spec.ts`'s overflow assertion rather than assume it.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**A token found outside the post's own body is always labelled, in the chip and on the card.** Tripwire's X chip sits under someone's post and reports on a token. When that token came from a quoted tweet, a link preview or an image description, an unlabelled verdict reads as a statement about the poster — and "no Nansen label for @them" beside a token they never typed is a claim about a person, not about an asset. A card title is set by the linked site and alt text is free-form, so both are attacker-controlled and a decoy is cheap to plant. The rule is therefore that provenance travels with the token from the parser (`TokenSource.origin`) through the pick to both render sites, and that the outer post's identity — handle, display name, time, status id — is never read from anywhere but the outer post.
+
+**X's quote wrapper is a `div[role="link"]`, not a nested `article`.** The repo's only quote fixture nested a whole `article[data-testid="tweet"]`, and the parser's `belongsToOuter` was written against it. On the live site that predicate returns true for every quoted element, so the "quoted content is ignored" guarantee held only in the test suite. Detection now walks parents for either wrapper, and matches `div[role="link"]` specifically because the outer post's own timestamp sits inside an `a[role="link"]` and must stay outer. Both shapes are fixtured so the next person cannot regress one by satisfying the other.
+
+**The second chip is an affordance, not a check.** A rotation post naming three tokens is about 39 credits, and a timeline of them is a day's cap in one scroll. So a post gets at most two chips; only the first pays for a chip-mode check; the second is not even built until the post is on screen, states UNCHECKED with "Also mentioned. Open to check.", and takes its verdict from the panel call the reader's own click paid for rather than buying a second one. This is the same ruling as Round 1.5's "a lazy call is a button, never a view", reached from the credit side instead of the keyboard side.
+
+**A shadow-root chip can still break its host page's layout, and the fix belongs inside the shadow root.** X sizes a post's content column to its min-content, and a `nowrap` finding inside a shadow root contributes its full width to that calculation: the shadow boundary stops styles, not intrinsic sizing. The host is therefore capped at 420px from inside its own stylesheet, because WXT's `:host { all: initial !important }` reset beats any outer inline style, and the percentage form of the cap was measured to do nothing at all. Anchor fit (non-negotiable #5) is not only about the mounted box's own width: it is about what that box does to the sizing of everything around it.
