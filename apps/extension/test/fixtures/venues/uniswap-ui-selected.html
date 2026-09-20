@@ -1,0 +1,45 @@
+<!-- Reconstructed from uniswap-ui-selected.json (app.uniswap.org/swap, 2026-09-20, no wallet):
+     Sell = ETH on Ethereum, Buy = GIZA on Base, BOTH chosen through the token picker UI. The
+     URL is bare `/swap` — Uniswap writes no chain= and no outputCurrency= for a UI selection,
+     ever, so this fixture is loaded against exactly that URL.
+
+     The only thing on the page that names the Buy token's chain is the badge's own test id
+     (`network-logo-8453`). The badge has no data-chain-id, its <img alt> is the empty string
+     and it has no title or aria-label — the attributes the old reader scanned. The Sell row
+     carries its own `network-logo-1`, which is why the read must stay inside the Buy row. -->
+<div id="root">
+  <div id="AppHeader">
+    <nav class="flex flex-col">
+      <div role="button" data-testid="nav-company-menu">Uniswap</div>
+      <div role="button" data-testid="Trade-tab">Trade</div>
+      <div role="button"><div><button type="button" data-testid="navbar-connect-wallet">Get started</button></div></div>
+    </nav>
+  </div>
+  <div class="flex flex-col">
+    <div role="button" data-testid="swap-settings"></div>
+    <div role="button">
+      Sell<input placeholder="0" />
+      <div role="button" data-testid="choose-input-token">
+        <div data-testid="token-logo">
+          <img />
+          <div><div data-testid="network-logo-1"><div><div></div><img alt="" /></div></div></div>
+        </div>
+        <span data-testid="choose-input-token-label">ETH</span>
+      </div>
+      $0
+    </div>
+    <div role="button" data-testid="switch-currencies-button"></div>
+    <div role="button">
+      Buy<input data-testid="amount-input-out" placeholder="0" />
+      <div role="button" data-testid="choose-output-token">
+        <div data-testid="token-logo">
+          <img />
+          <div><div data-testid="network-logo-8453"><div><div></div><img alt="" /></div></div></div>
+        </div>
+        <span data-testid="choose-output-token-label">GIZA</span>
+      </div>
+      $0
+    </div>
+    <button type="button" data-testid="review-swap" data-fixture="primary">Get started</button>
+  </div>
+</div>

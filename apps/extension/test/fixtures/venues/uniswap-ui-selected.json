@@ -1,0 +1,48 @@
+{
+ "note": "app.uniswap.org/swap with Sell=ETH and Buy=GIZA on Base, chosen through the token picker UI (never through the URL). Structural capture of the two token selectors plus the page-level chain signals. No page HTML, no scripts, no wallet connected. Captured with Playwright MCP, read-only.",
+ "capturedAt": "2026-09-20T16:39:00.000Z",
+ "viewport": "1280x720 approx",
+ "url": "https://app.uniswap.org/swap",
+ "urlAfterSelection": {
+  "href": "https://app.uniswap.org/swap",
+  "chainParam": null,
+  "outputCurrencyParam": null,
+  "note": "Watched for 3.5s in 500ms frames after the selection settled, and again on a later tick. The URL NEVER gains chain= or outputCurrency= for a UI-chosen token. The defect is not a delayed URL write; there is no URL write at all."
+ },
+ "pageChainSignals": {
+  "elementsWithDataChainId": 0,
+  "networkLogoTestIds": ["network-logo-1", "network-logo-1", "network-logo-8453"],
+  "globalNetworkSelector": null,
+  "note": "There is no page-level network selector on the swap form. The only network control is 'tokens-network-filter-trigger' (with 'all-networks-logo' when unfiltered), which exists ONLY inside the open token-picker modal and is a search filter, not the form's state. The chain lives exclusively on each token button's badge, and the chain id is carried in the badge's data-testid — nowhere else."
+ },
+ "chooseOutputToken": {
+  "root": { "tag": "div", "role": "button", "data-testid": "choose-output-token", "aria-label": null },
+  "symbolLeaf": { "tag": "span", "data-testid": "choose-output-token-label", "text": "GIZA" },
+  "chainBadge": {
+   "tag": "div",
+   "data-testid": "network-logo-8453",
+   "data-chain-id": null,
+   "title": null,
+   "aria-label": null,
+   "img": { "alt": "", "title": null, "src": "data:image/png;base64,…(Base mark)" },
+   "note": "8453 = Base. The chain id appears ONLY in data-testid. The <img> alt is the empty string and there is no title or aria-label, which is why the old attribute scan (data-chain-id / img[alt] / [title]) found nothing."
+  },
+  "tokenLogo": { "tag": "div", "data-testid": "token-logo", "img": { "alt": null, "src": "https://coin-images.coingecko.com/coins/images/54922/large/Untitled_design.png" } }
+ },
+ "chooseInputToken": {
+  "root": { "tag": "div", "role": "button", "data-testid": "choose-input-token" },
+  "symbolLeaf": { "tag": "span", "data-testid": "choose-input-token-label", "text": "ETH" },
+  "chainBadge": { "tag": "div", "data-testid": "network-logo-1", "note": "1 = Ethereum. The Sell side carries its own, different badge, so a page-wide scan would see two chains at once. Reading must stay scoped to the Buy row." }
+ },
+ "beforeSelection": {
+  "chooseOutputTokenLabel": "Select token",
+  "chainBadgeInsideOutputRow": null,
+  "tokenLogoInsideOutputRow": null,
+  "note": "The default /swap page has NOTHING in the Buy slot: Sell=ETH, Buy='Select token', no logo and no badge in the Buy row. The honest line for that page is 'Select a token…', never 'Select a network to check ETH'."
+ },
+ "tokenPickerRows": {
+  "note": "Search results in the picker use data-testid='token-option-<chainId>-<SYMBOL>' and carry the same 'network-logo-<chainId>' badge. GIZA returned entries on chains 1, 8453 (several), 42161 and 137.",
+  "samples": ["token-option-1-GIZA", "token-option-8453-GIZA", "token-option-42161-GIZA", "token-option-137-GIZA", "token-option-8453-Giza"]
+ },
+ "reviewSwap": { "tag": "button", "data-testid": "review-swap", "disabled": false, "text": "Get started" }
+}
