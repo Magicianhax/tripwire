@@ -1,5 +1,14 @@
-/** Below this the strip stacks instead of sitting on one row. */
+/** Below this the strip drops its rule clause and lets the finding take a second line. */
 export const NARROW_WIDTH = 320;
+
+/**
+ * Below this there is no room for a sentence at all: after the venue logo, the verdict pill and
+ * Details, a 240px anchor leaves about 60px, which is a few characters and an ellipsis. The
+ * strip keeps the pill and Details on one row and drops the finding text, which stays in the
+ * strip's `title`. Stacking it into its own rows is what made a 300px pump.fun panel carry a
+ * 90px four-row strip.
+ */
+export const TIGHT_WIDTH = 260;
 
 /** The measured box a mounted surface must fit inside. */
 export type Box = { width: number };
@@ -89,6 +98,8 @@ export function applyAnchorBox(host: HTMLElement, box: Box | null): void {
   // root cannot query its own host's box.
   if (bounded && box.width < NARROW_WIDTH) host.dataset.narrow = "";
   else delete host.dataset.narrow;
+  if (bounded && box.width < TIGHT_WIDTH) host.dataset.tight = "";
+  else delete host.dataset.tight;
 }
 
 /**

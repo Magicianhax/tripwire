@@ -2,7 +2,7 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { applyAnchorBox, availableWidth, fitToAnchor, liftOutOfRow, NARROW_WIDTH } from "../lib/ui/fit";
+import { applyAnchorBox, availableWidth, fitToAnchor, liftOutOfRow, NARROW_WIDTH, TIGHT_WIDTH } from "../lib/ui/fit";
 import { Chip } from "../lib/ui/Chip";
 import { Dock } from "../lib/ui/Dock";
 import { Strip } from "../lib/ui/Strip";
@@ -63,6 +63,25 @@ describe("a mounted surface never outgrows the anchor it describes", () => {
     expect(host.dataset.narrow).toBe("");
     applyAnchorBox(host, { width: NARROW_WIDTH });
     expect(host.dataset.narrow).toBeUndefined();
+  });
+
+  // The pump.fun report: a 300px trade panel turned the strip into four stacked rows ~90px
+  // tall. A narrow anchor drops the rule clause and lets the finding take two lines; only a
+  // tight one — where the finding would be a few characters — drops the sentence itself.
+  it("marks a narrow anchor without marking it tight", () => {
+    const host = document.createElement("div");
+    applyAnchorBox(host, { width: 300 });
+    expect(host.dataset.narrow).toBe("");
+    expect(host.dataset.tight).toBeUndefined();
+  });
+
+  it("marks an anchor too tight for a sentence, exactly at its breakpoint", () => {
+    const host = document.createElement("div");
+    applyAnchorBox(host, { width: TIGHT_WIDTH - 1 });
+    expect(host.dataset.tight).toBe("");
+    expect(host.dataset.narrow).toBe("");
+    applyAnchorBox(host, { width: TIGHT_WIDTH });
+    expect(host.dataset.tight).toBeUndefined();
   });
 
   it("publishes the width as a custom property, which WXT's `all: initial` reset cannot erase", () => {
@@ -141,11 +160,13 @@ describe("a mounted surface never outgrows the anchor it describes", () => {
 });
 
 describe("long findings truncate instead of stretching their surface", () => {
-  it("the strip keeps the full sentence reachable as a tooltip", () => {
+  it("the strip keeps the full sentence reachable as a tooltip, wherever it is hovered", () => {
     const c = render(<Strip verdict="UNCHECKED" text={LONG} venue="jupiter" />);
     const finding = c.querySelector(".tw-strip-finding") as HTMLElement;
     expect(finding.textContent).toBe(LONG);
-    expect(finding.getAttribute("title")).toBe(LONG);
+    // On the strip itself, not on the sentence: at a tight anchor width the sentence is not
+    // rendered at all, and the hover has to keep answering "what did it say?".
+    expect(c.querySelector(".tw-strip")!.getAttribute("title")).toBe(LONG);
   });
 
   it("the chip does too", () => {

@@ -23,13 +23,13 @@ export type StripProps = {
  * pill, the finding, its rule clause, and Details. LOADING shows a spinner and "Checking…". */
 export function Strip({ verdict, text, rule, onDetails, detailsLabel = "Details", replay, venue }: StripProps) {
   return (
-    <div className="tw-strip" data-verdict={verdict} role="status">
+    // The whole strip carries the sentence as its tooltip, not just the words: on a tight
+    // anchor the words are not rendered and the hover still has to answer what it said.
+    <div className="tw-strip" data-verdict={verdict} role="status" title={text}>
       <VenueLogo venue={venue} size={16} />
       {verdict === "LOADING" ? <Icon icon={LoaderCircle} size={16} className="tw-spin tw-spinner" /> : <Plate verdict={verdict} className="tw-strip-plate" />}
       <span className="tw-strip-text">
-        <span className="tw-strip-finding" title={text}>
-          {text}
-        </span>
+        <span className="tw-strip-finding">{text}</span>
         {rule ? <RuleClause className="tw-strip-rule" text={rule} /> : null}
       </span>
       <ReplayBadge replay={replay} />

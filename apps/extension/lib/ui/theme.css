@@ -2783,31 +2783,37 @@ div.tw-dock-chip {
   overflow: hidden;
 }
 
-/* Under ~320px the strip stacks: the venue logo, verdict and Details stay on the first row and
-   the finding takes the second, rather than being squeezed to a few characters. fit.ts sets the
-   attribute from the anchor's own measured box.
+/* A narrow anchor takes things away, in order, and never stacks. fit.ts sets these attributes
+   from the anchor's own measured box.
+
+   Stacking is what the pump.fun report was: at 300px the strip wrapped into four rows — mark
+   and pill, then the finding over two lines, then Details alone — and ate 90px between the
+   amount field and the trade button. The strip is a line: one row wherever it fits, and at most
+   two when the sentence needs the second. Under ~320px the rule clause goes; under ~260px the
+   sentence goes too, leaving the pill and Details on one 32px row with the finding in the
+   strip's title.
 
    Deliberately an attribute and not a container query: `container-type: inline-size` implies
    `contain: layout`, which would make every mounted host a containing block for the evidence
    card's `position: fixed` popover. */
 :host([data-narrow]) .tw-strip {
-  flex-wrap: wrap;
-  padding-bottom: var(--tw-space-1);
-}
-
-:host([data-narrow]) .tw-strip-text {
-  order: 1;
-  flex-basis: 100%;
-  white-space: normal;
+  gap: var(--tw-space-1);
 }
 
 :host([data-narrow]) .tw-strip-rule {
   display: none;
 }
 
-/* The finding takes the second row; Details follows it, hard right. */
 :host([data-narrow]) .tw-strip-details {
-  order: 2;
+  padding-left: 6px;
+}
+
+:host([data-tight]) .tw-strip-text {
+  display: none;
+}
+
+/* With no sentence between them, the pill and Details sit at the two ends of the row. */
+:host([data-tight]) .tw-strip-details {
   margin-left: auto;
 }
 

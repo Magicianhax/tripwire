@@ -242,6 +242,26 @@ test("pump.fun: the verdict sits above the trade button", async ({ context }) =>
   const button = await page.locator("#primary").boundingBox();
   const box = await strip.boundingBox();
   expect(box!.y + box!.height, "the strip sits above the button it guards").toBeLessThanOrEqual(button!.y);
+
+  // The report: on this 316px panel the strip wrapped into four rows and ~90px of the form.
+  // A strip is a line — mark, pill, finding, Details — and it stays one.
+  const finding = page.locator(".tw-strip-finding");
+  const details = page.locator(".tw-strip-details");
+  const findingBox = (await finding.boundingBox())!;
+  const detailsBox = (await details.boundingBox())!;
+  expect(box!.height, "a one-line strip is DESIGN.md's 32px pill, not a stack").toBeLessThanOrEqual(40);
+  expect(Math.abs(findingBox.y + findingBox.height / 2 - (detailsBox.y + detailsBox.height / 2)), "Details shares the finding's row").toBeLessThan(6);
+  expect(detailsBox.x, "Details ends the line").toBeGreaterThan(findingBox.x);
+  if (process.env.TRIPWIRE_CAPTURE) await page.locator("#panel").screenshot({ path: path.join(OUT, "strip-pumpfun.png") });
+
+  // Tighter still: the sentence would be a few characters, so it goes, and the pill and
+  // Details keep the one row between them.
+  await page.locator("#panel").evaluate((el) => ((el as HTMLElement).style.width = "236px"));
+  await expect(finding).toBeHidden();
+  const tightBox = (await strip.boundingBox())!;
+  expect(tightBox.height, "still one row with the sentence dropped").toBeLessThanOrEqual(40);
+  expect(await page.locator(".tw-strip").getAttribute("title"), "the sentence stays one hover away").toMatch(/\w/);
+  if (process.env.TRIPWIRE_CAPTURE) await page.locator("#panel").screenshot({ path: path.join(OUT, "strip-pumpfun-tight.png") });
   await page.close();
 });
 
