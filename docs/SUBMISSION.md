@@ -30,7 +30,7 @@ Shot list (~90 seconds, captions instead of voice):
 5. **Wallet lens** (~10s) — hover an address on any page; open the wallet card with Hyperliquid and Polymarket tabs.
 6. **Proof** (~10s) — `/ledger` showing the call count past 1,000, then `/rules` showing the presets.
 
-Existing stills for the X post or README are in `.impeccable/review/*.png` (47 captures, including `x-popover`, `block-screen`, `perp-expanded`, `perp-funding-venues`, `spot-expanded`, `entity-profile-expanded`, `ledger-desktop`).
+Six live captures already ship in `apps/web/public/showcase/` (the product page gallery and the README gallery): `exit-liquidity`, `hyperliquid`, `x-profile`, `jumper`, `polymarket`, `dexscreener`, with source URLs in that folder's README. A further 47 working captures are in the gitignored `.impeccable/review/*.png`.
 
 ## 3. X post
 
@@ -48,15 +48,16 @@ Tag **@nansen_ai**, attach the recording. Draft:
 
 Needs: email, the X post link, the GitHub repo URL.
 
-**Blocker: the repo has no git remote.** Create a public GitHub repo, then:
+**Repo: https://github.com/Magicianhax/tripwire — currently PRIVATE**, `main`, pushed 2026-09-21.
 
-```bash
-cd F:/Tools/Nansen
-git remote add origin https://github.com/<you>/tripwire.git
-git push -u origin master
-```
+Audited before the push: no `.env`, `.env.local`, `*.db` or Nansen CLI config was ever committed (only the `"test-key"` placeholders in the suites), and `gitleaks` is clean across all 136 commits.
 
-Check before pushing that `apps/web/.env.local` is absent or ignored (it is, via `.gitignore`), and that `gitleaks` passes on the history.
+**Before submitting, decide on visibility.** The entry form asks for a GitHub repo URL, and judges scoring "documentation" (25%) and "data integration" (25%) have to be able to read it. Either:
+
+- `gh repo edit Magicianhax/tripwire --visibility public --accept-visibility-change-consequences`, or
+- keep it private and add the judges as collaborators (`gh api -X PUT repos/Magicianhax/tripwire/collaborators/<login>`), which needs their GitHub handles from the organisers.
+
+Public is the safer default unless the organisers say otherwise — a private URL a judge cannot open reads as a missing submission.
 
 ## Judging criteria and where Tripwire answers them
 
@@ -64,5 +65,5 @@ Check before pushing that `apps/web/.env.local` is absent or ignored (it is, via
 |---|---|
 | Data integration | Verdicts are computed from Nansen flow, netflow, indicators, token info, perp positioning and prediction-market holders; every warning cites the endpoint and value. `docs/CALIBRATION.md` shows thresholds derived from 37 live tokens. |
 | Creativity | It isn't a dashboard: the data appears on the X post and over the trade button, with a typed-phrase override and a local rule engine. |
-| Functionality | 859 unit tests, Playwright tests against the built extension, adapters verified against real venue DOM (`docs/VENUE-CHECK.md`), replay mode for offline demos. |
-| Documentation | README setup under 10 minutes, `docs/HANDOFF.md`, architecture, decisions (ADR-0001..0012), spikes and this checklist. |
+| Functionality | 1,523 unit tests, Playwright tests against the built extension, adapters verified against real venue DOM (`docs/VENUE-CHECK.md`), replay mode for offline demos. |
+| Documentation | README with a screenshot gallery and setup under 10 minutes, `docs/HANDOFF.md`, architecture, decisions (ADR-0001..0013), calibration, venue checks, spikes and this checklist. |
