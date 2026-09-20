@@ -6,3 +6,10 @@
  * overrides it (forks that load the extension with their own key).
  */
 export const TRIPWIRE_EXTENSION_ID = "hocgbioagcfmdpgcnfgnneopohjfkeoj";
+
+/**
+ * The Nansen Meridian Buildathon's API-call allowance. The ledger page and the popup's counter
+ * tile both print progress toward it, and a printed cap that drifts from the measured one is the
+ * same defect as a printed price that drifts from the charged one.
+ */
+export const BUILDATHON_CALL_CAP = 1000;

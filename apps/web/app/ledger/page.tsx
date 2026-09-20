@@ -1,3 +1,4 @@
+import { BUILDATHON_CALL_CAP } from "@tripwire/core";
 import { isReplay } from "@/lib/nansen/client";
 import { ledgerSummary } from "@/lib/store";
 import { Time } from "../_components/Time";
@@ -19,7 +20,7 @@ export default function LedgerPage() {
           <div className="tw-stat">
             <span className="tw-label tw-stat-label">Calls</span>
             <span className="tw-num-fig tw-stat-value">
-              {s.totalCalls} / {1000}
+              {s.totalCalls} / {BUILDATHON_CALL_CAP}
             </span>
           </div>
           <div className="tw-stat">

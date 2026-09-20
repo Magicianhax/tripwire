@@ -17,6 +17,7 @@ import type {
   UnlinkResponse,
   WalletVenueId,
   HealthResponse,
+  LedgerSummary,
   OverrideResponse,
   PerpLadderResponse,
   PerpWinRateResponse,
@@ -90,6 +91,14 @@ export function depth(target: Target, sections: DepthSection[], timeframe?: View
 
 export function personIntel(handle: string, displayName: string, target?: SpotTarget): Promise<ApiResult<PersonIntelResponse>> {
   return call("POST", "/api/person-intel", { handle, displayName, target });
+}
+
+/**
+ * The local backend's own call ledger, for the popup's counter tiles. A local read: it costs no
+ * Nansen call and no credit, which is why the popup may make it on open.
+ */
+export function ledger(): Promise<ApiResult<LedgerSummary>> {
+  return call("GET", "/api/ledger");
 }
 
 export function getRules(): Promise<ApiResult<RulesResponse>> {
