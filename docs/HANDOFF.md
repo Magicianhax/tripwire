@@ -100,10 +100,10 @@ The former in-flight brief, `docs/briefs/expand-and-perp-depth.md`, is now close
 
 ## What is left
 
-1. Review and commit the live Jumper repair working-tree diff, then **merge `feat/cockpit-ui` into `master`** when the user decides. No remote is configured, so nothing can be pushed yet.
+1. **Done (2026-09-20):** the working tree was verified (859 tests, both builds) and committed; `master` is fast-forwarded to the branch. No remote is configured, so nothing can be pushed yet.
 2. Run a manual load-unpacked pass on live x.com, jup.ag, app.hyperliquid.xyz, and polymarket.com. Automated replay E2E is green, but venue DOMs are the volatile boundary.
-3. If `impeccable` is reinstalled, run `impeccable detect apps/extension apps/web packages/core` once against the new `DESIGN.md`; the command was unavailable during takeover, so there is no fresh count.
-4. **Buildathon submission:** ≥1,000 Nansen API calls logged on `/ledger` (check the count; the CLI under-reports per-call credits, see `docs/CALIBRATION.md`), a demo recording with no narration, an X post tagging @nansen_ai, and the entry form (email + X link + GitHub repo).
+3. Re-run `impeccable detect apps/extension apps/web packages/core` against the regenerated `DESIGN.md` (ADR-0013); older counts were measured against the retired document.
+4. **Buildathon submission:** see `docs/SUBMISSION.md` — ledger at 616 calls (1,000 needed), demo shot list, X post draft, form requirements. Needs a GitHub remote.
 5. **Known gaps:** `.sol` names don't resolve (no working free resolver); the curated wallet list ships empty; Polymarket open positions lack size/price fields from Nansen; `profiler/labels` (100 credits) has no fixture; lightweight-charts is loaded eagerly (~52KB gzip); calibration thresholds rest on a single day's sample; `predictedFundings` is not surfaced.
 
 ## Latest verification (2026-09-20)
