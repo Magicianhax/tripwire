@@ -74,6 +74,40 @@ describe("1.6.1 market structure comes from Dexscreener, labelled as Dexscreener
     expect(s.priceChangePct.m5).toBeNull();
   });
 
+  // C-1: "unreadable" and "no pools" are two different claims and were one null.
+  it("returns null only when the body is not a Dexscreener response at all", () => {
+    expect(parseTokenMarket({ error: "rate limited" }, { chain: CHAIN, tokenAddress: TOKEN })).toBeNull();
+    expect(parseTokenMarket("<html>502</html>", { chain: CHAIN, tokenAddress: TOKEN })).toBeNull();
+    expect(parseTokenMarket({ pairs: 7 }, { chain: CHAIN, tokenAddress: TOKEN })).toBeNull();
+    // An answer with no pools is readable, and is a structure, not a null.
+    expect(parseTokenMarket({ pairs: [] }, { chain: CHAIN, tokenAddress: TOKEN })).not.toBeNull();
+    expect(parseTokenMarket({ pairs: null }, { chain: CHAIN, tokenAddress: TOKEN })!.poolCount).toBe(0);
+  });
+
+  it("keeps the readable pools when one entry is malformed, and says how many it dropped", () => {
+    const body = dexBody() as { pairs: unknown[] };
+    // One pool of thirty loses its chain: `z.array(pairSchema)` used to fail the whole parse and
+    // the card printed "lists no pools" for a token trading in twenty-nine of them.
+    delete (body.pairs[3] as { chainId?: unknown }).chainId;
+    const s = parseTokenMarket(body, { chain: CHAIN, tokenAddress: TOKEN })!;
+    expect(s.poolCount).toBe(29);
+    expect(s.droppedPoolCount).toBe(1);
+    expect(s.pool).not.toBeNull();
+  });
+
+  it("does not count a malformed entry that plainly belongs to another chain", () => {
+    const body = {
+      pairs: [
+        { chainId: "solana", baseToken: { address: TOKEN }, liquidity: { usd: 10 } },
+        { chainId: "ethereum", baseToken: "not an object" },
+        { chainId: "solana", baseToken: 42 },
+      ],
+    };
+    const s = parseTokenMarket(body, { chain: CHAIN, tokenAddress: TOKEN })!;
+    expect(s.poolCount).toBe(1);
+    expect(s.droppedPoolCount).toBe(1);
+  });
+
   it("excludes pools where the token is the quote side, and counts them instead", () => {
     const body = {
       pairs: [

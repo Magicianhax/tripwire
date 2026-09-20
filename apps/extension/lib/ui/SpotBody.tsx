@@ -612,15 +612,32 @@ function IndicatorList({ rows }: { rows: IndicatorRow[] }) {
  *
  * Nothing here feeds a signal, and boosts, socials and websites never reach this component: they
  * are bought or team-submitted, and are not in the backend's schema at all.
+ *
+ * Three different states, three different sentences (C-1). `structure === null` means the answer
+ * could not be read — nothing is known, so the section says so and names the source; it never
+ * reads as a negative finding about a token that may trade in thirty pools. `poolCount === 0`
+ * means Dexscreener answered "none", which is a finding. And a partly unreadable answer prints
+ * its figures with the count of pools that were dropped, so no number claims a sample it missed.
  */
 function MarketStructure({ section }: { section: SpotMarketSection | undefined }) {
   if (!section) return null;
   if (section.errors.length > 0) return <SectionProblem reasons={section.errors} />;
   const s = section.structure;
-  if (!s || s.poolCount === 0) {
+  if (!s) {
     return (
       <Section title="Market structure" aside="Dexscreener">
-        <Empty>Dexscreener lists no pools for this token on this chain.</Empty>
+        <Empty>Dexscreener's answer couldn't be read, so market structure is unchecked. This says nothing about the token's pools.</Empty>
+      </Section>
+    );
+  }
+  if (s.poolCount === 0) {
+    return (
+      <Section title="Market structure" aside="Dexscreener">
+        <Empty>
+          {s.droppedPoolCount > 0
+            ? `Dexscreener lists no readable pools for this token on this chain; ${s.droppedPoolCount} entr${s.droppedPoolCount === 1 ? "y" : "ies"} couldn't be read.`
+            : "Dexscreener lists no pools for this token on this chain."}
+        </Empty>
       </Section>
     );
   }
@@ -674,6 +691,13 @@ function MarketStructure({ section }: { section: SpotMarketSection | undefined }
         Price change is the deepest pool's, {pool?.quoteSymbol ? `quoted in ${pool.quoteSymbol}` : "at its own quote"}; the trade counts are summed across all{" "}
         <b className="tw-fig">{count(s.poolCount)}</b> pools. Pair age is how long that pool has existed, not how long the token has: a migrated pool reads
         newer than its contract.
+        {s.droppedPoolCount > 0 ? (
+          <>
+            {" "}
+            <b className="tw-fig">{count(s.droppedPoolCount)}</b> more {s.droppedPoolCount === 1 ? "entry was" : "entries were"} unreadable and {s.droppedPoolCount === 1 ? "is" : "are"}{" "}
+            in none of these figures.
+          </>
+        ) : null}
       </p>
     </Section>
   );

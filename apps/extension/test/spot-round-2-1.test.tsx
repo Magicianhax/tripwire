@@ -106,6 +106,7 @@ const structure = {
   txns: { m5: { buys: 8, sells: 13 }, h1: { buys: 242, sells: 251 }, h6: { buys: 4527, sells: 3666 } },
   poolCount: 30,
   quoteSidePoolCount: 0,
+  droppedPoolCount: 0,
 };
 
 const tapeRow = (iso: string, over: Record<string, unknown> = {}) => ({
@@ -155,6 +156,24 @@ describe("1.6.1 Dexscreener market structure on the card face", () => {
     const section = shown(c).querySelector<HTMLElement>('section[aria-label="Market structure"]')!;
     expect(section.textContent).toContain("lists no pools");
     expect(section.textContent).not.toContain("0%");
+  });
+
+  // C-1: an unreadable answer and an empty one are two different claims.
+  it("says the answer was unreadable, not that there are no pools, when the structure is null", () => {
+    const c = render(expanded(<SpotBody panel={panel()} initialTab="risk" depth={depthOf({ spotMarket: { structure: null, errors: [] } })} />));
+    const section = shown(c).querySelector<HTMLElement>('section[aria-label="Market structure"]')!;
+    const text = section.textContent ?? "";
+    expect(text).toMatch(/couldn't be read/);
+    expect(text).toContain("Dexscreener");
+    // The claim the reviewer found: a token in thirty pools being told it has none.
+    expect(text).not.toContain("no pools");
+  });
+
+  it("states how many entries it could not read when only part of the answer parsed", () => {
+    const partial = { ...structure, droppedPoolCount: 3 };
+    const c = render(expanded(<SpotBody panel={panel()} initialTab="risk" depth={depthOf({ spotMarket: { structure: partial, errors: [] } })} />));
+    const text = shown(c).querySelector<HTMLElement>('section[aria-label="Market structure"]')!.textContent ?? "";
+    expect(text).toMatch(/3 more entries were unreadable/);
   });
 
   it("costs nothing, so its tab carries no price", () => {

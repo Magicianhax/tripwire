@@ -395,7 +395,15 @@ export type TokenMarketStructure = {
   txns: { m5: TxnCounts; h1: TxnCounts; h6: TxnCounts };
   poolCount: number;
   quoteSidePoolCount: number;
+  /** Entries Dexscreener sent that could not be parsed, so `poolCount` can never pass for the
+   * whole answer when part of it was unreadable. */
+  droppedPoolCount: number;
 };
+/**
+ * `structure: null` means Dexscreener's answer could not be read at all — *not* that the token
+ * has no pools. `structure.poolCount === 0` is the second, different claim: it answered, and the
+ * answer was none. The card renders them apart (C-1).
+ */
 export type SpotMarketSection = { structure: TokenMarketStructure | null; errors: string[] };
 
 export type SpotTapeRow = {

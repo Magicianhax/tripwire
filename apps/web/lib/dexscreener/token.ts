@@ -41,7 +41,14 @@ const pairSchema = z.object({
   pairCreatedAt: z.number().finite().nonnegative().nullish(),
 });
 
-const responseSchema = z.object({ pairs: z.array(pairSchema).nullable().optional() });
+/**
+ * The envelope only, and `pairs` is **required**: the token route always sends it (`null` when the
+ * token has no pools), so a body without it is not an answer from this endpoint and must not read
+ * as an empty one. The array is deliberately `unknown[]` and each element is parsed on its own
+ * below, because `z.array(pairSchema)` is all-or-nothing: one malformed pool out of thirty used to
+ * fail the whole parse and hand the card a `null` it printed as "no pools" (C-1).
+ */
+const responseSchema = z.object({ pairs: z.array(z.unknown()).nullable() });
 
 export const TokenMarketRequestSchema = z.object({
   chain: ChainSchema,
@@ -70,6 +77,10 @@ export type TokenMarketStructure = {
   /** Pools where this token is the quote side. Their price and change describe the *other*
    * token, so they are excluded from every figure and only counted here. */
   quoteSidePoolCount: number;
+  /** Entries Dexscreener sent that did not parse and were dropped, counted only when they could
+   * still have been this chain's. The card says how many, so `poolCount` never reads as the
+   * whole truth when part of the answer was unreadable. */
+  droppedPoolCount: number;
 };
 
 /** Case-folds an EVM address; Solana base58 is case-significant and is compared as sent. */
@@ -82,15 +93,35 @@ function addCount(total: number | null, value: number | null | undefined): numbe
 }
 
 /**
- * The market structure, from whatever Dexscreener answered. Returns null only when the body is
- * not a Dexscreener response at all; a token with no pools on this chain is a structure with
- * `poolCount: 0`, which the card renders as unchecked rather than as zeroes.
+ * The market structure, from whatever Dexscreener answered.
+ *
+ * Returns null **only** when the body is not a Dexscreener response at all — that is the one case
+ * the card must render as unchecked, naming the source, because nothing is known. Two different
+ * things used to collapse into that null and then into one sentence on the card (C-1):
+ *
+ * - A token with no pools on this chain is a *structure* with `poolCount: 0`. Dexscreener
+ *   answered; the answer was "none". The card may say so.
+ * - A body with some unreadable pools is a structure over the pools that did parse, with
+ *   `droppedPoolCount` saying how many did not, so the figures never claim a sample they missed.
  */
 export function parseTokenMarket(body: unknown, request: TokenMarketRequest): TokenMarketStructure | null {
   const parsed = responseSchema.safeParse(body);
   if (!parsed.success) return null;
   const wantedChain = dexChain(request.chain);
-  const onChain = (parsed.data.pairs ?? []).filter((p) => p.chainId === wantedChain);
+  const readable: z.infer<typeof pairSchema>[] = [];
+  let dropped = 0;
+  for (const entry of parsed.data.pairs ?? []) {
+    const pair = pairSchema.safeParse(entry);
+    if (pair.success) {
+      readable.push(pair.data);
+      continue;
+    }
+    // A malformed entry that plainly belongs to another chain is not this card's sample, so it
+    // is not counted against it. Anything whose chain is unreadable could have been ours.
+    const chainId = (entry as { chainId?: unknown } | null)?.chainId;
+    if (typeof chainId !== "string" || chainId === wantedChain) dropped += 1;
+  }
+  const onChain = readable.filter((p) => p.chainId === wantedChain);
   const mine = onChain.filter((p) => sameToken(p.baseToken.address, request.tokenAddress));
   const quoteSide = onChain.length - mine.length;
 
@@ -129,6 +160,7 @@ export function parseTokenMarket(body: unknown, request: TokenMarketRequest): To
     txns,
     poolCount: mine.length,
     quoteSidePoolCount: quoteSide,
+    droppedPoolCount: dropped,
   };
 }
 
