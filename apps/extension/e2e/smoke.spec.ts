@@ -38,7 +38,11 @@ test("@smoke Dexscreener: resolves the base token and keeps its dock within the 
   await expect(dock).toHaveAttribute("data-verdict","CLEAR",{timeout:20000});
   expect(resolved).toBe(true);
   const box=(await dock.boundingBox())!;
-  expect(box.width).toBeLessThanOrEqual(320);
+  // The dock's bound is theme.css's own cap, `min(440px, calc(100vw - 32px))` — 440 here.
+  // This read 320 while the chip happened to measure 314: Round 1.6 gave the primary dock a
+  // verdict edge and `padding-left: 12px` (up from the base chip's 6px), so the same content
+  // now measures 320.00006 and tripped a bound that was a snapshot, not a contract.
+  expect(box.width).toBeLessThanOrEqual(Math.min(440, 1280 - 32));
   expect(box.x+box.width).toBeLessThanOrEqual(1280);
   await dock.click();
   await expect(page.locator(".tw-addr-text")).toHaveText("tipp…f5BS");

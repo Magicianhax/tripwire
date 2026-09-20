@@ -1,6 +1,6 @@
 import { isEvmAddress, type Chain, type Target } from "@tripwire/core";
 import { chainLabel, evmTarget, EVM_CHAIN_IDS, isNativeEvm, isNativeSymbol, readTokenSymbol, UNISWAP_CHAIN_NAMES } from "./chains";
-import { findButton, isVisible } from "./dom";
+import { findButtons, isToggleLike, isVisible } from "./dom";
 import { uncoveredChainGap } from "./gap";
 import { OVERRIDE_PHRASES, type TargetGap, type VenueAdapter } from "./types";
 
@@ -96,7 +96,12 @@ export const uniswapAdapter: VenueAdapter = {
   anchor(doc) {
     const review = doc.querySelector(REVIEW_SELECTOR);
     if (review instanceof HTMLButtonElement && !review.disabled && isVisible(review)) return review;
-    return findButton(doc, ANCHOR_RE);
+    // `/explore/tokens/...` renders a Swap|Limit|Send segmented control whose first tab reads
+    // exactly "Swap". Logged out there is no enabled review-swap, so without this reject the
+    // tab became the anchor — and since the blocker binds to `anchor()`, a TRIPWIRE covered a
+    // navigation tab instead of a trade button. Same reject hyperliquid/polymarket already use.
+    const candidates = findButtons(doc, ANCHOR_RE, isToggleLike);
+    return candidates.at(-1) ?? null;
   },
   /**
    * Both fallbacks are Uniswap's own test ids, read off the live

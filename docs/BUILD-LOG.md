@@ -2063,3 +2063,105 @@ Four of these came out of opening the captures, not out of reading the diff.
 **A countdown belongs to the reader's clock, and a stale timestamp is not an imminent event.** Venue answers are cached for 60 seconds and a card sits open for minutes, so "time remaining" is computed in the extension from the absolute epoch the venue published, ticking on an interval that is cleared on unmount. The rule that followed: a payment time that passed minutes ago honestly reads "due now", and one that passed hours ago renders nothing, because it is a stale snapshot and saying "due now" about it would assert a payment nobody reported. dYdX, which settles hourly and publishes no timestamp, gets a dash rather than a derived one — a schedule we know is still not a thing the venue said.
 
 **A cohort ladder is a press, so §5's base-load decision does not gate it.** `tgm/perp-positions` costs 5 credits per cohort and the perp panel already costs 12, which is why the brief made the cohort ladders conditional. They are conditional on *stacking*: the Liquidations tab still draws the Smart Money page the panel already bought, and the other three cohorts are buttons that state their price, spend once, and keep the answer for the life of the card. The measurement that made it worth buying is that the populations really differ — $1.71B across the all-traders page against $573M across Smart Money's, over the same 50 rows — and the finding that came with it is that **a wallet's label is a property of the page it was returned in**: the same address is "Abraxas Capital" in one and "Uses \"EGAF\" HL Referral Code" in the other. The card shows a label as a label, never as an identity, and says which population is on screen and that the verdict did not move with it.
+
+---
+
+# Integration — the six parallel rounds in one tree
+
+Branch `feat/cockpit-ui`, on top of `e98163c`. Rounds 1.6 (placement), 1.6.1/1.6.2/2.1 (spot), 2.2
+(prediction), 2.3 (wallet), 2.4 (X) and 2.5 (perp) landed within minutes of each other in the same
+working tree. This section records what that cost, which is less than the six reports feared.
+
+**0 Nansen credits.** Integration read the tree and re-ran the gates; it fetched nothing.
+**23 credits across the six rounds**: spot 9, wallet 8, perp 6, prediction 0, X 0, placement 0.
+
+## Nothing was left behind
+
+`git status` was clean at `e98163c`. Every round committed its own paths, so step 2 of the
+integration brief — commit whatever an agent abandoned — was a no-op. The shared-file races the
+reports describe are real but benign in their outcome: `endpoints.ts`, `api-types.ts`, `api.ts`,
+`schemas.ts`, `depth.ts`, `theme.css` and `captures.spec.ts` were each staged whole by whichever
+round committed first, so several rounds' additive hunks travelled under another round's message.
+Content is intact and attributed in these sections; only the commit boundaries are wrong. Worth
+stating plainly because three separate reports raised it as a concern: **"commit only your own
+paths" cannot hold for a file two agents have edited in the same minute.** The instruction that
+would have held is "one owner per file per wave, and shared files get their own commit".
+
+## What actually broke
+
+Two things, and only one of them was visible to a user.
+
+**1. The Dexscreener dock overflowed a bound that was a snapshot, not a contract.**
+`e2e/smoke.spec.ts:25` asserted the primary dock chip measured `<= 320`px and it measured
+`320.00006103515625`. Every round that ran the full suite reported this failure and each correctly
+judged it "not mine"; nobody owned it, so it survived all six. The cause is Round 1.6: making the
+dock a *primary* display gave it a verdict edge and `padding-left: 12px`, up from the base
+`.tw-chip`'s 6px (`theme.css:3267`). The same content therefore measures exactly 6px wider than the
+314px the assertion was written around. The dock's real bound is theme.css's own
+`max-width: min(440px, calc(100vw - 32px))`, which 320px is comfortably inside, so nothing is
+visually wrong and Round 1.6's padding is correct. The test now asserts that cap
+(`smoke.spec.ts:41`) with the arithmetic written down, so the next legitimate 6px does not read as
+a regression. **A bound copied off a measurement fails the round that changes the measurement for a
+good reason** — assert the contract, not the screenshot.
+
+**2. Uniswap could bind a block to a navigation tab.** `uniswapAdapter.anchor()` fell back to
+`findButton(doc, /^swap$/i)` with no reject, so on `/explore/tokens/<chain>/<address>` logged out —
+where there is no enabled `review-swap` — it matched the **Swap tab** of the Swap|Limit|Send
+segmented control. The blocker binds to `anchor()` (`runner.tsx:131`), so a
+TRIPWIRE verdict there would have covered a `role="tab"` instead of a trade button. This is the
+cross-round part: Round 1.4 wrote the loose anchor when the explore page resolved to nothing and
+fell to the dock, and Round 1.6 then made that page a first-class anchored surface. Neither round
+is wrong alone; together they point a block at site chrome. Round 1.6 found it live, correctly left
+another round's file untouched, and wrote the one-line fix into its report. Applied here:
+`uniswap.ts:100` now uses `findButtons(doc, ANCHOR_RE, isToggleLike)`, the same reject
+`hyperliquid.ts` and `polymarket.ts` have always used, and takes the last match to preserve
+`findButton`'s ordering. Two tests in `adapters-live.test.ts:130` pin both directions — the tab is
+never anchored, a real non-toggle Swap primary still is.
+
+## What did not break, having been checked
+
+- **The same fact twice in one card.** The spot card was the risk: Round 1.6.1 draws Dexscreener's
+  deepest-pool liquidity and Round 1.1 already drew Nansen's token-level figure. Round 1.6.1 saw it
+  and labelled both by source — "Deepest pool" and "Liquidity (Nansen)" — with the reason in a
+  comment at `SpotBody.tsx:609`. Repeated section titles elsewhere (`Trade tape` x3, `Top holders`
+  x2, `Largest recent trades` x2) are the house empty/loading/loaded branches, not double renders.
+- **Colliding CSS.** One selector is declared twice:
+  `.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-cohorts)` at `theme.css:2497`
+  (Round 1.3, `grid-auto-flow: row dense`) and `:3507` (Round 2.5, `display: block; columns: 2`).
+  Round 2.5 did this deliberately and neutralised 1.3's companion `grid-row: span 2` at `:3527` with
+  a comment naming it. The 1.3 rules are now dead weight rather than a conflict; left alone, because
+  deleting rules that other cards may reach is not a change integration should make blind.
+- **Type drift and duplicated helpers.** No duplicate exported names in `packages/core/src/index.ts`
+  or `apps/extension/lib/api-types.ts`; the repeated field names in `endpoints.ts` are separate
+  response interfaces. Typecheck is clean across all three packages.
+- **Prediction's `:has()` rule** (`theme.css:2478`) is scoped to
+  `.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-market-options)` and cannot reach
+  another card's sections.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 309, web 317, extension 764** passed (0 failed). The
+  extension count is the rounds' 762 plus the two Uniswap anchor tests added here.
+- `pnpm -F web build` OK; `pnpm -F extension build` OK, 3.55 MB.
+- `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3227 pnpm verify:e2e`: **34 passed, 0 failed, 0 skipped** —
+  including all four capture specs and `x-depth`'s. This is the first fully green e2e run of the
+  six-round wave; every round reported between one and three failures, and all of them were either
+  the dock bound above or the shared-tree flake the perp and placement reports describe (a
+  *different* spec timing out in context setup each run, none reproducible in isolation). With one
+  worker against a settled `.next`, none recurred.
+- Captures regenerated and opened: `placement-uniswap` (strip above "Get started", UNCHECKED neutral,
+  anchor unmoved by the adapter change) and `placement-dock-fallback` (dock bottom-right on a
+  not-found page, verdict edge grey and visibly not mint). Both show what their filenames say.
+
+## Still open
+
+- **The wallet card has six priced buttons and no single "spent on this card" line.** Round 2.3
+  raised it against its own work; after 2.1 the spot card is heading the same way. This is a product
+  decision about how a card accounts for money, not integration breakage, so it is not invented here.
+- **`theme.css` is 87,376 bytes against the 96,000 ceiling** in `mount.test.tsx:105`, which Round 2.5
+  raised from 80,000. Roughly 8.6 KB of headroom and four rounds still growing the file: the next
+  wave should budget for it rather than raise the ceiling again.
+- **The 11 pre-existing impeccable radius findings** in `theme.css` that Round 2.4 noted are still
+  there, untouched by any round.
+- The deferred items in each round's own section stand as written; none of them became blocking on
+  contact with the others.

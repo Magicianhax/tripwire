@@ -116,6 +116,30 @@ describe("uniswap (live capture)", () => {
   it("readTarget for the captured URL", () => {
     expect(uniswapAdapter.readTarget(document, new URL(`https://app.uniswap.org/swap?chain=base&outputCurrency=${DEGEN}`))).toEqual({ kind: "spot", chain: "base", tokenAddress: DEGEN });
   });
+
+  /**
+   * Round 1.6 made `/explore/tokens/<chain>/<address>` a first-class anchored surface, so this
+   * page now carries a verdict instead of falling to the dock. Logged out it has no enabled
+   * review-swap, and its Swap/Limit/Send segmented control is a `role="tab"` in a tablist whose
+   * label matches ANCHOR_RE exactly. Without a reject, `anchor()` returns that tab — and the
+   * blocker binds to it, so a TRIPWIRE would cover a navigation tab rather than a trade button.
+   * Hyperliquid and Polymarket already reject toggles this way; Uniswap did not.
+   */
+  it("explore page: never anchors the Swap tab of a segmented control", () => {
+    document.body.innerHTML = `
+      <div role="tablist">
+        <button role="tab" aria-selected="true">Swap</button>
+        <button role="tab" aria-selected="false">Limit</button>
+        <button role="tab" aria-selected="false">Send</button>
+      </div>
+      <div data-testid="token-info-container">DEGEN</div>`;
+    expect(uniswapAdapter.anchor?.(document)).toBeNull();
+  });
+
+  it("still anchors a real Swap primary that is not a toggle", () => {
+    document.body.innerHTML = `<div><button data-fixture="primary">Swap</button></div>`;
+    expect(fixtureOf(uniswapAdapter.anchor?.(document))).toBe("primary");
+  });
 });
 
 describe("jumper (live capture)", () => {
