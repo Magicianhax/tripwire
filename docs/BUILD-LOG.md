@@ -1428,3 +1428,101 @@ Three render sites, because the claim can be misread at three sizes.
 **The second chip is an affordance, not a check.** A rotation post naming three tokens is about 39 credits, and a timeline of them is a day's cap in one scroll. So a post gets at most two chips; only the first pays for a chip-mode check; the second is not even built until the post is on screen, states UNCHECKED with "Also mentioned. Open to check.", and takes its verdict from the panel call the reader's own click paid for rather than buying a second one. This is the same ruling as Round 1.5's "a lazy call is a button, never a view", reached from the credit side instead of the keyboard side.
 
 **A shadow-root chip can still break its host page's layout, and the fix belongs inside the shadow root.** X sizes a post's content column to its min-content, and a `nowrap` finding inside a shadow root contributes its full width to that calculation: the shadow boundary stops styles, not intrinsic sizing. The host is therefore capped at 420px from inside its own stylesheet, because WXT's `:host { all: initial !important }` reset beats any outer inline style, and the percentage form of the cap was measured to do nothing at all. Anchor fit (non-negotiable #5) is not only about the mounted box's own width: it is about what that box does to the sizing of everything around it.
+
+---
+
+# Round 2.3 — wallet depth: what the wallet did, and who it is connected to
+
+Branch `feat/cockpit-ui`, alongside five other rounds in the same tree. Brief: `docs/IMPROVEMENT-PLAN.md` §3, Round 2.3. **8 Nansen credits spent building it**, all on fixtures, in one recording run. At runtime a wallet card still costs exactly what it cost (5 for EVM, 2 for Solana); it now has six buttons inside it that can spend more, each printing its price first.
+
+Before this round the wallet card was entirely **state** — balances, PnL, open positions. A plain spot wallet had nothing time-ordered on it at all, and nothing about where the wallet came from or who it deals with. It now has an Activity tab with a timeline, an origin block and a counterparty table.
+
+## Fixtures and credits
+
+`scripts/record-wallet-relations-fixtures.mjs` is the recorder: gap-filling, capped at 10 credits a run, cheap calls first and the 5-credit one last so a surprise on a probe cannot eat the budget the expensive call needs. It recorded `fixtures/nansen/addressTransactions.json` (1 credit), `firstFunder.json` (1), `relatedWallets.json` (1, after a free rejection) and `counterparties.json` (5) against the address every other wallet-lens fixture uses, so replay keeps describing one wallet. **Total 8 of 10.**
+
+Four things were measured rather than assumed, and three of them changed the design:
+
+- **`profiler/address/transactions` accepts `chain: "all"` — and its rows carry their own `chain`.** This is the opposite of Round 1.5.7's finding on `profiler/address/pnl`, where `"all"` was accepted and the rows came back chainless. One call covers a multi-chain wallet *and* every row can still name where it happened: the recorded page spans hyperevm, arbitrum, ethereum, bsc and robinhood in one answer. No per-chain fan-out, and no chainless rows to apologise for.
+- **`profiler/address/related-wallets` rejects `chain: "all"` (422), and its chain enum does not contain `hyperevm`** — which is the recorded wallet's *largest* chain. Passing "the wallet's biggest chain" straight through, the way Round 1.5.1 does for `dex-trades`, would have 422'd on the exact wallet every other fixture describes. The enum was read out of the endpoint's own error message, which is **free** (`x-nansen-credits-used` is null on a 422), and `pickRelatedChain` takes the largest chain that is actually in it.
+- **`profiler/address/counterparties` accepts `chain: "all"`**, as the brief assumed, so the 5-credit press covers every chain in one call. Its `counterparty_address_label` is **an array, and it is empty on 36 of the 50 recorded rows** — the majority case is an unlabelled address, not a labelled one.
+- **`first-funder` and `related-wallets` returned the same fact.** The recorded wallet's first funder is `0x1778…7770`; its single related wallet is `0x1778…7770` with `relation: "First Funder"`, the same transaction hash and the same timestamp. Two endpoints, two credits, one relationship. The card says so rather than letting a reader count it twice.
+
+## Per item
+
+### Activity feed — `profiler/address/transactions`, 1 credit, button-gated
+
+`buildWalletActivity` (`apps/web/lib/intel/wallet.ts:470`) behind `POST /api/wallet/activity`, drawn by `TimelineSection` (`apps/extension/lib/ui/WalletCard.tsx:294`) in the new Activity tab.
+
+Every value on a row is a field Nansen sent. **Direction is read off which array a token leg arrived in** (`tokens_sent` / `tokens_received`), not inferred by comparing addresses; the **counterparty is that leg's other address** with Nansen's own label when there is one; `method` is a raw contract signature and `source_type` is Nansen's own word, and neither is drawn as a motive. Nothing on a row says deposit, exit, or moved to an exchange.
+
+**21 of the 100 recorded rows carry no `volume_usd` at all.** Those render a dash, never `$0` — and because the price is missing but the quantity is not, the row still reads `Received 1.5 WETH` beside that dash. The largest *priced* leg is the one shown (token amounts are not comparable across tokens, so they never rank), with `and N more` when a transaction had several legs.
+
+**"Last active" is the newest returned row and the card says that is all it means.** `is_last_page: false` on the recorded page, so 100 rows are the newest 100 and not the window: the aside reads "100 newest" and the caption states that anything older than 30 days, or past this page, is not in the answer.
+
+One timestamp bug was fixed at source. This endpoint sends `block_timestamp` **with no zone** (`"2026-09-18T17:20:11"`) while the origin calls send `Z`. `new Date()` reads a bare datetime as *local* time, so on any machine east of UTC every row would have aged wrongly and the newest could print as being in the future. `utcIso` (`apps/web/lib/intel/wallet.ts:410`) restores the zone once, on the way out of the backend.
+
+*Tests:* `apps/web/test/wallet-round-2-3.test.ts`, six route cases plus three `utcIso` cases; `apps/extension/test/wallet-round-2-3.test.tsx`, four render cases.
+
+### Origin story — `first-funder` + `related-wallets`, **up to** 2 credits
+
+`buildWalletOrigin` (`apps/web/lib/intel/wallet.ts:557`) behind `POST /api/wallet/origin`, drawn by `OriginSection` (`apps/extension/lib/ui/WalletCard.tsx:375`).
+
+`relation` is printed as the raw Nansen string. The section says Nansen relates these wallets; it never says "same owner", "linked to" or anything a reader converts into a sybil claim, and the copy states in words that the relation is not a statement about ownership. It feeds no signal and no block, per the brief and non-negotiable #2. Both the payload test and the render test assert the absence of that vocabulary.
+
+The **price is a ceiling, not a price**: the funder lookup is EVM-only and the related lookup needs a covered chain, so a Solana wallet spends 1, an EVM wallet whose only chain is HyperEVM spends 1, and the recorded wallet spends 2. The button reads "Check origin (up to 2 credits)" and the response reports what was actually spent.
+
+Three honest empty states, each distinct: a non-EVM address is told the funder lookup covers EVM only; an EVM address Nansen has no funder for is told an empty answer here is normal and not a finding; a wallet on no covered chain is told which chains were not covered and that nothing was asked or charged.
+
+A first funder from 2021 prints its **date**, not `timeAgo` — the house helper caps at days and read "1778d ago", which is a number nobody can convert. Same shape as Round 1.5.4's Polymarket first-seen line.
+
+*Tests:* six route cases (the funder row, the verbatim relation, the double-report flag, the Solana path, the no-covered-chain path, origin refusal); five render cases including all three empty states.
+
+### Counterparties — `profiler/address/counterparties`, 5 credits, button-gated
+
+`buildWalletCounterparties` (`apps/web/lib/intel/wallet.ts:637`) behind `POST /api/wallet/counterparties`, drawn by `CounterpartySection` (`apps/extension/lib/ui/WalletCard.tsx:461`). It mirrors `/api/wallet/labels` exactly: a button that prints the price, nothing on card open, nothing on a view change.
+
+Volume **in** and volume **out** are the two figures Nansen sends and are shown as two columns, not netted and not summarised. "CEX exposure" is an interpretation of them and is computed nowhere. `is_last_page: false`, so the aside reads "50 largest returned" rather than "50".
+
+A capture found the one real ambiguity: **three of the recorded rows are all labelled "Token Millionaire"**, because one Nansen label covers many addresses. The cell now carries the short address under the label, so three differently-sized counterparties are three visibly different rows. An unlabelled counterparty — 36 of 50 — is its address, and the caption says that is a missing label, not a finding about the address.
+
+### The Hyperliquid portfolio footnote (free)
+
+The brief's Hyperliquid sections are deferred (below), but it named the footnote "the honest part [that] should ship even if the sections do not". Nansen's profiler chain enum has no HyperCore value, so a Hyperliquid account balance is genuinely *outside* the Tokens figure rather than merely missing from it. One line under the tiles, only on a wallet that has a Hyperliquid account (`apps/extension/lib/ui/WalletCard.tsx:687`).
+
+## Craft pass
+
+- **One new tab, not three sections bolted onto Overview.** The tab strip has room for four at the anchored gap ("Overview, Activity, Hyperliquid, Polymarket", verified in the regenerated captures) and the Overview Segmented control does not have room for a fourth segment. Inside the tab, Timeline and Connections are a Segmented control — the same shape Overview already uses.
+- **Opening the tab spends nothing, and neither does switching view inside it.** Round 1.5's ADR applies unchanged: the view switcher is a `radiogroup` whose arrow keys move the selection, so a spend on activation is a credit per keypress. All three calls are buttons; a test asserts that opening the tab and moving between both views calls none of them.
+- **Two-line rows, because a transaction carries four facts and a 440px card holds two columns.** What moved sits over who it moved with; the value sits over when. Four new CSS rules in `theme.css`, tokens only; the smallest new type is `0.6875rem` (11px, the floor).
+- Lucide only (`Activity`, `ArrowUpRight`, `ArrowDownLeft`, `ArrowLeftRight`, `Sprout`), no emoji, every figure carries `tw-fig`, addresses carry `tw-mono`, and the direction icon is decorative — the row says "Sent" in words.
+- Copy carries no spaced em dashes, per the house rule.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 308, web 316, extension 762** tests passed (255 / 230 / 621 at the end of Round 1.5; the deltas include Rounds 2.1, 2.2, 2.4 and 2.5 landing in the same tree).
+- `pnpm -F web build` and `pnpm -F extension build`: both OK; `/api/wallet/activity`, `/api/wallet/origin` and `/api/wallet/counterparties` are in the route manifest.
+- `TRIPWIRE_E2E_PORT=3223 pnpm -F extension exec playwright test`: 26 passed, 5 skipped, 3 failed — Dexscreener dock placement, the perp Traders tab and the X quoted-token spec, all in other rounds' in-flight files and none of them in this round's paths. Re-run alone, `@smoke Wallet lens` passes. Port 3223, because port 3000 is held by a server this session did not start.
+- Captures (`TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3223 … captures`, 4 passed): **new** `wallet-card-activity`, `wallet-card-connections`; **regenerated** `wallet-card-overview`, `wallet-card-defi`, `wallet-card-performance`, `wallet-card-overview-expanded`, `wallet-card-hyperliquid`, `wallet-card-expanded`. Every one was opened. Four findings came out of them and are fixed above: the timeline row had no quantity and no chain, three counterparty rows shared one label with nothing to tell them apart, the first funder read "1778d ago", and the Hyperliquid footnote ran to four lines.
+
+## Deferred, and why
+
+- **Trading style from `profiler/dex-trades`.** Round 1.5 measured empty pages for three public addresses over 30 and 360 days on Ethereum, and its own note said to plan this section as "may be empty for this key". Its row shape beyond `trader_address_label` has never been observed, and rendering a median trade size and a market-cap band off a shape nobody has seen is the same guess as Round 1.5's unpopulated `protocols[]`. The 1-credit call and its button already ship.
+- **The three free Hyperliquid info types, the account-value curve, and the linked-author wallet block.** These need `apps/web/lib/hyperliquid/**`, `apps/web/lib/intel/badges.ts`, `VenueBody.tsx` and `BadgeCard.tsx`, none of which this round owns while five other implementers are in the same tree. The footnote — the half the brief singled out as shippable alone — is in. Extracting `Overview` from `WalletCard` was left undone on purpose: an exported component with no consumer is half a refactor.
+- **A second page of counterparties.** Free in `per_page` terms and not free in credits: another page is another 5.
+
+## Notes for the next round
+
+- The wallet card now has **six** priced buttons (2, 1, 1, up to 2, 5, 100) and still no single "what has this card spent" line. `lens.credits` is summed correctly per press and is visible only in the ledger. That is now the most useful small thing left on this card.
+- `profiler/address/transactions` supports `filters` and `order_by`, neither of which this round sends. A minimum `value_usd` filter is the obvious lever if a busy wallet's timeline turns out to be dust.
+- The counterparty rows carry `tokens_info` with per-token transfer counts; only the most-transferred symbol is mapped and the rest is dropped at the backend rather than pushed across the bridge.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**A wallet's chain list, not its biggest chain, is what a chain-scoped call gets.** `profiler/address/related-wallets` takes one chain, accepts no `"all"`, and its enum does not include `hyperevm` — the largest chain of the very wallet every fixture in this repo describes. Round 1.5.1 sends `portfolio.chains[0]` to `dex-trades` and would have 422'd here. So `/api/wallet/origin` takes the wallet's ordered chain list and the backend picks the largest chain the endpoint actually covers, with the enum read out of the endpoint's own 422 (free) rather than guessed from documentation. When no chain is covered, nothing is asked and nothing is charged, and the card names the chains that were not covered.
+
+**Two endpoints returning one fact must be shown as one fact.** `first-funder` and `related-wallets` both returned `0x1778…7770`, the same transaction and the same timestamp, for 1 credit each. Rendered as two independent blocks, that reads as two pieces of corroborating evidence about the wallet's origin, which is exactly the shape a reader turns into a sybil claim. The response carries `firstFunderAlsoRelated` and the card states in words that the two rows are one relationship reported twice.
+
+**A price that varies with the wallet is stated as a ceiling.** The origin press makes two calls on an EVM wallet with a covered chain and one on a Solana wallet or an EVM wallet without one. Non-negotiable #8 requires the price before the press; it does not require a single number. "Up to 2 credits" over-states nothing and the response reports what was actually spent, where a flat "2 credits" would charge the user in words for a call that was never made.
+
+**The row says which chain, because this time Nansen said.** `profiler/address/pnl` accepts `chain: "all"` and returns chainless rows, which Round 1.5.7 had to apologise for on screen. `profiler/address/transactions` accepts `chain: "all"` and returns a `chain` on every row. The two look identical in a request body and are opposite in what they license the card to say, which is why each one was probed on its own first live call rather than reasoned about from the other.

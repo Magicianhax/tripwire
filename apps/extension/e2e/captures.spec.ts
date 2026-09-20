@@ -172,6 +172,25 @@ test("wallet lens captures", async ({ context, extensionId }) => {
   await shot(card, "wallet-card-performance");
   await card.getByRole("radio", { name: "Summary" }).click();
 
+  // wallet-card-activity (Round 2.3): the timeline the card never had. Opening the tab spends
+  // nothing; the row of buttons inside it each print a price first.
+  await card.getByRole("tab", { name: "Activity" }).click();
+  await card.getByRole("button", { name: /Load recent activity \(1 credit\)/ }).click();
+  await expect(card.locator(".tw-activity-rows li").first()).toBeVisible({ timeout: 15_000 });
+  await page.waitForTimeout(300);
+  await shot(card, "wallet-card-activity");
+
+  // wallet-card-connections (Round 2.3): the first funder, the related wallets with Nansen's
+  // own relation word, and the 5-credit counterparty table.
+  await card.getByRole("radio", { name: "Connections" }).click();
+  await card.getByRole("button", { name: /Check origin \(up to 2 credits\)/ }).click();
+  await expect(card.locator('[aria-label="Origin and related wallets"]')).toContainText(/First funded by|first-funder/, { timeout: 15_000 });
+  await card.getByRole("button", { name: /Load counterparties \(5 credits\)/ }).click();
+  await expect(card.locator('[aria-label="Counterparties"] tbody tr').first()).toBeVisible({ timeout: 15_000 });
+  await page.waitForTimeout(300);
+  await shot(card, "wallet-card-connections");
+  await card.getByRole("tab", { name: "Overview" }).click();
+
   // wallet-card-overview-expanded: the Summary view with room for two columns, so the DeFi
   // block and the allocation chart sit side by side under a full-width row of tiles.
   await card.getByRole("button", { name: "Expand card" }).click();
@@ -333,6 +352,12 @@ test("expand and perp depth captures", async ({ context }) => {
   await page.waitForTimeout(200);
   await shot(pop, "perp-cohorts");
 
+  // perp-oi-history (Round 2.5): open interest over time, from the only venue in the table that
+  // publishes a history, with Binance's name and symbol on the legend rather than the coin's.
+  await pop.locator('section[aria-label="Open interest over time"]').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(200);
+  await shot(pop, "perp-oi-history");
+
   await pop.getByRole("tab", { name: "Liquidations" }).click();
   const compactLadder = pop.locator(".tw-liquidation-chart svg");
   await expect(compactLadder).toBeVisible();
@@ -359,6 +384,14 @@ test("expand and perp depth captures", async ({ context }) => {
     await expect(bars.nth(1)).toBeFocused();
   }
   await page.screenshot({ path: path.resolve("../../scratch/review/liquidation-expanded.png") });
+
+  // perp-ladder-cohorts (Round 2.5): the picker that can buy the same ladder for another
+  // population. Three of the four choices print their price; nothing has been pressed, so
+  // nothing has been spent, and the shot is of that state.
+  await expect(pop.locator(".tw-cohort-picker")).toBeVisible();
+  await pop.locator('section[aria-label="Liquidation ladder"]').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(200);
+  await shot(pop, "perp-ladder-cohorts");
 
   // perp-traders: the tab that costs 11 credits, with its leaderboard from the fixtures.
   await pop.getByRole("tab", { name: /Traders/ }).click();
@@ -410,6 +443,21 @@ test("expand and perp depth captures", async ({ context }) => {
   await spotCard.getByRole("tab", { name: /Holders/ }).click();
   await expect(spotCard.locator(".tw-table tbody tr")).toHaveCount(6, { timeout: 20000 });
   await shot(spot, "spot-holders-links");
+
+  // Round 2.1: the sequence half of the card. The tape is the post-time divider and the labelled
+  // wallets; the winners tab is the five-credit "have they already sold?" read.
+  await spotCard.getByRole("tab", { name: /Tape/ }).click();
+  await expect(spotCard.locator(".tw-tape-rows li").first()).toBeVisible({ timeout: 20_000 });
+  await shot(spot, "spot-tape");
+  await spotCard.getByRole("tab", { name: /Winners/ }).click();
+  // Scoped to the panel on screen: every tab's markup stays in the DOM, so an unscoped table
+  // selector resolves to a hidden row in the Holders panel next door.
+  await expect(spotCard.locator('[role="tabpanel"]:not([hidden]) .tw-table tbody tr').first()).toBeVisible({ timeout: 20_000 });
+  await shot(spot, "spot-winners");
+  // Round 1.6.1: the Dexscreener block under the Nansen token record, each figure named.
+  await spotCard.getByRole("tab", { name: /Risk/ }).click();
+  await expect(spotCard.locator('section[aria-label="Market structure"]')).toBeVisible({ timeout: 20_000 });
+  await shot(spot, "spot-market-structure");
   await spot.close();
 });
 
@@ -449,6 +497,14 @@ test("prediction card captures", async ({ context }) => {
   // prediction-book: both outcomes, both sides, free.
   await pop.getByRole("button", { name: "Expand card" }).click();
   await expect(pop).toHaveAttribute("data-size", "expanded");
+
+  // prediction-markets: the event's other rungs, free, two columns with the line that says they
+  // are evidence and not a verdict (Round 2.2).
+  await pop.getByRole("tab", { name: "Markets" }).click();
+  await expect(pop.locator(".tw-market-option").first()).toBeVisible();
+  await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await page.waitForTimeout(300);
+  await shot(pop, "prediction-markets");
   await pop.getByRole("tab", { name: "Book" }).click();
   await expect(pop.locator('.tw-book-side[data-side="ask"] li').first()).toBeVisible({ timeout: 20_000 });
   await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));

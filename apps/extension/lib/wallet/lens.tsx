@@ -1,7 +1,23 @@
 import { MAX_WALLET_MARKERS, walletKey, type WalletRef } from "@tripwire/core";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
-import { walletDefi, walletLabels, walletLens, walletUnrealized, type ApiResult } from "../api";
-import type { WalletDefiResponse, WalletLensResponse, WalletUnrealizedResponse } from "../api-types";
+import {
+  walletActivity,
+  walletCounterparties,
+  walletDefi,
+  walletLabels,
+  walletLens,
+  walletOrigin,
+  walletUnrealized,
+  type ApiResult,
+} from "../api";
+import type {
+  WalletActivityResponse,
+  WalletCounterpartiesResponse,
+  WalletDefiResponse,
+  WalletLensResponse,
+  WalletOriginResponse,
+  WalletUnrealizedResponse,
+} from "../api-types";
 import { cardSize, setCardSize, type CardSize } from "../card-size";
 import { runContentTask } from "../content-lifecycle";
 import { rememberWallet } from "../recent-wallets";
@@ -52,6 +68,10 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
    * what the user already paid for in this page session. */
   const defiByWallet = new Map<string, WalletDefiResponse>();
   const unrealizedByWallet = new Map<string, WalletUnrealizedResponse>();
+  /** Round 2.3: the Activity tab's three answers, kept per wallet for the same reason. */
+  const activityByWallet = new Map<string, WalletActivityResponse>();
+  const originByWallet = new Map<string, WalletOriginResponse>();
+  const counterpartiesByWallet = new Map<string, WalletCounterpartiesResponse>();
   const markers: Marker[] = [];
 
   let open: { key: string; card: Mount; draw: () => void } | null = null;
@@ -111,6 +131,12 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
             onLoadDefi={() => loadDefi(key)}
             unrealized={unrealizedByWallet.get(walletKey(marker.ref)) ?? null}
             onLoadUnrealized={() => loadUnrealized(key)}
+            activity={activityByWallet.get(walletKey(marker.ref)) ?? null}
+            onLoadActivity={() => loadActivity(key)}
+            origin={originByWallet.get(walletKey(marker.ref)) ?? null}
+            onLoadOrigin={() => loadOrigin(key)}
+            counterparties={counterpartiesByWallet.get(walletKey(marker.ref)) ?? null}
+            onLoadCounterparties={() => loadCounterparties(key)}
           />
         </Popover>,
       );
@@ -177,6 +203,49 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
 
     unrealizedByWallet.set(walletKey(marker.ref), result.data);
     loaded.set(walletKey(marker.ref), { ...current, credits: current.credits + result.data.credits });
+    if (open?.key === key) open.draw();
+  }
+
+  /**
+   * Round 2.3 — the Activity tab's three calls: 1 credit, up to 2, and 5. Reached only from the
+   * buttons inside that tab, which state their price; opening the tab itself spends nothing.
+   *
+   * `walletOrigin` is handed the wallet's own chain order rather than one chain, because
+   * `profiler/address/related-wallets` takes a single chain, has no `"all"`, and frequently does
+   * not cover the wallet's largest one. The backend picks the largest chain it does cover.
+   */
+  async function loadActivity(key: string): Promise<void> {
+    await loadInto(key, activityByWallet, (address) => walletActivity(address), "Nansen Profiler");
+  }
+
+  async function loadOrigin(key: string): Promise<void> {
+    await loadInto(key, originByWallet, (address, lens) => walletOrigin(address, lens.portfolio?.chains ?? null), "Nansen Profiler");
+  }
+
+  async function loadCounterparties(key: string): Promise<void> {
+    await loadInto(key, counterpartiesByWallet, (address) => walletCounterparties(address), "Nansen Profiler");
+  }
+
+  /** One lazy call: fetch it, remember it per wallet, and add what it cost to the card's total. */
+  async function loadInto<T extends { credits: number }>(
+    key: string,
+    store: Map<string, T>,
+    fetcher: (address: string, lens: WalletLensResponse) => Promise<ApiResult<T>>,
+    source: string,
+  ): Promise<void> {
+    const marker = find(key);
+    const current = marker ? loaded.get(walletKey(marker.ref)) : undefined;
+    if (!marker || !current?.address) return;
+
+    const result = await fetcher(current.address, current);
+    if (!result.ok) throw new Error(failure(result));
+
+    store.set(walletKey(marker.ref), result.data);
+    loaded.set(walletKey(marker.ref), {
+      ...current,
+      sources: current.sources.includes(source) ? current.sources : [...current.sources, source],
+      credits: current.credits + result.data.credits,
+    });
     if (open?.key === key) open.draw();
   }
 

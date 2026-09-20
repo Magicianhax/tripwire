@@ -92,7 +92,17 @@ export type EntityPnlSummary = {
   traded_token_count?: number | null;
   top5_tokens?: { token_symbol: string; chain: string; token_address: string; realized_pnl: number | null }[] | null;
 };
-export type PerpPnlSummary = { realized_pnl_usd: number | null; win_rate: number | null; closed_trade_count?: number | null };
+export type PerpPnlSummary = {
+  realized_pnl_usd: number | null;
+  win_rate: number | null;
+  closed_trade_count?: number | null;
+  /** Round 2.5: already in the recorded response, and the reason a win rate is readable rather
+   * than a bare percentage — 41.4% means something different across 12 trades and 585,166. */
+  winning_trade_count?: number | null;
+  traded_coin_count?: number | null;
+  /** A fraction (−0.0312 is −3.12%), the same convention as the leaderboard's ROI. */
+  realized_pnl_percent?: number | null;
+};
 export type PmAddressSummary = {
   total_pnl_usd: number | null;
   realized_pnl_usd: number | null;
@@ -177,6 +187,117 @@ export type AddressPnlRow = {
  * defensively, exactly like `profiler/labels`, and an absent label stays an empty state.
  */
 export type DexTradeRow = { trader_address_label?: string | null; block_timestamp?: string | null };
+
+// ---- Round 2.3: wallet depth (activity, origin, counterparties) ------------------------------
+
+/**
+ * One token leg of a `profiler/address/transactions` row. Both `price_usd` and `value_usd` are
+ * frequently `null` (every HyperEVM leg in the recorded page is), so a leg is shown with its
+ * token amount and no dollar figure rather than a `$0`.
+ *
+ * `from_address_label` / `to_address_label` are Nansen's own strings ("Token Millionaire",
+ * "High Activity [0x6b9e77]", "lighter.eth"). They are rendered verbatim and length-capped:
+ * they are third-party text, and a row without one is an address, never a described actor.
+ */
+export type AddressTransactionToken = {
+  token_symbol?: string | null;
+  token_amount?: number | null;
+  price_usd?: number | null;
+  value_usd?: number | null;
+  token_address?: string | null;
+  chain?: string | null;
+  from_address?: string | null;
+  to_address?: string | null;
+  from_address_label?: string | null;
+  to_address_label?: string | null;
+};
+
+/**
+ * `profiler/address/transactions` (Round 2.3), **1 credit**.
+ *
+ * **Measured on the first live call, as the brief required: `chain: "all"` is ACCEPTED, and
+ * unlike `profiler/address/pnl` the rows *do* carry their own `chain`** — the recorded page
+ * spans hyperevm, arbitrum, ethereum, bsc and robinhood in one answer. So one call covers a
+ * multi-chain wallet and every row can still name the chain it happened on.
+ *
+ * `block_timestamp` arrives **without a zone** ("2026-09-18T17:20:11"), which `new Date()` would
+ * read as local time; it is normalised to UTC before it leaves the backend.
+ */
+export type AddressTransactionRow = {
+  chain?: string | null;
+  /** The raw contract signature ("transfer(address,uint256)"), not a human sentence. */
+  method?: string | null;
+  tokens_sent?: AddressTransactionToken[] | null;
+  tokens_received?: AddressTransactionToken[] | null;
+  /** Null on 21 of the 100 recorded rows: an unpriced transfer, not a zero-value one. */
+  volume_usd?: number | null;
+  block_timestamp?: string | null;
+  transaction_hash?: string | null;
+  source_type?: string | null;
+};
+
+/**
+ * `profiler/address/first-funder` (Round 2.3), **1 credit**, EVM only, `chain` fixed to `"all"`.
+ * An empty `data: []` is documented as normal. The published credits table omits this endpoint;
+ * the CLI's cost map prices it at 1 and the recorded call was billed 1.
+ */
+export type FirstFunderRow = {
+  wallet_address?: string | null;
+  first_funder_address?: string | null;
+  /** Nansen's own name for the funder ("High Activity"), never an ownership claim. */
+  first_funder_name?: string | null;
+  transaction_hash?: string | null;
+  block_timestamp?: string | null;
+  chain?: string | null;
+};
+
+/**
+ * `profiler/address/related-wallets` (Round 2.3), **1 credit**, chain-scoped.
+ *
+ * **Measured: `chain: "all"` is REJECTED (422).** The enum the error names is
+ * `RELATED_WALLET_CHAINS` below. `relation` is rendered as the raw Nansen string and never
+ * translated into "same owner" or "linked to".
+ */
+export type RelatedWalletRow = {
+  address?: string | null;
+  address_label?: string | null;
+  /** Raw, e.g. "First Funder". Never re-worded. */
+  relation?: string | null;
+  transaction_hash?: string | null;
+  block_timestamp?: string | null;
+  order?: number | null;
+  chain?: string | null;
+};
+
+/**
+ * The chains `profiler/address/related-wallets` accepts, read from its own 422 (free, no credit)
+ * on 2026-09-20. It is the only wallet call in this family with **no `"all"`**, and it does not
+ * carry `hyperevm` — which is the recorded wallet's largest chain, so "the wallet's biggest
+ * chain" is not a safe input. The caller picks the largest chain that is in this list.
+ */
+export const RELATED_WALLET_CHAINS = [
+  "arbitrum", "arc", "avalanche", "base", "bitcoin", "bnb", "ethereum", "injective", "iotaevm",
+  "linea", "mantle", "mantra", "monad", "near", "optimism", "plasma", "polygon", "robinhood",
+  "sei", "solana", "sonic", "starknet", "sui", "ton", "tron",
+] as const;
+
+/**
+ * `profiler/address/counterparties` (Round 2.3), **5 credits** — button-gated, never a card load.
+ *
+ * **Measured: `chain: "all"` is ACCEPTED**, so one call covers every chain. `counterparty_address_label`
+ * is an **array and is empty on 36 of the 50 recorded rows**, so an unlabelled counterparty
+ * renders as its address. Volume in and out are separate fields; neither is a claim about intent.
+ */
+export type CounterpartyRow = {
+  counterparty_address?: string | null;
+  counterparty_address_label?: string[] | null;
+  interaction_count?: number | null;
+  total_volume_usd?: number | null;
+  volume_in_usd?: number | null;
+  volume_out_usd?: number | null;
+  tokens_info?: { token_symbol?: string | null; token_address?: string | null; num_transfer?: number | string | null }[] | null;
+};
+
 /** Wallet lens: how long each block of a wallet's profile stays fresh. */
 export const WALLET_BALANCE_TTL = 30 * MIN;
 export const WALLET_POSITIONS_TTL = 10 * MIN;
@@ -187,6 +308,14 @@ export const WALLET_LABELS_TTL = 24 * HOUR;
 export const WALLET_PNL_ROWS = 50;
 /** Round 1.5.1: the window `profiler/dex-trades` looks back over for the trade label. */
 export const WALLET_TRADE_WINDOW_DAYS = 30;
+/** Round 2.3: the activity feed's window and page size (100 is the documented `per_page` cap). */
+export const WALLET_ACTIVITY_WINDOW_DAYS = 30;
+export const WALLET_ACTIVITY_ROWS = 100;
+/** Round 2.3: the counterparty window and page size. 5 credits, so one page and no fan-out. */
+export const WALLET_COUNTERPARTY_WINDOW_DAYS = 30;
+export const WALLET_COUNTERPARTY_ROWS = 50;
+/** Round 2.3: which wallet first funded an address never changes, so the answer keeps for a day. */
+export const WALLET_ORIGIN_TTL = 24 * HOUR;
 
 export type AddressBalanceRow = {
   chain: string;
@@ -230,6 +359,59 @@ export type PmAddressTrade = {
  * 5 credits per token per day.
  */
 export const INDICATORS_TTL = 24 * HOUR;
+
+// ---- Round 2.1: the spot card's depth sections ------------------------------------------------
+// Each of these is one credit or five, tab- or button-gated, and never part of a card's load.
+
+/** The tape is a sequence, so it is cached for about as long as a reader spends looking at it. */
+export const TAPE_TTL = 2 * MIN;
+/** Ordered newest-first, so a day's range is the ceiling and the rows decide the real span. */
+export const TAPE_WINDOW_DAYS = 1;
+/** `per_page` is not priced. A liquid token's 100 most recent trades spanned fourteen minutes in
+ * the recording run, so a small page would be dust and MEV; the floor is applied on our side. */
+export const TAPE_PAGE = 100;
+
+/** Five credits: bought once per token per five minutes, and only from the expanded card. */
+export const WINNERS_TTL = 5 * MIN;
+export const WINNERS_WINDOW_DAYS = 30;
+
+export const TRANSFERS_TTL = 5 * MIN;
+export const TRANSFERS_WINDOW_DAYS = 1;
+
+/** Jupiter DCA vaults are a trailing 14 days server-side and move slowly. */
+export const DCA_TTL = 10 * MIN;
+
+// ---- Round 1.6.2: the batched token-screener ---------------------------------------------------
+
+/** One call covers a page of the catalog; 100 is far above the catalog's own 25-row search. */
+export const SCREENER_PAGE = 100;
+/**
+ * Short on purpose. `token_age_days` would cache for a day, but `price_change` is a live 24h
+ * figure arriving in the same response, and the half that goes stale is the half that misleads.
+ */
+export const SCREENER_TTL = 2 * MIN;
+
+/**
+ * `token-screener` as the API answered it on 2026-09-20. Every field optional: this is a
+ * recorded shape, not a contract, and a row that omits one renders a dash rather than a zero.
+ *
+ * `price_change` is a **fraction** (`-0.0735` is `-7.35%`), unlike Dexscreener's `priceChange`,
+ * which is already a percentage. Both go through `fractionToPct` / raw in core so the two
+ * conventions cannot be printed as each other.
+ */
+export type TokenScreenerRow = {
+  chain?: string | null;
+  token_address?: string | null;
+  token_symbol?: string | null;
+  token_age_days?: number | null;
+  price_usd?: number | null;
+  price_change?: number | null;
+  market_cap_usd?: number | null;
+  fdv?: number | null;
+  fdv_mc_ratio?: number | null;
+  liquidity?: number | null;
+  volume?: number | null;
+};
 
 export const nansen = {
   /**
@@ -404,6 +586,78 @@ export const nansen = {
     });
   },
 
+  /**
+   * Wallet card, Activity view (Round 2.3): the time-ordered feed, **1 credit**, lazy.
+   *
+   * `chain: "all"` was probed on the first live call and accepted, and the rows carry their own
+   * chain, so this is one call for a multi-chain wallet rather than a per-chain fan-out.
+   * `hide_spam_token` defaults true server-side and is sent explicitly so the request says so.
+   */
+  addressTransactions: (address: string) => {
+    const to = bucketNow(WALLET_BALANCE_TTL);
+    return nansenPost<Paged<AddressTransactionRow>>({
+      name: "addressTransactions",
+      path: "profiler/address/transactions",
+      body: {
+        address,
+        chain: "all",
+        date: { from: ymd(new Date(to.getTime() - WALLET_ACTIVITY_WINDOW_DAYS * DAY)), to: ymd(to) },
+        filters: {},
+        pagination: { page: 1, per_page: WALLET_ACTIVITY_ROWS },
+      },
+      ttlMs: WALLET_BALANCE_TTL,
+    });
+  },
+
+  /**
+   * Wallet card, Connections view (Round 2.3): the address that first funded this one,
+   * **1 credit**, lazy, **EVM only**. `chain` is fixed to `"all"` by the endpoint itself and it
+   * rejects any extra field, so there is nothing to bucket and the answer keeps for a day.
+   */
+  addressFirstFunder: (address: string) =>
+    nansenPost<Paged<FirstFunderRow>>({
+      name: "firstFunder",
+      path: "profiler/address/first-funder",
+      body: { address, chain: "all" },
+      ttlMs: WALLET_ORIGIN_TTL,
+    }),
+
+  /**
+   * Wallet card, Connections view (Round 2.3): wallets Nansen relates to this one, **1 credit**,
+   * lazy. The only call in this family with no `"all"` chain, so `chain` is required and must be
+   * one of `RELATED_WALLET_CHAINS`.
+   */
+  addressRelatedWallets: (address: string, chain: string) =>
+    nansenPost<Paged<RelatedWalletRow>>({
+      name: "relatedWallets",
+      path: "profiler/address/related-wallets",
+      body: { address, chain, pagination: { page: 1, per_page: 50 } },
+      ttlMs: WALLET_ORIGIN_TTL,
+    }),
+
+  /**
+   * Wallet card, Connections view (Round 2.3): top counterparties by volume, **5 credits**.
+   *
+   * The second 5-credit call a wallet card can make, and like `profiler/labels` it is reachable
+   * only from a button that prints its price. `chain: "all"` was probed and accepted, so this is
+   * one call for the whole wallet; one page, because a second page is another 5 credits.
+   */
+  addressCounterparties: (address: string) => {
+    const to = bucketNow(WALLET_BALANCE_TTL);
+    return nansenPost<Paged<CounterpartyRow>>({
+      name: "counterparties",
+      path: "profiler/address/counterparties",
+      body: {
+        address,
+        chain: "all",
+        date: { from: ymd(new Date(to.getTime() - WALLET_COUNTERPARTY_WINDOW_DAYS * DAY)), to: ymd(to) },
+        filters: {},
+        pagination: { page: 1, per_page: WALLET_COUNTERPARTY_ROWS },
+      },
+      ttlMs: WALLET_BALANCE_TTL,
+    });
+  },
+
   perpScreener: (token_symbol: string) => {
     // `to` bucketed to the TTL, `from` derived from it: one cache key per 2-minute window.
     const to = bucketNow(PERP_SCREENER_TTL);
@@ -421,6 +675,30 @@ export const nansen = {
       name: "perpPositions",
       path: "tgm/perp-positions",
       body: { token_symbol, label_type: "smart_money", pagination: { page: 1, per_page: 50 }, order_by: [{ field: "position_value_usd", direction: "DESC" }] },
+      ttlMs: 2 * MIN,
+    }),
+
+  /**
+   * The same ladder for a cohort other than Smart Money (Round 2.5). **5 credits**, so it is
+   * never part of a card load or of opening a tab — only of pressing a button that states the
+   * price.
+   *
+   * It is deliberately a *different* `name` from `perpPositions`, for two reasons: the cache
+   * and the ledger must not conflate two populations of the same coin, and replay needs a
+   * recorded answer that is actually different. The recorded `all_traders` page is $1.71B
+   * across its 50 rows against Smart Money's $573M — and the same wallet carries a different
+   * label in each ("Uses \"EGAF\" HL Referral Code" against "Abraxas Capital"), which is why
+   * a label from this call is shown as a label and never as an identity.
+   *
+   * One fixture serves all three cohorts in replay: the round's budget bought one live cohort,
+   * and the shape is the same for the other two.
+   */
+  perpPositionsCohort: (token_symbol: string, label_type: "all_traders" | "whale" | "public_figure") =>
+    nansenPost<Paged<PerpPosition>>({
+      name: "perpPositionsCohort",
+      path: "tgm/perp-positions",
+      body: { token_symbol, label_type, pagination: { page: 1, per_page: 50 }, order_by: [{ field: "position_value_usd", direction: "DESC" }] },
+      // The cache key is the path plus the body, so the three cohorts never share an entry.
       ttlMs: 2 * MIN,
     }),
 
@@ -529,6 +807,125 @@ export const nansen = {
         order_by: [{ field: "value_usd", direction: "DESC" }],
       },
       ttlMs: 10 * MIN,
+    }),
+
+  /**
+   * Spot card, Tape tab (Round 2.1): the labelled trade tape, **1 credit**, lazy.
+   *
+   * `per_page` is not priced, so the page is large and the value floor is applied on our side —
+   * measured on the recorded WIF page, 100 trades span **fourteen minutes** on a liquid token, so
+   * a small page ordered by time is dust and MEV and nothing else. `order_by: block_timestamp`
+   * was verified live rather than guessed; sequence is the whole point of this section.
+   */
+  tokenDexTrades: (chain: string, token_address: string) => {
+    const to = bucketNow(TAPE_TTL);
+    return nansenPost<Paged<Record<string, unknown>>>({
+      name: "tokenDexTrades",
+      path: "tgm/dex-trades",
+      body: {
+        chain,
+        token_address,
+        date: { from: ymd(new Date(to.getTime() - TAPE_WINDOW_DAYS * DAY)), to: ymd(to) },
+        filters: {},
+        pagination: { page: 1, per_page: TAPE_PAGE },
+        order_by: [{ field: "block_timestamp", direction: "DESC" }],
+      },
+      ttlMs: TAPE_TTL,
+    });
+  },
+
+  /**
+   * Spot card, Winners tab (Round 2.1): who made money on this token and whether they still hold
+   * it. **5 credits**, expanded card only, and never part of a card's load.
+   *
+   * `premium_labels: false` is explicit: the default is a 150-credit call, which is the worst
+   * failure mode in this repo. `order_by` is `pnl_usd_realised` because the API's own 422 named
+   * the enum — `realized_pnl` was rejected with "Valid options are: 'pnl_usd_realised',
+   * 'pnl_usd_unrealised', 'pnl_usd_total', 'roi_percent_total', …" — so this is measured, not
+   * guessed, and a rejected field would have been a 400 in production.
+   */
+  tokenPnlLeaderboard: (chain: string, token_address: string) => {
+    const to = bucketNow(WINNERS_TTL);
+    return nansenPost<Paged<Record<string, unknown>>>({
+      name: "tokenPnlLeaderboard",
+      path: "tgm/pnl-leaderboard",
+      body: {
+        chain,
+        token_address,
+        date: { from: ymd(new Date(to.getTime() - WINNERS_WINDOW_DAYS * DAY)), to: ymd(to) },
+        filters: {},
+        premium_labels: false,
+        pagination: { page: 1, per_page: 20 },
+        order_by: [{ field: "pnl_usd_realised", direction: "DESC" }],
+      },
+      ttlMs: WINNERS_TTL,
+    });
+  },
+
+  /**
+   * Spot card, Flow tab (Round 2.1): the transfers behind an exchange flow line, **1 credit**,
+   * bought by a button that prints its price.
+   *
+   * Ordered by value so the list is the movements worth naming. A transfer is a transfer: the
+   * card states the wallets and the amount and never a motive, because a CEX deposit is custody
+   * moving and not a sale.
+   */
+  tokenTransfers: (chain: string, token_address: string) => {
+    const to = bucketNow(TRANSFERS_TTL);
+    return nansenPost<Paged<Record<string, unknown>>>({
+      name: "tokenTransfers",
+      path: "tgm/transfers",
+      body: {
+        chain,
+        token_address,
+        date: { from: ymd(new Date(to.getTime() - TRANSFERS_WINDOW_DAYS * DAY)), to: ymd(to) },
+        filters: {},
+        pagination: { page: 1, per_page: 25 },
+        order_by: [{ field: "transfer_value_usd", direction: "DESC" }],
+      },
+      ttlMs: TRANSFERS_TTL,
+    });
+  },
+
+  /**
+   * Spot card, Tape tab (Round 2.1): open Jupiter DCA vaults, **1 credit**, Solana only.
+   *
+   * There is no `chain` parameter — the endpoint is Solana-only and the guard is in the caller,
+   * hard, because a credit spent on an EVM card buys nothing. The trailing window is fixed at 14
+   * days server-side with no date parameter, so closed vaults older than that do not exist. An
+   * empty answer is the **normal** case (measured: the recorded liquid Solana token has none),
+   * and the section hides itself rather than printing zeroes.
+   */
+  jupDca: (token_address: string) =>
+    nansenPost<Paged<Record<string, unknown>>>({
+      name: "jupDca",
+      path: "tgm/jup-dca",
+      body: { token_address, filters: {}, pagination: { page: 1, per_page: 25 } },
+      ttlMs: DCA_TTL,
+    }),
+
+  /**
+   * Markets catalog enrichment (Round 1.6.2): **1 credit per call, whatever it names.**
+   *
+   * `filters.token_address` takes an **array** and `chains` takes one to five, both measured on
+   * the first live call, so one credit enriches a whole catalog page rather than one row. No date
+   * range is needed or sent (also measured) — the window is `timeframe`.
+   *
+   * The TTL is short because `price_change` is a live 24h figure; `token_age_days` would happily
+   * cache for a day but it arrives in the same response, and a stale price change is the half
+   * that can mislead.
+   */
+  tokenScreener: (chains: string[], token_address: string[]) =>
+    nansenPost<Paged<TokenScreenerRow>>({
+      name: "tokenScreener",
+      path: "token-screener",
+      body: {
+        chains,
+        timeframe: "24h",
+        filters: { token_address },
+        pagination: { page: 1, per_page: SCREENER_PAGE },
+      },
+      ttlMs: SCREENER_TTL,
     }),
 
   /** Prediction card, expanded only: the market's resting book, one row per price level. */

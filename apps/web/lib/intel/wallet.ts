@@ -1,9 +1,19 @@
 import { classify, cleanLabel, isEvmAddress, nansenWalletUrl, type Chain, type LabelKind } from "@tripwire/core";
 import { isReplay, PremiumDisabled } from "../nansen/client";
-import { nansen, WALLET_PNL_WINDOW_DAYS, type AddressBalanceRow } from "../nansen/endpoints";
+import {
+  nansen,
+  RELATED_WALLET_CHAINS,
+  WALLET_ACTIVITY_WINDOW_DAYS,
+  WALLET_COUNTERPARTY_WINDOW_DAYS,
+  WALLET_PNL_WINDOW_DAYS,
+  type AddressBalanceRow,
+  type AddressTransactionRow,
+  type FirstFunderRow,
+  type RelatedWalletRow,
+} from "../nansen/endpoints";
 import { replayResolution, resolveEns, resolveSns } from "../wallet/names";
 import { hyperliquidProfile, polymarketProfile, type HyperliquidBadge, type PolymarketBadge } from "./badges";
-import { settle } from "./util";
+import { settle, type Sourced } from "./util";
 
 /**
  * The wallet lens: everything Tripwire knows about one wallet somebody shared.
@@ -385,6 +395,272 @@ export async function buildWalletUnrealized(address: string): Promise<WalletUnre
     windowDays: WALLET_PNL_WINDOW_DAYS,
     credits: WALLET_UNREALIZED_CREDITS,
     errors: pnl.error ? [`Nansen unrealized PnL: ${pnl.error}`] : [],
+  };
+}
+
+// ---- Round 2.3: wallet depth — the activity feed, the origin story and the counterparties ----
+
+/**
+ * Nansen's `block_timestamp` comes back two ways: `"2021-11-07T16:34:35Z"` on the origin calls
+ * and **`"2026-09-18T17:20:11"` with no zone at all** on `profiler/address/transactions`. A bare
+ * datetime is read as *local* time by `new Date()`, which on a UTC+X machine would age every row
+ * wrongly and could print a future timestamp. Nansen's figures are UTC, so the zone is restored
+ * here, once, on the way out of the backend.
+ */
+export function utcIso(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const value = raw.trim();
+  if (!value) return null;
+  const zoned = /(?:Z|[+-]\d{2}:?\d{2})$/.test(value) ? value : `${value.replace(" ", "T")}Z`;
+  return Number.isNaN(new Date(zoned).getTime()) ? null : zoned;
+}
+
+/** Third-party text on its way to a Shadow-DOM render: trimmed, capped, never empty-as-empty. */
+const text = (raw: unknown, max = 48): string | null => {
+  if (typeof raw !== "string") return null;
+  const value = raw.trim();
+  return value ? value.slice(0, max) : null;
+};
+
+export type WalletActivityRow = {
+  timeIso: string | null;
+  /** Present on every recorded row: `chain: "all"` still says which chain each one happened on. */
+  chain: string | null;
+  /** Read off which array the legs are in, not inferred from addresses. */
+  direction: "sent" | "received" | "both" | null;
+  /** Nansen's row-level `volume_usd`. Null on 21 of 100 recorded rows: unpriced, not zero. */
+  valueUsd: number | null;
+  txHash: string | null;
+  sourceType: string | null;
+  /** The largest priced leg, else the first one. `legCount` says how many there were. */
+  token: { symbol: string | null; amount: number | null; valueUsd: number | null } | null;
+  legCount: number;
+  /** The other end of that leg: Nansen's own label when it sent one, else just the address. */
+  counterparty: { address: string | null; label: string | null } | null;
+};
+
+export type WalletActivityResult = {
+  address: string;
+  rows: WalletActivityRow[] | null;
+  /** Nansen said there is another page: these are the newest rows, not the whole window. */
+  truncated: boolean;
+  windowDays: number;
+  /** The newest returned timestamp. "Last active" is only ever this, and the card says so. */
+  lastActiveIso: string | null;
+  /** Every chain the returned rows touched, so the section can state its own coverage. */
+  chains: string[];
+  credits: number;
+  errors: string[];
+};
+
+export const WALLET_ACTIVITY_CREDITS = 1;
+export const WALLET_ORIGIN_MAX_CREDITS = 2;
+export const WALLET_COUNTERPARTY_CREDITS = 5;
+
+/**
+ * Round 2.3 — `profiler/address/transactions`, the first time-ordered content a plain spot
+ * wallet has had. 1 credit, behind the Activity view's priced button.
+ *
+ * Everything here is a read of a field Nansen sent. The direction comes from which array a leg
+ * arrived in, not from comparing addresses; the counterparty is that leg's other address with
+ * Nansen's own label when there is one and nothing added when there is not. A row is never
+ * described as a deposit, an exit or a move to an exchange: `method` is a raw contract
+ * signature and `source_type` is Nansen's own word, and neither is a motive.
+ */
+export async function buildWalletActivity(address: string): Promise<WalletActivityResult> {
+  const result = await settle(nansen.addressTransactions(address), (d) => d);
+  const raw = result.value?.data ?? null;
+  const rows = raw ? raw.map(activityRow) : null;
+  const times = (rows ?? []).map((r) => r.timeIso).filter((t): t is string => t !== null);
+  return {
+    address,
+    rows,
+    truncated: result.value?.pagination?.is_last_page === false,
+    windowDays: WALLET_ACTIVITY_WINDOW_DAYS,
+    lastActiveIso: times.length ? times.reduce((a, b) => (a > b ? a : b)) : null,
+    chains: [...new Set((rows ?? []).map((r) => r.chain).filter((c): c is string => c !== null))],
+    credits: WALLET_ACTIVITY_CREDITS,
+    errors: result.error ? [`Nansen activity: ${result.error}`] : [],
+  };
+}
+
+function activityRow(row: AddressTransactionRow): WalletActivityRow {
+  const sent = (row.tokens_sent ?? []).map((leg) => ({ side: "sent" as const, leg }));
+  const received = (row.tokens_received ?? []).map((leg) => ({ side: "received" as const, leg }));
+  const legs = [...sent, ...received];
+  // The leg with the largest dollar figure, or — when Nansen priced none of them, which is the
+  // normal case on HyperEVM — the first one. Token amounts are not comparable across tokens, so
+  // they are never used to rank.
+  const primary =
+    legs.reduce<(typeof legs)[number] | null>((best, candidate) => {
+      const value = Math.abs(num(candidate.leg.value_usd) ?? 0);
+      const bestValue = best ? Math.abs(num(best.leg.value_usd) ?? 0) : -1;
+      return value > bestValue ? candidate : best;
+    }, null) ?? legs[0] ?? null;
+  const other = primary ? (primary.side === "sent" ? primary.leg.to_address : primary.leg.from_address) : null;
+  const otherLabel = primary ? (primary.side === "sent" ? primary.leg.to_address_label : primary.leg.from_address_label) : null;
+  return {
+    timeIso: utcIso(row.block_timestamp),
+    chain: text(row.chain, 24),
+    direction: sent.length && received.length ? "both" : sent.length ? "sent" : received.length ? "received" : null,
+    valueUsd: num(row.volume_usd),
+    txHash: text(row.transaction_hash, 80),
+    sourceType: text(row.source_type, 24),
+    token: primary
+      ? { symbol: text(primary.leg.token_symbol, 16), amount: num(primary.leg.token_amount), valueUsd: num(primary.leg.value_usd) }
+      : null,
+    legCount: legs.length,
+    counterparty: primary ? { address: text(other, 80), label: text(otherLabel) } : null,
+  };
+}
+
+export type WalletOriginResult = {
+  address: string;
+  /** Nansen's row, or null when the call failed. `firstFunderReportedNone` is the empty answer. */
+  firstFunder: { address: string | null; name: string | null; timeIso: string | null; chain: string | null; txHash: string | null } | null;
+  firstFunderReportedNone: boolean;
+  /** False for a non-EVM address: the lookup is EVM-only, so it is never asked and never priced. */
+  firstFunderAsked: boolean;
+  related: { address: string | null; label: string | null; relation: string | null; timeIso: string | null; chain: string | null }[] | null;
+  /** The chain related-wallets was asked about, so the section can name it. */
+  relatedChain: string | null;
+  /** Measured: related-wallets can return the first funder under `relation: "First Funder"`. */
+  firstFunderAlsoRelated: boolean;
+  credits: number;
+  errors: string[];
+};
+
+/**
+ * The largest of a wallet's chains that `profiler/address/related-wallets` actually accepts.
+ *
+ * The recorded wallet's biggest chain is `hyperevm`, which is **not** in that endpoint's enum —
+ * passing "the wallet's biggest chain" straight through would 422 every time. The list came from
+ * the endpoint's own error message (a free 422, no credit), so it is measured, not guessed.
+ */
+/** A call that was never made: `null` like a failure, but with nothing to report as one. */
+const notAsked = <T>(): Promise<Sourced<T>> => Promise.resolve({ value: null, error: null, cached: false, stale: false });
+
+export function pickRelatedChain(chains: readonly string[] | undefined): string | null {
+  const allowed = new Set<string>(RELATED_WALLET_CHAINS);
+  return (chains ?? []).map((c) => c.trim().toLowerCase()).find((c) => allowed.has(c)) ?? null;
+}
+
+/**
+ * Round 2.3 — the origin story: `profiler/address/first-funder` (1 credit, EVM only) and
+ * `profiler/address/related-wallets` (1 credit, chain-scoped). **Up to 2 credits**, because a
+ * Solana address gets only the second and a wallet on no supported chain gets only the first.
+ *
+ * These feed no signal and no block, by the brief and by non-negotiable #2. `relation` is
+ * carried through as the raw Nansen string; nothing here says "same owner", "linked to" or
+ * "sybil", and the card never draws a conclusion Nansen did not state.
+ */
+export async function buildWalletOrigin(address: string, chains: string[] | undefined): Promise<WalletOriginResult> {
+  const evm = isEvmAddress(address);
+  const relatedChain = pickRelatedChain(chains);
+
+  const [funder, related] = await Promise.all([
+    evm ? settle(nansen.addressFirstFunder(address), (d) => d) : notAsked<{ data: FirstFunderRow[] }>(),
+    relatedChain ? settle(nansen.addressRelatedWallets(address, relatedChain), (d) => d) : notAsked<{ data: RelatedWalletRow[] }>(),
+  ]);
+
+  const funderRows = funder.value?.data ?? null;
+  const row = funderRows?.[0] ?? null;
+  const firstFunder = row
+    ? {
+        address: text(row.first_funder_address, 80),
+        name: text(row.first_funder_name),
+        timeIso: utcIso(row.block_timestamp),
+        chain: text(row.chain, 24),
+        txHash: text(row.transaction_hash, 80),
+      }
+    : null;
+
+  const relatedRows = related.value?.data
+    ? related.value.data.map((r) => ({
+        address: text(r.address, 80),
+        label: text(r.address_label),
+        relation: text(r.relation, 40),
+        timeIso: utcIso(r.block_timestamp),
+        chain: text(r.chain, 24),
+      }))
+    : null;
+
+  const errors: string[] = [];
+  if (funder.error) errors.push(`Nansen first funder: ${funder.error}`);
+  if (related.error) errors.push(`Nansen related wallets: ${related.error}`);
+
+  const funderKey = firstFunder?.address?.toLowerCase() ?? null;
+  return {
+    address,
+    firstFunder,
+    firstFunderReportedNone: evm && funderRows !== null && funderRows.length === 0,
+    firstFunderAsked: evm,
+    related: relatedRows,
+    relatedChain,
+    firstFunderAlsoRelated: funderKey !== null && (relatedRows ?? []).some((r) => r.address?.toLowerCase() === funderKey),
+    credits: (evm ? 1 : 0) + (relatedChain ? 1 : 0),
+    errors,
+  };
+}
+
+export type WalletCounterpartyRow = {
+  address: string | null;
+  /** Nansen's own array, empty on 36 of the 50 recorded rows. Empty means unlabelled, not none. */
+  labels: string[];
+  interactions: number | null;
+  volumeInUsd: number | null;
+  volumeOutUsd: number | null;
+  totalVolumeUsd: number | null;
+  /** The token that moved most often between the two addresses, by Nansen's own transfer count. */
+  topToken: string | null;
+};
+
+export type WalletCounterpartiesResult = {
+  address: string;
+  rows: WalletCounterpartyRow[] | null;
+  /** Another page exists: the rows are the largest returned, not every counterparty. */
+  truncated: boolean;
+  windowDays: number;
+  credits: number;
+  errors: string[];
+};
+
+/**
+ * Round 2.3 — `profiler/address/counterparties`, **5 credits**: the second five-credit call a
+ * wallet card can make, and like `profiler/labels` it only happens on a button that prints the
+ * price. `chain: "all"` was probed and accepted, so one press covers every chain.
+ *
+ * Volume in and volume out are shown as the two figures Nansen sends. "CEX exposure" is an
+ * interpretation and is not computed here or on the card, and an unlabelled counterparty stays
+ * an address rather than being described.
+ */
+export async function buildWalletCounterparties(address: string): Promise<WalletCounterpartiesResult> {
+  const result = await settle(nansen.addressCounterparties(address), (d) => d);
+  const raw = result.value?.data ?? null;
+  return {
+    address,
+    rows: raw
+      ? raw.map((row) => {
+          const tokens = row.tokens_info ?? [];
+          const top = tokens.reduce<(typeof tokens)[number] | null>((best, candidate) => {
+            const n = num(candidate?.num_transfer) ?? 0;
+            return best === null || n > (num(best.num_transfer) ?? 0) ? candidate : best;
+          }, null);
+          return {
+            address: text(row.counterparty_address, 80),
+            labels: (row.counterparty_address_label ?? []).map((l) => text(l)).filter((l): l is string => l !== null),
+            interactions: num(row.interaction_count),
+            volumeInUsd: num(row.volume_in_usd),
+            volumeOutUsd: num(row.volume_out_usd),
+            totalVolumeUsd: num(row.total_volume_usd),
+            topToken: top ? text(top.token_symbol, 16) : null,
+          };
+        })
+      : null,
+    truncated: result.value?.pagination?.is_last_page === false,
+    windowDays: WALLET_COUNTERPARTY_WINDOW_DAYS,
+    credits: WALLET_COUNTERPARTY_CREDITS,
+    errors: result.error ? [`Nansen counterparties: ${result.error}`] : [],
   };
 }
 

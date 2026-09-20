@@ -1,8 +1,15 @@
 import { useContext, useState } from "react";
-import { NANSEN_LOGO, nansenTokenUrl, pctVol, venueLogo, type WalletRef } from "@tripwire/core";
-import { CircleAlert, Coins, Wallet } from "lucide-react";
-import type { WalletDefiResponse, WalletLensResponse, WalletUnrealizedResponse } from "../api-types";
-import { pct, usd } from "./format";
+import { NANSEN_LOGO, nansenTokenUrl, nansenWalletUrl, pctVol, venueLogo, type WalletRef } from "@tripwire/core";
+import { Activity, ArrowDownLeft, ArrowLeftRight, ArrowUpRight, CircleAlert, Coins, Sprout, Wallet } from "lucide-react";
+import type {
+  WalletActivityResponse,
+  WalletCounterpartiesResponse,
+  WalletDefiResponse,
+  WalletLensResponse,
+  WalletOriginResponse,
+  WalletUnrealizedResponse,
+} from "../api-types";
+import { pct, shortAddr, timeAgo, usd } from "./format";
 import { Icon, LABEL_KIND_ICON } from "./icons";
 import { BrandMark, ChainLogo, TokenLogo } from "./Logo";
 import { CardHeader, Empty, NansenLink, Problems, Readouts, Section, signOf as sign } from "./panel-parts";
@@ -21,6 +28,19 @@ export const PREMIUM_LABEL_CREDITS = 100;
 export const WALLET_DEFI_CREDITS = 2;
 /** `profiler/address/pnl` (Round 1.5.7). */
 export const WALLET_UNREALIZED_CREDITS = 1;
+/** `profiler/address/transactions` (Round 2.3). */
+export const WALLET_ACTIVITY_CREDITS = 1;
+/**
+ * `profiler/address/first-funder` + `profiler/address/related-wallets` (Round 2.3), 1 each.
+ *
+ * A ceiling, not a price: the funder lookup is EVM-only and the related lookup needs a chain
+ * that endpoint covers, so a Solana wallet — or an EVM wallet whose only chain is HyperEVM —
+ * spends 1. The button says "up to", and the response reports what was actually spent. Stating
+ * 2 flat would over-charge the user in words for a call that was never made.
+ */
+export const WALLET_ORIGIN_MAX_CREDITS = 2;
+/** `profiler/address/counterparties` (Round 2.3): the second 5-credit call a card can make. */
+export const WALLET_COUNTERPARTY_CREDITS = 5;
 
 const rate = (v: number | null | undefined) => (v === null || v === undefined ? "—" : pct(v * 100));
 
@@ -53,11 +73,25 @@ export function walletTitle(lens: WalletLensResponse | null, ref: WalletRef): st
  * open or on a view change — the view switcher is a radiogroup with arrow-key navigation, so
  * spending on view activation would be a credit per keypress.
  */
-function BuyButton({ label, credits, onClick, pending }: { label: string; credits: number; onClick: () => void; pending: boolean }) {
+function BuyButton({
+  label,
+  credits,
+  onClick,
+  pending,
+  ceiling,
+}: {
+  label: string;
+  credits: number;
+  onClick: () => void;
+  pending: boolean;
+  /** Round 2.3: the origin press makes one or two calls depending on the wallet, so its price
+   *  is a ceiling. "Up to" over-states nothing; a flat "2 credits" would. */
+  ceiling?: boolean;
+}) {
   return (
     <button type="button" className="tw-premium-button" onClick={onClick} disabled={pending}>
       <Icon icon={Coins} size={14} />
-      {pending ? "Asking Nansen…" : `${label} (${credits} ${credits === 1 ? "credit" : "credits"})`}
+      {pending ? "Asking Nansen…" : `${label} (${ceiling ? "up to " : ""}${credits} ${credits === 1 ? "credit" : "credits"})`}
     </button>
   );
 }
@@ -207,6 +241,359 @@ function UnrealizedSection({ data, loader, onLoad }: { data: WalletUnrealizedRes
   );
 }
 
+/** A counterparty's name on screen: Nansen's own label if it sent one, else the address. */
+const partyName = (address: string | null, label: string | null) => label ?? (address ? shortAddr(address) : "Unnamed address");
+
+/** Recent, so the relative form reads: a transaction two days old is "2d ago". */
+const when = (iso: string | null) => (iso ? timeAgo(iso) : "—");
+
+/**
+ * Historical, so the date reads. `timeAgo` caps at days, and a first funder from 2021 printed
+ * as "1778d ago" is a number nobody can convert; the same shape the Polymarket first-seen line
+ * already uses (Round 1.5.4).
+ */
+const onDate = (iso: string | null) => (iso ? iso.slice(0, 10) : "—");
+
+/**
+ * A token quantity beside its symbol. The USD column is a dash on a fifth of the rows, because
+ * Nansen priced nothing on them; the amount is the quantity that does exist, so it belongs on
+ * the row rather than being dropped with the price.
+ */
+function amount(value: number | null | undefined, symbol: string | null): string | null {
+  // Nansen sends `token_symbol: ""` on some legs. A quantity with no unit is not a fact, so
+  // the row says only what it does know and the direction word carries it alone.
+  if (!symbol) return null;
+  if (value === null || value === undefined || !Number.isFinite(value)) return symbol;
+  const abs = Math.abs(value);
+  const units: [number, string][] = [
+    [1e9, "B"],
+    [1e6, "M"],
+    [1e3, "K"],
+  ];
+  for (const [div, suffix] of units) {
+    if (abs >= div) {
+      const scaled = abs / div;
+      return `${scaled >= 100 ? scaled.toFixed(0) : scaled.toFixed(scaled >= 10 ? 1 : 2).replace(/\.?0+$/, "")}${suffix} ${symbol}`;
+    }
+  }
+  return `${abs >= 1 ? abs.toFixed(2).replace(/\.?0+$/, "") : abs.toPrecision(2)} ${symbol}`;
+}
+
+const DIRECTION_ICON = { sent: ArrowUpRight, received: ArrowDownLeft, both: ArrowLeftRight } as const;
+const DIRECTION_WORD = { sent: "Sent", received: "Received", both: "Sent and received" } as const;
+
+/**
+ * Round 2.3 — the activity feed: `profiler/address/transactions`, 1 credit, behind a button.
+ *
+ * Before this the wallet card was entirely state — balances, PnL, positions — so a plain spot
+ * wallet had no time-ordered content at all. Every value on a row is a field Nansen sent: the
+ * direction is which array the token leg came back in, the counterparty is that leg's other
+ * address with Nansen's own label when there is one, and a row with no `volume_usd` shows a
+ * dash. Nothing here is called a deposit, an exit or a move to an exchange.
+ */
+function TimelineSection({
+  activity,
+  loader,
+  onLoad,
+}: {
+  activity: WalletActivityResponse | null | undefined;
+  loader: Loader;
+  onLoad: (() => Promise<void>) | null | undefined;
+}) {
+  const rows = activity?.rows ?? [];
+  const pagination = usePagination(rows, 5);
+  return (
+    <Section
+      title="Recent transactions"
+      aside={activity ? (activity.truncated ? `${rows.length} newest` : `${rows.length} in ${activity.windowDays}d`) : `${WALLET_ACTIVITY_CREDITS} credit`}
+    >
+      {!activity ? (
+        <>
+          <p className="tw-empty">Everything else on this card is a balance. This is what the wallet has actually done, newest first.</p>
+          {onLoad ? <BuyButton label="Load recent activity" credits={WALLET_ACTIVITY_CREDITS} onClick={loader.run} pending={loader.pending} /> : null}
+        </>
+      ) : rows.length === 0 ? (
+        <Empty>Nansen returned no transactions for this wallet in the last {activity.windowDays} days.</Empty>
+      ) : (
+        <>
+          <ul className="tw-rows tw-activity-rows">
+            {pagination.rows.map((row, i) => (
+              <li key={`${row.txHash ?? "tx"}-${i}`}>
+                <span className="tw-activity-what">
+                  <span className="tw-holding-name">
+                    {row.direction ? <Icon icon={DIRECTION_ICON[row.direction]} size={14} /> : null}
+                    {row.chain ? <ChainLogo chain={row.chain} size={14} /> : null}
+                    <span className="tw-row-name">
+                      {[row.direction ? DIRECTION_WORD[row.direction] : "Transaction", amount(row.token?.amount, row.token?.symbol ?? null)].filter(Boolean).join(" ")}
+                      {row.legCount > 1 ? ` and ${row.legCount - 1} more` : ""}
+                    </span>
+                  </span>
+                  <span className="tw-meta tw-row-name">
+                    {row.chain ? `${row.chain} · ` : ""}
+                    {partyName(row.counterparty?.address ?? null, row.counterparty?.label ?? null)}
+                    {row.counterparty?.address ? (
+                      <NansenRowLink href={nansenWalletUrl(row.counterparty.address, row.chain)} subject="this counterparty" />
+                    ) : null}
+                  </span>
+                </span>
+                <span className="tw-activity-value">
+                  <span className="tw-fig">{usd(row.valueUsd)}</span>
+                  <time className="tw-meta tw-fig" dateTime={row.timeIso ?? undefined}>
+                    {when(row.timeIso)}
+                  </time>
+                </span>
+              </li>
+            ))}
+          </ul>
+          {pagination.controls}
+          <p className="tw-meta">
+            The newest returned transaction is <span className="tw-fig">{when(activity.lastActiveIso)}</span>, which is where &ldquo;last active&rdquo; comes from and
+            all it means: anything older than {activity.windowDays} days, or past this page, is not in the answer.
+            {activity.chains.length ? ` Chains in this page: ${activity.chains.join(", ")}.` : ""} A row names the other address and Nansen&apos;s label for it, and
+            says nothing about why the tokens moved.
+          </p>
+        </>
+      )}
+      {activity?.errors.length ? <Problems errors={activity.errors} /> : null}
+      {loader.error ? (
+        <p className="tw-field-hint" role="status">
+          <Icon icon={CircleAlert} size={14} /> {loader.error}
+        </p>
+      ) : null}
+    </Section>
+  );
+}
+
+/**
+ * Round 2.3 — the origin story: `profiler/address/first-funder` and
+ * `profiler/address/related-wallets`, 1 credit each, up to 2 in one press.
+ *
+ * `relation` is printed as the raw Nansen string. This section says "Nansen relates these",
+ * never "same owner" and never "linked to": those are the readings a reader turns into a sybil
+ * claim, and non-negotiable #2 rules them out. Nothing here feeds a signal or a block.
+ */
+function OriginSection({
+  origin,
+  chains,
+  loader,
+  onLoad,
+}: {
+  origin: WalletOriginResponse | null | undefined;
+  chains: string[];
+  loader: Loader;
+  onLoad: (() => Promise<void>) | null | undefined;
+}) {
+  const related = origin?.related ?? [];
+  return (
+    <Section
+      title="Origin and related wallets"
+      aside={origin ? (origin.relatedChain ?? "first funder only") : `up to ${WALLET_ORIGIN_MAX_CREDITS} credits`}
+    >
+      {!origin ? (
+        <>
+          <p className="tw-empty">Which wallet funded this one first, and which wallets Nansen relates to it.</p>
+          {onLoad ? <BuyButton label="Check origin" credits={WALLET_ORIGIN_MAX_CREDITS} onClick={loader.run} pending={loader.pending} ceiling /> : null}
+        </>
+      ) : (
+        <>
+          {!origin.firstFunderAsked ? (
+            <Empty>Nansen&apos;s first-funder lookup covers EVM addresses only, so this address was not asked.</Empty>
+          ) : origin.firstFunder ? (
+            <p className="tw-person">
+              <Icon icon={Sprout} size={16} />
+              <span>
+                First funded by <b>{partyName(origin.firstFunder.address, origin.firstFunder.name)}</b>
+                {origin.firstFunder.chain ? ` on ${origin.firstFunder.chain}` : ""} on <span className="tw-fig">{onDate(origin.firstFunder.timeIso)}</span>.
+              </span>
+              {origin.firstFunder.address ? (
+                <NansenRowLink href={nansenWalletUrl(origin.firstFunder.address, origin.firstFunder.chain)} subject="the first funder" />
+              ) : null}
+            </p>
+          ) : origin.firstFunderReportedNone ? (
+            <Empty>Nansen returned no first funder for this address. An empty answer here is normal, not a finding.</Empty>
+          ) : null}
+          {origin.relatedChain === null ? (
+            <Empty>
+              Nansen&apos;s related-wallet lookup does not cover {chains.length ? chains.join(", ") : "this wallet's chains"}, so it was not asked and not charged.
+            </Empty>
+          ) : related.length === 0 ? (
+            <Empty>Nansen relates no other wallet to this one on {origin.relatedChain}.</Empty>
+          ) : (
+            <ul className="tw-rows">
+              {related.map((row, i) => (
+                <li key={`${row.address ?? "related"}-${i}`}>
+                  <span className="tw-holding-name">
+                    <span className="tw-row-name">{partyName(row.address, row.label)}</span>
+                    {row.address ? <NansenRowLink href={nansenWalletUrl(row.address, row.chain)} subject="this related wallet" /> : null}
+                  </span>
+                  <span className="tw-meta">
+                    {row.relation ?? "—"} · <span className="tw-fig">{onDate(row.timeIso)}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="tw-meta">
+            {origin.firstFunderAlsoRelated
+              ? "Nansen returns the first funder as a related wallet too: the two rows above are one relationship, reported twice. "
+              : ""}
+            The relation is Nansen&apos;s own word for the link, not a statement about ownership, and nothing here changes a verdict.
+          </p>
+        </>
+      )}
+      {origin?.errors.length ? <Problems errors={origin.errors} /> : null}
+      {loader.error ? (
+        <p className="tw-field-hint" role="status">
+          <Icon icon={CircleAlert} size={14} /> {loader.error}
+        </p>
+      ) : null}
+    </Section>
+  );
+}
+
+/**
+ * Round 2.3 — `profiler/address/counterparties`, **5 credits**, button-gated.
+ *
+ * Volume in and volume out are the two figures Nansen sends and are shown as those two figures.
+ * "CEX exposure" is an interpretation of them and is not drawn here. An unlabelled counterparty
+ * — 36 of the 50 recorded rows — stays an address rather than being described.
+ */
+function CounterpartySection({
+  data,
+  loader,
+  onLoad,
+  expanded,
+}: {
+  data: WalletCounterpartiesResponse | null | undefined;
+  loader: Loader;
+  onLoad: (() => Promise<void>) | null | undefined;
+  expanded: boolean;
+}) {
+  const rows = data?.rows ?? [];
+  const pagination = usePagination(rows, 5);
+  return (
+    <Section
+      title="Counterparties"
+      aside={data ? (data.truncated ? `${rows.length} largest returned` : `${rows.length} addresses`) : `${WALLET_COUNTERPARTY_CREDITS} credits`}
+    >
+      {!data ? (
+        <>
+          <p className="tw-empty">The addresses this wallet moved the most value with, in and out, over the last 30 days.</p>
+          {onLoad ? <BuyButton label="Load counterparties" credits={WALLET_COUNTERPARTY_CREDITS} onClick={loader.run} pending={loader.pending} /> : null}
+        </>
+      ) : rows.length === 0 ? (
+        <Empty>Nansen returned no counterparties for this wallet in the last {data.windowDays} days.</Empty>
+      ) : (
+        <>
+          <table className="tw-table">
+            <thead>
+              <tr>
+                <th scope="col">Counterparty</th>
+                <th scope="col" className="tw-num">
+                  In
+                </th>
+                <th scope="col" className="tw-num">
+                  Out
+                </th>
+                {expanded ? (
+                  <th scope="col" className="tw-num">
+                    Transfers
+                  </th>
+                ) : null}
+              </tr>
+            </thead>
+            <tbody>
+              {pagination.rows.map((row, i) => (
+                <tr key={`${row.address ?? "party"}-${i}`}>
+                  <td>
+                    <span className="tw-activity-what">
+                      <span className="tw-holding-name">
+                        <span className="tw-row-name">{partyName(row.address, row.labels[0] ?? null)}</span>
+                        {row.address ? <NansenRowLink href={nansenWalletUrl(row.address)} subject="this counterparty" /> : null}
+                      </span>
+                      {/* One Nansen label covers many addresses — three of the recorded rows are
+                          all "Token Millionaire" — so the address stays on screen under it. */}
+                      {row.labels.length && row.address ? <span className="tw-meta tw-mono">{shortAddr(row.address)}</span> : null}
+                    </span>
+                  </td>
+                  <td className="tw-fig tw-num">{usd(row.volumeInUsd)}</td>
+                  <td className="tw-fig tw-num">{usd(row.volumeOutUsd)}</td>
+                  {expanded ? <td className="tw-fig tw-num">{count(row.interactions)}</td> : null}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {pagination.controls}
+          <p className="tw-meta">
+            Value received and value sent over {data.windowDays} days, as Nansen reports them, not netted together. An address with no Nansen label is shown as an
+            address: that is a missing label, not a finding about the address.
+          </p>
+        </>
+      )}
+      {data?.errors.length ? <Problems errors={data.errors} /> : null}
+      {loader.error ? (
+        <p className="tw-field-hint" role="status">
+          <Icon icon={CircleAlert} size={14} /> {loader.error}
+        </p>
+      ) : null}
+    </Section>
+  );
+}
+
+/**
+ * The Activity tab (Round 2.3): what the wallet did, and who it is connected to.
+ *
+ * Its own tab rather than a fourth segment in Overview, because the wallet card's tab strip has
+ * room for four and its Segmented control does not. Switching between Timeline and Connections
+ * spends nothing — every call in here is a button, for the reason Round 1.5 recorded: the view
+ * switcher is a `radiogroup` whose arrow keys move the selection, so a spend on activation is a
+ * credit per keypress.
+ */
+function ActivityTab({
+  chains,
+  activity,
+  onLoadActivity,
+  origin,
+  onLoadOrigin,
+  counterparties,
+  onLoadCounterparties,
+}: {
+  chains: string[];
+  activity?: WalletActivityResponse | null;
+  onLoadActivity?: (() => Promise<void>) | null;
+  origin?: WalletOriginResponse | null;
+  onLoadOrigin?: (() => Promise<void>) | null;
+  counterparties?: WalletCounterpartiesResponse | null;
+  onLoadCounterparties?: (() => Promise<void>) | null;
+}) {
+  const [view, setView] = useState<"timeline" | "connections">("timeline");
+  const expanded = useIsExpanded();
+  const activityLoader = useLoader(onLoadActivity);
+  const originLoader = useLoader(onLoadOrigin);
+  const counterpartyLoader = useLoader(onLoadCounterparties);
+  return (
+    <div className="tw-detail">
+      <Segmented
+        label="Wallet activity"
+        value={view}
+        onChange={setView}
+        options={[
+          { value: "timeline", label: "Timeline" },
+          { value: "connections", label: "Connections" },
+        ]}
+      />
+      {view === "timeline" ? (
+        <TimelineSection activity={activity} loader={activityLoader} onLoad={onLoadActivity} />
+      ) : (
+        <>
+          <OriginSection origin={origin} chains={chains} loader={originLoader} onLoad={onLoadOrigin} />
+          <CounterpartySection data={counterparties} loader={counterpartyLoader} onLoad={onLoadCounterparties} expanded={expanded} />
+        </>
+      )}
+    </div>
+  );
+}
+
 function Overview({
   lens,
   onLoadLabels,
@@ -291,6 +678,15 @@ function Overview({
               { label: "Trades", value: count(lens.pnl?.tradeCount) },
             ]}
           />
+          {/* Round 2.3: the honest half of the Hyperliquid work. Nansen's profiler chain enum
+              has no HyperCore value, so an account balance held on Hyperliquid is genuinely
+              outside the Tokens figure rather than merely missing from it. Saying so costs
+              nothing and stops the tile from reading as the whole wallet. */}
+          {lens.hyperliquid ? (
+            <p className="tw-meta">
+              A Hyperliquid balance sits on HyperCore, which Nansen&apos;s profiler does not cover. It is in the Hyperliquid tab, not in Tokens.
+            </p>
+          ) : null}
           <DefiSection defi={defi} loader={defiLoader} onLoad={onLoadDefi} />
           <Section title="Portfolio allocation" aside="Returned balances">
             <Segmented
@@ -388,6 +784,13 @@ export type WalletCardProps = {
   /** Round 1.5.7: 1 credit, bought by the Performance view's button and never before. */
   unrealized?: WalletUnrealizedResponse | null;
   onLoadUnrealized?: (() => Promise<void>) | null;
+  /** Round 2.3: the Activity tab's three buttons — 1 credit, up to 2, and 5. */
+  activity?: WalletActivityResponse | null;
+  onLoadActivity?: (() => Promise<void>) | null;
+  origin?: WalletOriginResponse | null;
+  onLoadOrigin?: (() => Promise<void>) | null;
+  counterparties?: WalletCounterpartiesResponse | null;
+  onLoadCounterparties?: (() => Promise<void>) | null;
   replay?: boolean;
 };
 
@@ -401,7 +804,24 @@ export type WalletCardProps = {
  * Opening the card costs what it always cost. Three buttons inside it can spend more, each
  * stating its price first: DeFi and label (2), unrealized PnL (1), Nansen labels (100).
  */
-export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, defi, onLoadDefi, unrealized, onLoadUnrealized, replay }: WalletCardProps) {
+export function WalletCard({
+  walletRef,
+  lens,
+  error,
+  onClose,
+  onLoadLabels,
+  defi,
+  onLoadDefi,
+  unrealized,
+  onLoadUnrealized,
+  activity,
+  onLoadActivity,
+  origin,
+  onLoadOrigin,
+  counterparties,
+  onLoadCounterparties,
+  replay,
+}: WalletCardProps) {
   const pop = useContext(PopoverContext);
 
   const title = walletTitle(lens, walletRef);
@@ -421,6 +841,24 @@ export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, defi
           onLoadDefi={ready(onLoadDefi)}
           unrealized={unrealized}
           onLoadUnrealized={ready(onLoadUnrealized)}
+        />
+      ),
+    });
+    // Round 2.3: its own tab, and it costs nothing to open — all three calls inside it are
+    // buttons that print their price.
+    tabs.push({
+      id: "activity",
+      label: "Activity",
+      icon: <Icon icon={Activity} size={14} />,
+      content: (
+        <ActivityTab
+          chains={lens.portfolio?.chains ?? []}
+          activity={activity}
+          onLoadActivity={ready(onLoadActivity)}
+          origin={origin}
+          onLoadOrigin={ready(onLoadOrigin)}
+          counterparties={counterparties}
+          onLoadCounterparties={ready(onLoadCounterparties)}
         />
       ),
     });

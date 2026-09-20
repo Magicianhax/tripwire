@@ -2472,7 +2472,10 @@ div.tw-dock-chip {
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-question,
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-venue-table),
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-hl-positions),
-.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-book) {
+.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-book),
+/* Round 2.2: the event picker is its tab's only section and already lays its own rows out in two
+   columns, so in one tabpanel column it would draw a narrow list beside an empty half. */
+.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-market-options) {
   grid-column: 1 / -1;
 }
 
@@ -3245,4 +3248,399 @@ div.tw-dock-chip {
    readable measure and sits at the start of the section. */
 [data-size="expanded"] .tw-book {
   max-width: 760px;
+}
+
+/* ==================================================================================
+   Round 1.6 — placement and visibility
+
+   The verdict is the product: "someone cannot catch without having good eye" is a failed
+   verdict, not a cosmetic note. Placement puts the strip where the eye already is; the two
+   rules below cover the cases placement cannot reach — the dock, which is what is left when
+   no anchor on the page qualified, and the outline the popup lights on demand.
+   ================================================================================== */
+
+/* The dock as PRIMARY display (data-primary), not as an on-demand card. A verdict-coloured
+   edge, so the chip reads before the sentence does. A cap inset from the pill's curve rather
+   than a coloured border on the whole shape: the border already carries TRIPWIRE and CAUTION,
+   and CLEAR and UNCHECKED had no colour at all until now. UNCHECKED is deliberately neutral —
+   it must never be mistaken for CLEAR's mint. */
+.tw-dock-chip[data-primary] {
+  padding-left: 12px;
+}
+
+.tw-dock-chip[data-primary]::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 3px;
+  height: 16px;
+  transform: translateY(-50%);
+  /* The pill token; on a 3x16 box it clamps to a capsule, which is the shape intended. */
+  border-radius: var(--tw-radius-pill);
+  background: var(--tw-edge, rgba(255, 255, 255, 0.55));
+}
+
+.tw-dock-chip[data-primary][data-verdict="TRIPWIRE"] { --tw-edge: var(--tw-red); }
+.tw-dock-chip[data-primary][data-verdict="CAUTION"] { --tw-edge: var(--tw-amber); }
+.tw-dock-chip[data-primary][data-verdict="CLEAR"] { --tw-edge: var(--tw-mint); }
+.tw-dock-chip[data-primary][data-verdict="UNCHECKED"] { --tw-edge: rgba(255, 255, 255, 0.55); }
+
+/* It arrives from the edge it lives on, once, in 180ms. `both` holds the start frame so the
+   first painted frame is already off-screen-right rather than a flash at rest. */
+.tw-dock-chip[data-primary] {
+  animation: tw-dock-in 180ms var(--tw-ease-out) both;
+}
+
+@keyframes tw-dock-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* "Where is it?": the popup lights whatever is mounted for 1.5s. Two pulses of a mint ring,
+   which is the one colour on the page that is ours and never a verdict by itself. */
+[data-tw-locate] {
+  /* Outline only: it follows the element's own radius and, unlike a border, takes no layout
+     space, so lighting a strip cannot reflow the venue's card around it. */
+  animation: tw-locate 1500ms var(--tw-ease-out) 1 both;
+}
+
+@keyframes tw-locate {
+  0%,
+  100% {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+  12%,
+  56% {
+    outline: 2px solid var(--tw-mint);
+    outline-offset: 4px;
+  }
+  34%,
+  78% {
+    outline: 2px solid var(--tw-mint-line);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Both are affordances, not decoration, so neither is removed — they stop moving. The dock
+     is simply there; the outline is simply on, for the same 1.5s. */
+  .tw-dock-chip[data-primary] {
+    animation: none;
+  }
+  [data-tw-locate] {
+    animation: none;
+    outline: 2px solid var(--tw-mint);
+    outline-offset: 4px;
+  }
+}
+
+/* -------------------- Wallet activity rows (Round 2.3) -------------------- */
+
+/* A transaction carries four facts and a 440px card holds two columns, so each column stacks
+   its own pair: what moved over who it moved with, value over when. The row keeps the shared
+   `.tw-rows` rule's baseline, border and min-height; only the stacking is new. */
+.tw-activity-rows li {
+  align-items: flex-start;
+  padding: var(--tw-space-2) 0;
+}
+
+.tw-activity-what {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tw-activity-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+/* 11px is the floor, and this is the second line of a pair whose first line carries the fact. */
+.tw-activity-what .tw-meta,
+.tw-activity-value .tw-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+}
+
+/* -------------------- Round 2.5: perp depth -------------------- */
+
+/* The funding cell carries three lines now: the rate, then the venue's own schedule and its next
+   payment, then — only when the rate is close to it — how far it has run toward its own cap. The
+   interval used to sit inline beside the figure, which no longer fits once a countdown follows
+   it, so inside this table it becomes its own line. */
+.tw-venue-table .tw-venue-interval {
+  display: block;
+  margin-left: 0;
+  white-space: nowrap;
+}
+
+.tw-venue-cap {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--tw-amber);
+  white-space: nowrap;
+}
+
+/* Open interest over time, from the one venue in the table that publishes a history. Open
+   interest rising is neither good nor bad, so the line is the card's own foreground rather than
+   the mint/red pair that funding uses to say who is paying. */
+.tw-oi-history {
+  display: grid;
+  gap: 6px;
+}
+
+.tw-oi-svg {
+  width: 100%;
+  height: 56px;
+}
+
+.tw-card[data-size="expanded"] .tw-oi-svg {
+  height: 96px;
+}
+
+.tw-oi-line {
+  fill: none;
+  stroke: var(--tw-text-2);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.tw-oi-area {
+  fill: var(--tw-shimmer);
+  stroke: none;
+}
+
+/* A venue's own state, stated once, never styled like a verdict: the card's verdict colours are
+   spoken for, so this is the amber note and it sits inside its section rather than above it. */
+.tw-warnline {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tw-space-2);
+  margin: 0 0 var(--tw-space-2);
+  padding: var(--tw-space-2);
+  border: 1px solid var(--tw-amber-line);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-amber-dim);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--tw-text);
+}
+
+.tw-warnline .tw-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--tw-amber);
+}
+
+/* Which population the liquidation ladder is drawn for. Buttons, not a radiogroup: three of the
+   four cost 5 credits, and a control whose arrow keys move the selection would spend a credit
+   per keypress (the Round 1.5 ruling, reached there from the other direction). */
+.tw-cohort-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tw-space-1) var(--tw-space-2);
+  margin-bottom: var(--tw-space-2);
+}
+
+.tw-cohort-choice {
+  appearance: none;
+  min-height: 24px;
+  padding: 0 var(--tw-space-2);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-pill);
+  background: transparent;
+  color: var(--tw-text-2);
+  font-family: var(--tw-font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tw-cohort-choice[aria-pressed="true"],
+.tw-premium-button[aria-pressed="true"] {
+  border-style: solid;
+  border-color: var(--tw-mint-line);
+  background: var(--tw-mint-dim);
+  color: var(--tw-mint);
+}
+
+@media (hover: hover) {
+  .tw-cohort-choice:hover {
+    border-color: var(--tw-mint-line);
+    color: var(--tw-text);
+  }
+}
+
+.tw-cohort-choice:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: -1px;
+}
+
+/* A win rate alone is not a fact about a strategy: the denominator rides under it. */
+.tw-winrate-of {
+  display: block;
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
+/* The ragged column beside the cohort block, left open by Round 1.3.
+   Two equal grid tracks cannot balance sections of different heights, so the tallest one leaves
+   a hole the height of itself. Columns can: the sections flow, `break-inside` keeps each one
+   whole, and `column-span` is how a wide table still takes the full width. Scoped to the perp
+   Positioning tab — the panel that actually has the tall block — because the price chart's
+   canvas and the other cards' layouts were not measured inside a multi-column flow. */
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-cohorts) {
+  display: block;
+  columns: 2;
+  column-gap: var(--tw-space-5);
+  orphans: 2;
+  widows: 2;
+}
+
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-cohorts) > * {
+  break-inside: avoid;
+  margin-bottom: var(--tw-space-4);
+}
+
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-cohorts) > section:has(.tw-venue-table),
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-cohorts) > .tw-sources {
+  column-span: all;
+}
+
+/* Round 1.3's half-fix: the cohort block no longer needs to span two grid rows, because the
+   panel above is no longer a grid. */
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-cohorts) > section:has(.tw-cohorts) {
+  grid-row: auto;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Round 1.6 and 2.1 — the spot card's market structure, tape, winners and transfers.
+   Tokens only; no new colour, no new radius, no new type size below the 11px floor.
+   --------------------------------------------------------------------------------------------- */
+
+/* Market structure (1.6.1): three windows, one row each, beside the Nansen token record. */
+.tw-structure-table {
+  margin-top: var(--tw-space-2);
+}
+
+/* The transfers behind the exchange line (2.1). The button sits on its own row under the line
+   it explains, hugging its own words rather than stretching into an input-shaped pill. */
+.tw-flow-transfers {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--tw-space-2);
+  margin-top: var(--tw-space-2);
+}
+
+.tw-transfer-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 34px;
+}
+
+.tw-transfer-pair {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  min-width: 0;
+}
+
+.tw-transfer-pair .tw-icon {
+  flex: none;
+  color: var(--tw-text-2);
+}
+
+/* The tape (2.1): when, who, which way, how much. The time column is fixed so the wallet column
+   never shifts as "2m ago" becomes "12m ago". */
+.tw-tape-rows li {
+  display: grid;
+  /* The last column is wide enough for "1.27K for USDC" on one line: the second figure names the
+     other leg of the swap, and wrapping it turned a route into three ragged lines. */
+  grid-template-columns: 58px minmax(0, 1fr) 56px 108px;
+  align-items: center;
+  min-height: 34px;
+}
+
+.tw-tape-rows .tw-row-amount-other {
+  white-space: nowrap;
+}
+
+.tw-tape-when {
+  white-space: nowrap;
+}
+
+.tw-tape-who {
+  min-width: 0;
+}
+
+/* Right-aligned so the side sits against the money it describes rather than drifting away from
+   it whenever a wallet label is short. */
+.tw-tape-side {
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tw-text-2);
+}
+
+.tw-tape-side[data-side="buy"] {
+  color: var(--tw-mint);
+}
+
+.tw-tape-side[data-side="sell"] {
+  color: var(--tw-red);
+}
+
+/* The post-time divider. A full-width rule with the post's age sitting in it, so "after the
+   post" is a place on the list rather than a sentence under it. It only ever renders when the
+   post time is genuinely inside the fetched span. */
+.tw-tape-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  min-height: 24px;
+  border-bottom: none;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tw-mint);
+}
+
+.tw-tape-divider::before,
+.tw-tape-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--tw-mint-line);
+}
+
+.tw-dca-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 32px;
+}
+
+/* The catalog's one paid affordance (1.6.2). */
+.tw-market-enrich {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--tw-space-1);
+  margin-bottom: var(--tw-space-3);
 }

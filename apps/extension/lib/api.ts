@@ -10,6 +10,7 @@ import type { BridgeResponse } from "./bridge";
 import type {
   AuthorBadgesResponse,
   MarketCatalog,
+  MarketEnrichResponse,
   DepthResponse,
   GuardResponse,
   LinkResponse,
@@ -17,13 +18,18 @@ import type {
   WalletVenueId,
   HealthResponse,
   OverrideResponse,
+  PerpLadderResponse,
+  PerpWinRateResponse,
   PersonIntelResponse,
   PostIntelResponse,
   ResolveResponse,
   RulesResponse,
+  WalletActivityResponse,
+  WalletCounterpartiesResponse,
   WalletDefiResponse,
   WalletLabelsResponse,
   WalletLensResponse,
+  WalletOriginResponse,
   WalletUnrealizedResponse,
 } from "./api-types";
 
@@ -134,4 +140,50 @@ export function walletDefi(address: string, chain?: string | null): Promise<ApiR
 
 export function walletUnrealized(address: string): Promise<ApiResult<WalletUnrealizedResponse>> {
   return call("POST", "/api/wallet/unrealized", { address });
+}
+
+/**
+ * The perp card's two priced presses (Round 2.5). 5 credits and 1 credit.
+ *
+ * Reached only from a button on the open card that states the price. Neither is part of a card
+ * load or of opening a tab — the Liquidations tab draws the Smart Money ladder the panel already
+ * bought, and the win rate is an explicit click on one leaderboard row rather than a hover,
+ * which on a twelve-row table would be twelve credits from one mouse pass.
+ */
+export function perpLadder(coin: string, cohort: PerpLadderResponse["cohort"]): Promise<ApiResult<PerpLadderResponse>> {
+  return call("POST", "/api/perp/ladder", { coin, cohort });
+}
+
+export function perpWinRate(address: string): Promise<ApiResult<PerpWinRateResponse>> {
+  return call("POST", "/api/perp/win-rate", { address });
+}
+
+/**
+ * The wallet card's Activity tab (Round 2.3). 1 credit, up to 2, and 5.
+ *
+ * Same discipline as the Round 1.5 views: each is reached from a button on the open card that
+ * prints its price, never from a card open and never from switching view.
+ */
+export function walletActivity(address: string): Promise<ApiResult<WalletActivityResponse>> {
+  return call("POST", "/api/wallet/activity", { address });
+}
+
+/** `chains` is the wallet's own chain order: related-wallets takes one chain and has no "all". */
+export function walletOrigin(address: string, chains?: string[] | null): Promise<ApiResult<WalletOriginResponse>> {
+  return call("POST", "/api/wallet/origin", chains?.length ? { address, chains } : { address });
+}
+
+export function walletCounterparties(address: string): Promise<ApiResult<WalletCounterpartiesResponse>> {
+  return call("POST", "/api/wallet/counterparties", { address });
+}
+
+/**
+ * The Markets catalog's token-screener enrichment (Round 1.6.2).
+ *
+ * **1 credit per group of up to five chains, whatever the row count**, so the catalog stays free
+ * until somebody presses a button that has already printed the group count. Never called on a
+ * catalog load.
+ */
+export function enrichMarkets(markets: { chain: string; address: string }[]): Promise<ApiResult<MarketEnrichResponse>> {
+  return call("POST", "/api/token-market", { markets });
 }

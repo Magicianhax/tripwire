@@ -193,14 +193,19 @@ describe("WalletCard", () => {
   it("shows only the tabs that have data", () => {
     const { container } = mountNode(<WalletCard walletRef={ref} lens={lens()} error={null} onClose={() => {}} />);
     const tabs = [...container.querySelectorAll('[role="tab"]')].map((t) => t.textContent);
-    expect(tabs).toEqual(["Overview"]);
+    // Round 2.3 added the Activity tab; it costs nothing to open and every call inside it is
+    // a button that prints its price.
+    expect(tabs).toEqual(["Overview", "Activity"]);
   });
 
   it("adds the Hyperliquid tab when that wallet trades there", () => {
     const { container } = mountNode(<WalletCard walletRef={ref} lens={lens({ hyperliquid })} error={null} onClose={() => {}} />);
     const tabs = [...container.querySelectorAll('[role="tab"]')].map((t) => t.textContent);
-    expect(tabs).toEqual(["Overview", "Hyperliquid"]);
-    const panel = container.querySelector('[role="tabpanel"][hidden]')!;
+    expect(tabs).toEqual(["Overview", "Activity", "Hyperliquid"]);
+    // The Hyperliquid panel is the last one: Activity now sits between it and Overview, and
+    // every inactive panel stays in the DOM `hidden` so switching never refetches.
+    const hidden = [...container.querySelectorAll('[role="tabpanel"][hidden]')];
+    const panel = hidden[hidden.length - 1]!;
     expect(panel.textContent).toContain("Open positions");
     expect(panel.textContent).toContain("$2,299.4");
   });

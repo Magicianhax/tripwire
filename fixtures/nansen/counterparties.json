@@ -1,0 +1,1023 @@
+{
+  "pagination": {
+    "page": 1,
+    "per_page": 50,
+    "is_last_page": false
+  },
+  "data": [
+    {
+      "counterparty_address": "0x6b9e773128f453f5c2c60935ee2de2cbc5390a24",
+      "counterparty_address_label": [
+        "Token Millionaire"
+      ],
+      "interaction_count": 69,
+      "total_volume_usd": 164494015.49389142,
+      "volume_in_usd": 136640297.10765126,
+      "volume_out_usd": 27853718.386240155,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "69",
+          "total_token_amount": 164521950.78,
+          "token_in_amount": 136658048.68,
+          "token_out_amount": 27863902.1
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x2df1c51e09aecf9cacb7bc98cb1742757f163df7",
+      "counterparty_address_label": [
+        "Token Millionaire"
+      ],
+      "interaction_count": 85,
+      "total_volume_usd": 149860099.4825313,
+      "volume_in_usd": 0,
+      "volume_out_usd": 149860099.4825313,
+      "tokens_info": [
+        {
+          "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "85",
+          "total_token_amount": 149881264.11,
+          "token_in_amount": 0,
+          "token_out_amount": 149881264.11
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xee7ae85f2fe2239e27d9c1e23fffe168d63b4055",
+      "counterparty_address_label": [
+        "Token Millionaire"
+      ],
+      "interaction_count": 68,
+      "total_volume_usd": 126296375.6018737,
+      "volume_in_usd": 126296375.6018737,
+      "volume_out_usd": 0,
+      "tokens_info": [
+        {
+          "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "68",
+          "total_token_amount": 126314332.84,
+          "token_in_amount": 126314332.84,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x57955467e2fd905dbb3026963a144dcacd566687",
+      "counterparty_address_label": [
+        "Token Millionaire"
+      ],
+      "interaction_count": 19,
+      "total_volume_usd": 27853843.36331906,
+      "volume_in_usd": 27853843.36331906,
+      "volume_out_usd": 0,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "19",
+          "total_token_amount": 27864027.1,
+          "token_in_amount": 27864027.1,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x05e3a758fdd29d28435019ac453297ea37b61b62",
+      "counterparty_address_label": [
+        "High Balance"
+      ],
+      "interaction_count": 5,
+      "total_volume_usd": 11148267.193176387,
+      "volume_in_usd": 11148267.193176387,
+      "volume_out_usd": 0,
+      "tokens_info": [
+        {
+          "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "5",
+          "total_token_amount": 11149984.9,
+          "token_in_amount": 11149984.9,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x3b4d794a66304f130a4db8f2551b0070dfcf5ca7",
+      "counterparty_address_label": [
+        "lighter.eth"
+      ],
+      "interaction_count": 16,
+      "total_volume_usd": 10621428.687430225,
+      "volume_in_usd": 1249593.9645553571,
+      "volume_out_usd": 9371834.722874869,
+      "tokens_info": [
+        {
+          "token_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "14",
+          "total_token_amount": 6716778.6,
+          "token_in_amount": 1250000,
+          "token_out_amount": 5466778.6
+        },
+        {
+          "token_address": "0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2",
+          "token_symbol": "LIT",
+          "token_name": "Lighter",
+          "num_transfer": "2",
+          "total_token_amount": 1130318.40780575,
+          "token_in_amount": 0,
+          "token_out_amount": 1130318.40780575
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x128463a60784c4d3f46c23af3f65ed859ba87974",
+      "counterparty_address_label": [
+        "Token Billionaire"
+      ],
+      "interaction_count": 10,
+      "total_volume_usd": 7579668.614048032,
+      "volume_in_usd": 4582746.517553505,
+      "volume_out_usd": 2996922.0964945275,
+      "tokens_info": [
+        {
+          "token_address": "0x55d398326f99059ff775485246999027b3197955",
+          "token_symbol": "USDT",
+          "token_name": "Tether USD",
+          "num_transfer": "7",
+          "total_token_amount": 4649998.67,
+          "token_in_amount": 1649999.6700000002,
+          "token_out_amount": 2999999
+        },
+        {
+          "token_address": "0x000ae314e2a2172a039b26378814c252734f556a",
+          "token_symbol": "ASTER",
+          "token_name": "Aster",
+          "num_transfer": "3",
+          "total_token_amount": 3750100.6222,
+          "token_in_amount": 3750100.6222,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x642c1a1d261462caf3e7975c77a502413543b13f",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 6998822.299977186,
+      "volume_in_usd": 0,
+      "volume_out_usd": 6998822.299977186,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 7000000,
+          "token_in_amount": 0,
+          "token_out_amount": 7000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xa656f7d2a93a6f5878aa768f24eb38ec8c827fe2",
+      "counterparty_address_label": [
+        "High Balance"
+      ],
+      "interaction_count": 5,
+      "total_volume_usd": 6509183.262715469,
+      "volume_in_usd": 6509183.262715469,
+      "volume_out_usd": 0,
+      "tokens_info": [
+        {
+          "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "5",
+          "total_token_amount": 6509979.96,
+          "token_in_amount": 6509979.96,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xa94acf10858c36b8b795e01fc7c755e3f4f3c539",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 5999396.786728698,
+      "volume_in_usd": 0,
+      "volume_out_usd": 5999396.786728698,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 6000000,
+          "token_in_amount": 0,
+          "token_out_amount": 6000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x8fa94998dec8d088aba7a0a881242d669821f598",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 5999274.786965558,
+      "volume_in_usd": 0,
+      "volume_out_usd": 5999274.786965558,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 6000000,
+          "token_in_amount": 0,
+          "token_out_amount": 6000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x1ab2bd8a0aac26de3c4aff10385af4a5ed0489ba",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 5998990.542837588,
+      "volume_in_usd": 0,
+      "volume_out_usd": 5998990.542837588,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 6000000,
+          "token_in_amount": 0,
+          "token_out_amount": 6000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xaa75f7a1b2ad9597bee8104a003abfc7a223c683",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 5998990.542837588,
+      "volume_in_usd": 0,
+      "volume_out_usd": 5998990.542837588,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 6000000,
+          "token_in_amount": 0,
+          "token_out_amount": 6000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xf9819a08750105c7c394b9dd293aa16592400b7e",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 5498938.934811787,
+      "volume_in_usd": 0,
+      "volume_out_usd": 5498938.934811787,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 5500000,
+          "token_in_amount": 0,
+          "token_out_amount": 5500000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x6448dbc9e99be98109c858c6624410c8f494346b",
+      "counterparty_address_label": null,
+      "interaction_count": 3,
+      "total_volume_usd": 4655566.543750571,
+      "volume_in_usd": 3905820.001784595,
+      "volume_out_usd": 749746.5419659754,
+      "tokens_info": [
+        {
+          "token_address": "0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2",
+          "token_symbol": "LIT",
+          "token_name": "Lighter",
+          "num_transfer": "2",
+          "total_token_amount": 1130318.40780575,
+          "token_in_amount": 1130318.40780575,
+          "token_out_amount": 0
+        },
+        {
+          "token_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "1",
+          "total_token_amount": 749995,
+          "token_in_amount": 0,
+          "token_out_amount": 749995
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xbd9f00b37957ada869f802d1d6a0c0c4c4ea54ed",
+      "counterparty_address_label": [
+        "High Activity"
+      ],
+      "interaction_count": 5,
+      "total_volume_usd": 4582668.597172244,
+      "volume_in_usd": 0,
+      "volume_out_usd": 4582668.597172244,
+      "tokens_info": [
+        {
+          "token_address": "0x55d398326f99059ff775485246999027b3197955",
+          "token_symbol": "USDT",
+          "token_name": "Tether USD",
+          "num_transfer": "3",
+          "total_token_amount": 1649999.6700000002,
+          "token_in_amount": 0,
+          "token_out_amount": 1649999.6700000002
+        },
+        {
+          "token_address": "0x000ae314e2a2172a039b26378814c252734f556a",
+          "token_symbol": "ASTER",
+          "token_name": "Aster",
+          "num_transfer": "2",
+          "total_token_amount": 3750001,
+          "token_in_amount": 0,
+          "token_out_amount": 3750001
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xee7ae85f2fe2239e27d9c1e23fffe168d63b4055",
+      "counterparty_address_label": [
+        "Token Millionaire"
+      ],
+      "interaction_count": 13,
+      "total_volume_usd": 4412561.061017313,
+      "volume_in_usd": 4412561.061017313,
+      "volume_out_usd": 0,
+      "tokens_info": [
+        {
+          "token_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "13",
+          "total_token_amount": 4413335.01,
+          "token_in_amount": 4413335.01,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x564220f3f6f2d0ed28bf6a75f344fad7c6134a68",
+      "counterparty_address_label": [
+        "High Balance"
+      ],
+      "interaction_count": 4,
+      "total_volume_usd": 4269706.180444049,
+      "volume_in_usd": 4269706.180444049,
+      "volume_out_usd": 0,
+      "tokens_info": [
+        {
+          "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "4",
+          "total_token_amount": 4269984.61,
+          "token_in_amount": 4269984.61,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x235776ff3b65947fe0c37bd36e70eac673b2a38d",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 3999912.4898221716,
+      "volume_in_usd": 0,
+      "volume_out_usd": 3999912.4898221716,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 4000000,
+          "token_in_amount": 0,
+          "token_out_amount": 4000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x8f19104ebc7272a952ab4ca9e9d81cf344d5a69a",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 3999604.050824367,
+      "volume_in_usd": 0,
+      "volume_out_usd": 3999604.050824367,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 4000000,
+          "token_in_amount": 0,
+          "token_out_amount": 4000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x7da811768c9fccd18adb4b85ba5350cde0e6f8bd",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 3999188.288803552,
+      "volume_in_usd": 0,
+      "volume_out_usd": 3999188.288803552,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 4000000,
+          "token_in_amount": 0,
+          "token_out_amount": 4000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x59e60cb58a640370433b7122a1c9221a522fc4c8",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 3999109.3034244515,
+      "volume_in_usd": 0,
+      "volume_out_usd": 3999109.3034244515,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 4000000,
+          "token_in_amount": 0,
+          "token_out_amount": 4000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xbbf4ac05462408d79d30d6184e57aa075556c2a2",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 3499708.967133823,
+      "volume_in_usd": 0,
+      "volume_out_usd": 3499708.967133823,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3500000,
+          "token_in_amount": 0,
+          "token_out_amount": 3500000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xbcbe73c98530f645883443c2c552ae3e8db0b1bc",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 3499417.9752339474,
+      "volume_in_usd": 0,
+      "volume_out_usd": 3499417.9752339474,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3500000,
+          "token_in_amount": 0,
+          "token_out_amount": 3500000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x02c357fa199348d264c5375b9d05ef0551c90ba2",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 3499411.149988593,
+      "volume_in_usd": 0,
+      "volume_out_usd": 3499411.149988593,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3500000,
+          "token_in_amount": 0,
+          "token_out_amount": 3500000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xc6ecc2123622aba104a1857f45c1dd2945ab9d54",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999934.3673666287,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999934.3673666287,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x42696fdf0fa69d8e217b46d0ce84323c6614c23d",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999750.5432575624,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999750.5432575624,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xcfb4d1593b1715b59f2805151fb36201caf84db2",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999750.5432575624,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999750.5432575624,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x0e6ef7d67150d64b6e3d567d6f20aafcf5ae33f6",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999749.1788876858,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999749.1788876858,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xb331efb3d4c3fec37ba25b0f40746be3dcec2a32",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999703.0381182753,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999703.0381182753,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xc1a2c6b29776d1b3cfcf14fc1f30dd80bd63acb4",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999703.0381182753,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999703.0381182753,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x47ecfce1a9f2d80052ebb7237c34fedbeffa0023",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999698.393364349,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999698.393364349,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x8317a5fefbc371861ed580f7250bf4a5f5f3c1eb",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999622.234156784,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999622.234156784,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x7a5a37e2c6890b6cc22d5fe5bcc45fb5d6501234",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999560.1259359187,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999560.1259359187,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xb82d0137438b7c60ba064dd675d75948fe77ee5e",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999541.519357915,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999541.519357915,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x2140cdff7a17006206d0b1a300ff02e8dde8bc1a",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2999495.271418794,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2999495.271418794,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 3000000,
+          "token_in_amount": 0,
+          "token_out_amount": 3000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x7eb4df201104c953e30298172c882f052d15aa54",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2499700.627498839,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2499700.627498839,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2500000,
+          "token_in_amount": 0,
+          "token_out_amount": 2500000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x0b9b6437b08eb5b646a3cc3b403ca56bdf975df0",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2499579.392848995,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2499579.392848995,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2500000,
+          "token_in_amount": 0,
+          "token_out_amount": 2500000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xfe63e91600479f007dfcff8652ea544791fcd1a4",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2099735.563909749,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2099735.563909749,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2100000,
+          "token_in_amount": 0,
+          "token_out_amount": 2100000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x03ac37e6ea8cc4ca9a26ede0dc0d47cfe5921c80",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 2049754.5145490482,
+      "volume_in_usd": 0,
+      "volume_out_usd": 2049754.5145490482,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2050000,
+          "token_in_amount": 0,
+          "token_out_amount": 2050000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x3ef1b32ac236a9b4a9a48c093f8f495252f80340",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 1999835.565322267,
+      "volume_in_usd": 0,
+      "volume_out_usd": 1999835.565322267,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2000000,
+          "token_in_amount": 0,
+          "token_out_amount": 2000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x8fff09e47f9361e797b3ec52d1fa3010b71fb51c",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 1999832.7859251236,
+      "volume_in_usd": 0,
+      "volume_out_usd": 1999832.7859251236,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2000000,
+          "token_in_amount": 0,
+          "token_out_amount": 2000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x6869df864f606b2c556125f3a2f7c25aad609784",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 1999832.7859251236,
+      "volume_in_usd": 0,
+      "volume_out_usd": 1999832.7859251236,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2000000,
+          "token_in_amount": 0,
+          "token_out_amount": 2000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xd65ab57aaf4c49ae47b0f20b2ac380a0f53378a9",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 1999790.5108918324,
+      "volume_in_usd": 0,
+      "volume_out_usd": 1999790.5108918324,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2000000,
+          "token_in_amount": 0,
+          "token_out_amount": 2000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xac0f3d3417c007034f72b714dbaecd8de11410f4",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 1999706.7506239458,
+      "volume_in_usd": 0,
+      "volume_out_usd": 1999706.7506239458,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 2000000,
+          "token_in_amount": 0,
+          "token_out_amount": 2000000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x69b90c1d460f9e263a43272564892c00eb040962",
+      "counterparty_address_label": [
+        "High Balance"
+      ],
+      "interaction_count": 1,
+      "total_volume_usd": 1599635.7178272957,
+      "volume_in_usd": 1599635.7178272957,
+      "volume_out_usd": 0,
+      "tokens_info": [
+        {
+          "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "1",
+          "total_token_amount": 1599995,
+          "token_in_amount": 1599995,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x367c42a6f261ec54ffbecf5f41c226be12a3dca0",
+      "counterparty_address_label": [
+        "High Activity"
+      ],
+      "interaction_count": 1,
+      "total_volume_usd": 1528293.7041209678,
+      "volume_in_usd": 1528293.7041209678,
+      "volume_out_usd": 0,
+      "tokens_info": [
+        {
+          "token_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "1",
+          "total_token_amount": 1528436.19,
+          "token_in_amount": 1528436.19,
+          "token_out_amount": 0
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0xbd9f00b37957ada869f802d1d6a0c0c4c4ea54ed",
+      "counterparty_address_label": [
+        "High Activity"
+      ],
+      "interaction_count": 1,
+      "total_volume_usd": 1509724.6989180394,
+      "volume_in_usd": 0,
+      "volume_out_usd": 1509724.6989180394,
+      "tokens_info": [
+        {
+          "token_address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+          "token_symbol": "USDC",
+          "token_name": "USD Coin",
+          "num_transfer": "1",
+          "total_token_amount": 1510000,
+          "token_in_amount": 0,
+          "token_out_amount": 1510000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x641b9937f2fa85fa6f750a20247a8001d1fa8d41",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 1499967.1836833144,
+      "volume_in_usd": 0,
+      "volume_out_usd": 1499967.1836833144,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 1500000,
+          "token_in_amount": 0,
+          "token_out_amount": 1500000
+        }
+      ]
+    },
+    {
+      "counterparty_address": "0x96bd27e192af38559b11640609d78ba40d728f4a",
+      "counterparty_address_label": null,
+      "interaction_count": 1,
+      "total_volume_usd": 1499967.1836833144,
+      "volume_in_usd": 0,
+      "volume_out_usd": 1499967.1836833144,
+      "tokens_info": [
+        {
+          "token_address": "0xb88339cb7199b77e23db6e890353e22632ba630f",
+          "token_symbol": "USDC",
+          "token_name": "USDC",
+          "num_transfer": "1",
+          "total_token_amount": 1500000,
+          "token_in_amount": 0,
+          "token_out_amount": 1500000
+        }
+      ]
+    }
+  ]
+}
