@@ -368,7 +368,7 @@ describe("expanding the card", () => {
     expect(countRows("expanded")).toBe(6);
   });
 
-  it("gives the expanded spot card a Holders tab, and the compact one none", () => {
+  it("gives the expanded spot card its three wide tabs, and the compact one none of them", () => {
     const tabsAt = (size: "compact" | "expanded") => {
       const { container, root } = mountNode(
         <Popover anchor={null} onClose={() => {}} size={size} onToggleSize={() => {}}>
@@ -380,7 +380,16 @@ describe("expanding the card", () => {
       return labels;
     };
     expect(tabsAt("compact")).toEqual(["Flow", "Wallets", "Risk"]);
-    expect(tabsAt("expanded")).toEqual(["Flow", "Wallets", "Risk", `Holders${DEPTH_SECTION_CREDITS.spotHolders} credits`]);
+    // Round 2.1 adds Tape and Winners beside Holders. All three need width as much as they need
+    // a press, so all three stay out of the 440px anchored card, and each prints its own price.
+    expect(tabsAt("expanded")).toEqual([
+      "Flow",
+      "Wallets",
+      `Tape${DEPTH_SECTION_CREDITS.spotTape} credit`,
+      "Risk",
+      `Holders${DEPTH_SECTION_CREDITS.spotHolders} credits`,
+      `Winners${DEPTH_SECTION_CREDITS.spotWinners} credits`,
+    ]);
   });
 
   it("gives expanded Spot Flow explicit window, gauges, chart and netflow layout hooks", () => {

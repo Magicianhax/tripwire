@@ -1,7 +1,7 @@
-import { TargetSchema, type Target } from "@tripwire/core";
+import { chainGroups, fractionToPct, screenerKey, SCREENER_MAX_CHAINS, TargetSchema, type Target } from "@tripwire/core";
 import { z } from "zod";
 import { isReplay } from "../nansen/client";
-import { nansen } from "../nansen/endpoints";
+import { nansen, type TokenScreenerRow } from "../nansen/endpoints";
 
 export const MarketsRequestSchema = z.object({symbol:z.string().regex(/^[A-Za-z0-9][A-Za-z0-9.-]{0,39}$/)});
 
@@ -60,6 +60,107 @@ export function marketRows(symbol: string, rows: unknown[]): Market[] {
   }
   return markets.sort((a, b) => Number(b.match === "exact") - Number(a.match === "exact")
     || (b.volume24hUsd ?? -1) - (a.volume24hUsd ?? -1));
+}
+
+// ---- Round 1.6.2: the batched token-screener enrichment ---------------------------------------
+
+/**
+ * The most groups one press will ever buy, so the catalog can never quietly become a five-credit
+ * view of a free one. A catalog spanning more chains than this enriches the first
+ * `MAX_ENRICH_GROUPS × SCREENER_MAX_CHAINS` chains and says so; the rest keep today's three
+ * figures, which is the same degradation as a row the screener has no answer for.
+ */
+export const MAX_ENRICH_GROUPS = 5;
+
+export const MarketEnrichRequestSchema = z.object({
+  markets: z
+    .array(
+      z.object({
+        chain: z.string().regex(/^[a-z0-9-]{1,40}$/),
+        address: z.string().min(1).max(200).regex(/^[A-Za-z0-9:._-]+$/),
+      }),
+    )
+    .min(1)
+    .max(100),
+});
+export type MarketEnrichRequest = z.infer<typeof MarketEnrichRequestSchema>;
+
+/**
+ * What one credit adds to a catalog row. Deliberately **only** the four figures `search/general`
+ * does not carry: price, 24h volume and market cap already render from the free snapshot, and a
+ * second source for the same figure under the same word is how two numbers start disagreeing on
+ * one card.
+ */
+export type MarketEnrichment = {
+  /** Whole days since deployment. The screener sends both days and hours; days is what is shown. */
+  ageDays: number | null;
+  /** Percent over 24h. Nansen sends a **fraction** here, so it is converted exactly once. */
+  priceChangePct: number | null;
+  fdvUsd: number | null;
+  /** Circulating over total supply, as the screener reports it. */
+  fdvMcRatio: number | null;
+};
+
+export type MarketEnrichResponse = {
+  /** Keyed by `chain:address`, so a row with no answer is simply absent rather than zeroed. */
+  rows: Record<string, MarketEnrichment>;
+  /** Chains asked about, groups bought, and what those groups cost. */
+  chains: number;
+  groups: number;
+  credits: number;
+  /** Chains the cap left out, which the card states rather than silently dropping. */
+  skippedChains: string[];
+  errors: string[];
+  replay: boolean;
+};
+
+const num = (v: unknown): number | null => (typeof v === "number" && Number.isFinite(v) ? v : null);
+
+/** What a catalog of these markets will cost to enrich, computed without spending anything. */
+export function enrichmentPlan(markets: readonly { chain: string }[]): { groups: string[][]; skippedChains: string[]; credits: number } {
+  const all = chainGroups(markets.map((m) => m.chain), SCREENER_MAX_CHAINS);
+  const groups = all.slice(0, MAX_ENRICH_GROUPS);
+  return { groups, skippedChains: all.slice(MAX_ENRICH_GROUPS).flat(), credits: groups.length };
+}
+
+/**
+ * One credit enriches a whole page of the catalog, not one row.
+ *
+ * `filters.token_address` takes an array and `chains` takes one to five — both measured on the
+ * first live call — so the shape of the spend is "one call per group of five chains", whatever
+ * the row count. A group whose call fails leaves its rows at today's three figures and names
+ * itself in `errors`; it never blanks the catalog.
+ */
+export async function enrichMarkets(input: MarketEnrichRequest): Promise<MarketEnrichResponse> {
+  const { groups, skippedChains, credits } = enrichmentPlan(input.markets);
+  const rows: Record<string, MarketEnrichment> = {};
+  const errors: string[] = [];
+
+  await Promise.all(
+    groups.map(async (chains) => {
+      const inGroup = new Set(chains);
+      const addresses = [...new Set(input.markets.filter((m) => inGroup.has(m.chain.toLowerCase())).map((m) => m.address))];
+      if (addresses.length === 0) return;
+      try {
+        const { data } = await nansen.tokenScreener(chains, addresses);
+        for (const row of (data.data ?? []) as TokenScreenerRow[]) {
+          const chain = typeof row.chain === "string" ? row.chain : null;
+          const address = typeof row.token_address === "string" ? row.token_address : null;
+          if (!chain || !address) continue;
+          rows[screenerKey(chain, address)] = {
+            ageDays: num(row.token_age_days),
+            priceChangePct: fractionToPct(num(row.price_change)),
+            fdvUsd: num(row.fdv),
+            fdvMcRatio: num(row.fdv_mc_ratio),
+          };
+        }
+      } catch (e) {
+        errors.push(`Token screener (${chains.join(", ")}): ${e instanceof Error ? e.message : e}`);
+      }
+    }),
+  );
+
+  return { rows, chains: groups.flat().length, groups: groups.length, credits, skippedChains, errors, replay: isReplay() };
 }
 
 export async function marketCatalog(symbol: string): Promise<MarketCatalog> {

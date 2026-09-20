@@ -3,6 +3,7 @@ import {
   ageInDays,
   bothSidesKeys,
   depthCostLabel,
+  DEPTH_SECTION_CREDITS,
   exchangeFlowCopy,
   flowWarningRow,
   NETFLOW_TILE_TIMEFRAME,
@@ -11,6 +12,7 @@ import {
   severityLevel,
   MIN_VOL24_USD,
   splitIsReadable,
+  tapeDivider,
   tradedBothSides,
   VERDICT_TIMEFRAME,
   VIEW_TIMEFRAMES,
@@ -20,8 +22,8 @@ import {
   type Signal,
   type ViewTimeframe,
 } from "@tripwire/core";
-import type { HitDto, SpotPanel } from "../api-types";
-import { Brain, Fish, Landmark, LogOut, Megaphone, PieChart, Sprout, Trophy } from "lucide-react";
+import type { HitDto, SpotMarketSection, SpotPanel, SpotTapeRow } from "../api-types";
+import { ArrowLeftRight, Brain, Coins, Fish, Landmark, ListOrdered, LogOut, Megaphone, PieChart, Sprout, Trophy } from "lucide-react";
 import { rowLimit, useCardSize } from "./card-size";
 import { timeAgo, usd } from "./format";
 import { Icon } from "./icons";
@@ -56,9 +58,57 @@ function Skeleton({ rows = 3, tall = false }: { rows?: number; tall?: boolean })
   return <LoadingBlock shape={tall ? "chart" : "row"} rows={rows} />;
 }
 
-/** Which lazy section each spot tab needs. Only Holders costs anything, and it exists only in
- * the expanded card, where there is room for it. */
-export const SPOT_TAB_SECTIONS: Record<string, DepthSection[]> = { flow: [], wallets: [], risk: [], holders: ["spotHolders"] };
+/**
+ * Which lazy section each spot tab needs.
+ *
+ * `risk` costs nothing: the Dexscreener market structure behind it is a public request, and its
+ * tab therefore carries no price label. The three that do cost something — Tape at 1, Holders and
+ * Winners at 5 each — exist only in the expanded card, where there is both room to read them and
+ * a deliberate press behind getting there.
+ */
+export const SPOT_TAB_SECTIONS: Record<string, DepthSection[]> = {
+  flow: [],
+  wallets: [],
+  risk: ["spotMarket"],
+  tape: ["spotTape"],
+  holders: ["spotHolders"],
+  winners: ["spotWinners"],
+};
+
+/**
+ * A section somebody has to ask for by name, with its price on the button.
+ *
+ * The ruling from the wallet card's lazy views (Round 1.5) applies here too: a credit is spent by
+ * a press, never by a view becoming visible and never by a keypress that moves a selection.
+ */
+function PricedSectionButton({
+  label,
+  section,
+  depth,
+  onNeedSections,
+}: {
+  label: string;
+  section: DepthSection;
+  depth: DepthState;
+  onNeedSections?: (sections: DepthSection[]) => void;
+}) {
+  const pending = depth.loading.includes(section);
+  const credits = DEPTH_SECTION_CREDITS[section];
+  return (
+    <button type="button" className="tw-premium-button" onClick={() => onNeedSections?.([section])} disabled={pending || !onNeedSections}>
+      <Icon icon={Coins} size={14} />
+      {pending ? "Asking Nansen…" : `${label} (${credits} ${credits === 1 ? "credit" : "credits"})`}
+    </button>
+  );
+}
+
+/** A signed percentage that keeps its sign at any size, for the change columns. */
+const changePct = (value: number | null | undefined): string =>
+  typeof value === "number" && Number.isFinite(value) ? `${value > 0 ? "+" : ""}${value.toFixed(Math.abs(value) < 1 && value !== 0 ? 2 : 1)}%` : "—";
+
+/** A token quantity, compact, and never a bare zero for an absent figure. */
+const amount = (n: number | null | undefined): string =>
+  typeof n === "number" && Number.isFinite(n) ? n.toLocaleString("en-US", { notation: "compact", maximumFractionDigits: 2 }) : "—";
 
 /** A whole count ("86,022 holders"), or a dash. Never rounded to "86K": the point of the figure
  * is that it is exact at the moment of the snapshot. */
@@ -152,7 +202,72 @@ function labeledNet(flow: FlowRow | null): number | null {
   return parts.reduce((sum: number, p) => sum + (p ?? 0), 0);
 }
 
-function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: HitDto[]; signals: Signal[]; timeframe?: TimeframeState }) {
+/**
+ * The transfers behind the exchange line (Round 2.1), bought by a press that states its price.
+ *
+ * A transfer is a transfer. The list names both wallets, the amount and the value, and says
+ * nothing about why: a deposit to an exchange is custody moving, not a sale, and ordering by
+ * value over a day on a large token returns routine rebalancing every single day.
+ */
+function TransfersBlock({ depth, onNeedSections }: { depth: DepthState; onNeedSections?: (sections: DepthSection[]) => void }) {
+  const section = depth.data?.spotTransfers;
+  const failure = depth.failed.spotTransfers;
+  const loading = depth.loading.includes("spotTransfers");
+  if (failure) return <SectionProblem reasons={[failure]} />;
+  if (loading) return <LoadingBlock shape="row" rows={3} label="Loading transfers" />;
+  if (!section) {
+    return (
+      <div className="tw-flow-transfers">
+        <PricedSectionButton label="Show the largest transfers" section="spotTransfers" depth={depth} onNeedSections={onNeedSections} />
+      </div>
+    );
+  }
+  if (!section.transfers) {
+    return (
+      <p className="tw-note">Nansen returned no transfers for this token in the last {section.windowHours} hours.</p>
+    );
+  }
+  return (
+    <div className="tw-flow-transfers">
+      <ul className="tw-rows tw-transfer-rows">
+        {section.transfers.slice(0, 5).map((t, i) => (
+          <li key={`${t.txHash ?? i}`}>
+            <span className="tw-transfer-pair">
+              <WalletLabel label={t.fromLabel} address={t.fromAddress ?? ""} />
+              <Icon icon={ArrowLeftRight} size={12} />
+              <WalletLabel label={t.toLabel} address={t.toAddress ?? ""} />
+            </span>
+            <span className="tw-fig tw-row-amount">
+              {usd(t.valueUsd)}
+              <span className="tw-row-amount-other">{amount(t.amount)} tokens</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="tw-meta">
+        The {Math.min(5, section.transfers.length)} largest transfers of the last {section.windowHours} hours, by value. A transfer is a movement between
+        wallets: it is not a trade and says nothing about intent.
+      </p>
+      <SectionProblem reasons={section.errors} />
+    </div>
+  );
+}
+
+function FlowTab({
+  panel,
+  hits,
+  signals,
+  timeframe,
+  depth,
+  onNeedSections,
+}: {
+  panel: SpotPanel;
+  hits: HitDto[];
+  signals: Signal[];
+  timeframe?: TimeframeState;
+  depth: DepthState;
+  onNeedSections?: (sections: DepthSection[]) => void;
+}) {
   const size = useCardSize();
   const view = timeframe?.value ?? panel.viewTimeframe ?? VERDICT_TIMEFRAME;
   const loading = timeframe?.pending != null;
@@ -242,6 +357,8 @@ function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: 
                     {w}
                   </p>
                 ))}
+                {/* The exchange line says money moved; this says which wallets moved it (2.1). */}
+                <TransfersBlock depth={depth} onNeedSections={onNeedSections} />
                 {warningsFor(null).map((w) => (
                   <p key={w} className="tw-seg-warning tw-meta">
                     {w}
@@ -484,7 +601,85 @@ function IndicatorList({ rows }: { rows: IndicatorRow[] }) {
   );
 }
 
-function RiskTab({ panel, hits }: { panel: SpotPanel; hits: HitDto[] }) {
+/**
+ * Market structure from Dexscreener (Round 1.6.1): pair age, short-window price change and the
+ * buy/sell trade counts, none of which Nansen's token record carries.
+ *
+ * Every figure names its source and its scope, because two of them have a Nansen counterpart a
+ * few lines above and the two will disagree: liquidity here is **one pool's**, the deepest, while
+ * Nansen's is the token's; the counts are summed across pools and say so. Pair age is captioned
+ * as the pair's, never the token's — a migrated pool reads newer than the contract it trades.
+ *
+ * Nothing here feeds a signal, and boosts, socials and websites never reach this component: they
+ * are bought or team-submitted, and are not in the backend's schema at all.
+ */
+function MarketStructure({ section }: { section: SpotMarketSection | undefined }) {
+  if (!section) return null;
+  if (section.errors.length > 0) return <SectionProblem reasons={section.errors} />;
+  const s = section.structure;
+  if (!s || s.poolCount === 0) {
+    return (
+      <Section title="Market structure" aside="Dexscreener">
+        <Empty>Dexscreener lists no pools for this token on this chain.</Empty>
+      </Section>
+    );
+  }
+  const windows = [
+    { key: "m5" as const, label: "5m" },
+    { key: "h1" as const, label: "1h" },
+    { key: "h6" as const, label: "6h" },
+  ];
+  const pool = s.pool;
+  return (
+    <Section title="Market structure" aside="Dexscreener">
+      <div className="tw-market-readouts">
+        <Readouts
+          items={[
+            { label: "Pair age", value: tokenAge(pool?.createdAtIso) },
+            { label: "Deepest pool", value: usd(pool?.liquidityUsd ?? null) },
+            { label: "Venue", value: pool?.dexId ?? "—" },
+            { label: "Pools", value: count(s.poolCount) },
+          ]}
+        />
+      </div>
+      <table className="tw-table tw-structure-table">
+        <thead>
+          <tr>
+            <th scope="col">Window</th>
+            <th scope="col" className="tw-num">
+              Price
+            </th>
+            <th scope="col" className="tw-num">
+              Buys
+            </th>
+            <th scope="col" className="tw-num">
+              Sells
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {windows.map(({ key, label }) => (
+            <tr key={key}>
+              <th scope="row">{label}</th>
+              <td className="tw-fig tw-num" data-sign={signOf(s.priceChangePct[key])}>
+                {changePct(s.priceChangePct[key])}
+              </td>
+              <td className="tw-fig tw-num">{count(s.txns[key].buys)}</td>
+              <td className="tw-fig tw-num">{count(s.txns[key].sells)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="tw-meta">
+        Price change is the deepest pool's, {pool?.quoteSymbol ? `quoted in ${pool.quoteSymbol}` : "at its own quote"}; the trade counts are summed across all{" "}
+        <b className="tw-fig">{count(s.poolCount)}</b> pools. Pair age is how long that pool has existed, not how long the token has: a migrated pool reads
+        newer than its contract.
+      </p>
+    </Section>
+  );
+}
+
+function RiskTab({ panel, hits, depth }: { panel: SpotPanel; hits: HitDto[]; depth: DepthState }) {
   const indicators = panel.indicators ?? [];
   // Split on the score's vocabulary, not on the array it arrived in: the live response puts a
   // `high`-scored risk row and a `low`-scored reward row on the same severity scale, and
@@ -508,7 +703,9 @@ function RiskTab({ panel, hits }: { panel: SpotPanel; hits: HitDto[] }) {
                 { label: "Market cap", value: usd(token!.marketCapUsd) },
                 { label: "FDV", value: usd(token!.fdvUsd) },
                 { label: "24h volume", value: usd(token!.volume24hUsd) },
-                { label: "Liquidity", value: usd(token!.liquidityUsd) },
+                // Named for its source: Dexscreener reports the deepest pool's liquidity a few
+                // lines below, and the two will not agree (1.6.1).
+                { label: "Liquidity (Nansen)", value: usd(token!.liquidityUsd) },
                 { label: "Holders", value: count(token!.totalHolders) },
                 { label: "Token age", value: tokenAge(token!.deploymentDateIso) },
                 { label: "Circulating", value: supply(token!.circulatingSupply) },
@@ -521,6 +718,7 @@ function RiskTab({ panel, hits }: { panel: SpotPanel; hits: HitDto[] }) {
           <p className="tw-note">Holders, supply and age are a daily snapshot and can be up to 24h old.</p>
         </Section>
       ) : null}
+      <MarketStructure section={depth.data?.spotMarket} />
       <Section title="Risk indicators" aside={severity.length > 0 ? "medium and high" : null}>
         {severity.length > 0 ? <IndicatorList rows={severity} /> : <Empty>No medium or high risk indicators.</Empty>}
       </Section>
@@ -533,6 +731,262 @@ function RiskTab({ panel, hits }: { panel: SpotPanel; hits: HitDto[] }) {
   );
 }
 
+
+/** One trade, newest first: when, who, which way, and for how much. */
+function TapeRows({ rows, dividerIndex, postTimeIso }: { rows: SpotTapeRow[]; dividerIndex: number | null; postTimeIso: string | null }) {
+  return (
+    <ul className="tw-rows tw-tape-rows">
+      {rows.map((t, i) => (
+        <Fragment key={`${t.txHash ?? i}`}>
+          {i === dividerIndex ? (
+            <li className="tw-tape-divider" aria-label="Everything above this line happened after the post">
+              <span>
+                post, <time dateTime={postTimeIso ?? undefined}>{postTimeIso ? timeAgo(postTimeIso) : ""}</time>
+              </span>
+            </li>
+          ) : null}
+          <li>
+            <span className="tw-tape-when tw-meta">
+              <time className="tw-fig" dateTime={t.timestampIso}>
+                {timeAgo(t.timestampIso)}
+              </time>
+            </span>
+            <span className="tw-tape-who">
+              <WalletLabel label={t.label} address={t.address ?? ""} />
+            </span>
+            <span className="tw-tape-side" data-side={t.action ?? "unknown"}>
+              {t.action === "buy" ? "Bought" : t.action === "sell" ? "Sold" : "—"}
+            </span>
+            <span className="tw-fig tw-row-amount">
+              {usd(t.valueUsd)}
+              <span className="tw-row-amount-other">
+                {amount(t.tokenAmount)}
+                {t.counterSymbol ? ` for ${t.counterSymbol}` : ""}
+              </span>
+            </span>
+          </li>
+        </Fragment>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * Open Jupiter DCA vaults: pending demand no trade or flow window can see (Round 2.1).
+ *
+ * Solana only, hard — `tgm/jup-dca` has no chain parameter — so the button does not exist on an
+ * EVM token rather than existing and failing. An empty answer is the normal case and is reported
+ * as an empty answer: the press was paid for, so hiding the section afterwards would be the
+ * dishonest version of "hide when empty".
+ */
+function DcaBlock({ panel, depth, onNeedSections }: { panel: SpotPanel; depth: DepthState; onNeedSections?: (sections: DepthSection[]) => void }) {
+  if ((panel.chain ?? "").toLowerCase() !== "solana") return null;
+  const section = depth.data?.spotDca;
+  const failure = depth.failed.spotDca;
+  const loading = depth.loading.includes("spotDca");
+  return (
+    <Section title="Scheduled buying" aside="Jupiter DCA">
+      {failure ? <SectionProblem reasons={[failure]} /> : null}
+      {loading ? <LoadingBlock shape="row" rows={2} label="Loading Jupiter DCA vaults" /> : null}
+      {!failure && !loading && !section ? (
+        <>
+          <PricedSectionButton label="Check open DCA vaults" section="spotDca" depth={depth} onNeedSections={onNeedSections} />
+          <p className="tw-meta">Jupiter's recurring orders are demand nobody has spent yet. Solana only, and the trailing window is 14 days.</p>
+        </>
+      ) : null}
+      {section && section.vaults && section.vaults.length === 0 ? (
+        <p className="tw-note">Nansen returned no open Jupiter DCA vaults for this token. That is the usual answer, not a failure.</p>
+      ) : null}
+      {section && section.vaults && section.vaults.length > 0 ? (
+        <>
+          <p className="tw-note">
+            <b className="tw-fig">{count(section.vaults.length)}</b> open DCA {section.vaults.length === 1 ? "vault" : "vaults"} in the trailing 14 days.
+          </p>
+          <ul className="tw-rows tw-dca-rows">
+            {section.vaults.slice(0, 6).map((v, i) => (
+              <li key={`${v.address ?? i}`}>
+                <WalletLabel label={v.label} address={v.address ?? ""} chain="solana" />
+                <span className="tw-fig tw-row-amount">
+                  {amount(v.remainingAmount ?? (v.depositAmount !== null && v.depositSpent !== null ? v.depositAmount - v.depositSpent : null))}
+                  <span className="tw-row-amount-other">left of {amount(v.depositAmount)}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          {/* Token amounts, not dollars: Nansen sends no price for a pending order and deriving
+              one would state a figure it never gave. */}
+          <p className="tw-meta">Figures are token amounts as Nansen reports them, not a dollar value of pending demand.</p>
+        </>
+      ) : null}
+      <SectionProblem reasons={section?.errors ?? []} />
+    </Section>
+  );
+}
+
+/**
+ * The trade tape (Round 2.1): the Wallets tab answers "who", and this answers "in what order".
+ *
+ * Expanded card only. The compact card is 440px and already carries a scrolling tab strip; a
+ * forty-row tape with a time, a wallet and two figures per line is not readable in it, and the
+ * aggregate answer to "who bought since the post" is already one tab away.
+ *
+ * The divider is the part that could lie. The page is "the most recent N trades", not "every
+ * trade since the post" — measured, 100 trades on a liquid token covered fourteen minutes — so it
+ * is drawn only when the post time genuinely falls inside the fetched span, and the section says
+ * which case it is in.
+ */
+function TapeTab({
+  panel,
+  depth,
+  onNeedSections,
+}: {
+  panel: SpotPanel;
+  depth: DepthState;
+  onNeedSections?: (sections: DepthSection[]) => void;
+}) {
+  const size = useCardSize();
+  const section = depth.data?.spotTape;
+  const loading = depth.loading.includes("spotTape");
+  const failure = depth.failed.spotTape;
+  const symbol = panel.token?.symbol ?? "this token";
+
+  if (failure) return <SectionProblem reasons={[failure]} />;
+  if (loading) {
+    return (
+      <Section title="Trade tape">
+        <LoadingBlock shape="table" rows={rowLimit(size, 8, 14)} label="Loading trades" />
+      </Section>
+    );
+  }
+  if (!section) return <Empty>Open this tab to load the most recent trades in {symbol}.</Empty>;
+  const rows = (section.trades ?? []).slice(0, rowLimit(size, 10, 24));
+  if (rows.length === 0) {
+    return (
+      <div className="tw-detail">
+        <Section title="Trade tape">
+          <Empty>Nansen returned no labelled or above-floor trades in this window.</Empty>
+          <p className="tw-meta">
+            {count(section.fetched)} trades came back; none carried a Nansen label or reached {usd(section.minUsd)}.
+          </p>
+        </Section>
+        <DcaBlock panel={panel} depth={depth} onNeedSections={onNeedSections} />
+      </div>
+    );
+  }
+
+  const divider = tapeDivider(rows, panel.postTimeIso);
+  const spanMinutes =
+    section.spanFromIso && section.spanToIso ? Math.max(1, Math.round((Date.parse(section.spanToIso) - Date.parse(section.spanFromIso)) / 60_000)) : null;
+
+  return (
+    <div className="tw-detail">
+      <Section title="Trade tape" aside={spanMinutes === null ? null : `${count(section.kept)} of ${count(section.fetched)} · ${spanMinutes}m`}>
+        <TapeRows rows={rows} dividerIndex={divider.kind === "inside" ? divider.index : null} postTimeIso={panel.postTimeIso} />
+        {divider.kind === "older-than-window" ? (
+          <p className="tw-note">
+            Every trade here is newer than the post. This page is the most recent trades Nansen returned, not the whole run since the post, so there is no
+            line to draw.
+          </p>
+        ) : null}
+        {divider.kind === "newer-than-window" ? <p className="tw-note">Every trade here happened before the post.</p> : null}
+        <p className="tw-meta">
+          Newest first. Every labelled wallet's trade is shown whatever its size; unlabelled trades are shown from {usd(section.minUsd)} up. The label is
+          the evidence, not the count: one large buy can be a single wallet splitting a route.
+          {section.isLastPage === false ? " Nansen said this page was not the whole window." : ""}
+        </p>
+        <SectionProblem reasons={section.errors} />
+      </Section>
+      <DcaBlock panel={panel} depth={depth} onNeedSections={onNeedSections} />
+    </div>
+  );
+}
+
+/**
+ * The winners, and whether they have already sold (Round 2.1). Five credits, expanded only, and
+ * the price is printed on the tab.
+ *
+ * The headline is weighted by peak position value, because ten wallets that bought once and never
+ * sold carry a ratio of exactly 1.0 and would otherwise decide the sentence for the money.
+ */
+function WinnersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
+  const size = useCardSize();
+  const section = depth.data?.spotWinners;
+  const loading = depth.loading.includes("spotWinners");
+  const failure = depth.failed.spotWinners;
+  const pagination = usePagination(section?.winners ?? [], 6);
+  const symbol = panel.token?.symbol ?? "this token";
+
+  if (failure) return <SectionProblem reasons={[failure]} />;
+  if (loading) {
+    return (
+      <Section title="Top traders by realized PnL">
+        <LoadingBlock shape="table" rows={rowLimit(size, 8, 16)} label="Loading the leaderboard" />
+      </Section>
+    );
+  }
+  if (!section) return <Empty>Open this tab to load who made money on {symbol}.</Empty>;
+  if (!section.winners) return <Empty>Nansen returned no trader leaderboard for this token.</Empty>;
+  const held = section.stillHolding;
+
+  return (
+    <div className="tw-detail tw-detail-columns">
+      <div>
+        <Section title="Have they sold?">
+          {held ? (
+            <>
+              <p className="tw-note">
+                Of the <b className="tw-fig">{usd(held.weightUsd)}</b> these {count(held.counted)} wallets held at their largest,{" "}
+                <b className="tw-fig">{held.pct.toFixed(1)}%</b> is still held.
+              </p>
+              <p className="tw-meta">Weighted by each wallet's peak position, so a crowd of small never-sold wallets does not decide the figure.</p>
+            </>
+          ) : (
+            <Empty>Nansen sent no holding ratios for this sample, so there is nothing to weigh.</Empty>
+          )}
+        </Section>
+      </div>
+      <Section title="Top traders by realized PnL" aside={`${section.winners.length} wallets${section.isLastPage === false ? ", page 1" : ""}`}>
+        <table className="tw-table">
+          <thead>
+            <tr>
+              <th scope="col">Wallet</th>
+              <th scope="col" className="tw-num">
+                Realized
+              </th>
+              <th scope="col" className="tw-num">
+                ROI
+              </th>
+              <th scope="col" className="tw-num">
+                Still held
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {pagination.rows.map((w, i) => (
+              <tr key={`${w.address}-${i}`}>
+                <th scope="row">
+                  <WalletLabel label={w.label} address={w.address ?? ""} chain={panel.chain} />
+                </th>
+                <td className="tw-fig tw-num" data-sign={signOf(w.realizedPnlUsd)}>
+                  {usd(w.realizedPnlUsd)}
+                </td>
+                <td className="tw-fig tw-num" data-sign={signOf(w.roiPct)}>
+                  {signedPct(w.roiPct, 1)}
+                </td>
+                <td className="tw-fig tw-num">{w.stillHoldingRatio === null ? "—" : `${Math.round(w.stillHoldingRatio * 100)}%`}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {pagination.controls}
+        <p className="tw-meta">
+          Realized PnL over the last 30 days, ordered by it. "Still held" is the share of the wallet's largest-ever position it has not sold.
+        </p>
+        <SectionProblem reasons={section.errors} />
+      </Section>
+    </div>
+  );
+}
 
 /**
  * Who actually holds the token. The one paid thing on a spot card (5 credits), so it lives in
@@ -566,6 +1020,17 @@ function HoldersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
           <p className="tw-note">
             The top ten wallets hold <b className="tw-fig">{holders.top10SharePct.toFixed(2)}%</b> of {symbol}.
           </p>
+          {/* Both lines below are measurements of the returned page, stated rather than assumed:
+              `total_outflow` and `balance_change_24h` were already paid for on every row. */}
+          {typeof holders.neverSentOutCount === "number" && holders.neverSentOutCount > 0 ? (
+            <p className="tw-meta">
+              <b className="tw-fig">{count(holders.neverSentOutCount)}</b> of the {count(rows.length > 0 ? (holders.holders ?? []).length : 0)} returned
+              wallets have never sent a token out.
+            </p>
+          ) : null}
+          {holders.allChange24hZero === true ? (
+            <p className="tw-meta">Every returned wallet reports a 24h balance change of exactly zero, so the 7d and 30d columns carry the movement.</p>
+          ) : null}
         </Section>
       ) : null}
       <Section title="Holder distribution" aside="Returned wallets">
@@ -587,6 +1052,18 @@ function HoldersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
               <th scope="col" className="tw-num">
                 Share
               </th>
+              {/* Two more columns only where there is room for them: this table is already four
+                  wide, and the expanded card is the one with a thousand pixels (2.1). */}
+              {size === "expanded" ? (
+                <>
+                  <th scope="col" className="tw-num">
+                    7d
+                  </th>
+                  <th scope="col" className="tw-num">
+                    30d
+                  </th>
+                </>
+              ) : null}
             </tr>
           </thead>
           <tbody>
@@ -600,11 +1077,32 @@ function HoldersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
                   {usd(h.valueUsd)}
                 </td>
                 <td className="tw-fig tw-num">{h.sharePct === null ? "—" : `${h.sharePct.toFixed(2)}%`}</td>
+                {size === "expanded" ? (
+                  <>
+                    <td className="tw-fig tw-num" data-sign={signOf(h.change7dPct)}>
+                      {changePct(h.change7dPct)}
+                    </td>
+                    <td className="tw-fig tw-num" data-sign={signOf(h.change30dPct)}>
+                      {changePct(h.change30dPct)}
+                    </td>
+                  </>
+                ) : null}
               </tr>
             ))}
           </tbody>
         </table>
         {pagination.controls}
+        {size === "expanded" ? (
+          <p className="tw-meta">
+            The 7d and 30d columns are each wallet's balance change over that window, as a percent of what it holds now. Nansen reports them as raw token
+            amounts.
+          </p>
+        ) : null}
+        {(holders.warnings ?? []).map((w) => (
+          <p key={w} className="tw-meta tw-seg-warning">
+            {w}
+          </p>
+        ))}
       </Section>
       <SectionProblem reasons={holders.errors} />
     </div>
@@ -618,21 +1116,40 @@ export function spotTabs(
   timeframe?: TimeframeState,
   depth: DepthState = EMPTY_DEPTH,
   expanded = false,
+  /** How a priced button inside a tab asks for its own section (transfers, Jupiter DCA). */
+  onNeedSections?: (sections: DepthSection[]) => void,
 ): TabDef[] {
   const tabs: TabDef[] = [
-    { id: "flow", label: "Flow", content: <FlowTab panel={panel} hits={hits} signals={signals} timeframe={timeframe} /> },
+    { id: "flow", label: "Flow", content: <FlowTab panel={panel} hits={hits} signals={signals} timeframe={timeframe} depth={depth} onNeedSections={onNeedSections} /> },
     { id: "wallets", label: "Wallets", content: <WalletsTab panel={panel} /> },
-    { id: "risk", label: "Risk", content: <RiskTab panel={panel} hits={hits} /> },
+    { id: "risk", label: "Risk", content: <RiskTab panel={panel} hits={hits} depth={depth} /> },
   ];
-  // Holder concentration is worth 5 credits only when there is room to read it, so the tab
-  // exists in the expanded card and nowhere else.
+  // The three tabs below need room as much as they need a press: the anchored card is 440px with
+  // a tab strip that already scrolls, and a tape, a holder table and a leaderboard are all wide.
+  // Holder concentration and the winners are 5 credits each, which is the other half of the same
+  // ruling — both print their price on the tab.
   if (expanded) {
+    // Beside Wallets, before Risk: "who" and "in what order" are the same question twice.
+    tabs.splice(2, 0, {
+      id: "tape",
+      label: "Tape",
+      icon: <Icon icon={ListOrdered} size={14} />,
+      cost: depthCostLabel(SPOT_TAB_SECTIONS.tape!),
+      content: <TapeTab panel={panel} depth={depth} onNeedSections={onNeedSections} />,
+    });
     tabs.push({
       id: "holders",
       label: "Holders",
       icon: <Icon icon={PieChart} size={14} />,
       cost: depthCostLabel(SPOT_TAB_SECTIONS.holders!),
       content: <HoldersTab panel={panel} depth={depth} />,
+    });
+    tabs.push({
+      id: "winners",
+      label: "Winners",
+      icon: <Icon icon={Trophy} size={14} />,
+      cost: depthCostLabel(SPOT_TAB_SECTIONS.winners!),
+      content: <WinnersTab panel={panel} depth={depth} />,
     });
   }
   return tabs;
@@ -659,7 +1176,7 @@ export function SpotBody({
 }) {
   const expanded = useCardSize() === "expanded";
   const [activeTab, setActiveTab] = useState(initialTab);
-  const tabs = spotTabs(panel, hits, signals, timeframe, depth, expanded);
+  const tabs = spotTabs(panel, hits, signals, timeframe, depth, expanded, onNeedSections);
   if (markets) tabs.unshift({ id: "markets", label: "Markets", content: markets(activeTab === "markets") });
   return (
     <Tabs

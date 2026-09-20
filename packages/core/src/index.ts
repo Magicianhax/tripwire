@@ -5,6 +5,7 @@ export * from "./timeframe";
 export * from "./format";
 export * from "./signals/spot";
 export * from "./spot-readout";
+export * from "./spot-depth";
 export * from "./signals/perp";
 export * from "./perp-readout";
 export * from "./signals/prediction";

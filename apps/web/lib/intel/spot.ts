@@ -37,6 +37,15 @@ export type SpotChart = {
 };
 
 export type SpotPanel = {
+  /**
+   * The chain the token lives on.
+   *
+   * The card needs it to decide what it may even offer: `tgm/jup-dca` is Solana-only with no
+   * chain parameter, so the button that buys it must not exist on an EVM token (Round 2.1).
+   * Carried on the panel rather than re-derived, because a card reached from an X post has no
+   * target object of its own.
+   */
+  chain: string;
   /** Name, symbol, logo and the market figures behind the header. */
   token: TokenInfo | null;
   /** The flow the verdict was computed from. Always the verdict window. */
@@ -203,6 +212,7 @@ export async function buildSpotIntel(
   const headline = signals.find((s) => s.value === null)?.label ?? null;
 
   const panel: SpotPanel = {
+    chain,
     token,
     flow: flowRow,
     flowTimeframe: VERDICT_TIMEFRAME,

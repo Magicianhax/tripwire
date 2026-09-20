@@ -6,13 +6,23 @@ import {
   perpTradersSection,
   perpVenuesSection,
   predictionBookSection,
+  spotDcaSection,
   spotHoldersSection,
+  spotMarketSection,
+  spotTapeSection,
+  spotTransfersSection,
+  spotWinnersSection,
   type PerpChartSection,
   type PerpMarketSection,
   type PerpTradersSection,
   type PerpVenuesSection,
   type PredictionBookSection,
+  type SpotDcaSection,
   type SpotHoldersSection,
+  type SpotMarketSection,
+  type SpotTapeSection,
+  type SpotTransfersSection,
+  type SpotWinnersSection,
 } from "@/lib/intel/depth";
 
 export const runtime = "nodejs";
@@ -25,6 +35,11 @@ export type DepthResponse = {
   perpTraders?: PerpTradersSection;
   perpChart?: PerpChartSection;
   spotHolders?: SpotHoldersSection;
+  spotMarket?: SpotMarketSection;
+  spotTape?: SpotTapeSection;
+  spotWinners?: SpotWinnersSection;
+  spotTransfers?: SpotTransfersSection;
+  spotDca?: SpotDcaSection;
   predictionBook?: PredictionBookSection;
   /** What the sections in this answer are priced at, for the card's footer. */
   credits: number;
@@ -63,10 +78,21 @@ async function build(target: Target, sections: DepthSection[], timeframe: string
     for (const s of sections) if (s.startsWith("perp")) skipped.push(s);
   }
 
-  if (target.kind === "spot" && wanted.has("spotHolders")) {
-    jobs.push(spotHoldersSection(target.chain, target.tokenAddress).then((s) => void (out.spotHolders = s)));
-  } else if (wanted.has("spotHolders")) {
-    skipped.push("spotHolders");
+  if (target.kind === "spot") {
+    const { chain, tokenAddress } = target;
+    if (wanted.has("spotHolders")) jobs.push(spotHoldersSection(chain, tokenAddress).then((s) => void (out.spotHolders = s)));
+    if (wanted.has("spotMarket")) jobs.push(spotMarketSection(chain, tokenAddress).then((s) => void (out.spotMarket = s)));
+    if (wanted.has("spotTape")) jobs.push(spotTapeSection(chain, tokenAddress).then((s) => void (out.spotTape = s)));
+    if (wanted.has("spotWinners")) jobs.push(spotWinnersSection(chain, tokenAddress).then((s) => void (out.spotWinners = s)));
+    if (wanted.has("spotTransfers")) jobs.push(spotTransfersSection(chain, tokenAddress).then((s) => void (out.spotTransfers = s)));
+    // `tgm/jup-dca` is Solana-only and has no chain parameter, so an EVM token is refused here
+    // rather than charged a credit to be told nothing (Round 2.1).
+    if (wanted.has("spotDca")) {
+      if (chain.toLowerCase() === "solana") jobs.push(spotDcaSection(chain, tokenAddress).then((s) => void (out.spotDca = s)));
+      else skipped.push("spotDca");
+    }
+  } else {
+    for (const s of sections) if (s.startsWith("spot")) skipped.push(s);
   }
 
   if (wanted.has("predictionBook")) {

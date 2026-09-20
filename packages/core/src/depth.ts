@@ -7,7 +7,19 @@
  * for one and prints what it costs before the user opens the tab.
  */
 
-export const DEPTH_SECTIONS = ["perpMarket", "perpVenues", "perpTraders", "perpChart", "spotHolders", "predictionBook"] as const;
+export const DEPTH_SECTIONS = [
+  "perpMarket",
+  "perpVenues",
+  "perpTraders",
+  "perpChart",
+  "spotHolders",
+  "spotMarket",
+  "spotTape",
+  "spotWinners",
+  "spotTransfers",
+  "spotDca",
+  "predictionBook",
+] as const;
 export type DepthSection = (typeof DEPTH_SECTIONS)[number];
 
 /**
@@ -21,6 +33,11 @@ export type DepthSection = (typeof DEPTH_SECTIONS)[number];
  * | `perpChart`      | Hyperliquid `candleSnapshot`                             | 0       |
  * | `perpTraders`    | `tgm/perp-pnl-leaderboard` 5 + `perp-leaderboard` 5 + `tgm/perp-trades` 1 | 11 |
  * | `spotHolders`    | `tgm/holders`                                            | 5       |
+ * | `spotMarket`     | Dexscreener `/latest/dex/tokens/<addr>` (public)          | 0       |
+ * | `spotTape`       | `tgm/dex-trades`                                         | 1       |
+ * | `spotWinners`    | `tgm/pnl-leaderboard`, `premium_labels: false`            | 5       |
+ * | `spotTransfers`  | `tgm/transfers`                                          | 1       |
+ * | `spotDca`        | `tgm/jup-dca` (Solana only; skipped, and unbilled, elsewhere) | 1   |
  * | `predictionBook` | Polymarket CLOB `/book`, one per outcome token            | 0       |
  *
  * Zero means the section is built entirely from free public exchange APIs, which are
@@ -32,6 +49,11 @@ export const DEPTH_SECTION_CREDITS: Record<DepthSection, number> = {
   perpTraders: 11,
   perpChart: 0,
   spotHolders: 5,
+  spotMarket: 0,
+  spotTape: 1,
+  spotWinners: 5,
+  spotTransfers: 1,
+  spotDca: 1,
   predictionBook: 0,
 };
 

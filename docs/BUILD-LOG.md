@@ -1644,3 +1644,297 @@ Capture: `.impeccable/review/placement-dock-fallback.png`.
 **The dock is the fallback, and says so.** It is the only surface not attached to something the user is already looking at. That is what earns it a one-time entrance and a verdict-coloured edge — including a colour for CLEAR and a deliberately neutral one for UNCHECKED, which must never read as CLEAR — and it is why those are on `data-primary` and not on every dock chip.
 
 **When the popup cannot point at anything, it says so.** "Show me where it is" reports the content script's actual answer. A confident highlight of nothing is worse than the sentence "Tripwire isn't showing anything on this tab."
+
+---
+
+# Rounds 1.6.1, 1.6.2 and 2.1 — market structure, and a sense of sequence and time
+
+Branch `feat/cockpit-ui`, alongside the Round 2.2/2.3/2.4/2.5 work in the same tree. Brief:
+`docs/IMPROVEMENT-PLAN.md` §2 Round 1.6 (both items) and §3 Round 2.1. (Not to be confused with
+the "Round 1.6 — placement and visibility" section above, which is the banner-placement brief.)
+
+**9 Nansen credits spent building it**, in one recording run. At runtime a spot card still costs
+exactly what it cost: every new read sits behind a tab that prints its price or a button that does,
+and the only new thing on a card open is nothing at all.
+
+## Fixtures and credits
+
+`scripts/record-spot-depth-fixtures.mjs` is the recorder: gap-filling, capped at 10 credits a run,
+and it prints the answer to every open question in the brief. Recorded against the token every
+other spot fixture describes, dogwifhat on Solana, so replay keeps describing one token.
+
+| Fixture | Endpoint | Credits | Rows |
+|---|---|---|---|
+| `fixtures/nansen/tokenScreener.json` | `token-screener` | 1 | 1 |
+| `fixtures/nansen/tokenDexTrades.json` | `tgm/dex-trades` | 1 | 100 |
+| `fixtures/nansen/tokenTransfers.json` | `tgm/transfers` | 1 | 25 |
+| `fixtures/nansen/jupDca.json` | `tgm/jup-dca` | 1 | **0** |
+| `fixtures/nansen/tokenPnlLeaderboard.json` | `tgm/pnl-leaderboard` | 5 | 20 |
+| `fixtures/dexscreener/token.json` | Dexscreener, public | 0 | 30 pools |
+
+Five things were measured rather than assumed, and three of them changed the code:
+
+- **`token-screener` takes `filters.token_address` as an array and needs no date range.** The
+  brief's caveat that `to_date` must be within five minutes of now did not apply to the live
+  `token-screener` at all: the window is `timeframe`, and a dated body was never needed. The short
+  TTL stays anyway, for the reason the caveat gives. `price_change` is a live 24h figure and
+  `token_age_days` rides in the same response, so the half that goes stale is the half that misleads.
+- **`tgm/pnl-leaderboard` rejects `order_by: realized_pnl`,** and its 422 names the enum:
+  `pnl_usd_realised`, `pnl_usd_unrealised`, `pnl_usd_total`, `roi_percent_total` and more. The
+  rejection billed **0 credits**, so the probe was free and the production body now orders by a field
+  the API itself named rather than one that would have been a 400 in front of a user. The fixture on
+  disk is the unordered answer, which came back PnL-descending anyway.
+- **`still_holding_balance_ratio` is populated on spot,** unlike the perp sibling where Round 2.5
+  found it structurally zero. The recorded page runs the whole range: ten rows at exactly `1`, one
+  at `0`, the rest between. That is what makes "have the winners already sold?" answerable, and it
+  is also why the answer had to be weighted.
+- **100 `tgm/dex-trades` rows on a liquid token cover fourteen minutes.** This is the most
+  load-bearing measurement in the round: it is why the tape states its own span, and why the
+  post-time divider refuses to draw itself most of the time.
+- **`tgm/jup-dca` returned zero vaults** for a large Solana token, exactly as the brief predicted.
+  The empty answer is the fixture, and it is the case the card has to survive.
+
+## Per item
+
+### 1.6.1 — market structure from Dexscreener, and every figure named
+
+`apps/web/lib/dexscreener/token.ts` is a new token-keyed resolver beside the pair-keyed one in
+`resolve-pair.ts`, with the same discipline: fixed public origin, 8s timeout, `redirect: "error"`,
+500-entry bounded cache, in-flight dedupe, one request per token per minute. It is served as the
+free depth section `spotMarket` (`packages/core/src/depth.ts`, 0 credits), which the Risk tab asks
+for, so the Dexscreener block reaches the extension through the local backend and nothing else.
+
+**The 30-pool body is parsed and discarded on the backend.** What crosses the bridge is the deepest
+pool's `dexId`, liquidity, quote symbol and `pairCreatedAt`, the m5/h1/h6 price change, and the
+buy/sell counts summed across the pools. `boosts`, `info.socials`, `info.websites` and
+`info.imageUrl` are **not in the zod schema**, so they cannot leak by accident, and the tests assert
+that the whole reduced object contains no such string rather than asserting one omission.
+
+Three scoping decisions are on screen rather than in a comment (`MarketStructure`, `SpotBody.tsx`):
+
+- Nansen's liquidity readout is relabelled **"Liquidity (Nansen)"** and Dexscreener's is
+  **"Deepest pool"**. On the recorded token they read $3.53M and $5.76M. Two sources under one word
+  would have been the lie; two labelled sources are two facts.
+- Price change is the **deepest pool's**, and says so, with the quote token named.
+- The trade counts are **summed across all 30 pools**, and say so. Separate pools are separate
+  trades, so a sum is a count, but it is a different denominator from the liquidity above it.
+
+`pairCreatedAt` is captioned as the **pair's** age, never the token's, with the migration caveat in
+the copy. A pool where the token is the *quote* side is excluded from every figure and counted in
+`quoteSidePoolCount`: its price and change describe the other token, and in a synthetic case it
+would have won "deepest" by nine orders of magnitude.
+
+**Replay answers from the recording.** Without that, the Risk tab would reach a third party from an
+offline run and paint a fetch failure over a section with a perfectly good body on disk.
+
+**No signal wiring in this round**, per the brief and §6 of the plan: a third-party field must not
+be able to produce CLEAR while Nansen is silent.
+
+*Tests:* `apps/web/test/spot-round-2-1.test.ts`, six cases (the reduction, the forbidden-string
+sweep, the wrong-chain zero case, the quote-side exclusion, one request per window, replay);
+`apps/extension/test/spot-round-2-1.test.tsx`, five cases including "never puts two sources of
+liquidity under one word" and the no-pools case.
+
+### 1.6.2 — one credit enriches a catalog page, and the price is printed first
+
+`nansen.tokenScreener(chains, addresses)` in `apps/web/lib/nansen/endpoints.ts`, `enrichmentPlan`
+and `enrichMarkets` in `apps/web/lib/intel/markets.ts`, served by **`POST /api/token-market`**: its
+own route, because `/api/markets` is free and has to stay free.
+
+`enrichmentPlan` is the whole point. It counts the groups **without spending anything**, so
+`MarketsView`'s button can print "2 credits" before it is pressed. Groups are chains folded to
+lowercase, deduped, in fives (`chainGroups`, `packages/core/src/spot-depth.ts`), capped at
+`MAX_ENRICH_GROUPS = 5` so one press can never cost more than five credits; chains past the cap are
+named rather than silently dropped.
+
+The four figures added are exactly the ones `search/general` does not carry: token age, 24h price
+change, FDV and the FDV/MC ratio. Price, 24h volume and market cap are **not** re-fetched, because a
+second source for a figure already on the row is how two numbers start disagreeing under one word. A
+row the screener has no answer for keeps today's three figures rather than growing three dashes.
+
+`price_change` is a **fraction** on the wire (`-0.0735` is `-7.36%`) while Dexscreener's
+`priceChange` is already a percentage (`-7.66`). Both conventions now exist on the same card, so
+every conversion goes through `fractionToPct` in core and the two cannot be printed as each other by
+a hundredfold.
+
+**`token-screener` is not wired to the spot card's timeframe control**, per §4 of the plan.
+
+*Tests:* `spot-round-2-1.test.ts`, four cases (group counting, the cap and its named leftovers, the
+four figures and no fifth, a row with no answer).
+
+### 2.1 — the labelled trade tape
+
+`spotTapeSection` in `apps/web/lib/intel/depth.ts`, section `spotTape`, **1 credit**, expanded card
+only. `per_page` is 100 because page size is not priced and the floor is applied on our side.
+
+**Which trades earn a line:** every labelled wallet's trade whatever its size, plus unlabelled
+trades from `TAPE_MIN_USD` ($100) up, capped at 40 rows. The recorded page's values run from $0.00
+to $325.40 with 53 of 100 rows labelled, so a flat floor would have dropped exactly the wallets the
+cross-reference exists for, and no floor at all would have been dust and MEV. The card states the
+rule, and states that the label is the evidence rather than the count.
+
+**The divider is the part that could have lied.** The fetched page is "the most recent N trades",
+not "every trade since the post", and fourteen minutes of it. `tapeDivider` in
+`packages/core/src/spot-depth.ts` therefore returns one of five answers and only `inside` draws a
+line. A post older than the span gets no divider and gets the sentence "This page is the most recent
+trades Nansen returned, not the whole run since the post, so there is no line to draw." A venue
+card, which has no post at all, gets neither.
+
+The section's aside states the real span (`40 of 100 · 13m`) rather than the day that was requested,
+and `is_last_page` adds "Nansen said this page was not the whole window."
+
+*Tests:* core `spot-depth.test.ts`, five divider cases plus the floor; `spot-round-2-1.test.ts`,
+five section cases; `spot-round-2-1.test.tsx`, five render cases including the venue-card case.
+
+### 2.1 — the winners, weighted by the money
+
+`spotWinnersSection`, section `spotWinners`, **5 credits**, expanded card only, price on the tab.
+`premium_labels: false` is explicit in the body.
+
+The headline answers the brief's own question, and it is **weighted by peak position value**
+(`stillHoldingSummary`). It had to be: ten of the twenty recorded rows hold their whole peak and
+realised nothing at all, so the unweighted mean reads about 68% while the money reads 37.5%. The
+sentence names its own denominator ("of the $269K these 20 wallets held at their largest"), and a
+sample carrying no ratios says so instead of printing a zero.
+
+`roi_percent_total` is a fraction and is converted once. A missing ROI is a dash; a reported
+`still_holding_balance_ratio` of 1 is `100%`, which is a measurement, not a missing value.
+
+*Tests:* core, three weighting cases including the clamp; `spot-round-2-1.test.ts`, three; the
+extension file, four including "renders a missing ROI as a dash, never as zero".
+
+### 2.1 — the holder columns already paid for
+
+`total_inflow`, `total_outflow` and `balance_change_24h/7d/30d` were on every row of a page the card
+already buys, while `spotHoldersSection` mapped five fields. **0 extra credits.**
+
+The changes are carried as a **percent of the wallet's balance**, not the raw token amount Nansen
+sends: `+5,614,328` against a 74.2M balance is `+7.6%`, and printed raw beside a USD column it is
+unreadable. The 7d and 30d columns are **expanded-only**, because the table is already four columns
+and the 440px card is non-negotiable #5, and a column Nansen sent nothing for is a dash, never a
+flat 0%.
+
+Two facts about the returned page are now stated rather than assumed: how many of the returned
+wallets have never sent a token out (`total_outflow === 0`), and whether every returned wallet
+reports a 24h change of exactly zero. The second is computed per response rather than written into a
+comment, because the brief's sample did it and this one does not. `allChange24hZero` is **null**
+when no row reported the figure at all, which is a third answer and not a synonym for "every holder
+was flat". The response's own `warnings[]` now reaches the card on the captions channel, never as an
+error.
+
+*Tests:* `spot-round-2-1.test.ts`, three; the extension file, two.
+
+### 2.1 — transfers, stated and not interpreted
+
+`spotTransfersSection`, section `spotTransfers`, **1 credit**, bought by a **button** under the
+exchange-flow line it explains, because the Flow tab is free and opening it must stay free. Ordered
+by `transfer_value_usd` DESC over 24h.
+
+The rows name both wallets with Nansen's own labels, keep the token amount and the USD value apart
+(an unpriced token keeps its amount and shows no dollars rather than a zero), and the caption says
+in words: "A transfer is a movement between wallets: it is not a trade and says nothing about
+intent." A CEX deposit is custody moving, not a sale. A render test asserts that the words "sold",
+"dumped" and "sell pressure" appear nowhere in the section.
+
+### 2.1 — Jupiter DCA, Solana only and hard
+
+`spotDcaSection`, section `spotDca`, **1 credit**, a Solana-only button inside the Tape tab. The
+chain guard is in two places: the section refuses a non-Solana chain before the call, and the depth
+route pushes `spotDca` to `skipped` on a non-Solana target so it is never billed. The button does
+not render at all on an EVM token (`panel.chain`, new on the spot panel DTO).
+
+`vaults: null` means never asked; `vaults: []` means Nansen answered with none. The brief says "hide
+the section entirely when empty", which is right for a section nobody asked for and wrong after a
+press, so an empty answer reads "Nansen returned no open Jupiter DCA vaults for this token. That is
+the usual answer, not a failure." The press was paid for; it gets an answer.
+
+Figures are token amounts, as Nansen sends them. No USD figure is derived for a pending order.
+
+## Deferred, and why
+
+- **`tgm/flows` cohort series.** The largest item in 2.1 and the only one that would change the
+  price of a tab that is free today: 1 credit **per label**, so the Flow tab's five cohorts are 5.
+  It also needs a chart built from scratch (`PriceChart.tsx` is hard-wired to `Candle`, `Area` and
+  `ViewTimeframe`), partial-bucket (`is_complete`) handling so the newest bucket does not read as a
+  cliff, a bucket size that changes under the existing timeframe switcher at the 7-day boundary, and
+  normalisation to `token_amount`, because a falling `value_usd` is a falling price and not selling.
+  That is a chart, a section and a pricing decision, and the pricing decision belongs with whoever
+  owns the Flow tab's cost line. Nothing was spent probing it.
+- **Chart markers for the tape.** The brief pairs the divider with markers on the price chart.
+  `PriceChart.tsx` is outside this round's paths, and the tape and the chart are in different tabs,
+  so a marker would have to carry tape rows across a tab boundary. The divider ships; the markers
+  are a follow-up to plan with the chart's owner.
+- **Per-row Jupiter DCA fields.** A populated vault row has never been observed (0 rows, 1 credit),
+  so the fields are read defensively under plausible names and the section leads with the **vault
+  count**, which survives any field rename. Same ruling as Round 1.5.6's `protocols[]`.
+- **The tape in the anchored card.** A forty-row tape with a time, a wallet and two figures per line
+  is not readable at 440px, and the tab strip there already scrolls without a visible affordance.
+  The aggregate answer to "who bought since the post" is still one free tab away in Wallets.
+
+## Craft pass
+
+- **The tape's last column was wrapping a route into three ragged lines.** `550.88 for SOL` broke
+  after `105.47` in the capture; the column is now 108px with `white-space: nowrap`, which fits
+  `1.27K for USDC`. The side column is right-aligned so "Bought" sits against the money it describes
+  instead of drifting whenever a wallet label is short. Both found by opening the capture.
+- **The divider is a rule with the post's age inside it**, not a sentence under the list: "after the
+  post" is a place on the tape, not a caption about it.
+- Three tabs were added and all three stayed out of the compact card: width is the constraint as
+  much as price. Expanded is up to 1280px and holds six comfortably.
+- New CSS is nine rules, tokens only. The smallest new type is `0.6875rem` (11px, the floor).
+  `ArrowLeftRight`, `Coins`, `ListOrdered` and `Trophy` are Lucide; no emoji; every figure carries
+  `tw-fig`; no spaced em dashes in any UI string.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 309, web 317, extension 762** tests passed.
+- `pnpm -F web build` and `pnpm -F extension build`: both OK; `/api/token-market` is in the route
+  manifest.
+- `TRIPWIRE_E2E_PORT=3221 pnpm verify:e2e`: **28 passed, 5 capture-only specs skipped, 1 failed**.
+  The failure is `@smoke extension loads with the pinned ID`, a browser-context setup timeout that
+  passes in isolation (re-run: 1 passed in 951ms) and is the same flake Round 1.5 recorded under a
+  shared tree. An earlier run of the same suite failed two *different* specs (`tw-venue-interval`
+  counts, and the popup's locate message) which then passed here; both are in Round 2.5's and Round
+  2.4's in-flight files, not this round's.
+- Captures: `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3221 … captures`. **New:** `spot-tape`,
+  `spot-winners`, `spot-market-structure`. **Regenerated:** `spot-expanded`, `spot-holders-links`.
+  Every one was opened; the tape's wrapping column and its drifting side label came out of that and
+  are fixed above. (`wallet lens captures` timed out on context setup in the same run: Round 2.3's
+  surface, not this one's.)
+- `docs/DECISIONS.md` and `tasks/todo.md` untouched, per the round's brief.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**A tape is a window, and it must say which window it is.** `tgm/dex-trades` returns the most recent
+N trades, and on a liquid token 100 of them covered fourteen minutes. The obvious build (draw the
+list, put a divider at the post time, call it "who bought since the post") is false for every post
+older than a few minutes, and false in the most convincing possible way: the divider would sit under
+the last row and imply the rows above it were the whole run. So the divider is drawn only when the
+post time falls strictly inside the fetched span, the section states the span it actually got rather
+than the range it asked for, and the two out-of-range cases each get their own sentence. The same
+rule is why the section prints "40 of 100" instead of "40 trades".
+
+**A derived sentence about wallets is weighted by money, or it is not shipped.**
+`still_holding_balance_ratio` is populated on spot, and ten of the twenty recorded rows sit at
+exactly 1.0: wallets that bought once and never sold, whose peak positions are a fraction of the top
+row's. Unweighted, "68% still holding" is a statement about row counts wearing the clothes of a
+statement about conviction. Weighted by `max_balance_held_usd` it reads 37.5%, names the dollar
+figure it is a share of, and says on screen what it is weighted by. A sample that cannot support the
+weighting returns null and the card says so, rather than falling back to the unweighted mean, which
+would be a different statistic under the same sentence.
+
+**Two sources for one figure are two labels, or one source.** The spot card now carries Nansen's
+liquidity and Dexscreener's deepest-pool liquidity, which read $3.53M and $5.76M on the same token,
+and Nansen's fractional `price_change` beside Dexscreener's percentage `priceChange`. The rule that
+came out of it: a figure with a second source gets its source in its label ("Liquidity (Nansen)",
+"Deepest pool"), a figure whose scope differs from its neighbour's says so in the caption, and a
+unit convention is converted in exactly one place in core so the two cannot be printed as each other
+by a hundredfold. The alternative, picking one and hiding the other, throws away the disagreement,
+which is itself the information.
+
+**A 422 is a free probe, and the API will name its own enum.** `tgm/pnl-leaderboard` rejected
+`order_by: realized_pnl` and listed the four fields it does accept, at a cost of **0 credits**. That
+is a better source for a field name than the docs, the CLI or a guess, and it turned what would have
+been a 400 in front of a user into a two-second measurement. Worth doing deliberately for any new
+endpoint whose `order_by` matters: send the plausible field once, read the enum out of the
+rejection, then send the real request.

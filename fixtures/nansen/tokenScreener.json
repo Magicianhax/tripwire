@@ -1,0 +1,29 @@
+{
+  "data": [
+    {
+      "chain": "solana",
+      "token_address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+      "token_symbol": "$WIF",
+      "token_age_days": 1035,
+      "token_age_hours": 24834,
+      "token_deployment_date": "2023-11-20T19:22:43",
+      "market_cap_usd": 197059034.46304,
+      "liquidity": 3698665.8103622654,
+      "price_usd": 0.19591621623713534,
+      "price_change": -0.07355945698131958,
+      "fdv": 197392411.654241,
+      "fdv_mc_ratio": 1.0016917630399915,
+      "buy_volume": 582615.6966285185,
+      "inflow_fdv_ratio": 0.002951560760344968,
+      "outflow_fdv_ratio": 0.003643495366748563,
+      "sell_volume": 719198.3372935521,
+      "volume": 1301814.0339220706,
+      "netflow": -136582.6406650336
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 100,
+    "is_last_page": true
+  }
+}

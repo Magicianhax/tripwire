@@ -346,17 +346,18 @@ test("expand and perp depth captures", async ({ context }) => {
   await page.waitForTimeout(300);
   await shot(pop, "perp-funding-venues");
 
-  // perp-cohorts: the three cohorts the 1-credit position-intelligence row buys (Round 1.3.3),
-  // with the Smart Money bar above them and the opens strip below.
-  await pop.locator('section[aria-label="Smart Money long vs short"]').scrollIntoViewIfNeeded();
-  await page.waitForTimeout(200);
-  await shot(pop, "perp-cohorts");
-
   // perp-oi-history (Round 2.5): open interest over time, from the only venue in the table that
   // publishes a history, with Binance's name and symbol on the legend rather than the coin's.
   await pop.locator('section[aria-label="Open interest over time"]').scrollIntoViewIfNeeded();
   await page.waitForTimeout(200);
   await shot(pop, "perp-oi-history");
+
+  // perp-cohorts: the three cohorts the 1-credit position-intelligence row buys (Round 1.3.3),
+  // with the Smart Money bar above them and the opens strip below. This also leaves the panel
+  // scrolled back to the top for the expanded shot below.
+  await pop.locator('section[aria-label="Smart Money long vs short"]').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(200);
+  await shot(pop, "perp-cohorts");
 
   await pop.getByRole("tab", { name: "Liquidations" }).click();
   const compactLadder = pop.locator(".tw-liquidation-chart svg");
@@ -369,6 +370,13 @@ test("expand and perp depth captures", async ({ context }) => {
   await pop.getByRole("button", { name: "Expand card" }).click();
   await expect(pop).toHaveAttribute("data-size", "expanded");
   await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  // From the first section: the expanded Positioning tab is where Round 2.5's column flow has
+  // to be read, and the tall cohort block is the thing it exists to sit beside.
+  await pop.locator('[role="tabpanel"]:not([hidden])').evaluate((el) => {
+    let node: HTMLElement | null = el as HTMLElement;
+    while (node && node.scrollHeight <= node.clientHeight) node = node.parentElement;
+    if (node) node.scrollTop = 0;
+  });
   await page.waitForTimeout(400);
   await shot(page, "perp-expanded");
 
@@ -398,6 +406,14 @@ test("expand and perp depth captures", async ({ context }) => {
   await expect(pop.locator('[role="tabpanel"]:not([hidden]) table tbody tr').first()).toBeVisible({ timeout: 20_000 });
   await page.waitForTimeout(400);
   await shot(pop, "perp-traders");
+
+  // perp-win-rate (Round 2.5): the same table after one row's win rate has been asked for. In
+  // replay the answer comes from the recorded summary and costs nothing; live it is 1 credit,
+  // which is what the button said before it was pressed.
+  await pop.locator('button[aria-label^="Win rate"]').first().click();
+  await expect(pop.locator(".tw-winrate-of").first()).toBeVisible({ timeout: 20_000 });
+  await page.waitForTimeout(300);
+  await shot(pop, "perp-win-rate");
   await page.close();
 
   // card-skeleton: the card mid-load, with the panel call held open.
