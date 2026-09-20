@@ -99,6 +99,12 @@ export type PmAddressSummary = {
   win_rate: number | null;
   markets_won: number | null;
   markets_traded: number | null;
+  /** Round 1.5.4. The date this address was **first seen on Polymarket** ("2026-06-05"), and the
+   * days since. Not wallet age: the address existed before Polymarket ever saw it. */
+  first_seen?: string | null;
+  wallet_age_days?: number | null;
+  p2p_tokens_sent?: number | null;
+  p2p_tokens_received?: number | null;
 };
 export type PmAddressMarket = {
   market_id: string;
@@ -106,16 +112,80 @@ export type PmAddressMarket = {
   side_held: string | null;
   net_buy_cost_usd: number | null;
   net_sell_proceeds_usd: number | null;
+  /** Round 1.5.5. What a settled winning position paid out; 0 on a losing one. */
+  redemption_value_usd?: number | null;
+  event_title?: string | null;
   unrealized_value_usd: number | null;
   total_pnl_usd: number | null;
   market_resolved: boolean | null;
 };
+
+/**
+ * `portfolio/defi-holdings` (Round 1.5.6), **1 credit**. The reason a lending or LP wallet reads
+ * `$0`: `profiler/address/current-balance` counts token rows and nothing else.
+ *
+ * Measured 2026-09-20 on three public wallets: the answer is `{ summary, protocols }`, **not**
+ * the `{ data }` shape the rest of this file uses, and all three came back with every summary
+ * figure 0 and `protocols: []`. A populated `protocols[]` has therefore never been observed, so
+ * its row shape stays `unknown` and nothing is rendered per protocol.
+ */
+export type DefiHoldingsResponse = {
+  summary?: {
+    total_value_usd?: number | null;
+    total_assets_usd?: number | null;
+    total_debts_usd?: number | null;
+    total_rewards_usd?: number | null;
+    token_count?: number | null;
+    protocol_count?: number | null;
+  } | null;
+  protocols?: unknown[] | null;
+};
+
+/**
+ * `profiler/address/pnl` (Round 1.5.7), **1 credit**. One row per token the address has traded,
+ * with the unrealized half `pnl-summary` does not carry.
+ *
+ * **Measured, not assumed:** `chain: "all"` *is* accepted (the plan asked for this to be probed
+ * on the first live call), but the rows that come back **carry no `chain` field** — the recorded
+ * wallet has three separate `ETH` rows at the same `0xeee…eee` native sentinel address. So a row
+ * can be shown, and can never be attributed to a chain or linked to a token page.
+ */
+export type AddressPnlRow = {
+  token_address?: string | null;
+  token_symbol?: string | null;
+  token_price?: number | null;
+  pnl_usd_realised?: number | null;
+  pnl_usd_unrealised?: number | null;
+  roi_percent_realised?: number | null;
+  roi_percent_unrealised?: number | null;
+  cost_basis_usd?: number | null;
+  holding_amount?: number | null;
+  holding_usd?: number | null;
+  avg_sold_price_usd?: number | null;
+  /** Nansen returns these two as **strings** ("13"), not numbers. */
+  nof_buys?: number | string | null;
+  nof_sells?: number | string | null;
+};
+
+/**
+ * `profiler/dex-trades` (Round 1.5.1), **1 credit**, chain-scoped with no `"all"` in the enum.
+ *
+ * Read only for `trader_address_label`, which replaces a label path that could never populate.
+ * The field is optional and the recorded page is **empty** — measured 2026-09-20, three public
+ * addresses over 30 and 360 days all answered `200` with `data: []` — so the row shape is read
+ * defensively, exactly like `profiler/labels`, and an absent label stays an empty state.
+ */
+export type DexTradeRow = { trader_address_label?: string | null; block_timestamp?: string | null };
 /** Wallet lens: how long each block of a wallet's profile stays fresh. */
 export const WALLET_BALANCE_TTL = 30 * MIN;
 export const WALLET_POSITIONS_TTL = 10 * MIN;
 export const WALLET_PNL_WINDOW_DAYS = 90;
 /** `profiler/labels` costs 100 credits, so an answer is kept for a day. */
 export const WALLET_LABELS_TTL = 24 * HOUR;
+/** Round 1.5.7: one page of `profiler/address/pnl`, ordered, so the slice is the largest rows. */
+export const WALLET_PNL_ROWS = 50;
+/** Round 1.5.1: the window `profiler/dex-trades` looks back over for the trade label. */
+export const WALLET_TRADE_WINDOW_DAYS = 30;
 
 export type AddressBalanceRow = {
   chain: string;
@@ -133,7 +203,8 @@ export type AddressPnlSummary = {
   win_rate: number | null;
   traded_times?: number | null;
   traded_token_count?: number | null;
-  top5_tokens?: { token_symbol: string; chain: string; token_address: string; realized_pnl: number | null }[] | null;
+  /** Round 1.5.2: `realized_roi` is on every row and was dropped at the mapper. A fraction. */
+  top5_tokens?: { token_symbol: string; chain: string; token_address: string; realized_pnl: number | null; realized_roi?: number | null }[] | null;
 };
 export type AddressLabelsResponse = { labels?: string[] | null; entity?: string | null } | Record<string, unknown>;
 
@@ -271,6 +342,66 @@ export const nansen = {
       body: { address },
       ttlMs: WALLET_LABELS_TTL,
     }),
+
+  /**
+   * Wallet card, Summary view (Round 1.5.6): the DeFi side of a portfolio, **1 credit**, lazy.
+   * `wallet_address` is the only parameter — there is no chain filter, and no documented Solana
+   * support, so an empty answer is "we were not told", never "$0 of DeFi".
+   */
+  defiHoldings: (wallet_address: string) =>
+    nansenPost<DefiHoldingsResponse>({
+      name: "defiHoldings",
+      path: "portfolio/defi-holdings",
+      body: { wallet_address },
+      ttlMs: WALLET_BALANCE_TTL,
+    }),
+
+  /**
+   * Wallet card, Performance view (Round 1.5.7): unrealized PnL and cost basis per token.
+   * **1 credit**, lazy. `chain: "all"` is accepted (measured); `order_by` is explicit so a
+   * long-tail wallet shows its largest open positions rather than an arbitrary slice.
+   */
+  addressPnl: (address: string) => {
+    const to = bucketNow(WALLET_BALANCE_TTL);
+    const from = new Date(to.getTime() - WALLET_PNL_WINDOW_DAYS * DAY);
+    return nansenPost<Paged<AddressPnlRow>>({
+      name: "addressPnl",
+      path: "profiler/address/pnl",
+      body: {
+        address,
+        chain: "all",
+        date: { from: isoNoMs(from), to: isoNoMs(to) },
+        pagination: { page: 1, per_page: WALLET_PNL_ROWS },
+        order_by: [{ field: "pnl_usd_unrealised", direction: "DESC" }],
+      },
+      ttlMs: WALLET_BALANCE_TTL,
+    });
+  },
+
+  /**
+   * Wallet card, Summary view (Round 1.5.1): the chain-scoped trade label, **1 credit**, lazy
+   * and bought in the same press as `defiHoldings`.
+   *
+   * The date range is **date-only** here ("YYYY-MM-DD"), which is what Nansen's own CLI sends;
+   * a full ISO timestamp is accepted by `profiler/address/pnl` but answers an empty page on
+   * this path.
+   */
+  dexTrades: (address: string, chain: string) => {
+    const to = bucketNow(WALLET_BALANCE_TTL);
+    return nansenPost<Paged<DexTradeRow>>({
+      name: "dexTrades",
+      path: "profiler/dex-trades",
+      body: {
+        address,
+        chain,
+        date: { from: ymd(new Date(to.getTime() - WALLET_TRADE_WINDOW_DAYS * DAY)), to: ymd(to) },
+        filters: {},
+        pagination: { page: 1, per_page: 25 },
+        order_by: [{ field: "block_timestamp", direction: "DESC" }],
+      },
+      ttlMs: WALLET_BALANCE_TTL,
+    });
+  },
 
   perpScreener: (token_symbol: string) => {
     // `to` bucketed to the TTL, `from` derived from it: one cache key per 2-minute window.

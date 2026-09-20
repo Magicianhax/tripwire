@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { HyperliquidBadge, PolymarketBadge } from "../api-types";
 import { pct, timeAgo, usd } from "./format";
 import { Empty, price, Problems, Readouts, Section, signOf as sign, Sources } from "./panel-parts";
+import { usePagination } from "./DataCharts";
 
 /** The venue blocks without their `link`: the wallet lens knows the address because the user
  * clicked it, the author badges because somebody linked it. The numbers are the same either way. */
@@ -111,6 +112,8 @@ export function HyperliquidBody({ badge, head }: { badge: HyperliquidBody; head?
 export function PolymarketBody({ badge, head }: { badge: PolymarketBody; head?: ReactNode }) {
   const open = badge.openPositions ?? [];
   const trades = badge.trades ?? [];
+  const settled = badge.settled ?? [];
+  const settledPages = usePagination(settled, 5);
   return (
     <>
       {head}
@@ -122,6 +125,20 @@ export function PolymarketBody({ badge, head }: { badge: PolymarketBody; head?: 
           { label: "Win rate", value: rate(badge.winRate) },
         ]}
       />
+      {/* Round 1.5.4. `wallet_age_days` is days since Polymarket first saw this address, which
+          is not the age of the wallet — the address existed before, possibly for years, and
+          calling it wallet age would state something false about it. */}
+      {badge.firstSeen ? (
+        <p className="tw-meta">
+          Trading on Polymarket since <span className="tw-fig">{badge.firstSeen}</span>
+          {badge.polymarketDays === null || badge.polymarketDays === undefined ? null : (
+            <>
+              , <span className="tw-fig">{badge.polymarketDays.toLocaleString("en-US")}</span> days ago
+            </>
+          )}
+          . That is the first Polymarket activity Nansen has for this address, not the age of the address.
+        </p>
+      ) : null}
       <Section
         title="Open positions"
         aside={badge.marketsTraded !== null ? `${badge.marketsWon ?? 0} won of ${badge.marketsTraded} markets` : undefined}
@@ -145,6 +162,44 @@ export function PolymarketBody({ badge, head }: { badge: PolymarketBody; head?: 
               </li>
             ))}
           </ul>
+        )}
+      </Section>
+      {/* Round 1.5.5. The 1-credit call already returns every market this wallet has touched
+          — 574 rows on the recorded wallet, 494 of them settled — and the card drew five of
+          the other 80. The settled ones are the record the tile above summarises. */}
+      <Section
+        title="Settled markets"
+        aside={badge.settledCount ? `${settled.length} largest of ${badge.settledCount.toLocaleString("en-US")}` : undefined}
+      >
+        {settled.length === 0 ? (
+          <Empty>No settled Polymarket markets returned for this wallet.</Empty>
+        ) : (
+          <>
+            <ul className="tw-market-rows">
+              {settledPages.rows.map((m) => (
+                <li key={m.marketId}>
+                  <span className="tw-market-question">{m.question}</span>
+                  <span className="tw-market-figures">
+                    <span className="tw-side" data-side={m.side.toLowerCase() === "yes" ? "long" : "short"}>
+                      {m.side}
+                    </span>
+                    <span className="tw-fig tw-market-value">{usd(m.costUsd)} in</span>
+                    <span className="tw-fig" data-sign={sign(m.pnlUsd)}>
+                      {usd(m.pnlUsd, true)}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {settledPages.controls}
+            <p className="tw-meta">
+              Each result is Nansen's own per-market figure. Summed over every settled market it comes to{" "}
+              <span className="tw-fig" data-sign={sign(badge.settledPnlUsd)}>
+                {usd(badge.settledPnlUsd, true)}
+              </span>
+              , which is not the Realized tile above: Nansen computes that one differently, and redemptions and sale proceeds do not reconstruct it.
+            </p>
+          </>
         )}
       </Section>
       <Section title="Recent trades">

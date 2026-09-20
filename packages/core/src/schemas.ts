@@ -99,6 +99,26 @@ export const WalletLabelsRequestSchema = z.object({
     .refine((s) => isEvmAddress(s) || isSolanaAddress(s), "invalid address"),
 });
 
+const ResolvedAddressSchema = z
+  .string()
+  .trim()
+  .min(32)
+  .max(64)
+  .refine((s) => isEvmAddress(s) || isSolanaAddress(s), "invalid address");
+
+/**
+ * POST /api/wallet/defi — Round 1.5.1 + 1.5.6. Two credits, and never part of a card's own
+ * load: the Summary view draws a button that states the price and only a press gets here.
+ * `chain` is the wallet's largest-value chain, because `profiler/dex-trades` has no `"all"`.
+ */
+export const WalletDefiRequestSchema = z.object({
+  address: ResolvedAddressSchema,
+  chain: z.string().trim().min(2).max(24).optional(),
+});
+
+/** POST /api/wallet/unrealized — Round 1.5.7. One credit, behind the Performance view's button. */
+export const WalletUnrealizedRequestSchema = z.object({ address: ResolvedAddressSchema });
+
 export const RuleSchema = z.object({
   id: z.string().min(1).max(40),
   kind: z.enum(["spot", "perp", "prediction"]),

@@ -1,7 +1,7 @@
 import { MAX_WALLET_MARKERS, walletKey, type WalletRef } from "@tripwire/core";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
-import { walletLabels, walletLens, type ApiResult } from "../api";
-import type { WalletLensResponse } from "../api-types";
+import { walletDefi, walletLabels, walletLens, walletUnrealized, type ApiResult } from "../api";
+import type { WalletDefiResponse, WalletLensResponse, WalletUnrealizedResponse } from "../api-types";
 import { cardSize, setCardSize, type CardSize } from "../card-size";
 import { runContentTask } from "../content-lifecycle";
 import { rememberWallet } from "../recent-wallets";
@@ -48,6 +48,10 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
   const queue = createQueue(LOOKUP_CONCURRENCY);
   /** The last good lens per wallet, so the premium labels can be folded into it in place. */
   const loaded = new Map<string, WalletLensResponse>();
+  /** Round 1.5: the two 1-credit views, kept per wallet so reopening a card does not re-buy
+   * what the user already paid for in this page session. */
+  const defiByWallet = new Map<string, WalletDefiResponse>();
+  const unrealizedByWallet = new Map<string, WalletUnrealizedResponse>();
   const markers: Marker[] = [];
 
   let open: { key: string; card: Mount; draw: () => void } | null = null;
@@ -103,6 +107,10 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
             replay={replay}
             onClose={() => closeCard()}
             onLoadLabels={premium && lens?.address ? () => loadLabels(key) : null}
+            defi={defiByWallet.get(walletKey(marker.ref)) ?? null}
+            onLoadDefi={() => loadDefi(key)}
+            unrealized={unrealizedByWallet.get(walletKey(marker.ref)) ?? null}
+            onLoadUnrealized={() => loadUnrealized(key)}
           />
         </Popover>,
       );
@@ -131,6 +139,45 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
       error = failure(result);
     }
     draw();
+  }
+
+  /**
+   * Round 1.5.6 + 1.5.1 — 2 credits, and Round 1.5.7 — 1 credit. Reached only from the card's
+   * own buttons, which state the price; nothing here runs on a card open.
+   *
+   * The DeFi answer carries the wallet's trade label, so it is folded into the cached lens the
+   * same way the premium labels are — the card's title and its label line read one field, and
+   * a paid-for label must not depend on which view is open.
+   */
+  async function loadDefi(key: string): Promise<void> {
+    const marker = find(key);
+    const current = marker ? loaded.get(walletKey(marker.ref)) : undefined;
+    if (!marker || !current?.address) return;
+
+    const result = await walletDefi(current.address, current.portfolio?.chains?.[0] ?? current.chainGuess ?? null);
+    if (!result.ok) throw new Error(failure(result));
+
+    defiByWallet.set(walletKey(marker.ref), result.data);
+    loaded.set(walletKey(marker.ref), {
+      ...current,
+      label: result.data.label ?? current.label,
+      sources: current.sources.includes("Nansen Portfolio") ? current.sources : [...current.sources, "Nansen Portfolio"],
+      credits: current.credits + result.data.credits,
+    });
+    if (open?.key === key) open.draw();
+  }
+
+  async function loadUnrealized(key: string): Promise<void> {
+    const marker = find(key);
+    const current = marker ? loaded.get(walletKey(marker.ref)) : undefined;
+    if (!marker || !current?.address) return;
+
+    const result = await walletUnrealized(current.address);
+    if (!result.ok) throw new Error(failure(result));
+
+    unrealizedByWallet.set(walletKey(marker.ref), result.data);
+    loaded.set(walletKey(marker.ref), { ...current, credits: current.credits + result.data.credits });
+    if (open?.key === key) open.draw();
   }
 
   /**

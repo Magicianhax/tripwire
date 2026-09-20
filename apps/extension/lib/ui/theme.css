@@ -2786,6 +2786,19 @@ div.tw-dock-chip {
   outline-offset: 2px;
 }
 
+/* A call already in flight. Mint reads as "press me", and pressing it twice would buy the same
+   answer twice, so the button states that it is working and stops looking like an invitation. */
+.tw-premium-button:disabled {
+  color: var(--tw-text-2);
+  border-style: solid;
+  cursor: default;
+}
+
+.tw-premium-button:disabled:hover {
+  border-color: var(--tw-line-strong);
+  background: transparent;
+}
+
 /* The token's real picture, served by the local backend (see lib/ui/Logo.tsx). */
 .tw-token-image {
   border-radius: 6px;

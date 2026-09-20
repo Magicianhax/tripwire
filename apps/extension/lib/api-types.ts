@@ -396,6 +396,17 @@ export type PolymarketBadgeTrade = {
   question: string | null;
 };
 
+/** Round 1.5.5: one settled market from the page the card already pays for. */
+export type PolymarketSettledMarket = {
+  marketId: string;
+  question: string;
+  side: string;
+  costUsd: number | null;
+  proceedsUsd: number | null;
+  redemptionUsd: number | null;
+  pnlUsd: number | null;
+};
+
 export type PolymarketBadge = {
   link: BadgeLink;
   totalPnlUsd: number | null;
@@ -404,8 +415,18 @@ export type PolymarketBadge = {
   winRate: number | null;
   marketsTraded: number | null;
   marketsWon: number | null;
+  /** Round 1.5.4. First seen **on Polymarket** — never presented as the age of the wallet.
+   * Optional: an older backend does not send them and the line is simply omitted. */
+  firstSeen?: string | null;
+  polymarketDays?: number | null;
+  p2pTokensSent?: number | null;
+  p2pTokensReceived?: number | null;
   openPositions: PolymarketBadgePosition[] | null;
   trades: PolymarketBadgeTrade[] | null;
+  /** Round 1.5.5. The largest settled results; `settledCount` is what they are a slice of. */
+  settled?: PolymarketSettledMarket[] | null;
+  settledCount?: number | null;
+  settledPnlUsd?: number | null;
   errors: string[];
 };
 
@@ -437,7 +458,9 @@ export type WalletHolding = {
 export type WalletPortfolio = { totalUsd: number; holdings: WalletHolding[]; chains: string[]; tokenCount: number; chainHoldings?: {chain:string;valueUsd:number}[]; holdingsTruncated?:boolean };
 
 export type WalletPnl = {
-  topPnlTokens?: { symbol:string;chain:string;tokenAddress:string;realizedPnlUsd:number|null }[];
+  /** Round 1.5.2: `realizedRoi` is a fraction (0.0071 is +0.71%). Optional — an older backend
+   * does not send it and the row shows its money without a percentage. */
+  topPnlTokens?: { symbol:string;chain:string;tokenAddress:string;realizedPnlUsd:number|null;realizedRoi?:number|null }[];
   realizedPnlUsd: number | null;
   realizedPnlPercent: number | null;
   winRate: number | null;
@@ -473,3 +496,49 @@ export type WalletLensResponse = {
 };
 
 export type WalletLabelsResponse = { address: string; labels: string[]; credits: number; errors: string[] };
+
+// ---- The 1-credit lazy wallet views (POST /api/wallet/defi, POST /api/wallet/unrealized) ----
+
+/** Round 1.5.6. Never summed into the Tokens figure, and `totalDebtsUsd` is never netted. */
+export type WalletDefi = {
+  totalValueUsd: number | null;
+  totalAssetsUsd: number | null;
+  totalDebtsUsd: number | null;
+  totalRewardsUsd: number | null;
+  tokenCount: number | null;
+  protocolCount: number | null;
+  /** Nansen answered and reported nothing. Still not "$0": `portfolio/defi-holdings` has no
+   * documented Solana support, so "none found" and "none" are different statements. */
+  reportedNone: boolean;
+};
+
+export type WalletDefiResponse = {
+  address: string;
+  defi: WalletDefi | null;
+  label: WalletLabel | null;
+  labelChain: string | null;
+  credits: number;
+  errors: string[];
+};
+
+/** Round 1.5.7. No `chain` on a row: with `chain: "all"` Nansen does not say which one. */
+export type WalletUnrealizedRow = {
+  symbol: string;
+  unrealizedPnlUsd: number | null;
+  unrealizedRoi: number | null;
+  costBasisUsd: number | null;
+  holdingUsd: number | null;
+  holdingAmount: number | null;
+  avgSoldPriceUsd: number | null;
+  buys: number | null;
+  sells: number | null;
+};
+
+export type WalletUnrealizedResponse = {
+  address: string;
+  rows: WalletUnrealizedRow[] | null;
+  truncated: boolean;
+  windowDays: number;
+  credits: number;
+  errors: string[];
+};

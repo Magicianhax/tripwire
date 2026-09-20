@@ -156,6 +156,31 @@ test("wallet lens captures", async ({ context, extensionId }) => {
   await page.waitForTimeout(300);
   await shot(card, "wallet-card-overview");
 
+  // wallet-card-defi (Round 1.5.6 + 1.5.1): the priced button, then what it buys. In replay
+  // this reads the recorded answer and spends nothing, which is the point of the fixture.
+  await card.getByRole("button", { name: /Check DeFi and label \(2 credits\)/ }).click();
+  await expect(card.locator('[aria-label="DeFi positions"]')).toContainText(/DeFi/);
+  await page.waitForTimeout(300);
+  await shot(card, "wallet-card-defi");
+
+  // wallet-card-performance (Round 1.5.2 + 1.5.7): realized ROI beside the money, and the
+  // unrealized table under its own priced button.
+  await card.getByRole("radio", { name: "Performance" }).click();
+  await card.getByRole("button", { name: /Load unrealized PnL \(1 credit\)/ }).click();
+  await expect(card.locator('[aria-label="Open positions and cost basis"] tbody tr').first()).toBeVisible({ timeout: 15_000 });
+  await page.waitForTimeout(300);
+  await shot(card, "wallet-card-performance");
+  await card.getByRole("radio", { name: "Summary" }).click();
+
+  // wallet-card-overview-expanded: the Summary view with room for two columns, so the DeFi
+  // block and the allocation chart sit side by side under a full-width row of tiles.
+  await card.getByRole("button", { name: "Expand card" }).click();
+  await expect(card).toHaveAttribute("data-size", "expanded");
+  await page.waitForTimeout(250);
+  await shot(card, "wallet-card-overview-expanded");
+  await card.getByRole("button", { name: "Collapse card" }).click();
+  await expect(card).not.toHaveAttribute("data-size", "expanded");
+
   await card.getByRole("tab", { name: "Hyperliquid" }).click();
   await page.waitForTimeout(200);
   await shot(card, "wallet-card-hyperliquid");
@@ -208,6 +233,14 @@ test("wallet lens captures", async ({ context, extensionId }) => {
     await expect(pmPop.locator(".tw-badge-card")).toBeVisible();
     await badges.waitForTimeout(200);
     await shot(pmPop, "x-badge-card-polymarket");
+
+    // x-badge-card-polymarket-settled (Round 1.5.5): the settled history, which used to be 494
+    // rows of a paid response that nothing rendered.
+    const settled = pmPop.locator('[aria-label="Settled markets"]');
+    await settled.scrollIntoViewIfNeeded();
+    await expect(settled).toContainText(/largest of/);
+    await badges.waitForTimeout(200);
+    await shot(pmPop, "x-badge-card-polymarket-settled");
   } finally {
     let cleanupResponses;
     try {

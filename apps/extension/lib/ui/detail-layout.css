@@ -45,6 +45,13 @@
 .tw-allocation-legend i { width:6px; height:6px; border-radius:50%; }
 .tw-pnl-chart { display:grid; gap:8px; margin:12px 0; }
 .tw-pnl-chart-row { display:grid; grid-template-columns:minmax(70px,1fr) 1.5fr auto; gap:10px; align-items:center; font-size:12px; }
+/* Round 1.5.2: the row's realized ROI sits under its money rather than beside it, so the
+   last column stays one figure wide and never squeezes the bar it shares a row with. */
+.tw-pnl-chart-row > .tw-fig { display:grid; gap:1px; justify-items:end; }
+.tw-pnl-note { font-size:0.6875rem; }
+/* A priced call-to-action is a button, not a field: it hugs its own words wherever a
+   section lays its children out in a stretching column. */
+.tw-section > .tw-premium-button { justify-self:start; align-self:start; }
 .tw-pnl-track { height:7px; background:var(--tw-raised); border-radius:4px; }
 .tw-pnl-track i { display:block; height:100%; border-radius:4px; background:var(--tw-mint); }
 .tw-pnl-track i[data-sign="neg"] { background:var(--tw-red); }
@@ -54,7 +61,7 @@
 .tw-dock-chip .tw-chip-value { white-space:normal; text-align:left; }
 .tw-chip.tw-dock-chip[data-venue="dexscreener"] { top:auto; bottom:16px; max-width:min(320px,calc(100vw - 32px)); }
 [data-size="expanded"] .tw-profile-summary { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 24px; align-items:start; }
-[data-size="expanded"] .tw-profile-summary > p, [data-size="expanded"] .tw-profile-summary > .tw-tags { grid-column:1 / -1; }
+[data-size="expanded"] .tw-profile-summary > p, [data-size="expanded"] .tw-profile-summary > .tw-tags, [data-size="expanded"] .tw-profile-summary > .tw-readouts { grid-column:1 / -1; }
 @media(max-width:800px) {
   .tw-pop .tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]), [data-size="expanded"] .tw-detail-columns, [data-size="expanded"] .tw-profile-summary { grid-template-columns:minmax(0,1fr); }
 }

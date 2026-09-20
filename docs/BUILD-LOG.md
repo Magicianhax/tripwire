@@ -974,3 +974,117 @@ Not served, per the brief: axiom, photon, bullx (no chain signal), raydium (Sola
 - **The swap page's native-coin gap is ordered before its chain gap.** `uniswap.ts:80` returns `missing-chain` for a selected native ETH with no chain in the URL, so the strip reads "Select a network to check ETH" and only says "ETH is the chain's native asset" once a network is picked. Pre-existing, outside 1.4's list, one line to reorder.
 - **`VenueAdapter.anchor` now takes an optional `url`.** Any adapter that needs a per-page anchor rule can state it without reading `doc.location`.
 - **`blockedExtras` is general.** Any venue with a one-click trade control beside its form can implement it and inherit the blocker, the re-sync and the block geometry.
+
+---
+
+# Round 1.5 — the wallet card: one dead code path, four free fields, two lazy additions
+
+Branch `feat/cockpit-ui`, alongside the Round 1.3/1.4 venue work in the same tree. Brief: `docs/IMPROVEMENT-PLAN.md` §2, Round 1.5 (items 1.5.1–1.5.7). **10 Nansen credits spent building it**, all on fixtures; at runtime a wallet card still costs exactly what it cost (5 for EVM, 2 for Solana) and three buttons inside it can spend 2, 1 and 100 more, each printing its price first.
+
+## Fixtures and credits
+
+`scripts/record-wallet-lazy-fixtures.mjs` is the recorder: gap-filling, capped at 10 credits a run, and it prints the 1.5.7 probe answer. Recorded `fixtures/nansen/addressPnl.json`, `defiHoldings.json` and `dexTrades.json` against the address every other wallet-lens fixture uses, so replay keeps describing one wallet.
+
+**The `chain: "all"` probe (1.5.7): ACCEPTED.** `profiler/address/pnl` answers 200 with `chain: "all"`, so one call covers a multi-chain wallet and no per-chain fan-out is needed. **But the rows it returns carry no `chain` field** — the recorded wallet has three separate `ETH` rows at the same `0xeee…eee` native sentinel, and `pnl-summary`'s `top5_tokens` (which *does* carry `chain`) shows they are Ethereum, Base and Arbitrum. A row can therefore be shown and can never be attributed to a chain, linked to a token page, or merged with a same-symbol row. `order_by: [{ field: "pnl_usd_unrealised", direction: "DESC" }]` was verified live on the same call (1 credit) rather than guessed, because an invalid field would have been a 400 in production.
+
+Three other things were measured rather than assumed, and two of them cost the round its populated fixtures:
+
+- **`portfolio/defi-holdings` answers `{ summary, protocols }`, not the `{ data }` shape the rest of the file uses.** Every summary field the brief named is real and present. Three public wallets (the lens fixture's, plus two known for large lending and staking positions) all came back with every figure `0` and `protocols: []`, at 1 credit each. A populated `protocols[]` has therefore **never been observed**, so its row shape stays `unknown` and the card renders nothing per protocol. The recorded zero answer is the one the card has to survive, and it is the fixture.
+- **`profiler/dex-trades` returns an empty page for every address tried** — three public addresses, over 30 and 360 days, on Ethereum, all 200 with `data: []`. The request body was checked against the Nansen CLI's own (`src/api.js`, `addressDexTrades`) and matches, including the **date-only** `YYYY-MM-DD` range the profiler trade endpoints want and which a full ISO timestamp silently answers empty. So `trader_address_label` is read defensively, exactly as `extractLabels` reads `profiler/labels`, and the empty state is the recorded path.
+- **The Polymarket per-row arithmetic does not reconcile with the summary tile**, contrary to the brief's expectation. Measured on `pmPnlByAddress.json`: `redemption_value_usd + net_sell_proceeds_usd − net_buy_cost_usd` summed over the 494 settled rows comes to **−$13,946.41**, while `address-summary`'s `realized_pnl_usd` is **+$34,523.68** and Nansen's own per-row `total_pnl_usd` sums to **+$16,815.68**. The card therefore prints Nansen's per-market figure, states the settled sum, and says in words that it is not the Realized tile.
+
+## Per item
+
+### 1.5.1 — the label line stops waiting for a field that does not exist
+
+`walletLabelOf` kept a `search/general` entity **whose `address` matched**. Entities are `{name, tags, rank}`; the condition could never be true, so the line was a permanent empty state whose only alternative was the 100-credit button. Both the function and the free `search/general` call are gone (`apps/web/lib/intel/wallet.ts:92` now sets `label: null` on card open) — a free call that cannot answer is still a round trip and a false impression of having asked.
+
+`labelFromDexTrades` (`apps/web/lib/intel/wallet.ts:158`) replaces it, fed by the 1-credit `profiler/dex-trades` (`apps/web/lib/nansen/endpoints.ts:390`) bought in the same press as 1.5.6. The chain comes from `portfolio.chains[0]` (`apps/extension/lib/wallet/lens.tsx:157`) and the card names it: the recorded wallet's largest chain is `hyperevm`, and the empty state reads "No Nansen trade label for this wallet on hyperevm" rather than pretending the question was never asked. A paid answer with no label keeps the empty state, which is the case the recorded fixture actually exercises.
+
+*Tests:* `apps/web/test/wallet.test.ts` "no longer comes from a search/general entity row…", "populates from a dex-trades label, and survives a page that has none"; `apps/extension/test/wallet-round-1-5.test.tsx`, three label-line cases.
+
+### 1.5.2 — realized ROI, fetched since the wallet card shipped and drawn for the first time
+
+`realized_pnl_percent` reaches the card as a **fraction**, and the per-row `realized_roi` is no longer dropped (`apps/web/lib/intel/wallet.ts:228`). The house `pct()` rounds to whole percent, which prints the recorded wallet's **+0.23%** as `0%` — a figure that exists precisely because it is small — so `roi()` (`apps/extension/lib/ui/WalletCard.tsx:34`) puts the sign on `pctVol`, which keeps two decimals below 1%. The wallet reads `+$19.5K` and `+0.23%`; the top row reads `+$27.9K` with `+0.71%` under it.
+
+The row's ROI stacks **under** its money rather than beside it (`apps/extension/lib/ui/detail-layout.css`), so the last column stays one figure wide and never squeezes the bar it shares a row with. A row Nansen sent no ROI for keeps its money and shows nothing else.
+
+*Tests:* `wallet.test.ts` "carries the wallet figure and the per-row one, as the fractions Nansen sends"; `wallet-round-1-5.test.tsx` "without rounding a real return to zero", "a row without one keeps its money".
+
+### 1.5.3 — the chain split is a view of the allocation chart, not a second chart
+
+`chainHoldings` was built, bridged, and read only by `EntityProfile`. `apps/extension/lib/ui/WalletCard.tsx:228` adds a "By token / By chain" Segmented control inside the existing Portfolio allocation section; two charts do not fit a 440px compact card, which is what the brief asked for. `HOLDINGS_SHOWN` stays at 20 and the truncation note stays on the Holdings view. A wallet with no chain split says so rather than drawing an empty bar.
+
+*Tests:* `wallet-round-1-5.test.tsx` "is a view of the one allocation chart, not a second chart beside it" (asserts exactly one `.tw-allocation` in both states), "says so rather than drawing an empty chart".
+
+### 1.5.4 — Polymarket first-seen, labelled honestly
+
+`first_seen`, `wallet_age_days`, `p2p_tokens_sent` and `p2p_tokens_received` were in the 1-credit response and in none of the six fields the badge mapped (`apps/web/lib/intel/badges.ts:276`). The line reads **"Trading on Polymarket since 2026-06-05, 104 days ago. That is the first Polymarket activity Nansen has for this address, not the age of the address."** (`apps/extension/lib/ui/VenueBody.tsx:219`). `wallet_age_days` is days since Polymarket first saw the address; calling it wallet age states something false about an address that existed before. A wallet with no first-seen date gets no line rather than a dash.
+
+The p2p counts are mapped and bridged but **not drawn**: they are not a wash-trading tell, the brief allows "a plain caption or not at all", and a number with no safe reading is worse on a card than absent.
+
+*Tests:* `apps/web/test/badges.test.ts` "1.5.4 — Polymarket first-seen is labelled as Polymarket activity, never as wallet age"; `wallet-round-1-5.test.tsx` asserts the copy and asserts the string "wallet age" appears nowhere.
+
+### 1.5.5 — 574 rows fetched, 5 rendered, and the five were the wrong five
+
+The call already returns every market the wallet has touched. 494 of the recorded 574 are settled and **none of them rendered**: the card drew five of the *other* 80, filtered to unresolved-with-positive-value, which silently dropped an open position worth exactly 0 as well. `apps/web/lib/intel/badges.ts:280` now carries the 40 largest settled results by absolute size (`PM_SETTLED_SHOWN`, `badges.ts:127`) plus `settledCount` and `settledPnlUsd` over **all** of them, and `apps/extension/lib/ui/VenueBody.tsx:257` paginates them five at a time with the existing `usePagination`.
+
+The aside says what the list is a slice of ("40 largest of 494") and the caption states the reconciliation finding above in words, so the section never implies that its rows add up to the Realized tile beside them. An older backend that sends no settled rows gets the empty state, not a crash.
+
+*Tests:* `badges.test.ts` "1.5.5 — the settled history the 1-credit call already paid for" (pins 494, the 40-row cap, the ordering and both measured sums); `wallet-round-1-5.test.tsx`, four render cases including the missing-field one.
+
+### 1.5.6 — DeFi holdings, the reason a wallet reads $0
+
+`portfolio/defi-holdings` at `apps/web/lib/nansen/endpoints.ts:352`, built by `buildWalletDefi` (`apps/web/lib/intel/wallet.ts:297`), served by `POST /api/wallet/defi`. **2 credits**, because the same press buys 1.5.1's label.
+
+It is shown **beside** the token figure and never inside it: `current-balance` already lists aTokens, stETH and LP receipts, so a sum double-counts. The headline tile is relabelled from "Portfolio" to **"Tokens"** so the two are plainly different things. `total_debts_usd` is on its own line under the tiles, netted from nothing, because a netted headline turns a leveraged position into a small number and says nothing about the leverage.
+
+An answer Nansen never gave is `null`. An answer of all zeros is `reportedNone` and renders **"Nansen returned no DeFi positions for this wallet. That is not a balance of $0: DeFi coverage does not span every chain."** — never `$0`, per non-negotiable #1 and the brief's Solana caveat. That is the case the recorded fixture exercises.
+
+*Tests:* `wallet.test.ts`, four route cases (price, the zero answer, no-chain-no-label, validation and origin); `wallet-round-1-5.test.tsx` "an empty answer is unchecked, never $0", "shows DeFi beside the token portfolio, never summed into it" (asserts the card shows $41K and $125K and never $166K).
+
+### 1.5.7 — unrealized PnL and cost basis
+
+`profiler/address/pnl` at `apps/web/lib/nansen/endpoints.ts:365`, built by `buildWalletUnrealized` (`apps/web/lib/intel/wallet.ts:366`), served by `POST /api/wallet/unrealized`. **1 credit**, one page of 50 ordered by unrealized PnL, so a long-tail wallet shows its largest open positions rather than an arbitrary slice.
+
+Four columns compact — Token, Unrealized, ROI, Cost basis — with "Held" expanded-only, because a fifth column wraps its header in a 440px card (non-negotiable #5). Nulls are dashes: the recorded BNB row has never been sold and shows no average sale price rather than `$0`. `nof_buys` and `nof_sells` arrive as **strings** and reach the card as numbers.
+
+Both measured caveats are on screen rather than in a comment: the rows carry no chain, so a symbol can appear twice and mean two different positions; and a cost basis only exists for tokens the wallet bought, so anything that arrived by transfer has no purchase to price. The table's per-token figures are kept out of `pnl-summary`'s top-5 chart above it, which is a different window and a different denominator.
+
+*Tests:* `wallet.test.ts`, four route cases (figures, ordering, nulls and the repeated symbol, validation); `wallet-round-1-5.test.tsx` "renders a null as a dash, never as a zero", "states both measured caveats on screen", "does not mix its rows into the realized top-5 list beside it".
+
+## Craft pass
+
+- **The lazy calls are buttons, not view activations.** "Lazy behind the Summary view" cannot mean "on view open": Summary is the default view, so that would be a spend on card open. And the view switcher is a `radiogroup` whose arrow keys move the selection, so spending on activation would be a credit **per keypress** — the same trap as 2.5's hover-to-buy win rate. Three priced buttons, each stating its price before the press, each disabled while its call is in flight (`.tw-premium-button:disabled` now looks pressed rather than inviting).
+- **The priced button hugs its own words.** As a block child of a stretching section it drew as a full-width dashed pill that read as an input field.
+- **Expanded Summary is two columns under one row of tiles.** With a second section in `.tw-profile-summary`, the tiles now span both columns so DeFi and the allocation chart sit side by side instead of leaving a column empty.
+- Copy carries no spaced em dashes, per the house rule that UI strings use them nowhere (comments do). New CSS is four rules, tokens only; the smallest new type is `0.6875rem` (11px, the floor); `Coins` and `CircleAlert` are Lucide; no emoji; every figure carries `tw-fig`.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 255, web 230, extension 621** tests passed (255 / 206 / 530 at the end of Round 1.2; the deltas include Round 1.3/1.4 work landing in the same tree).
+- `pnpm -F web build` and `pnpm -F extension build`: both OK; `/api/wallet/defi` and `/api/wallet/unrealized` are in the route manifest.
+- `TRIPWIRE_E2E_PORT=3219 pnpm verify:e2e`: **19 passed, 4 capture-only specs skipped.** Port 3219, because port 3000 is held by a server this session did not start and another agent was building in the same tree; two earlier runs failed on browser-context timeouts that did not reproduce in isolation (15 of 15 smoke green on the retry).
+- Captures: `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3219 … captures`. **New:** `wallet-card-defi`, `wallet-card-performance`, `wallet-card-overview-expanded`, `x-badge-card-polymarket-settled`. **Regenerated:** `wallet-card-overview`, `wallet-card-hyperliquid`, `wallet-card-expanded`, `x-badge-card-polymarket`. Every one was opened; three findings came out of them (the stretched button, the empty expanded column, the spaced em dash) and are fixed above.
+- `git diff --check`: clean.
+
+## Deferred, and why
+
+- **Per-protocol DeFi rows.** `protocols[]` has never been observed populated (three wallets, 3 credits). Rendering a row shape nobody has seen is guessing; the summary figures are all measured and all drawn.
+- **A populated `dex-trades` label.** Every address tried answers an empty page. The wiring, the chain choice and the caption ship and are tested; whether Nansen's label ever arrives for this key is a live question, not a code one.
+- **The p2p token counts.** Mapped and bridged, deliberately not drawn (see 1.5.4).
+- **A test that `lens.tsx` sends `chains[0]`.** The caption that names the chain is asserted in the card; the one-line wiring in the content script is not covered by a unit test.
+
+## Notes for the next round
+
+- 2.3's "trading style" section can reuse the `dexTrades` wrapper and the same button press: the call is already made and its answer already crosses the bridge as a label. If the empty-page finding holds, that section should be planned as "may be empty for this key" rather than as a new capability.
+- `WALLET_PNL_ROWS` is 50 of a page that can reach 1000. Raising it is free in credits and costs only bridge payload, so it is a layout decision, not a spend one.
+- The wallet card now has three priced buttons and no shared "what have I spent on this card" line. `lens.credits` is summed correctly per press but is only visible in the ledger.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**A lazy call on the wallet card is a button, never a view.** The brief said "lazy behind the Summary view" and "behind the Performance view". Summary is the default view, so honouring the first literally would have spent 2 credits on every card open; and both views are reached through a `radiogroup` whose arrow keys move the selection, so honouring the second literally would have spent a credit on every arrow press. Each lazy call is therefore a button inside its view that states its price, disables itself while in flight, and caches its answer per wallet for the page session. This is the same ruling as 2.5's "explicit click, never hover", arrived at from the other direction.
+
+**`profiler/address/pnl` accepts `chain: "all"` and its rows do not say which chain they are.** Probed on the first live call, as the brief required. One call covers a multi-chain wallet, which is the good half. The rows carry no `chain` field — the recorded wallet has three `ETH` rows at the same native sentinel address, which `pnl-summary` independently shows to be Ethereum, Base and Arbitrum — so the card never attributes a row to a chain, never links one to a token page, never merges same-symbol rows, and says on screen that a repeated symbol means two different positions. The alternative, a per-chain fan-out, would have cost a credit per chain to recover a label the user can get from the Holdings view for nothing.
+
+**An empty DeFi answer is UNCHECKED, and the token figure is renamed rather than added to.** `portfolio/defi-holdings` returned all zeros for all three public wallets tried, has no documented Solana support, and would double-count if summed into `current-balance` (which already lists aTokens, stETH and LP receipts). So the zero answer renders as "no DeFi positions returned, which is not a balance of $0", debts sit on their own line instead of being netted, and the portfolio tile is relabelled "Tokens" so the two figures are visibly different questions rather than two halves of one.

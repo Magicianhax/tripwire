@@ -67,6 +67,17 @@ export type HyperliquidBadge = {
 export type PolymarketPosition = { marketId: string; question: string; side: string; costUsd: number | null; valueUsd: number; pnlUsd: number | null };
 export type PolymarketTrade = { timestamp: string; action: "Buy" | "Sell" | null; side: string | null; size: number | null; price: number | null; usdcValue: number | null; question: string | null };
 
+/** Round 1.5.5: one settled market out of the 494 the 1-credit call already returns. */
+export type PolymarketSettledMarket = {
+  marketId: string;
+  question: string;
+  side: string;
+  costUsd: number | null;
+  proceedsUsd: number | null;
+  redemptionUsd: number | null;
+  pnlUsd: number | null;
+};
+
 export type PolymarketBadge = {
   link: LinkRef;
   totalPnlUsd: number | null;
@@ -75,10 +86,31 @@ export type PolymarketBadge = {
   winRate: number | null;
   marketsTraded: number | null;
   marketsWon: number | null;
+  /** Round 1.5.4. First seen **on Polymarket**, which is not the age of the wallet. */
+  firstSeen: string | null;
+  polymarketDays: number | null;
+  p2pTokensSent: number | null;
+  p2pTokensReceived: number | null;
   openPositions: PolymarketPosition[] | null;
   trades: PolymarketTrade[] | null;
+  /** Round 1.5.5. The largest settled results, capped for the bridge. */
+  settled: PolymarketSettledMarket[] | null;
+  /** How many settled markets the response actually carried, before the cap. */
+  settledCount: number | null;
+  /** Nansen's own per-market figure summed over every settled row, not over the shown slice. */
+  settledPnlUsd: number | null;
   errors: string[];
 };
+
+/**
+ * Round 1.5.5 — how many settled rows cross the bridge.
+ *
+ * The recorded response is 574 rows, 494 of them settled, and the card showed five of the
+ * other 80. All 494 is a payload no compact card can use and a scroll trap if it renders; the
+ * 40 largest by absolute result are the ones a reader is looking for, and the section states
+ * the count it is a slice of.
+ */
+export const PM_SETTLED_SHOWN = 40;
 
 export type AuthorBadges = {
   handle: string;
@@ -196,6 +228,8 @@ export async function polymarketProfile(addressInput: string): Promise<Omit<Poly
   ]);
   const s = summary.value;
   const address = addressInput.toLowerCase();
+  // Round 1.5.5: 574 rows arrived, 494 of them settled, and five of the *other* 80 were drawn.
+  const settledRows = (markets.value ?? []).filter((m) => m.market_resolved === true);
   return {
     totalPnlUsd: num(s?.total_pnl_usd),
     realizedPnlUsd: num(s?.realized_pnl_usd),
@@ -203,6 +237,27 @@ export async function polymarketProfile(addressInput: string): Promise<Omit<Poly
     winRate: num(s?.win_rate),
     marketsTraded: num(s?.markets_traded),
     marketsWon: num(s?.markets_won),
+    firstSeen: typeof s?.first_seen === "string" && s.first_seen.trim() ? s.first_seen.trim() : null,
+    polymarketDays: num(s?.wallet_age_days),
+    p2pTokensSent: num(s?.p2p_tokens_sent),
+    p2pTokensReceived: num(s?.p2p_tokens_received),
+    settled: markets.value
+      ? settledRows
+          .slice()
+          .sort((a, b) => Math.abs(b.total_pnl_usd ?? 0) - Math.abs(a.total_pnl_usd ?? 0))
+          .slice(0, PM_SETTLED_SHOWN)
+          .map((m) => ({
+            marketId: m.market_id,
+            question: m.question ?? "Unknown market",
+            side: m.side_held ?? "—",
+            costUsd: num(m.net_buy_cost_usd),
+            proceedsUsd: num(m.net_sell_proceeds_usd),
+            redemptionUsd: num(m.redemption_value_usd),
+            pnlUsd: num(m.total_pnl_usd),
+          }))
+      : null,
+    settledCount: markets.value ? settledRows.length : null,
+    settledPnlUsd: markets.value ? settledRows.reduce((sum, m) => sum + (m.total_pnl_usd ?? 0), 0) : null,
     openPositions: markets.value
       ? markets.value
           .filter((m) => m.market_resolved === false && (m.unrealized_value_usd ?? 0) > 0)

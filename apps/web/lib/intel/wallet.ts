@@ -141,17 +141,25 @@ function portfolioOf(rows: AddressBalanceRow[], truncated: boolean): WalletPortf
 }
 
 /**
- * `search/general` on the address. Free, and usually empty: Nansen's search indexes entity
- * names and tokens, not raw addresses (measured — `total_results: 0` for the fixture wallet).
- * A named search result is usable only if it also identifies the exact requested address.
- * A name-only entity match is not proof of wallet ownership. The paid label source costs
- * 100 credits and is deliberately outside this path.
+ * Round 1.5.1 — the label a wallet card can actually get.
+ *
+ * What was here before asked `search/general` for the address and kept an entity row **whose
+ * `address` matched**. `search/general` entities are `{name, tags, rank}`: there is no address
+ * field, so the condition could never be true, the line was a permanent empty state, and the
+ * only way out of it was the 100-credit button. The call is gone with it — it was free, but a
+ * free call that cannot answer is still a round trip and a false impression of having asked.
+ *
+ * `profiler/dex-trades` carries `trader_address_label` on its rows: Nansen's own name for the
+ * trader, bought for 1 credit, on the chain the wallet actually holds value on. Optional, and
+ * on a wallet with no DEX trades in the window the page is empty — so the empty state survives
+ * and nothing is invented. The row shape is read defensively for the same reason
+ * `extractLabels` is: the recorded page has no rows to pin it with.
  */
-export function walletLabelOf(address: string, entities: { name: string; tags: string[]; address?: string }[] | undefined): WalletLabel | null {
-  const match = entities?.find((entity) => entity.address && (isEvmAddress(address) ? entity.address.toLowerCase() === address.toLowerCase() : entity.address === address));
-  if (!match) return null;
-  const clean = cleanLabel(match.name);
-  return { text: clean.text || match.name, kind: clean.kind, tags: match.tags ?? [] };
+export function labelFromDexTrades(rows: { trader_address_label?: string | null }[] | undefined): WalletLabel | null {
+  const raw = rows?.map((row) => row?.trader_address_label).find((label): label is string => typeof label === "string" && label.trim().length > 0);
+  if (!raw) return null;
+  const clean = cleanLabel(raw.trim());
+  return { text: clean.text || raw.trim(), kind: clean.kind, tags: [] };
 }
 
 export async function buildWalletLens(input: { query: string; chainHint?: Chain }): Promise<WalletLens> {
@@ -161,10 +169,9 @@ export async function buildWalletLens(input: { query: string; chainHint?: Chain 
   const { address, kind, name } = resolution;
   const evm = kind === "evm";
 
-  const [balances, pnl, search, hl, pm] = await Promise.all([
+  const [balances, pnl, hl, pm] = await Promise.all([
     settle(nansen.addressBalances(address), (d) => d),
     settle(nansen.addressPnlSummary(address), (d) => d),
-    settle(nansen.searchGeneral(address, "any", 5), (d) => d),
     // Hyperliquid's own public API only: free, and the account is EVM-keyed.
     evm ? attempt(() => hyperliquidProfile(address, { nansenPerp: false })) : Promise.resolve({ value: null, error: null }),
     evm ? attempt(() => polymarketProfile(address)) : Promise.resolve({ value: null, error: null }),
@@ -200,7 +207,9 @@ export async function buildWalletLens(input: { query: string; chainHint?: Chain 
     address,
     chainGuess,
     name,
-    label: walletLabelOf(address, search.value?.entities),
+    // Round 1.5.1: no label on card open. The only source that can answer costs a credit and
+    // waits for the Summary view's button (POST /api/wallet/defi).
+    label: null,
     portfolio,
     pnl: pnl.value
       ? {
@@ -210,7 +219,14 @@ export async function buildWalletLens(input: { query: string; chainHint?: Chain 
           tradeCount: num(pnl.value.traded_times),
           tokenCount: num(pnl.value.traded_token_count),
           windowDays: WALLET_PNL_WINDOW_DAYS,
-          topPnlTokens: (pnl.value.top5_tokens ?? []).slice(0, 5).map((row) => ({ symbol: row.token_symbol, chain: row.chain, tokenAddress: row.token_address, realizedPnlUsd: num(row.realized_pnl) })),
+          topPnlTokens: (pnl.value.top5_tokens ?? []).slice(0, 5).map((row) => ({
+            symbol: row.token_symbol,
+            chain: row.chain,
+            tokenAddress: row.token_address,
+            realizedPnlUsd: num(row.realized_pnl),
+            // Round 1.5.2: a fraction (0.0071 is +0.71%), and already paid for.
+            realizedRoi: num(row.realized_roi),
+          })),
         }
       : null,
     hyperliquid,
@@ -237,6 +253,139 @@ async function attempt<T>(fn: () => Promise<T>): Promise<{ value: T | null; erro
   } catch (e) {
     return { value: null, error: e instanceof Error ? e.message : String(e) };
   }
+}
+
+// ---- The 1-credit lazy views, each behind its own route and its own priced button ----
+
+export type WalletDefi = {
+  totalValueUsd: number | null;
+  totalAssetsUsd: number | null;
+  totalDebtsUsd: number | null;
+  totalRewardsUsd: number | null;
+  tokenCount: number | null;
+  protocolCount: number | null;
+  /** Nansen answered and reported no DeFi position at all. Distinct from "we could not ask". */
+  reportedNone: boolean;
+};
+
+export type WalletDefiResult = {
+  address: string;
+  defi: WalletDefi | null;
+  label: WalletLabel | null;
+  /** The chain the label was asked for, so the caption can name it. */
+  labelChain: string | null;
+  credits: number;
+  errors: string[];
+};
+
+export const WALLET_DEFI_CREDITS = 2;
+export const WALLET_UNREALIZED_CREDITS = 1;
+
+/**
+ * Round 1.5.6 + 1.5.1, bought in one press of the Summary view's button: the DeFi side of the
+ * portfolio and the wallet's Nansen trade label, 1 credit each.
+ *
+ * Neither figure is ever folded into the Tokens total. `current-balance` already lists aTokens,
+ * stETH and LP receipts, so adding `total_value_usd` to it double-counts; and `total_debts_usd`
+ * gets its own line rather than being netted into a headline, because a netted headline turns a
+ * leveraged position into a small number and says nothing about the leverage.
+ *
+ * An answer Nansen never gave is `null` (UNCHECKED). An answer of all zeros is
+ * `reportedNone: true` — still not `$0` on the card, because `portfolio/defi-holdings` has no
+ * documented Solana support and "no positions found" is not "no positions".
+ */
+export async function buildWalletDefi(address: string, chain: string | undefined): Promise<WalletDefiResult> {
+  const labelChain = chain?.trim() ? chain.trim() : null;
+  const [defi, trades] = await Promise.all([
+    settle(nansen.defiHoldings(address), (d) => d),
+    labelChain ? settle(nansen.dexTrades(address, labelChain), (d) => d) : Promise.resolve({ value: null, error: null, cached: false, stale: false }),
+  ]);
+
+  const summary = defi.value?.summary ?? null;
+  const figures = summary
+    ? {
+        totalValueUsd: num(summary.total_value_usd),
+        totalAssetsUsd: num(summary.total_assets_usd),
+        totalDebtsUsd: num(summary.total_debts_usd),
+        totalRewardsUsd: num(summary.total_rewards_usd),
+        tokenCount: num(summary.token_count),
+        protocolCount: num(summary.protocol_count),
+      }
+    : null;
+
+  const errors: string[] = [];
+  if (defi.error) errors.push(`Nansen DeFi holdings: ${defi.error}`);
+  if (trades.error) errors.push(`Nansen trade label: ${trades.error}`);
+
+  return {
+    address,
+    defi: figures
+      ? {
+          ...figures,
+          reportedNone: (figures.protocolCount ?? 0) === 0 && (figures.totalValueUsd ?? 0) === 0 && (defi.value?.protocols ?? []).length === 0,
+        }
+      : null,
+    label: labelFromDexTrades(trades.value?.data),
+    labelChain,
+    credits: WALLET_DEFI_CREDITS,
+    errors,
+  };
+}
+
+export type WalletUnrealizedRow = {
+  symbol: string;
+  unrealizedPnlUsd: number | null;
+  unrealizedRoi: number | null;
+  costBasisUsd: number | null;
+  holdingUsd: number | null;
+  holdingAmount: number | null;
+  avgSoldPriceUsd: number | null;
+  buys: number | null;
+  sells: number | null;
+};
+
+export type WalletUnrealizedResult = {
+  address: string;
+  rows: WalletUnrealizedRow[] | null;
+  /** True when Nansen said there is another page: the rows shown are the largest, not all. */
+  truncated: boolean;
+  windowDays: number;
+  credits: number;
+  errors: string[];
+};
+
+/**
+ * Round 1.5.7 — `profiler/address/pnl`, the unrealized half the Performance view never had.
+ *
+ * Two things were measured on the first live call rather than assumed. `chain: "all"` **is**
+ * accepted, so one call covers a multi-chain wallet. But the rows it returns **carry no chain**:
+ * the recorded wallet has three separate `ETH` rows sharing the `0xeee…eee` native sentinel.
+ * So a row is never labelled with a chain, never linked to a token page, and never merged with
+ * a same-symbol row — and the card says as much.
+ */
+export async function buildWalletUnrealized(address: string): Promise<WalletUnrealizedResult> {
+  const pnl = await settle(nansen.addressPnl(address), (d) => d);
+  const rows = pnl.value?.data ?? null;
+  return {
+    address,
+    rows: rows
+      ? rows.map((row) => ({
+          symbol: typeof row.token_symbol === "string" && row.token_symbol.trim() ? row.token_symbol.trim().slice(0, 16) : "—",
+          unrealizedPnlUsd: num(row.pnl_usd_unrealised),
+          unrealizedRoi: num(row.roi_percent_unrealised),
+          costBasisUsd: num(row.cost_basis_usd),
+          holdingUsd: num(row.holding_usd),
+          holdingAmount: num(row.holding_amount),
+          avgSoldPriceUsd: num(row.avg_sold_price_usd),
+          buys: num(row.nof_buys),
+          sells: num(row.nof_sells),
+        }))
+      : null,
+    truncated: pnl.value?.pagination?.is_last_page === false,
+    windowDays: WALLET_PNL_WINDOW_DAYS,
+    credits: WALLET_UNREALIZED_CREDITS,
+    errors: pnl.error ? [`Nansen unrealized PnL: ${pnl.error}`] : [],
+  };
 }
 
 // ---- The premium label lookup, behind its own route, its own gate and its own button ----

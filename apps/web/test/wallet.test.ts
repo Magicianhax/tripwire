@@ -6,9 +6,11 @@ import { TRIPWIRE_EXTENSION_ID } from "@tripwire/core";
 import { resetDb } from "@/lib/db";
 import { _resetClientState } from "@/lib/nansen/client";
 import { _forgetLogo, MAX_LOGO_BYTES, tokenLogo } from "@/lib/token-logo";
-import { extractLabels, walletLabelOf } from "@/lib/intel/wallet";
+import { extractLabels, labelFromDexTrades } from "@/lib/intel/wallet";
 import { POST as walletPOST } from "@/app/api/wallet/route";
 import { POST as labelsPOST } from "@/app/api/wallet/labels/route";
+import { POST as defiPOST } from "@/app/api/wallet/defi/route";
+import { POST as unrealizedPOST } from "@/app/api/wallet/unrealized/route";
 import { GET as logoGET } from "@/app/api/token-logo/route";
 
 const FIXTURES = path.resolve(__dirname, "..", "..", "..", "fixtures", "nansen");
@@ -162,13 +164,104 @@ describe("POST /api/wallet/labels", () => {
   });
 });
 
-describe("extractLabels", () => {
-  it("does not attribute an unrelated entity search result to a wallet", () => {
-    expect(walletLabelOf(ADDRESS, [{ name: "Vitalik", tags: [] }])).toBeNull();
-    expect(walletLabelOf(ADDRESS, [{ name: "Other", tags: [], address: WIF }])).toBeNull();
-    expect(walletLabelOf(ADDRESS, [{ name: "Named wallet", tags: [], address: ADDRESS.toUpperCase() }])?.text).toBe("Named wallet");
-    expect(walletLabelOf(WIF, [{ name: "Other", tags: [], address: WIF.toLowerCase() }])).toBeNull();
+// ---- Round 1.5 ----
+
+describe("1.5.1 the label line", () => {
+  it("no longer comes from a search/general entity row, which can never carry an address", async () => {
+    const body = await (await walletPOST(req("/api/wallet", { body: { query: ADDRESS }, origin: ORIGIN }))).json();
+    // The old path kept an entity whose `address` matched. `search/general` entities are
+    // {name, tags, rank}: the condition could not be true, so the line was always empty.
+    expect(body.label).toBeNull();
+    expect(body.sources).not.toContain("Nansen search");
   });
+
+  it("populates from a dex-trades label, and survives a page that has none", () => {
+    expect(labelFromDexTrades([{ trader_address_label: "Smart Trader" }])?.text).toBe("Smart Trader");
+    // The recorded page is genuinely empty (measured: three public addresses, 30 and 360 days).
+    expect(labelFromDexTrades([])).toBeNull();
+    expect(labelFromDexTrades(undefined)).toBeNull();
+    expect(labelFromDexTrades([{ trader_address_label: null }, { trader_address_label: "  " }])).toBeNull();
+    expect(labelFromDexTrades([{}, { trader_address_label: "Jump Trading" }])?.text).toBe("Jump Trading");
+  });
+});
+
+describe("1.5.2 realized ROI", () => {
+  it("carries the wallet figure and the per-row one, as the fractions Nansen sends", async () => {
+    const body = await (await walletPOST(req("/api/wallet", { body: { query: ADDRESS }, origin: ORIGIN }))).json();
+    // +$19.5k at +0.23%: the percentage is a fraction, so a card that forgets to multiply
+    // prints 0% for a wallet that made twenty thousand dollars.
+    expect(body.pnl.realizedPnlUsd).toBeCloseTo(19460.94, 2);
+    expect(body.pnl.realizedPnlPercent).toBeCloseTo(0.0023448, 6);
+    expect(body.pnl.topPnlTokens[0].realizedRoi).toBeCloseTo(0.0071355, 6);
+    expect(body.pnl.topPnlTokens.map((t: { realizedRoi: number | null }) => t.realizedRoi).every((r: unknown) => r === null || typeof r === "number")).toBe(true);
+  });
+});
+
+describe("POST /api/wallet/defi (1.5.6 + 1.5.1)", () => {
+  it("prices itself at two credits and never sums DeFi into the token portfolio", async () => {
+    const res = await defiPOST(req("/api/wallet/defi", { body: { address: ADDRESS, chain: "ethereum" }, origin: ORIGIN }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.credits).toBe(2);
+    expect(body.address).toBe(ADDRESS);
+    expect(body.labelChain).toBe("ethereum");
+  });
+
+  it("an all-zero answer is reported as none found, not as a balance of $0", async () => {
+    const body = await (await defiPOST(req("/api/wallet/defi", { body: { address: ADDRESS }, origin: ORIGIN }))).json();
+    // The recorded response is the real one: every summary figure 0 and `protocols: []`.
+    expect(body.defi.reportedNone).toBe(true);
+    expect(body.defi.totalDebtsUsd).toBe(0);
+  });
+
+  it("does not ask for a label when the wallet has no chain to ask about", async () => {
+    const body = await (await defiPOST(req("/api/wallet/defi", { body: { address: ADDRESS }, origin: ORIGIN }))).json();
+    expect(body.labelChain).toBeNull();
+    expect(body.label).toBeNull();
+  });
+
+  it("validates the address, and keeps the origin guard, before it can cost anything", async () => {
+    expect((await defiPOST(req("/api/wallet/defi", { body: { address: "0xdead" }, origin: ORIGIN }))).status).toBe(400);
+    expect((await defiPOST(req("/api/wallet/defi", { body: { address: ADDRESS }, origin: "https://evil.example.com" }))).status).toBe(403);
+  });
+});
+
+describe("POST /api/wallet/unrealized (1.5.7)", () => {
+  it("returns one credit's worth of per-token unrealized PnL and cost basis", async () => {
+    const res = await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS }, origin: ORIGIN }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.credits).toBe(1);
+    expect(body.windowDays).toBe(90);
+    expect(body.rows.length).toBe(7);
+    expect(body.rows[0].unrealizedPnlUsd).toBeCloseTo(104.2872, 3);
+    expect(body.rows[0].costBasisUsd).toBeCloseTo(1880.496, 3);
+    // Nansen sends the trade counts as strings; they reach the card as numbers.
+    expect(body.rows[0].buys).toBe(13);
+    expect(body.rows[0].sells).toBe(3);
+  });
+
+  it("orders by unrealized PnL, so a long-tail wallet's page is its largest rows", async () => {
+    const body = await (await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS }, origin: ORIGIN }))).json();
+    const values = body.rows.map((r: { unrealizedPnlUsd: number }) => r.unrealizedPnlUsd);
+    expect(values).toEqual([...values].sort((a: number, b: number) => b - a));
+  });
+
+  it("nulls stay nulls, and a symbol can repeat because the rows carry no chain", async () => {
+    const body = await (await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS }, origin: ORIGIN }))).json();
+    const bnb = body.rows.find((r: { symbol: string }) => r.symbol === "BNB");
+    // A token never sold has no average sale price. That is a dash, not a zero.
+    expect(bnb.avgSoldPriceUsd).toBeNull();
+    expect(body.rows.filter((r: { symbol: string }) => r.symbol === "ETH").length).toBeGreaterThan(1);
+  });
+
+  it("keeps the address validation and the origin guard", async () => {
+    expect((await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: "nope" }, origin: ORIGIN }))).status).toBe(400);
+    expect((await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS }, origin: "https://evil.example.com" }))).status).toBe(403);
+  });
+});
+
+describe("extractLabels", () => {
   it("reads labels out of the shapes profiler/labels might use", () => {
     expect(extractLabels({ labels: ["Smart Trader", "Fund"] })).toEqual(["Smart Trader", "Fund"]);
     expect(extractLabels({ data: [{ label: "Whale" }, { label: "Whale" }] })).toEqual(["Whale"]);

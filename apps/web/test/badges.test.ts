@@ -202,6 +202,36 @@ describe("/api/author-badges (replay)", () => {
     expect(pm.errors).toEqual([]);
   });
 
+  it("1.5.4 — Polymarket first-seen is labelled as Polymarket activity, never as wallet age", async () => {
+    await link("degenalpha", "polymarket", PM);
+    const pm = (await badges("degenalpha", "Degen Alpha")).body.polymarket;
+    expect(pm.firstSeen).toBe("2026-06-05");
+    expect(pm.polymarketDays).toBe(104);
+    // Four fields the 1-credit call already returned and the badge dropped.
+    expect(pm.p2pTokensSent).toBeCloseTo(129774.82, 1);
+    expect(pm.p2pTokensReceived).toBe(0);
+  });
+
+  it("1.5.5 — the settled history the 1-credit call already paid for", async () => {
+    await link("degenalpha", "polymarket", PM);
+    const pm = (await badges("degenalpha", "Degen Alpha")).body.polymarket;
+    // 574 rows arrived; 494 are settled, and five of the *other* 80 used to be all the card drew.
+    expect(pm.settledCount).toBe(494);
+    expect(pm.settled.length).toBe(40);
+    expect(pm.settled.length).toBeLessThan(pm.settledCount);
+    const sizes = pm.settled.map((m: { pnlUsd: number }) => Math.abs(m.pnlUsd));
+    expect(sizes).toEqual([...sizes].sort((a: number, b: number) => b - a));
+    expect(pm.settled[0]).toEqual(
+      expect.objectContaining({ question: expect.any(String), side: expect.stringMatching(/^(Yes|No)$/), redemptionUsd: expect.any(Number) }),
+    );
+    // Measured: Nansen's own per-market figures sum to $16,815.68 over the settled rows, which
+    // is NOT the wallet's realized_pnl_usd ($34,523.68). The card states the gap rather than
+    // implying the two reconcile — and rebuilding a row from redemption + proceeds − cost comes
+    // to −$13,946.41, so that arithmetic reconstructs neither.
+    expect(pm.settledPnlUsd).toBeCloseTo(16815.68, 1);
+    expect(pm.realizedPnlUsd).toBeCloseTo(34523.68, 1);
+  });
+
   it("a Hyperliquid failure is a partial result: the badge keeps its link and says why, Polymarket still loads", async () => {
     process.env.TRIPWIRE_HL_FIXTURES = fs.mkdtempSync(path.join(os.tmpdir(), "tw-nohl-"));
     await link("degenalpha", "hyperliquid", HL);

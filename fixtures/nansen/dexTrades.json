@@ -1,0 +1,8 @@
+{
+  "pagination": {
+    "page": 1,
+    "per_page": 25,
+    "is_last_page": true
+  },
+  "data": []
+}

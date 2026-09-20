@@ -20,11 +20,13 @@ export function AllocationChart({ rows, label }: { rows: { label: string; value:
   </figure>;
 }
 
-export function PnlChart({ rows }: { rows: {label:string;value:number|null;href?:string|null}[] }) {
-  const known=rows.filter((r):r is {label:string;value:number;href?:string|null}=>r.value!==null && Number.isFinite(r.value));
+/** `note` is a second figure for the same row — Round 1.5.2 uses it for the row's realized ROI,
+ * which arrives with the PnL and had no place to be drawn. Omitted rows read exactly as before. */
+export function PnlChart({ rows }: { rows: {label:string;value:number|null;href?:string|null;note?:string|null}[] }) {
+  const known=rows.filter((r):r is {label:string;value:number;href?:string|null;note?:string|null}=>r.value!==null && Number.isFinite(r.value));
   const max=Math.max(1,...known.map(r=>Math.abs(r.value)));
   return <div className="tw-pnl-chart" aria-label="Realized profit and loss by token">{known.slice(0,5).map((r,i)=><div className="tw-pnl-chart-row" key={i}>
-    <span className="tw-holding-name"><span className="tw-row-name">{r.label}</span><NansenRowLink href={r.href??null} subject={r.label}/></span><span className="tw-pnl-track" aria-hidden="true"><i data-sign={r.value<0?"neg":"pos"} style={{width:`${Math.abs(r.value)/max*100}%`}} /></span><span className="tw-fig" data-sign={r.value<0?"neg":r.value>0?"pos":"zero"}>{usd(r.value,true)}</span>
+    <span className="tw-holding-name"><span className="tw-row-name">{r.label}</span><NansenRowLink href={r.href??null} subject={r.label}/></span><span className="tw-pnl-track" aria-hidden="true"><i data-sign={r.value<0?"neg":"pos"} style={{width:`${Math.abs(r.value)/max*100}%`}} /></span><span className="tw-fig" data-sign={r.value<0?"neg":r.value>0?"pos":"zero"}>{usd(r.value,true)}{r.note?<span className="tw-meta tw-pnl-note"> {r.note}</span>:null}</span>
   </div>)}</div>;
 }
 

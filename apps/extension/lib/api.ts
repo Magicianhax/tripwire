@@ -21,8 +21,10 @@ import type {
   PostIntelResponse,
   ResolveResponse,
   RulesResponse,
+  WalletDefiResponse,
   WalletLabelsResponse,
   WalletLensResponse,
+  WalletUnrealizedResponse,
 } from "./api-types";
 
 export type { ApiResult };
@@ -117,4 +119,19 @@ export function walletLens(query: string, chainHint?: Chain): Promise<ApiResult<
  * calls this; the backend refuses unless NANSEN_ALLOW_PREMIUM=1. */
 export function walletLabels(address: string): Promise<ApiResult<WalletLabelsResponse>> {
   return call("POST", "/api/wallet/labels", { address });
+}
+
+/**
+ * The wallet card's lazy views (Round 1.5.6 + 1.5.1, and 1.5.7). 2 credits and 1 credit.
+ *
+ * Reached only from a button on the open card that states the price — never from a card open
+ * and never from switching views, because the view switcher is arrow-key navigable and a
+ * spend per keypress is the same trap as a spend per hover.
+ */
+export function walletDefi(address: string, chain?: string | null): Promise<ApiResult<WalletDefiResponse>> {
+  return call("POST", "/api/wallet/defi", chain ? { address, chain } : { address });
+}
+
+export function walletUnrealized(address: string): Promise<ApiResult<WalletUnrealizedResponse>> {
+  return call("POST", "/api/wallet/unrealized", { address });
 }
