@@ -2,9 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   holderKey,
+  isYesNoOutcomes,
   predictionSignals,
   recordFromAddressSummary,
   sideTotals,
+  targetOutcomeIndex,
   type HolderRecord,
   type PmHolder,
   type PmTrade,
@@ -25,7 +27,21 @@ export type PredictionMarket = {
   question: string;
   slug: string;
   state: MarketState | null;
-  /** The headline price for Yes, 0-1. Mid of the resting book when there is one. */
+  /**
+   * The market's own outcome names, in Gamma's order (Round 2.2). `["Yes", "No"]` on two thirds
+   * of the book and `["BAL", "NO"]`, `["Ravens", "Saints"]` or `["Over", "Under"]` on the rest.
+   * Index 0 is the outcome `bestBid`, `bestAsk` and `yesPrice` are quoted for.
+   */
+  outcomes: string[] | null;
+  /** Polymarket's cached price per outcome, index-aligned with `outcomes`. Never the headline. */
+  outcomePrices: number[] | null;
+  /**
+   * The headline price for **outcome 0**, 0-1. Mid of the resting book when there is one.
+   *
+   * Named `yesPrice` because that is what outcome 0 is on a Yes/No market; on `["BAL", "NO"]`
+   * it is BAL's price, which is why every render of it is labelled with `outcomes[0]` rather
+   * than with the word "Yes".
+   */
   yesPrice: number | null;
   /** Where `yesPrice` came from, so the card can say it. */
   yesPriceSource: "book" | "last-trade" | "cached" | null;
@@ -72,6 +88,26 @@ export type PredictionPanel = {
   trades: PmTrade[] | null;
   /** Holders and trades on a settled market are history, not a live read. */
   historical: boolean;
+  /**
+   * Which outcome of `market.outcomes` the page is buying, resolved from the market-scoped
+   * control the adapter read. Null means nothing was picked, or what was picked is not on this
+   * market — either way UNCHECKED, never a default (Round 2.2).
+   */
+  outcomeIndex: number | null;
+  /** That outcome's name, as Gamma spells it, for the copy. */
+  targetOutcome: string | null;
+  /** The raw label the page offered, when it is not one of this market's outcomes. */
+  unknownOutcome: string | null;
+  /**
+   * The event's other open markets, free. Present when the slug was an ambiguous event, and on a
+   * resolved market once the panel has fetched its siblings. Evidence only: nothing in here
+   * moves the verdict, which stays UNCHECKED while the page has not picked (Round 2.2).
+   */
+  options: MarketOption[] | null;
+  /** How many open markets the event has, when `options` is a capped slice of them. */
+  optionsTotal: number | null;
+  /** The event those options belong to, for the links back into the page's own selector. */
+  eventSlug: string | null;
   errors: string[];
 };
 
@@ -111,8 +147,39 @@ type GammaMarket = {
 };
 
 /** Why a prediction target can't be checked (shown as the UNCHECKED headline), or null. */
-export type MarketProblem = "Pick a market" | "Not a Yes/No market" | "Market not found";
-export type MarketResolution = { market: GammaMarket | null; problem: MarketProblem | null; fetchedAtIso?: string };
+export type MarketProblem = "Pick a market" | "Market outcomes unavailable" | "Market not found";
+
+/**
+ * One row of the event picker: what an already-fetched sibling market is, at 0 credits.
+ *
+ * Deliberately narrow. The live `/events?slug=nfl-no-bal-2026-09-20` answers **329 open markets
+ * of 88 fields each**; carrying those through the cache and across the bridge to draw a list
+ * would be tens of thousands of keys for six figures per row.
+ */
+export type MarketOption = {
+  id: string;
+  slug: string;
+  question: string;
+  /** The event's own name for this market ("Spread -3.5", "68,000"). Null on the base market. */
+  groupItemTitle: string | null;
+  outcomes: string[] | null;
+  /** Polymarket's cached price for each outcome. The picker never claims to be a live book. */
+  outcomePrices: number[] | null;
+  volume24hUsd: number | null;
+  liquidityUsd: number | null;
+  endDate: string | null;
+  state: MarketState | null;
+};
+
+export type MarketResolution = {
+  market: GammaMarket | null;
+  problem: MarketProblem | null;
+  fetchedAtIso?: string;
+  /** The event's open markets when more than one answered, so the picker costs no second call. */
+  options?: MarketOption[] | null;
+  /** How many open markets the event actually has, when `options` is a capped slice of them. */
+  optionsTotal?: number | null;
+};
 
 const FOUND_TTL_MS = 3_600_000;
 const NOT_FOUND_TTL_MS = 5 * 60_000;
@@ -121,13 +188,18 @@ const DESCRIPTION_MAX = 1_200;
 /** Round 1.2.8: at most this many 1-credit address-summary calls per card, ever. */
 export const HOLDER_RECORD_CAP = 10;
 
-function isYesNoMarket(m: GammaMarket): boolean {
-  try {
-    const outcomes = JSON.parse(m.outcomes ?? "null") as unknown;
-    return Array.isArray(outcomes) && outcomes.length === 2 && String(outcomes[0]).toLowerCase() === "yes" && String(outcomes[1]).toLowerCase() === "no";
-  } catch {
-    return false;
-  }
+/**
+ * The picker never carries more rows than this, however many the event has.
+ *
+ * `nfl-no-bal-2026-09-20` had **329 open markets** on 2026-09-20. A list that long is not a
+ * picker; the 50 with the most 24h volume are, and the card states the total it is a slice of.
+ */
+export const MARKET_OPTIONS_CAP = 50;
+
+/** Gamma's outcome set for a market, or null when it did not send a usable one. */
+function marketOutcomes(m: GammaMarket): string[] | null {
+  const parsed = jsonArray(m.outcomes);
+  return parsed && parsed.length >= 2 ? parsed : null;
 }
 
 /** A Gamma GET that throws on a non-OK status or network error, so failures are never cached. */
@@ -140,8 +212,13 @@ async function gammaGet<T>(url: string): Promise<T> {
 /**
  * Polymarket slug -> market via Polymarket's public Gamma API (not a Nansen call; ids match
  * Nansen market_id). A market slug resolves directly; an event slug only when the event has
- * exactly one open market. The market must be a plain Yes/No market -- anything else is left
- * UNCHECKED rather than guessed at (a wrong market or outcome could block the wrong trade).
+ * exactly one open market, and otherwise it answers "Pick a market" **with that event's markets
+ * attached**, because the call that found them has already been paid for (Round 2.2).
+ *
+ * The market no longer has to be Yes/No. What it must have is an outcome set of its own, which
+ * every later decision is made against: a market whose outcomes are `["BAL", "NO"]` is checked
+ * against BAL and New Orleans, never against the words yes and no. A market that carries no
+ * usable outcome set is still left UNCHECKED rather than guessed at.
  *
  * Cached: a found market 1h, a real (200) not-found / ambiguous answer 5 min; errors never.
  */
@@ -153,8 +230,7 @@ export async function resolveMarket(slug: string): Promise<MarketResolution> {
 
   let result: MarketResolution;
   if (isReplay()) {
-    const file = path.resolve(process.env.TRIPWIRE_FIXTURES ?? path.resolve(process.cwd(), "..", "..", "fixtures", "nansen"), "gammaMarket.json");
-    const market = fs.existsSync(file) ? (JSON.parse(fs.readFileSync(file, "utf8")) as GammaMarket) : null;
+    const market = fixture<GammaMarket>("gammaMarket.json");
     result = judge(market ? [market] : []);
   } else {
     const byMarket = await gammaGet<GammaMarket[]>(`https://gamma-api.polymarket.com/markets?slug=${encodeURIComponent(slug)}`);
@@ -173,14 +249,89 @@ export async function resolveMarket(slug: string): Promise<MarketResolution> {
   return result;
 }
 
+/** Where replay reads its Gamma fixtures from. */
+function fixture<T>(name: string): T | null {
+  const dir = process.env.TRIPWIRE_FIXTURES ?? path.resolve(process.cwd(), "..", "..", "fixtures", "nansen");
+  const file = path.resolve(dir, name);
+  return fs.existsSync(file) ? (JSON.parse(fs.readFileSync(file, "utf8")) as T) : null;
+}
+
+/**
+ * The other open markets of a resolved market's event (Round 2.2), free.
+ *
+ * A market object's nested `events[0]` has 52 keys and **no `markets[]`**, so the siblings need
+ * their own `/events?slug=` call. It is a second public Gamma GET and no Nansen credit, but it
+ * is still a round trip, so it has its own cache key and is only ever made in panel mode — a
+ * chip must not fetch a list nobody is looking at.
+ */
+export async function siblingOptions(eventSlug: string, excludeMarketId: string): Promise<{ options: MarketOption[]; optionsTotal: number } | null> {
+  const cacheKey = `gammaSiblings1|${eventSlug}`;
+  const db = getDb();
+  const row = db.prepare("SELECT value, expires_at FROM cache WHERE key = ?").get(cacheKey) as { value: string; expires_at: number } | undefined;
+  let all: MarketOption[];
+  let total: number;
+  if (row && row.expires_at > Date.now()) {
+    const cached = JSON.parse(row.value) as { options: MarketOption[]; optionsTotal: number };
+    all = cached.options;
+    total = cached.optionsTotal;
+  } else {
+    const events = isReplay()
+      ? (fixture<{ markets?: GammaMarket[] }[]>("gammaEvent.json") ?? [])
+      : await gammaGet<{ markets?: GammaMarket[] }[]>(`https://gamma-api.polymarket.com/events?slug=${encodeURIComponent(eventSlug)}`);
+    const open = (events[0]?.markets ?? []).filter((m) => !m.closed);
+    const mapped = toOptions(open);
+    all = mapped.options;
+    total = mapped.optionsTotal;
+    const now = Date.now();
+    const ttl = all.length > 0 ? FOUND_TTL_MS : NOT_FOUND_TTL_MS;
+    db.prepare("INSERT OR REPLACE INTO cache (key, value, stored_at, expires_at) VALUES (?, ?, ?, ?)").run(cacheKey, JSON.stringify({ options: all, optionsTotal: total }), now, now + ttl);
+  }
+  const others = all.filter((o) => o.id !== excludeMarketId);
+  // One market in an event of one is not a picker, and a row for the market already on screen
+  // is not a sibling.
+  return others.length > 0 ? { options: others, optionsTotal: Math.max(total - 1, others.length) } : null;
+}
+
 function judge(candidates: GammaMarket[]): MarketResolution {
   if (candidates.length === 0) return { market: null, problem: "Market not found" };
-  if (candidates.length > 1) return { market: null, problem: "Pick a market" };
+  if (candidates.length > 1) {
+    // Still UNCHECKED, and now with evidence: the picker is drawn from this list and spends
+    // nothing to get it. Which market is the target is decided by the page, never by the card.
+    return { market: null, problem: "Pick a market", ...toOptions(candidates) };
+  }
   const market = candidates[0]!;
-  if (!isYesNoMarket(market)) return { market: null, problem: "Not a Yes/No market" };
+  if (!marketOutcomes(market)) return { market: null, problem: "Market outcomes unavailable" };
   // A settled market still resolves. Refusing it would drop the holders and trades that are the
   // only honest thing left to show; the state travels with the market instead (Round 1.2.3).
   return { market, problem: null };
+}
+
+/** Gamma market -> a picker row. Absent stays absent; nothing here is derived or inferred. */
+export function toOption(m: GammaMarket): MarketOption {
+  return {
+    id: m.id,
+    slug: m.slug,
+    question: m.question,
+    groupItemTitle: typeof m.groupItemTitle === "string" && m.groupItemTitle.trim() !== "" ? m.groupItemTitle : null,
+    outcomes: marketOutcomes(m),
+    outcomePrices: numberArray(m.outcomePrices),
+    volume24hUsd: numOrNull(m.volume24hr),
+    liquidityUsd: numOrNull(m.liquidityNum),
+    endDate: m.endDate ?? null,
+    state: marketState(m),
+  };
+}
+
+/**
+ * The event's markets, ordered by 24h volume and capped.
+ *
+ * Ordering is the whole value on a strike ladder: eleven "Bitcoin above X" markets are eleven
+ * near-identical questions, and the one being traded is almost always the one with the volume. A
+ * market Gamma sent no 24h volume for sorts last rather than as zero.
+ */
+function toOptions(candidates: GammaMarket[]): { options: MarketOption[]; optionsTotal: number } {
+  const ranked = [...candidates].sort((a, b) => (numOrNull(b.volume24hr) ?? -1) - (numOrNull(a.volume24hr) ?? -1));
+  return { options: ranked.slice(0, MARKET_OPTIONS_CAP).map(toOption), optionsTotal: candidates.length };
 }
 
 /**
@@ -204,10 +355,19 @@ function jsonArray(raw: string | undefined): string[] | null {
   }
 }
 
+/** Gamma's `outcomePrices` is a JSON array of decimal *strings*. A value that is not a finite
+ * number is dropped from the row rather than printed as 0. */
+function numberArray(raw: string | undefined): number[] | null {
+  const parsed = jsonArray(raw);
+  if (!parsed) return null;
+  const nums = parsed.map((v) => Number(v));
+  return nums.every((n) => Number.isFinite(n)) ? nums : null;
+}
+
 const numOrNull = (v: number | undefined): number | null => (typeof v === "number" && Number.isFinite(v) ? v : null);
 const boolOrNull = (v: boolean | undefined): boolean | null => (typeof v === "boolean" ? v : null);
 
-const emptyPanel = (market: PredictionMarket | null, errors: string[], historical = false): PredictionPanel => ({
+const emptyPanel = (market: PredictionMarket | null, errors: string[], historical = false, over: Partial<PredictionPanel> = {}): PredictionPanel => ({
   market,
   holders: null,
   sides: null,
@@ -215,7 +375,14 @@ const emptyPanel = (market: PredictionMarket | null, errors: string[], historica
   recordsCap: HOLDER_RECORD_CAP,
   trades: null,
   historical,
+  outcomeIndex: null,
+  targetOutcome: null,
+  unknownOutcome: null,
+  options: null,
+  optionsTotal: null,
+  eventSlug: market?.eventSlug ?? null,
   errors,
+  ...over,
 });
 
 export async function buildPredictionIntel(
@@ -233,28 +400,50 @@ export async function buildPredictionIntel(
   if (!gamma) {
     const problem = resolution?.problem ?? null;
     return {
-      signals: predictionSignals({ outcome: t.outcome }),
-      panel: emptyPanel(null, problem ? [...errors, problem] : errors),
+      signals: predictionSignals({}),
+      panel: emptyPanel(null, problem ? [...errors, problem] : errors, false, {
+        // "Pick a market" arrives with the event's markets already in hand: the picker is the
+        // evidence for an UNCHECKED verdict, not a way to make it checked.
+        options: resolution?.options ?? null,
+        optionsTotal: resolution?.optionsTotal ?? null,
+        eventSlug: t.slug,
+      }),
       headline: problem,
     };
   }
   const market = toMarket(gamma, resolution?.fetchedAtIso ?? null);
   const marketId = market.id;
   const resolved = market.state === "resolved";
+  const outcomes = market.outcomes;
+  // The market's own outcome set decides what the page picked. `outcomeLabel` is matched against
+  // it exactly, which is what stops "NO" on a ["BAL", "NO"] market from reading as the no side.
+  const outcomeIndex = targetOutcomeIndex(t, outcomes);
+  const targetOutcome = outcomeIndex === null ? null : (outcomes?.[outcomeIndex] ?? null);
+  const offered = typeof t.outcomeLabel === "string" && t.outcomeLabel.trim() !== "" ? t.outcomeLabel.trim() : null;
+  const unknownOutcome = outcomeIndex === null && offered ? offered : null;
+  const pickHeadline = unknownOutcome
+    ? "Outcome not on this market"
+    : outcomes && outcomes.length === 2
+      ? `Pick ${outcomes[0]} or ${outcomes[1]}`
+      : "Pick an outcome";
+  const base = { outcomeIndex, targetOutcome, unknownOutcome, eventSlug: market.eventSlug };
 
-  if (!t.outcome && mode === "chip") {
-    // Without a picked outcome the signal can't be computed: don't spend credits on the chip.
-    return { signals: predictionSignals({}), panel: emptyPanel(market, errors), headline: "Pick Yes or No" };
+  if (outcomeIndex === null && mode === "chip") {
+    // Without a resolved outcome the signal can't be computed: don't spend credits on the chip.
+    return { signals: predictionSignals({ outcomes }), panel: emptyPanel(market, errors, false, base), headline: pickHeadline };
   }
   if (resolved && mode === "chip") {
     // A settled market can never produce a side comparison, so the chip buys nothing for it.
-    return { signals: predictionSignals({ outcome: t.outcome }), panel: emptyPanel(market, errors, true), headline: "Market already resolved" };
+    return { signals: predictionSignals({ outcomes, outcomeIndex }), panel: emptyPanel(market, errors, true, base), headline: "Market already resolved" };
   }
-  const headline = t.outcome ? (resolved ? "Market already resolved" : null) : "Pick Yes or No";
+  const headline = outcomeIndex !== null ? (resolved ? "Market already resolved" : null) : pickHeadline;
 
-  const [holders, trades] = await Promise.all([
+  const [holders, trades, siblings] = await Promise.all([
     settle(nansen.pmTopHolders(marketId), (d) => d.data),
     mode === "panel" ? settle(nansen.pmTrades(marketId), (d) => d.data) : Promise.resolve(null),
+    // Free, panel-only, and never allowed to fail the card: a missing sibling list is a missing
+    // section, not a missing verdict.
+    mode === "panel" && market.eventSlug ? siblingOptions(market.eventSlug, marketId).catch(() => null) : Promise.resolve(null),
   ]);
   if (holders.error) errors.push(holders.error);
   if (trades?.error) errors.push(trades.error);
@@ -271,15 +460,20 @@ export async function buildPredictionIntel(
   });
 
   return {
-    signals: resolved ? predictionSignals({ outcome: t.outcome }) : predictionSignals({ outcome: t.outcome, holders: holders.value, records }),
+    signals: resolved
+      ? predictionSignals({ outcomes, outcomeIndex })
+      : predictionSignals({ outcomes, outcomeIndex, holders: holders.value, records }),
     panel: {
       market,
       holders: list.map((h) => ({ ...h, key: holderKey(h), record: records[holderKey(h)] ?? null })),
-      sides: sideTotals(list),
+      sides: sideTotals(list, outcomes),
       recordsChecked: resolved ? null : Object.keys(records).length,
       recordsCap: HOLDER_RECORD_CAP,
       trades: trades?.value ?? null,
       historical: resolved,
+      ...base,
+      options: siblings?.options ?? null,
+      optionsTotal: siblings?.optionsTotal ?? null,
       errors,
     },
     headline,
@@ -322,6 +516,8 @@ export function toMarket(m: GammaMarket, fetchedAtIso: string | null): Predictio
     question: m.question,
     slug: m.slug,
     state: marketState(m),
+    outcomes: marketOutcomes(m),
+    outcomePrices: numberArray(m.outcomePrices),
     yesPrice,
     yesPriceSource,
     bestBid,

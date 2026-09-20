@@ -46,6 +46,8 @@ const MARKET: PredictionMarket = {
   question: String(GAMMA.question),
   slug: String(GAMMA.slug),
   state: "live",
+  outcomes: JSON.parse(String(GAMMA.outcomes)) as string[],
+  outcomePrices: (JSON.parse(String(GAMMA.outcomePrices)) as string[]).map(Number),
   yesPrice: (Number(GAMMA.bestBid) + Number(GAMMA.bestAsk)) / 2,
   yesPriceSource: "book",
   bestBid: Number(GAMMA.bestBid),
@@ -93,11 +95,19 @@ function panelOf(over: Partial<PredictionPanel> = {}): PredictionPanel {
   return {
     market: MARKET,
     holders,
-    sides: sideTotals(HOLDERS),
+    sides: sideTotals(HOLDERS, MARKET.outcomes),
     recordsChecked: 10,
     recordsCap: 10,
     trades: read<{ data: PredictionPanel["trades"] }>("pmTrades").data,
     historical: false,
+    // Round 1.2's cards were all "the page picked Yes on a Yes/No market", which is index 0 of
+    // the recorded market's outcome set.
+    outcomeIndex: 0,
+    targetOutcome: "Yes",
+    unknownOutcome: null,
+    options: null,
+    optionsTotal: null,
+    eventSlug: MARKET.eventSlug,
     errors: [],
     ...over,
   };
@@ -273,7 +283,9 @@ describe("1.2.6 side totals name the sample, never the market", () => {
     expect(text).toContain("No side");
     expect(text).toContain("Top 10 share");
     expect(text).toContain("largest tracked holders this market returned");
-    expect(text).toContain("not of Yes, and not of the market");
+    // Round 2.2 split the sentence in two rather than hinging it on a spaced em dash, and names
+    // the outcome from the market's own set (which on this market is still "Yes").
+    expect(text).toContain("Not of Yes, and not of the market");
   });
 
   it("says how many records it bought and what a missing record means", () => {
@@ -284,7 +296,7 @@ describe("1.2.6 side totals name the sample, never the market", () => {
   });
 
   it("a sample with nothing priceable renders no side section rather than zeros", () => {
-    const c = render(<PredictionBody panel={panelOf({ sides: sideTotals([]) })} initialTab="winners" />);
+    const c = render(<PredictionBody panel={panelOf({ sides: sideTotals([], MARKET.outcomes) })} initialTab="winners" />);
     expect(shown(c).textContent).not.toContain("Where the sampled money sits");
   });
 });

@@ -57,9 +57,15 @@ describe("Polymarket market resolution", () => {
     expect(await resolveMarket("an-event")).toMatchObject({ market: null, problem: "Pick a market" });
   });
 
-  it("a market whose outcomes aren't exactly Yes/No is not checked", async () => {
+  // Round 2.2 widened this: a market's outcomes are whatever it says they are, and only a market
+  // that sent no usable set at all is refused. The outcome-set rules live in
+  // apps/web/test/prediction-round-2-2.test.ts.
+  it("a market whose outcomes aren't Yes/No resolves, and one with no outcome set does not", async () => {
     stub({ markets: [yesNo("1", { outcomes: '["Up", "Down"]' })] });
-    expect(await resolveMarket("m-1")).toMatchObject({ market: null, problem: "Not a Yes/No market" });
+    expect(await resolveMarket("m-1")).toMatchObject({ market: { id: "1" }, problem: null });
+    resetDb();
+    stub({ markets: [yesNo("2", { outcomes: undefined })] });
+    expect(await resolveMarket("m-2")).toMatchObject({ market: null, problem: "Market outcomes unavailable" });
   });
 
   it("buildPredictionIntel returns UNCHECKED data with the reason as headline, and spends no Nansen calls", async () => {

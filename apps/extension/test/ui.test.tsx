@@ -635,7 +635,7 @@ describe("Evidence card tabs", () => {
   });
 
   it("a prediction card's default finding is about a market, not a token", () => {
-    const panel = { market: null, holders: null, sides: null, recordsChecked: null, recordsCap: 10, trades: null, historical: false, errors: [] };
+    const panel = { market: null, holders: null, sides: null, recordsChecked: null, recordsCap: 10, trades: null, historical: false, outcomeIndex: null, targetOutcome: null, unknownOutcome: null, options: null, optionsTotal: null, eventSlug: null, errors: [] };
     const data: GuardResponse = {
       target: { kind: "prediction", slug: "will-x-happen" },
       verdict: "CLEAR",
@@ -654,7 +654,7 @@ describe("Evidence card tabs", () => {
     const perp = mountNode(<PerpBody panel={{ coin: "ETH", mode: "panel", screener: null, positions: null, positionsIsLastPage: null, positionsReturned: null, trades: null, cohorts: null, cohortsAtIso: null, tradesError: null, cohortsError: null, errors: [] }} />);
     expect(tabLabels(perp.container)).toEqual(["Positioning", "Liquidations", "Traders11 credits", "Chart"]);
     perp.root.unmount();
-    const prediction = mountNode(<PredictionBody panel={{ market: null, holders: null, sides: null, recordsChecked: null, recordsCap: 10, trades: null, historical: false, errors: [] }} initialTab="holders" />);
+    const prediction = mountNode(<PredictionBody panel={{ market: null, holders: null, sides: null, recordsChecked: null, recordsCap: 10, trades: null, historical: false, outcomeIndex: null, targetOutcome: null, unknownOutcome: null, options: null, optionsTotal: null, eventSlug: null, errors: [] }} initialTab="holders" />);
     expect(tabLabels(prediction.container)).toEqual(["Proven winners", "Holders", "Trades"]);
     expect(selected(prediction.container)).toBe("Holders");
     prediction.root.unmount();

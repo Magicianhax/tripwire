@@ -221,18 +221,18 @@ describe("polymarket (live capture)", () => {
 
   it("reads Yes from the checked outcome radio ('Yes21¢')", () => {
     const doc = load("polymarket");
-    expect(polymarketAdapter.readTarget(doc, marketUrl)).toEqual({ kind: "prediction", slug: MARKET, outcome: "yes" });
+    expect(polymarketAdapter.readTarget(doc, marketUrl)).toEqual({ kind: "prediction", slug: MARKET, outcomeLabel: "Yes", outcome: "yes" });
   });
 
   it("reads No after the captured toggle to No", () => {
     const doc = load("polymarket");
     selectNo();
-    expect(polymarketAdapter.readTarget(doc, marketUrl)).toEqual({ kind: "prediction", slug: MARKET, outcome: "no" });
+    expect(polymarketAdapter.readTarget(doc, marketUrl)).toEqual({ kind: "prediction", slug: MARKET, outcomeLabel: "No", outcome: "no" });
   });
 
   it("event page without a market slug: event slug (backend decides single-market vs Pick a market)", () => {
     const doc = load("polymarket");
-    expect(polymarketAdapter.readTarget(doc, new URL(`https://polymarket.com/event/${EVENT}`))).toEqual({ kind: "prediction", slug: EVENT, outcome: "yes" });
+    expect(polymarketAdapter.readTarget(doc, new URL(`https://polymarket.com/event/${EVENT}`))).toEqual({ kind: "prediction", slug: EVENT, outcomeLabel: "Yes", outcome: "yes" });
   });
 
   it("event page with ?marketSlug= (links on polymarket.com use this form)", () => {
@@ -241,7 +241,7 @@ describe("polymarket (live capture)", () => {
     const slug = "will-there-be-no-change-in-fed-interest-rates-after-the-october-2026-meeting-20260617190324031";
     const url = new URL(`https://polymarket.com/event/fed-decision-in-october-20260617190323537?marketSlug=${slug}`);
     expect(polymarketAdapter.match(url)).toBe(true);
-    expect(polymarketAdapter.readTarget(doc, url)).toEqual({ kind: "prediction", slug, outcome: "no" });
+    expect(polymarketAdapter.readTarget(doc, url)).toEqual({ kind: "prediction", slug, outcomeLabel: "No", outcome: "no" });
   });
 
   it("without the trade button, the rows' Buy Yes/No and the Buy radio are not anchors", () => {

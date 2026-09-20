@@ -33,6 +33,10 @@ export const PredictionTargetSchema = z.object({
   slug: z.string().regex(/^[a-z0-9-]{1,200}$/),
   marketId: z.string().regex(/^[A-Za-z0-9x]{1,100}$/).optional(),
   outcome: z.enum(["yes", "no"]).optional(),
+  /** Free text off a hostile page, so it is length-capped and control characters are refused.
+   * It is only ever compared to the resolved market's own outcome names, never rendered raw
+   * into a URL or a query. */
+  outcomeLabel: z.string().trim().min(1).max(80).regex(/^[^\u0000-\u001f]+$/).optional(),
 });
 
 export const TargetSchema = z.union([SpotTargetSchema, PerpTargetSchema, PredictionTargetSchema]);
@@ -118,6 +122,33 @@ export const WalletDefiRequestSchema = z.object({
 
 /** POST /api/wallet/unrealized — Round 1.5.7. One credit, behind the Performance view's button. */
 export const WalletUnrealizedRequestSchema = z.object({ address: ResolvedAddressSchema });
+
+/** The perp coin symbol both Round 2.5 routes are keyed by. Hyperliquid's own spelling allows a
+ * leading lowercase k ("kPEPE"), so the case is not normalised away here. */
+const PerpCoinSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(20)
+  .regex(/^[A-Za-z0-9]+$/);
+
+/**
+ * POST /api/perp/ladder — Round 2.5. **5 credits**, and never part of a card load or of opening
+ * a tab: the Liquidations tab draws the Smart Money ladder the panel already bought, and a
+ * button that states the price is the only way here. The cohort is an enum rather than free
+ * text, because a rejected request still costs a round trip and a ledger row.
+ */
+export const PerpLadderRequestSchema = z.object({
+  coin: PerpCoinSchema,
+  cohort: z.enum(["all_traders", "whale", "public_figure"]),
+});
+
+/**
+ * POST /api/perp/win-rate — Round 2.5. **1 credit per press.** An explicit click on one
+ * leaderboard row, never a hover: the expanded card shows twelve rows, and a hover trigger
+ * would be twelve credits from one careless mouse pass.
+ */
+export const PerpWinRateRequestSchema = z.object({ address: ResolvedAddressSchema });
 
 export const RuleSchema = z.object({
   id: z.string().min(1).max(40),

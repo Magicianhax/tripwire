@@ -17,7 +17,15 @@ export type PredictionTarget = {
   kind: "prediction";
   slug: string;
   marketId?: string;
+  /** Yes/No markets only. Two thirds of Polymarket's top-100 markets have other outcomes. */
   outcome?: "yes" | "no";
+  /**
+   * The raw text of the outcome the venue adapter read from the market-scoped control ("Yes",
+   * "BAL", "Ravens", "Over"). Resolved against the market's own `outcomes` array on the backend
+   * and never interpreted here, because a market whose outcome is literally "NO" is New Orleans
+   * (Round 2.2).
+   */
+  outcomeLabel?: string;
 };
 export type Target = SpotTarget | PerpTarget | PredictionTarget;
 export type TargetKind = Target["kind"];

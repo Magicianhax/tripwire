@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { depthCostLabel, provenWinnerSplit, type DepthSection, type HolderRecord } from "@tripwire/core";
-import { BookOpen, ChevronRight, CircleSlash, Gavel } from "lucide-react";
-import type { HitDto, OutcomeBook, PredictionMarket, PredictionPanel } from "../api-types";
+import { depthCostLabel, isYesNoOutcomes, provenWinnerWeights, type DepthSection, type HolderRecord } from "@tripwire/core";
+import { BookOpen, ChevronRight, CircleSlash, Gavel, ListTree } from "lucide-react";
+import type { HitDto, MarketOption, OutcomeBook, PredictionMarket, PredictionPanel } from "../api-types";
 import { rowLimit, useCardSize } from "./card-size";
+import { usePagination } from "./DataCharts";
 import { timeAgo, usd } from "./format";
 import { WalletLabel } from "./WalletLabel";
 import { Icon } from "./icons";
@@ -13,9 +14,30 @@ import { Tabs, type TabDef } from "./Tabs";
 
 /** Which lazy section each prediction tab needs. Nothing here costs a credit any more: the Book
  * tab reads Polymarket's own CLOB, which is public and free (Round 1.2.7). */
-export const PREDICTION_TAB_SECTIONS: Record<string, DepthSection[]> = { winners: [], holders: [], trades: [], book: ["predictionBook"] };
+export const PREDICTION_TAB_SECTIONS: Record<string, DepthSection[]> = { winners: [], holders: [], trades: [], markets: [], book: ["predictionBook"] };
 
 const DASH = "—";
+
+/**
+ * This market's outcome names, in Gamma's order. Index 0 is what the headline price, the bid and
+ * the ask are quoted for.
+ *
+ * There is no fallback to "Yes" and "No": 44 of Polymarket's 100 highest-volume open markets are
+ * named something else, and a card that prints "Yes" over a Ravens price is stating a falsehood
+ * about what the reader would be buying. A market that arrived without its set gets a positional
+ * name, which is ugly and true (Round 2.2).
+ */
+function outcomeName(outcomes: string[] | null | undefined, index: number): string {
+  const name = outcomes?.[index];
+  return typeof name === "string" && name.trim() !== "" ? name : `Outcome ${index + 1}`;
+}
+
+/** "BAL or NO" / "one of 4 outcomes" — how to ask the reader to pick, in this market's words. */
+function outcomeChoice(outcomes: string[] | null | undefined): string {
+  if (!outcomes || outcomes.length < 2) return "an outcome";
+  if (outcomes.length === 2) return `${outcomes[0]} or ${outcomes[1]}`;
+  return `one of ${outcomes.length} outcomes`;
+}
 
 /**
  * A probability written the way a prediction market is read. One decimal of a cent normally,
@@ -90,6 +112,34 @@ const STATE_COPY: Record<"paused" | "resolved", { label: string; note: string }>
 };
 
 /**
+ * What this market's outcomes are called, and which one the page is buying.
+ *
+ * It is the only place the card states the thing a wrong answer would block the wrong trade on,
+ * so it never fills a gap: an outcome the page did not pick, or one this market does not list,
+ * is said in words rather than defaulted to the first one (Round 2.2).
+ */
+function OutcomeLine({ market, picked, unknown }: { market: PredictionMarket; picked: string | null; unknown: string | null }) {
+  const outcomes = market.outcomes;
+  if (!outcomes || outcomes.length === 0) return null;
+  return (
+    <p className="tw-note tw-meta">
+      Outcomes: <b>{outcomes.join(" · ")}</b>.{" "}
+      {picked ? (
+        <>
+          The page has <b>{picked}</b> selected.
+        </>
+      ) : unknown ? (
+        <>
+          The page offered <b>{unknown}</b>, which is not one of them, so this market is unchecked.
+        </>
+      ) : (
+        <>Nothing is selected on the page, so this market is unchecked.</>
+      )}
+    </p>
+  );
+}
+
+/**
  * What the market is and what it costs, stated before any evidence (Round 1.2.1 / 1.2.2 / 1.2.3).
  *
  * The headline price comes from the resting book, not from `outcomePrices` — that field is a
@@ -97,7 +147,7 @@ const STATE_COPY: Record<"paused" | "resolved", { label: string; note: string }>
  * card that shows two different prices for the same outcome is worse than one that shows none.
  * Every figure below it is nullable and renders a dash when Gamma omits it.
  */
-function MarketReadout({ market, historical }: { market: PredictionMarket; historical: boolean }) {
+function MarketReadout({ market, historical, picked, unknown }: { market: PredictionMarket; historical: boolean; picked: string | null; unknown: string | null }) {
   const [openRules, setOpenRules] = useState(false);
   const expanded = useCardSize() === "expanded";
   const state = market.state === "resolved" || market.state === "paused" ? STATE_COPY[market.state] : null;
@@ -117,7 +167,7 @@ function MarketReadout({ market, historical }: { market: PredictionMarket; histo
       ) : null}
       <div className="tw-pm-price">
         <p className="tw-price-now">
-          <span className="tw-pm-outcome">Yes</span>
+          <span className="tw-pm-outcome">{outcomeName(market.outcomes, 0)}</span>
           <span className="tw-price-value tw-fig">{cents(market.yesPrice)}</span>
           <span className="tw-price-change tw-fig" data-sign={sign(market.oneDayPriceChange)}>
             {centsDelta(market.oneDayPriceChange)}
@@ -129,6 +179,7 @@ function MarketReadout({ market, historical }: { market: PredictionMarket; histo
           {market.pricedAtIso ? <> · as of {timeAgo(market.pricedAtIso)}</> : null}
         </p>
       </div>
+      <OutcomeLine market={market} picked={picked} unknown={unknown} />
       <div className="tw-market-readouts">
         {/* Six tiles at 440px, thirteen when the card has the room. The compact set is what a
             reader needs before a trade: what it costs to get in, how deep it is, and when it
@@ -180,14 +231,96 @@ function MarketReadout({ market, historical }: { market: PredictionMarket; histo
   );
 }
 
+
+/** Where a market lives on polymarket.com, with the event's own market selector already set. */
+const marketUrl = (eventSlug: string, slug: string) =>
+  `https://polymarket.com/event/${encodeURIComponent(eventSlug)}?marketSlug=${encodeURIComponent(slug)}`;
+
+/** "Ravens 66.5¢ · Saints 33.5¢" from Gamma's cached snapshot, or null when it sent none. */
+function optionPrices(option: MarketOption): string | null {
+  const { outcomes, outcomePrices } = option;
+  if (!outcomes || !outcomePrices || outcomes.length !== outcomePrices.length) return null;
+  return outcomes.map((name, i) => `${name} ${cents(outcomePrices[i])}`).join(" · ");
+}
+
+/**
+ * The event's other markets (Round 2.2).
+ *
+ * The list is **evidence, not a verdict**. Tripwire checks the market the page has selected, and
+ * a row here opens that market on its own Polymarket page rather than re-pointing this card:
+ * getting "which market is the target" from a card control instead of from the page is how a
+ * block ends up over the wrong trade.
+ *
+ * It costs nothing. Every figure comes from a Gamma call that has already been made, which is
+ * also why the rows carry Polymarket's cached prices and say so rather than pretending to be the
+ * live book the Book tab reads.
+ */
+function MarketPicker({ panel }: { panel: PredictionPanel }) {
+  const size = useCardSize();
+  const options = panel.options ?? [];
+  const page = usePagination(options, size === "expanded" ? 6 : 3);
+  const eventSlug = panel.eventSlug;
+  const total = panel.optionsTotal ?? options.length;
+  if (options.length === 0) return null;
+  const capped = total > options.length;
+  return (
+    <Section
+      title={panel.market ? "Other markets in this event" : "Markets in this event"}
+      aside={capped ? `${options.length} of ${total} by 24h volume` : `${options.length}`}
+    >
+      <p className="tw-note tw-meta">
+        Tripwire checks the market this page has selected, so these are not checked and this
+        card’s verdict does not change. Opening one checks it on its own page. Prices are
+        Polymarket’s cached snapshot{capped ? `, and the ${total - options.length} lowest-volume markets of this event are not listed` : ""}.
+      </p>
+      <div className="tw-market-options">
+        {page.rows.map((o) => (
+          <article className="tw-market-option" key={o.id}>
+            <div className="tw-market-heading">
+              <b>{o.groupItemTitle ?? o.question}</b>
+              {o.state === "paused" ? <span className="tw-meta">Not taking orders</span> : null}
+            </div>
+            {o.groupItemTitle ? <p className="tw-market-name">{o.question}</p> : null}
+            <p className="tw-meta tw-fig">{optionPrices(o) ?? "No price from Polymarket"}</p>
+            <dl className="tw-market-metrics">
+              <div>
+                <dt>24h volume</dt>
+                <dd className="tw-fig">{usd(o.volume24hUsd)}</dd>
+              </div>
+              <div>
+                <dt>Liquidity</dt>
+                <dd className="tw-fig">{usd(o.liquidityUsd)}</dd>
+              </div>
+              <div>
+                <dt>Resolves</dt>
+                <dd className="tw-fig">{marketDate(o.endDate)}</dd>
+              </div>
+            </dl>
+            {eventSlug ? (
+              <a className="tw-link-btn" href={marketUrl(eventSlug, o.slug)} target="_blank" rel="noopener noreferrer">
+                Open this market
+              </a>
+            ) : null}
+          </article>
+        ))}
+      </div>
+      {page.controls}
+    </Section>
+  );
+}
+
 function WinnersTab({ panel, hits }: { panel: PredictionPanel; hits: HitDto[] }) {
-  // Same rule as the smart_side_disagrees signal: proven winners on Yes/No sides only.
-  const { yes, no } = provenWinnerSplit(panel.holders ?? [], (h) => h.record?.pnlUsd);
-  const total = yes + no;
-  const yesPct = total > 0 ? (yes / total) * 100 : 50;
-  const noPct = 100 - yesPct;
+  // Same rule as the smart_side_disagrees signal: proven winners resolved against THIS market's
+  // outcome set, so a holder whose side reads "NO" on a ["BAL", "NO"] market counts for New
+  // Orleans and not for "the no side".
+  const outcomes = panel.market?.outcomes ?? null;
+  const split = provenWinnerWeights(panel.holders ?? [], outcomes, (h) => h.record?.pnlUsd);
+  const total = split.byOutcome.reduce((sum, v) => sum + v, 0);
+  const picked = panel.outcomeIndex;
   const sides = panel.sides;
   const checked = panel.recordsChecked;
+  const shares = split.byOutcome.map((v) => (total > 0 ? (v / total) * 100 : 0));
+  const yesNo = isYesNoOutcomes(outcomes);
   return (
     <>
       {hits.length > 0 ? (
@@ -195,27 +328,42 @@ function WinnersTab({ panel, hits }: { panel: PredictionPanel; hits: HitDto[] })
           <HitList hits={hits} />
         </Section>
       ) : null}
-      <Section title="Proven winners by side">
+      <Section title="Proven winners by outcome">
         {total > 0 ? (
           <div className="tw-longshort">
-            <div className="tw-longshort-bar" role="img" aria-label={`Proven winners: Yes ${yesPct.toFixed(0)}%, No ${noPct.toFixed(0)}%`}>
-              <i className="tw-longshort-long" style={{ width: `${yesPct}%` }} />
-              <i className="tw-longshort-short" style={{ width: `${noPct}%` }} />
+            {/* Mint is the outcome the page is buying and red is everything else, which is what
+                the signal above measures. With nothing picked there is no "your side", so the
+                bar is drawn in Gamma's order and the legend says which is which. */}
+            <div
+              className="tw-longshort-bar"
+              role="img"
+              aria-label={`Proven winners: ${shares.map((v, i) => `${outcomeName(outcomes, i)} ${v.toFixed(0)}%`).join(", ")}`}
+            >
+              {shares.map((v, i) => (
+                <i key={i} className={picked === null ? (i === 0 ? "tw-longshort-long" : "tw-longshort-short") : picked === i ? "tw-longshort-long" : "tw-longshort-short"} style={{ width: `${v}%` }} />
+              ))}
             </div>
             <div className="tw-longshort-legend">
-              <span data-side="long">
-                Yes <b className="tw-fig">{yesPct.toFixed(0)}%</b>
-              </span>
-              <span data-side="short">
-                No <b className="tw-fig">{noPct.toFixed(0)}%</b>
-              </span>
+              {shares.map((v, i) => (
+                <span key={i} data-side={picked === null ? (i === 0 ? "long" : "short") : picked === i ? "long" : "short"}>
+                  {outcomeName(outcomes, i)} <b className="tw-fig">{v.toFixed(0)}%</b>
+                </span>
+              ))}
             </div>
           </div>
         ) : panel.historical ? (
-          <Empty>This market has settled, so there is no side left to compare.</Empty>
+          <Empty>This market has settled, so there is no outcome left to compare.</Empty>
+        ) : picked === null ? (
+          <Empty>Select {outcomeChoice(outcomes)} on the page to compare it with proven winners.</Empty>
         ) : (
-          <Empty>No holders with a settled winning record on either side yet.</Empty>
+          <Empty>No holders with a settled winning record on any outcome yet.</Empty>
         )}
+        {split.unmatchedUsd > 0 ? (
+          <p className="tw-note tw-meta">
+            Proven-winner money worth <b className="tw-fig">{usd(split.unmatchedUsd, true)}</b> sits on a side this market does not list. It counts for no
+            outcome here rather than being folded into one.
+          </p>
+        ) : null}
         {checked !== null ? (
           <p className="tw-note tw-meta">
             Settled records bought for the <b className="tw-fig">{checked}</b> largest tracked holders (cap{" "}
@@ -226,16 +374,26 @@ function WinnersTab({ panel, hits }: { panel: PredictionPanel; hits: HitDto[] })
       {sides && sides.valued > 0 ? (
         <Section title="Where the sampled money sits">
           <Readouts
-            items={[
-              { label: "Yes side", value: usd(sides.yesUsd) },
-              { label: "No side", value: usd(sides.noUsd) },
-              { label: "Other sides", value: usd(sides.otherUsd) },
-              { label: "Top 10 share", value: sides.top10SharePct === null ? DASH : `${sides.top10SharePct.toFixed(0)}%` },
-            ]}
+            items={
+              sides.byOutcome
+                ? [
+                    // "Yes side" reads right for a Yes/No market and "Ravens side" does not, so
+                    // a named outcome is just its name.
+                    ...sides.byOutcome.map((v, i) => ({ label: yesNo ? `${outcomeName(outcomes, i)} side` : outcomeName(outcomes, i), value: usd(v) })),
+                    { label: "Other sides", value: sides.unmatchedUsd ? usd(sides.unmatchedUsd) : DASH },
+                    { label: "Top 10 share", value: sides.top10SharePct === null ? DASH : `${sides.top10SharePct.toFixed(0)}%` },
+                  ]
+                : [
+                    { label: "Yes side", value: usd(sides.yesUsd) },
+                    { label: "No side", value: usd(sides.noUsd) },
+                    { label: "Other sides", value: usd(sides.otherUsd) },
+                    { label: "Top 10 share", value: sides.top10SharePct === null ? DASH : `${sides.top10SharePct.toFixed(0)}%` },
+                  ]
+            }
           />
           <p className="tw-note tw-meta">
-            Of the <b className="tw-fig">{sides.valued}</b> largest tracked holders this market returned — not of Yes, and not of the market.
-            Polymarket has many more holders than any one page of them.
+            Of the <b className="tw-fig">{sides.valued}</b> largest tracked holders this market returned. Not of {outcomeName(outcomes, 0)}, and not of the
+            market: Polymarket has many more holders than any one page of them.
           </p>
         </Section>
       ) : null}
@@ -338,17 +496,25 @@ function TradesTab({ panel }: { panel: PredictionPanel }) {
   if (trades.length === 0) return <Empty>No recent trades on this market.</Empty>;
   return (
     <Section title={panel.historical ? "Trades before settlement" : "Recent trades"} aside={`${trades.length} of ${all.length}`}>
-      <ul className="tw-trade-list" data-cols="3">
+      <ul className="tw-trade-list">
         {trades.map((t, i) => (
           <li key={i}>
             <span>
               {t.taker_action} {t.side}
+            </span>
+            {/* Size and price were already on the wire and dropped by the card. A trade is a
+                quantity at a price; the dollar figure alone cannot say which. */}
+            <span className="tw-fig">
+              {t.size.toLocaleString("en-US", { maximumFractionDigits: 0 })} @ {cents(t.price)}
             </span>
             <span className="tw-fig">{usd(t.usdc_value)}</span>
             <span className="tw-fig tw-meta">{timeAgo(t.timestamp)}</span>
           </li>
         ))}
       </ul>
+      <p className="tw-note tw-meta">
+        The last <b className="tw-fig">{all.length}</b> trades this market returned, newest first. Not the market’s whole tape.
+      </p>
     </Section>
   );
 }
@@ -442,6 +608,11 @@ export function predictionTabs(panel: PredictionPanel, hits: HitDto[], depth: De
     { id: "holders", label: "Holders", content: <HoldersTab panel={panel} /> },
     { id: "trades", label: "Trades", content: <TradesTab panel={panel} /> },
   ];
+  // The siblings came back with the market and cost nothing, so the tab is only absent when the
+  // event genuinely has one market.
+  if ((panel.options?.length ?? 0) > 0) {
+    tabs.push({ id: "markets", label: "Markets", icon: <Icon icon={ListTree} size={14} />, content: <MarketPicker panel={panel} /> });
+  }
   if (expanded) {
     tabs.push({
       id: "book",
@@ -468,9 +639,15 @@ export function PredictionBody({
   onNeedSections?: (sections: DepthSection[]) => void;
 }) {
   const expanded = useCardSize() === "expanded";
+  // An ambiguous event slug resolves to no market and a list of them. Nothing was fetched for any
+  // one, so there is no evidence to tab through and the picker is the whole body. Any other
+  // marketless card (not found, lookup failed) keeps its tabs and their empty states.
+  if (!panel.market && (panel.options?.length ?? 0) > 0) return <MarketPicker panel={panel} />;
   return (
     <>
-      {panel.market ? <MarketReadout market={panel.market} historical={panel.historical} /> : null}
+      {panel.market ? (
+        <MarketReadout market={panel.market} historical={panel.historical} picked={panel.targetOutcome} unknown={panel.unknownOutcome} />
+      ) : null}
       <Tabs
         label="Evidence"
         tabs={predictionTabs(panel, hits, depth, expanded)}

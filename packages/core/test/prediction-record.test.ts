@@ -99,7 +99,7 @@ describe("1.2.6 — side totals and concentration describe the sample, nothing m
   });
 
   it("an empty sample reports nothing, never zeros", () => {
-    expect(sideTotals([])).toEqual({ yesUsd: null, noUsd: null, otherUsd: null, sample: 0, valued: 0, top10SharePct: null });
+    expect(sideTotals([])).toEqual({ yesUsd: null, noUsd: null, otherUsd: null, sample: 0, valued: 0, top10SharePct: null, byOutcome: null, unmatchedUsd: null });
     expect(sideTotals(null).top10SharePct).toBeNull();
   });
 
