@@ -528,6 +528,19 @@ test("prediction card captures", async ({ context }) => {
   await pop.getByRole("button", { name: "Expand card" }).click();
   await expect(pop).toHaveAttribute("data-size", "expanded");
 
+  // prediction-expanded: the Proven winners tab with room for two columns. This is the shot the
+  // ragged-column report was about — the hole beside a lone tall section.
+  await pop.getByRole("tab", { name: "Proven winners" }).click();
+  await expect(pop.locator(".tw-longshort-bar")).toBeVisible();
+  await pop.locator('[role="tabpanel"]:not([hidden])').evaluate((el) => {
+    let node: HTMLElement | null = el as HTMLElement;
+    while (node && node.scrollHeight <= node.clientHeight) node = node.parentElement;
+    if (node) node.scrollTop = 0;
+  });
+  await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await page.waitForTimeout(300);
+  await shot(pop, "prediction-expanded");
+
   // prediction-markets: the event's other rungs, free, two columns with the line that says they
   // are evidence and not a verdict (Round 2.2).
   await pop.getByRole("tab", { name: "Markets" }).click();

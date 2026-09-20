@@ -1799,6 +1799,12 @@ div.tw-dock-chip {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* Across the full width the same eight figures read as one band of four, not four stacked pairs. */
+.tw-badge-card[data-size="expanded"] .tw-tabpanel > .tw-readouts,
+.tw-wallet-card[data-size="expanded"] .tw-tabpanel > .tw-readouts {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .tw-badge-card .tw-card-sub .tw-meta {
   font-size: 0.75rem;
 }
@@ -2478,12 +2484,28 @@ div.tw-dock-chip {
   margin-bottom: 0;
 }
 
-/* A tab with one block has nothing to put in a second column. One centred column at a readable
-   measure says that; half a screen of nothing beside a lone section does not. */
+/* A tab with one ordinary block has nothing to put in a second column. One centred column at a
+   readable measure says that; half a screen of nothing beside a lone section does not. */
 .tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):not(:has(> * + *)) {
   columns: 1;
   max-width: 860px;
   margin-inline: auto;
+}
+
+/* Except where that lone block is one of the wide ones: a price chart, a seven-column table or
+   a list that already lays out its own two columns wants the room, not a measure. Written as a
+   second rule rather than as `:not(:has(…))` on the one above, because `:has()` inside `:has()`
+   is invalid and takes the whole selector down with it. */
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-spot-flow-layout),
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-detail),
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-venue-table),
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-hl-positions),
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-book),
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-market-options),
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-perp-leaders),
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-pm-holders) {
+  max-width: none;
+  margin-inline: 0;
 }
 
 [data-size=expanded] .tw-spot-flow-layout,
@@ -2507,11 +2529,14 @@ div.tw-dock-chip {
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-sources,
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-errors,
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-spot-flow-layout,
+/* A bare row of figure tiles is a row: in one column it draws a two-wide stack beside nothing. */
+.tw-card[data-size="expanded"] .tw-tabpanel > .tw-readouts,
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-detail,
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-venue-table),
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-hl-positions),
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-book),
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-perp-leaders),
+.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-pm-holders),
 /* The badge card's "Linked by you / Unlink" row is a statement about the whole card. */
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-link-status,
 /* Round 2.2: the event picker is its tab's only section and already lays its own rows out in two
@@ -2806,6 +2831,13 @@ div.tw-dock-chip {
   display: none;
 }
 
+/* One line, truncated. The second line is for a strip wide enough to say a whole sentence on
+   it; at 300px it is two half-words stacked inside a 32px pill. */
+:host([data-narrow]) .tw-strip-finding {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
 :host([data-narrow]) .tw-strip-details {
   padding-left: 6px;
 }
@@ -2814,7 +2846,18 @@ div.tw-dock-chip {
   display: none;
 }
 
-/* With no sentence between them, the pill and Details sit at the two ends of the row. */
+/* The venue's own logo on the venue's own page is the one thing on this row that says nothing
+   the reader does not already know. At 240px it is what makes room for the verdict. */
+:host([data-tight]) .tw-strip > .tw-logo-venue {
+  display: none;
+}
+
+/* With no sentence between them, the pill and Details sit at the two ends of the row — with a
+   gutter after the chevron, so it never meets the pill's own rounded edge. */
+:host([data-tight]) .tw-strip {
+  padding-right: var(--tw-space-2);
+}
+
 :host([data-tight]) .tw-strip-details {
   margin-left: auto;
 }
