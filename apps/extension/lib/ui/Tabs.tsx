@@ -12,19 +12,32 @@ export type TabDef = {
 };
 
 /**
- * WAI-ARIA tabs with automatic activation: one tab stop, arrow keys (wrapping), Home and End
- * move selection and focus together. Every panel stays in the DOM (`hidden` when inactive), so
- * switching is instant and nothing refetches.
+ * WAI-ARIA tabs with **manual activation**: one tab stop, arrow keys (wrapping), Home and End
+ * move *focus only*; Enter, Space or a click commits the selection. Every panel stays in the DOM
+ * (`hidden` when inactive), so switching is instant and nothing refetches.
+ *
+ * **This is the one rule for every tab strip in the product, priced or free** (finding I-2).
+ * Automatic activation — selection following the arrow key — was a credit per keypress: the
+ * expanded spot strip is Flow · Wallets · Tape (1 credit) · Risk · Holders (5) · Winners (5), so
+ * one sweep of ArrowRight spent 11 credits and End landed on Winners. It is the same rule
+ * `PricedButton` in `PerpBody.tsx` states: a control reachable by arrow key must not spend. It is
+ * applied uniformly rather than only to the priced tabs, because a strip where some arrow
+ * presses commit and others do not is two rules wearing one strip.
  *
  * `onSelect` fires for the tab that is showing — once on mount for the initial tab, and once per
- * change after that. It is how a tab loads its own data the first time it is looked at, and it
+ * commit after that. It is how a tab loads its own data the first time it is looked at, and it
  * is the reason a card open costs only what the first tab costs.
  */
 export function Tabs({ tabs, label, initial, onSelect }: { tabs: TabDef[]; label: string; initial?: string; onSelect?: (id: string) => void }) {
   const base = useId();
   const [selected, setSelected] = useState<string | undefined>(initial);
+  /** Where the arrow keys have moved focus, which manual activation lets diverge from the
+   * selection. The roving tabindex follows it so Tab still leaves and re-enters the strip where
+   * the user left it. */
+  const [focused, setFocused] = useState<string | undefined>(undefined);
   const refs = useRef(new Map<string, HTMLButtonElement>());
   const current = tabs.some((t) => t.id === selected) ? selected : tabs[0]?.id;
+  const roving = focused !== undefined && tabs.some((t) => t.id === focused) ? focused : current;
 
   // The selected tab announces itself, including the first one. `onSelect` is expected to be
   // idempotent (the card's loader ignores a section it already has or is already fetching), so
@@ -35,8 +48,13 @@ export function Tabs({ tabs, label, initial, onSelect }: { tabs: TabDef[]; label
     if (current) onSelectRef.current?.(current);
   }, [current]);
 
+  function select(id: string) {
+    setSelected(id);
+    setFocused(id);
+  }
+
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const index = tabs.findIndex((t) => t.id === current);
+    const index = tabs.findIndex((t) => t.id === roving);
     let next: number;
     switch (event.key) {
       case "ArrowRight":
@@ -51,13 +69,20 @@ export function Tabs({ tabs, label, initial, onSelect }: { tabs: TabDef[]; label
       case "End":
         next = tabs.length - 1;
         break;
+      // The commit. Handled here rather than left to the button's native activation so that the
+      // one key that may spend is in the same place as the ones that must not.
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        if (roving) select(roving);
+        return;
       default:
         return;
     }
     event.preventDefault();
     const tab = tabs[next];
     if (!tab) return;
-    setSelected(tab.id);
+    setFocused(tab.id);
     refs.current.get(tab.id)?.focus();
   }
 
@@ -82,8 +107,8 @@ export function Tabs({ tabs, label, initial, onSelect }: { tabs: TabDef[]; label
               className="tw-tab"
               aria-selected={on}
               aria-controls={panelId(t.id)}
-              tabIndex={on ? 0 : -1}
-              onClick={() => setSelected(t.id)}
+              tabIndex={t.id === roving ? 0 : -1}
+              onClick={() => select(t.id)}
             >
               {t.icon}
               {t.label}

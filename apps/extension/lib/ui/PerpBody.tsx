@@ -71,8 +71,10 @@ const FUNDING_SECTION_TITLE = `Funding, last ${FUNDING_WINDOW_HOURS}h`;
  *
  * Every paid thing this card adds is a press. Not a hover — the trader leaderboard is twelve
  * rows in the expanded card, and a hover trigger would be twelve credits from one careless
- * mouse pass. Not a tab or a segment either: Round 1.5 established that a control reachable by
- * arrow key must not spend, because that is a credit per keypress.
+ * mouse pass. And not a mere arrow key: Round 1.5 established that moving focus must not spend,
+ * because that is a credit per keypress. The rule itself lives in `Tabs.tsx` — arrows move focus,
+ * Enter, Space or a click commits — and this button is the same rule for a row: a deliberate
+ * press, with the price on it before it happens.
  */
 function PricedButton({
   label,

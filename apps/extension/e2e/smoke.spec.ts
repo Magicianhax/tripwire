@@ -173,7 +173,11 @@ test("@smoke X: the chip opens a floating evidence card on <body>, beside the ch
   await expect(card.locator("h2")).toBeFocused();
   await expect(card.getByRole("tab")).toHaveText(["Markets", "Flow", "Wallets", "Risk"]);
   await card.getByRole("tab", { name: "Flow" }).focus();
+  // Manual activation (I-2): the arrow key moves focus, it does not select and it does not spend.
   await page.keyboard.press("ArrowRight");
+  await expect(card.getByRole("tab", { name: "Wallets" })).toBeFocused();
+  await expect(card.getByRole("tab", { name: "Wallets" })).toHaveAttribute("aria-selected", "false");
+  await page.keyboard.press("Enter");
   await expect(card.getByRole("tab", { name: "Wallets" })).toHaveAttribute("aria-selected", "true");
 
   // Escape closes it and gives focus back to the chip.

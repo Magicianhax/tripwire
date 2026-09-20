@@ -193,17 +193,24 @@ describe("Tabs", () => {
     expect(panels.map((p) => p.hidden)).toEqual([false, true, true]);
   });
 
-  it("moves selection and focus with arrow keys (wrapping), Home and End", () => {
-    const { container } = render(<Tabs label="Evidence" tabs={tabs} />);
+  // Manual activation (I-2). This test used to pin the opposite — selection following the arrow
+  // key — which on the expanded spot strip was a credit per keypress.
+  it("moves focus only with arrow keys (wrapping), Home and End; the selection stays put", () => {
+    const onSelect = vi.fn();
+    const { container } = render(<Tabs label="Evidence" tabs={tabs} onSelect={onSelect} />);
     const tabEls = () => [...container.querySelectorAll<HTMLElement>('[role="tab"]')];
     const press = (key: string) =>
       act(() => {
         (document.activeElement as HTMLElement).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
       });
     act(() => tabEls()[0]!.focus());
+    onSelect.mockClear();
     press("ArrowRight");
     expect(document.activeElement).toBe(tabEls()[1]);
-    expect(tabEls()[1]!.getAttribute("aria-selected")).toBe("true");
+    expect(tabEls()[1]!.getAttribute("aria-selected")).toBe("false");
+    expect(tabEls()[0]!.getAttribute("aria-selected")).toBe("true");
+    // The roving tab stop follows focus, so Tab leaves and re-enters where the user left off.
+    expect(tabEls().map((t) => t.tabIndex)).toEqual([-1, 0, -1]);
     press("ArrowRight");
     press("ArrowRight");
     expect(document.activeElement).toBe(tabEls()[0]);
@@ -213,7 +220,29 @@ describe("Tabs", () => {
     expect(document.activeElement).toBe(tabEls()[0]);
     press("End");
     expect(document.activeElement).toBe(tabEls()[2]);
-    expect([...container.querySelectorAll<HTMLElement>('[role="tabpanel"]')].map((p) => p.hidden)).toEqual([true, true, false]);
+    // Six keypresses across the whole strip and nothing has been selected or loaded.
+    expect(onSelect).not.toHaveBeenCalled();
+    expect([...container.querySelectorAll<HTMLElement>('[role="tabpanel"]')].map((p) => p.hidden)).toEqual([false, true, true]);
+  });
+
+  it("commits the focused tab on Enter and on Space, and only then", () => {
+    const onSelect = vi.fn();
+    const { container } = render(<Tabs label="Evidence" tabs={tabs} onSelect={onSelect} />);
+    const tabEls = () => [...container.querySelectorAll<HTMLElement>('[role="tab"]')];
+    const press = (key: string) =>
+      act(() => {
+        (document.activeElement as HTMLElement).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
+      });
+    act(() => tabEls()[0]!.focus());
+    onSelect.mockClear();
+    press("ArrowRight");
+    press("Enter");
+    expect(tabEls()[1]!.getAttribute("aria-selected")).toBe("true");
+    expect(onSelect.mock.calls.map((c) => c[0])).toEqual(["wallets"]);
+    press("ArrowRight");
+    press(" ");
+    expect(tabEls()[2]!.getAttribute("aria-selected")).toBe("true");
+    expect(onSelect.mock.calls.map((c) => c[0])).toEqual(["wallets", "risk"]);
   });
 
   it("opens on the requested initial tab", () => {

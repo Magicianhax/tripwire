@@ -347,6 +347,40 @@ describe("2.1 the holders table gains the columns it already paid for", () => {
   });
 });
 
+// --- I-2: the tab strip must not spend on a keypress ------------------------------------------
+
+describe("the priced tab strip spends on a commit, never on arrow keys", () => {
+  const press = (el: HTMLElement, key: string) => act(() => el.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true })));
+
+  it("arrows across the whole expanded strip without asking for one section", () => {
+    const asked: DepthSection[][] = [];
+    const c = render(expanded(<SpotBody panel={panel()} initialTab="flow" depth={depthOf({})} onNeedSections={(s) => asked.push(s)} />));
+    const tabEls = [...c.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    // Flow · Wallets · Tape (1) · Risk · Holders (5) · Winners (5): one ArrowRight sweep used to
+    // be 11 credits, and End landed on the most expensive tab in the strip.
+    expect(tabEls.map((t) => t.textContent)).toEqual(["Flow", "Wallets", "Tape1 credit", "Risk", "Holders5 credits", "Winners5 credits"]);
+    asked.length = 0;
+    act(() => tabEls[0]!.focus());
+    for (let i = 0; i < tabEls.length; i += 1) press(document.activeElement as HTMLElement, "ArrowRight");
+    press(document.activeElement as HTMLElement, "End");
+    press(document.activeElement as HTMLElement, "Home");
+    expect(asked).toEqual([]);
+    expect(c.querySelector('[role="tab"][aria-selected="true"]')!.textContent).toBe("Flow");
+  });
+
+  it("asks for the focused tab's sections once, when Enter commits it", () => {
+    const asked: DepthSection[][] = [];
+    const c = render(expanded(<SpotBody panel={panel()} initialTab="flow" depth={depthOf({})} onNeedSections={(s) => asked.push(s)} />));
+    const tabEls = [...c.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    asked.length = 0;
+    act(() => tabEls[0]!.focus());
+    press(document.activeElement as HTMLElement, "End");
+    expect(asked).toEqual([]);
+    press(document.activeElement as HTMLElement, "Enter");
+    expect(asked).toEqual([SPOT_TAB_SECTIONS.winners]);
+  });
+});
+
 describe("2.1 transfers state the movement and never the motive", () => {
   const transfers = {
     transfers: [
