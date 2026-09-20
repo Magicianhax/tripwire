@@ -97,6 +97,11 @@ test("@smoke pump.fun: a TRIPWIRE blocks the quick-buy chips too, across an SPA 
   expect(blockBox.y + blockBox.height, "the block covers the quick-sell row too").toBeGreaterThanOrEqual(
     (await page.locator('[aria-label="Quick sell 50%"]').boundingBox())!.y,
   );
+  // And it stays inside the trade panel it belongs to (316px with 12px gutters), rather than
+  // taking its 440px preference and hanging over the page on both sides.
+  const panelBox = (await page.locator("#panel").boundingBox())!;
+  expect(blockBox.x).toBeGreaterThanOrEqual(panelBox.x);
+  expect(blockBox.x + blockBox.width).toBeLessThanOrEqual(panelBox.x + panelBox.width);
   if (process.env.TRIPWIRE_CAPTURE) {
     await page.screenshot({ path: "../../.impeccable/review/block-pumpfun-quick-buy.png", clip: { x: 1100, y: 200, width: 500, height: 500 } });
   }

@@ -60,3 +60,50 @@ describe("computeBlockRect: the extra controls a session also blocks (Round 1.4.
     expect(rect.top + rect.height).toBe(473 + 25);
   });
 });
+
+/**
+ * The jumper.xyz report: the block screen started about 45px to the LEFT of the widget's card,
+ * ended short of its right edge, and floated over the Send/Receive fields — a detached modal on
+ * the page rather than a barrier over the button. It is the trade button's own card that bounds
+ * it, not the viewport.
+ */
+describe("computeBlockRect inside the host card", () => {
+  // Jumper's widget at 1440x900: a 380px card holding the action row near its bottom.
+  const card = { top: 180, left: 520, width: 380, height: 560 };
+  const button = { top: 660, left: 536, width: 348, height: 48 };
+
+  it("never exceeds the card's left or right edge, whatever the 440px preference says", () => {
+    const rect = computeBlockRect(button, 180, 0, { width: 1440 }, [], card);
+    expect(rect.width).toBe(380);
+    expect(rect.left).toBeGreaterThanOrEqual(card.left);
+    expect(rect.left + rect.width).toBeLessThanOrEqual(card.left + card.width);
+  });
+
+  it("aligns to the card's left edge instead of centring on the button", () => {
+    expect(computeBlockRect(button, 180, 0, { width: 1440 }, [], card).left).toBe(card.left);
+  });
+
+  it("grows upward from the button and still covers the row it guards", () => {
+    const rect = computeBlockRect(button, 180, 320, { width: 1440 }, [], card);
+    expect(rect.height).toBe(320);
+    expect(rect.top + rect.height).toBe(button.top + button.height);
+    expect(rect.left).toBeLessThanOrEqual(button.left);
+    expect(rect.left + rect.width).toBeGreaterThanOrEqual(button.left + button.width);
+  });
+
+  it("keeps the 440px clamp when the card is wider, and moves right only to cover the button", () => {
+    const wide = { top: 180, left: 200, width: 900, height: 560 };
+    const right = { top: 660, left: 900, width: 180, height: 48 };
+    const rect = computeBlockRect(right, 180, 0, { width: 1440 }, [], wide);
+    expect(rect.width).toBe(440);
+    expect(rect.left + rect.width).toBeGreaterThanOrEqual(right.left + right.width);
+    expect(rect.left + rect.width).toBeLessThanOrEqual(wide.left + wide.width);
+  });
+
+  it("covers the extra controls it blocks without leaving the card", () => {
+    const chip = { top: 716, left: 536, width: 120, height: 28 };
+    const rect = computeBlockRect(button, 180, 0, { width: 1440 }, [chip], card);
+    expect(rect.top + rect.height).toBe(chip.top + chip.height);
+    expect(rect.left + rect.width).toBeLessThanOrEqual(card.left + card.width);
+  });
+});

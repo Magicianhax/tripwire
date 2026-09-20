@@ -33,6 +33,13 @@ export function computeBlockRect(
    * covers everything it blocks: a chip left visible below the block reads as still clickable,
    * which is the exact impression this round exists to remove. */
   extraRects: Rect[] = [],
+  /**
+   * The trade button's own card: the box the block may not leave (`hostBox` in `lib/ui/fit.ts`,
+   * the container `liftOutOfRow` walks to). Without it the block takes the 440px card width
+   * centred on the anchor, which on jumper.xyz put it 45px outside the widget it was guarding —
+   * a detached modal over the form rather than a barrier over the button.
+   */
+  container?: Rect,
 ): Rect {
   // Read field by field, never `{ ...anchorRect }`: a live `DOMRect` keeps its values in
   // prototype accessors, so spreading one yields `{}` and the whole union goes NaN.
@@ -47,9 +54,16 @@ export function computeBlockRect(
   const top = anchorRect.top - growth;
   if (!viewport) return { top, left: anchorRect.left, width: anchorRect.width, height };
 
-  const width = Math.max(anchorRect.width, Math.min(BLOCK_WIDTH, viewport.width - 2 * VIEWPORT_MARGIN));
-  let left = anchorRect.left + anchorRect.width / 2 - width / 2;
+  const bound = container && container.width > 0 ? container : null;
+  const width = Math.max(anchorRect.width, Math.min(BLOCK_WIDTH, bound?.width ?? BLOCK_WIDTH, viewport.width - 2 * VIEWPORT_MARGIN));
+  // Flush with the card's own left edge, rather than centred on whatever the button happens to
+  // be; with no card to sit in, centred on the anchor as before.
+  let left = bound ? bound.left : anchorRect.left + anchorRect.width / 2 - width / 2;
   left = Math.min(Math.max(left, VIEWPORT_MARGIN), Math.max(VIEWPORT_MARGIN, viewport.width - VIEWPORT_MARGIN - width));
+  // The block always covers the button it guards: pushed right for a button parked at the card's
+  // right edge, pulled left for one that starts before it.
   left = Math.max(Math.min(left, anchorRect.left), anchorRect.left + anchorRect.width - width);
+  // …and never outside the card, which outranks the two nudges above.
+  if (bound) left = Math.max(bound.left, Math.min(left, bound.left + bound.width - width));
   return { top, left: Math.round(left), width, height };
 }

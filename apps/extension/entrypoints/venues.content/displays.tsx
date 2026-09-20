@@ -8,7 +8,7 @@ import type { DepthResponse, GuardResponse, SpotPanel } from "../../lib/api-type
 import { cardSize, setCardSize, type CardSize } from "../../lib/card-size";
 import { runContentTask } from "../../lib/content-lifecycle";
 import { EVIDENCE_TAB } from "../../lib/ui/BlockScreen";
-import { fitToAnchor, liftOutOfRow } from "../../lib/ui/fit";
+import { fitToAnchor, hostBox, liftOutOfRow } from "../../lib/ui/fit";
 import { Dock, SHEET_BELOW } from "../../lib/ui/Dock";
 import { mountIfCurrent, mountReact } from "../../lib/ui/mount";
 import { CardMessage } from "../../lib/ui/panel-parts";
@@ -350,6 +350,7 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
       <BlockOverlay
         anchorRect={boundAnchor.getBoundingClientRect()}
         extraRects={extras.elements.map((el) => el.getBoundingClientRect())}
+        containerRect={hostBox(boundAnchor)}
         kind={target.kind}
         hits={data.hits}
         phrase={phrase}

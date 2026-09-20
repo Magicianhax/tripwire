@@ -80,6 +80,27 @@ export function liftOutOfRow(anchor: HTMLElement): HTMLElement {
 }
 
 /**
+ * The card a trade button lives in: the box a block screen over that button may not leave.
+ *
+ * The same walk the strip uses — out of any row that lays the button out beside a wallet icon —
+ * and then one step further, to the container that lays that row out. That is the venue's own
+ * widget card, and its content box is where the block belongs: flush with the card's edges
+ * rather than 45px outside them (the jumper.xyz report).
+ *
+ * `undefined` when there is nothing above the button to measure, which leaves the block on its
+ * viewport-clamped default.
+ */
+export function hostBox(anchor: HTMLElement): { top: number; left: number; width: number; height: number } | undefined {
+  const host = liftOutOfRow(anchor).parentElement;
+  if (!host) return undefined;
+  const rect = host.getBoundingClientRect();
+  const style = getComputedStyle(host);
+  const width = host.clientWidth - px(style.paddingLeft) - px(style.paddingRight);
+  if (!(width > 0)) return undefined;
+  return { top: rect.top, left: rect.left + px(style.borderLeftWidth) + px(style.paddingLeft), width, height: rect.height };
+}
+
+/**
  * Bounds a mounted surface to `box`, by publishing the width on its shadow host.
  *
  * It travels as a custom property rather than as `max-width`, because WXT resets every shadow
