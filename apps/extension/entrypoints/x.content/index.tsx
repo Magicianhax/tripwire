@@ -27,6 +27,7 @@ import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
 import { chipAnchor } from "../../lib/x/anchor";
 import { createQueue } from "../../lib/x/queue";
 import { createProfileDiscovery, parseProfile } from "../../lib/x/profile";
+import { LOCATE_MESSAGE, locateAnyMounted } from "../venues.content/locate";
 
 const TWEET_SELECTOR = 'article[data-testid="tweet"]';
 const CHIP_CONCURRENCY = 4;
@@ -416,6 +417,19 @@ export default defineContentScript({
     }
 
     discoverIn(document);
+
+    // "Where is it?" from the popup. X is the surface with the most mounted displays on it —
+    // one chip per post — and it used to be the one surface that never answered, so the popup
+    // reported "Tripwire isn't showing anything on this tab" over a timeline full of chips
+    // (finding I-1). Silence, not `false`, when there is nothing: the wallet lens runs on this
+    // page too and its answer must not lose a race to this one.
+    const onLocate = (message: unknown): Promise<boolean> | undefined => {
+      if ((message as { type?: string } | null)?.type !== LOCATE_MESSAGE) return undefined;
+      if (ctx.isInvalid) return undefined;
+      return locateAnyMounted(mounts.live()) ? Promise.resolve(true) : undefined;
+    };
+    browser.runtime.onMessage.addListener(onLocate);
+    ctx.onInvalidated(() => browser.runtime.onMessage.removeListener(onLocate));
 
     let sweepTimer: ReturnType<typeof setTimeout> | null = null;
     function sweepDetached(): void {

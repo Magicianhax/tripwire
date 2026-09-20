@@ -6,9 +6,19 @@
  * page nobody has captured yet, so the popup keeps a button that points at whatever is actually
  * mounted: scroll it into view, outline it for a moment and stop. No permanent flashing, no
  * second surface to find — the answer to "I can't see it" is the thing itself, lit.
+ *
+ * Every content script that mounts a primary display answers this message — the venue strip, the
+ * X chips and the wallet lens's markers (finding I-1). Only the venue script used to, so on
+ * x.com the popup's message reached nobody, and the user reading a timeline full of chips was
+ * told "Tripwire isn't showing anything on this tab".
+ *
+ * **A listener that found nothing stays silent** rather than replying `false`. A tab runs more
+ * than one of these scripts, and a `false` from the first would win the race against a `true`
+ * from the one that actually has a chip on screen. Silence from all of them closes the port,
+ * `tabs.sendMessage` rejects, and the popup's existing catch says the same honest thing.
  */
 
-/** Message the popup sends to the venue content script. */
+/** Message the popup sends to the content scripts. */
 export const LOCATE_MESSAGE = "tripwire:locate";
 
 /** How long the outline holds. Long enough to catch the eye after the click, short enough that
@@ -20,10 +30,13 @@ export const LOCATE_MS = 1500;
  * theme can say about `:host` (same reason `fit.ts` travels as a custom property). */
 const LOCATE_ATTR = "data-tw-locate";
 
-/** The component roots a primary display can be: a strip, a block screen, or a dock chip. */
-const DISPLAY_ROOTS = ".tw-strip, .tw-block, .tw-dock-chip, .tw-chip";
+/** The component roots a primary display can be: a venue strip, a block screen, a dock chip, an
+ * X post chip, or a wallet-lens marker. A card or a badge is not one: it is reached through the
+ * thing that is lit, and lighting it would point at a surface that is already in front of the
+ * reader. */
+const DISPLAY_ROOTS = ".tw-strip, .tw-block, .tw-dock-chip, .tw-chip, .tw-wallet-marker";
 
-type MountLike = { ui: { shadowHost?: Element | null; shadow?: ShadowRoot | null } } | null;
+export type MountLike = { ui: { shadowHost?: Element | null; shadow?: ShadowRoot | null } } | null;
 
 function displayRoot(mount: MountLike): HTMLElement | null {
   const host = mount?.ui?.shadowHost ?? null;
@@ -71,4 +84,27 @@ export function locateMounted(mount: MountLike): boolean {
     }, LOCATE_MS),
   );
   return true;
+}
+
+/** Whether an element is at least partly in the viewport right now. */
+function onScreen(el: HTMLElement): boolean {
+  const rect = el.getBoundingClientRect();
+  if (rect.width === 0 && rect.height === 0) return false;
+  const height = window.innerHeight || document.documentElement.clientHeight || 0;
+  const width = window.innerWidth || document.documentElement.clientWidth || 0;
+  return rect.bottom > 0 && rect.top < height && rect.right > 0 && rect.left < width;
+}
+
+/**
+ * Lights one of many mounted displays — X mounts a chip per post, the wallet lens up to forty
+ * markers. The one already on screen wins, so the answer to "where is it?" is the one the
+ * reader is looking at rather than a scroll to the top of a timeline; otherwise the first
+ * mounted one is lit and scrolled to.
+ *
+ * Returns whether anything was found, which is all the caller ever claims.
+ */
+export function locateAnyMounted(mounts: Iterable<MountLike>): boolean {
+  const candidates = [...mounts].filter((m) => displayRoot(m) !== null);
+  const visible = candidates.find((m) => onScreen(displayRoot(m)!));
+  return locateMounted(visible ?? candidates[0] ?? null);
 }

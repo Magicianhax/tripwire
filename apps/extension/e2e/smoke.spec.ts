@@ -130,6 +130,34 @@ test("@smoke extension loads with the pinned ID and its popup reaches the backen
   expect(consoleErrors).toEqual([]);
 });
 
+test("@smoke X: 'where is it?' finds the chip, instead of reporting an empty tab (I-1)", async ({ context }) => {
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("https://x.com/home");
+  const chip = page.locator(".tw-chip");
+  await expect(chip).toBeVisible({ timeout: 20_000 });
+
+  // The popup's wire, driven from the service worker because a popup opened as a page would
+  // query itself as the active tab. Before I-1 only the venue script answered, so this page —
+  // whose display is a chip, not a strip — rejected and the popup said nothing was showing.
+  let [worker] = context.serviceWorkers();
+  worker ??= await context.waitForEvent("serviceworker");
+  const answered = await worker.evaluate(async () => {
+    const chrome = (globalThis as unknown as { chrome: { tabs: { query(q: object): Promise<{ id?: number }[]>; sendMessage(id: number, m: object): Promise<boolean> } } }).chrome;
+    const tabs = await chrome.tabs.query({ active: true });
+    for (const tab of tabs) {
+      if (tab.id === undefined) continue;
+      const found = await chrome.tabs.sendMessage(tab.id, { type: "tripwire:locate" }).catch(() => false);
+      if (found) return true;
+    }
+    return false;
+  });
+  expect(answered, "the X content script says it found a chip to light").toBe(true);
+  await expect(chip).toHaveAttribute("data-tw-locate", "");
+  await expect(chip).not.toHaveAttribute("data-tw-locate", "", { timeout: 5_000 });
+  await page.close();
+});
+
 test("@smoke X: the chip opens a floating evidence card on <body>, beside the chip, not inside the post", async ({ context, consoleErrors }) => {
   const page = await context.newPage();
   await page.setViewportSize({ width: 1280, height: 800 });

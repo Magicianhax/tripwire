@@ -42,4 +42,17 @@ describe("createMountTracker", () => {
     expect(tracker.sweep()).toEqual([]);
     expect(panel.ui.remove).not.toHaveBeenCalled();
   });
+
+  // I-1: "where is it?" on x.com lights one of these, so it must only ever offer live ones.
+  it("lists the mounts of articles the page still has, and no others", () => {
+    const tracker = createMountTracker();
+    const here = article();
+    const gone = article();
+    const chip = { ui: { remove: vi.fn() } };
+    const stale = { ui: { remove: vi.fn() } };
+    tracker.track(here, chip);
+    tracker.track(gone, stale);
+    gone.remove();
+    expect(tracker.live()).toEqual([chip]);
+  });
 });

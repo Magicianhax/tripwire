@@ -132,11 +132,14 @@ export default defineContentScript({
     void runContentTask(ctx, check);
 
     // "Where is it?" from the popup: light whatever this page has mounted. The reply is the
-    // truth of the page -- false when nothing is mounted here -- so the popup can say that
-    // instead of claiming it flashed something the user then fails to find.
+    // truth of the page, so the popup can say that instead of claiming it flashed something the
+    // user then fails to find. Nothing mounted here is answered with silence, not `false`: the
+    // wallet lens runs on this page too and a `false` would win the race against its `true`
+    // (I-1). If no script answers, the port closes and the popup's catch says so.
     const onLocate = (message: unknown): Promise<boolean> | undefined => {
       if ((message as { type?: string } | null)?.type !== LOCATE_MESSAGE) return undefined;
-      return Promise.resolve(ctx.isInvalid ? false : runner.locate());
+      if (ctx.isInvalid) return undefined;
+      return runner.locate() ? Promise.resolve(true) : undefined;
     };
     browser.runtime.onMessage.addListener(onLocate);
     ctx.onInvalidated(() => browser.runtime.onMessage.removeListener(onLocate));

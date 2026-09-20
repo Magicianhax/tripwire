@@ -117,10 +117,11 @@ export default function App() {
   }
 
   /**
-   * "Where is it?" — the answer for a user who cannot find the verdict on a dense venue page.
-   * Asks the active tab's content script to light whatever it has mounted; the reply says
-   * whether there was anything, and that is what gets reported. A tab with no content script
-   * (or no venue page) rejects the message, which is the same answer: nothing is mounted here.
+   * "Where is it?" — the answer for a user who cannot find the verdict on a dense page.
+   * Asks the active tab's content scripts to light whatever they have mounted: the venue strip,
+   * an X post's chip, a wallet-lens marker. Only the one that found something answers, so the
+   * first reply is a real find; a tab where nothing is mounted (or no content script runs at
+   * all) never answers, the message rejects, and that is the same honest answer.
    */
   async function locate() {
     setLocateNote("");

@@ -30,7 +30,7 @@ vi.mock("../lib/api", () => ({
 }));
 
 const { createGuardRunner, keyFor } = await import("../entrypoints/venues.content/runner");
-const { LOCATE_MS } = await import("../entrypoints/venues.content/locate");
+const { LOCATE_MS, locateAnyMounted } = await import("../entrypoints/venues.content/locate");
 
 function fakeCtx(): ContentScriptContext {
   return { options: {}, onInvalidated: () => () => {} } as unknown as ContentScriptContext;
@@ -203,5 +203,43 @@ describe("where is it?", () => {
     const runner = createGuardRunner(fakeCtx());
     expect(runner.locate()).toBe(false);
     runner.dispose();
+  });
+
+  /**
+   * I-1: only the venue script answered the popup, so on x.com — where the display is a chip per
+   * post — the message reached nobody and the popup reported "Tripwire isn't showing anything on
+   * this tab" over a page covered in chips. `locateAnyMounted` is what the X and wallet-lens
+   * scripts answer with; it takes the many mounts those pages have and lights one.
+   */
+  describe("a page whose displays are chips or markers", () => {
+    /** A mount shaped like `mountReact`'s, carrying one display root in its shadow. */
+    function chipMount(className: string): { ui: { shadowHost: HTMLElement; shadow: ShadowRoot } } {
+      const host = document.createElement("tripwire-ui");
+      document.body.append(host);
+      const shadow = host.attachShadow({ mode: "open" });
+      const root = document.createElement("span");
+      root.className = className;
+      shadow.append(root);
+      return { ui: { shadowHost: host, shadow } };
+    }
+
+    it("reports found and lights a chip on a tab whose only display is chips", () => {
+      const mounts = [chipMount("tw-chip"), chipMount("tw-chip")];
+      expect(locateAnyMounted(mounts)).toBe(true);
+      const lit = mounts.filter((m) => m.ui.shadow.querySelector("[data-tw-locate]") !== null);
+      expect(lit).toHaveLength(1);
+    });
+
+    it("lights a wallet-lens marker too, so a page with only markers is not reported empty", () => {
+      const marker = chipMount("tw-wallet-marker");
+      expect(locateAnyMounted([marker])).toBe(true);
+      expect(marker.ui.shadow.querySelector(".tw-wallet-marker")!.hasAttribute("data-tw-locate")).toBe(true);
+    });
+
+    it("never claims to have lit a card, a badge or nothing at all", () => {
+      expect(locateAnyMounted([])).toBe(false);
+      // A card is already in front of the reader; it is not the thing they cannot find.
+      expect(locateAnyMounted([chipMount("tw-panel")])).toBe(false);
+    });
   });
 });

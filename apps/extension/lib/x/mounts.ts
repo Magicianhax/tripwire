@@ -3,7 +3,7 @@
  * virtualized timeline drops the article from the DOM. Without this, every scrolled-past tweet
  * keeps a live React root (and its shadow-root styles) for the life of the tab.
  */
-export type Removable = { ui: { remove(): void } };
+export type Removable = { ui: { remove(): void; shadowHost?: Element | null; shadow?: ShadowRoot | null } };
 
 export function createMountTracker() {
   const byArticle = new Map<Element, Set<Removable>>();
@@ -19,6 +19,17 @@ export function createMountTracker() {
       const set = byArticle.get(article);
       set?.delete(mount);
       if (set && set.size === 0) byArticle.delete(article);
+    },
+
+    /** Everything currently mounted against an article the page still has, in mount order.
+     * "Where is it?" (`venues.content/locate.ts`) reads this to light a chip. */
+    live(): Removable[] {
+      const out: Removable[] = [];
+      for (const [article, mounts] of byArticle) {
+        if (!article.isConnected) continue;
+        for (const mount of mounts) out.push(mount);
+      }
+      return out;
     },
 
     /** Unmounts everything belonging to disconnected articles; returns those articles. */

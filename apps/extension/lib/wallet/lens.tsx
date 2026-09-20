@@ -27,6 +27,7 @@ import { WalletCard, walletTitle } from "../ui/WalletCard";
 import { WalletMarker } from "../ui/WalletMarker";
 import { createResultCache } from "../x/cache";
 import { createQueue } from "../x/queue";
+import { locateAnyMounted } from "../../entrypoints/venues.content/locate";
 import { createScanState, removeSlot, scanForWallets, type WalletHit } from "./scan";
 import { capWalletMarkers } from "./marker-budget";
 
@@ -319,10 +320,18 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
     for (const marker of markers.slice()) retire(marker);
   }
 
+  /** "Where is it?" from the popup (I-1): light a marker this page has up — the one already on
+   * screen if there is one. Markers are the lens's primary display, so this is the same answer
+   * the venue strip gives, on a page that has no strip. */
+  function locate(): boolean {
+    return locateAnyMounted(markers.map((m) => m.mount));
+  }
+
   return {
     scan,
     sweep,
     destroy,
+    locate,
     get count() {
       return markers.length;
     },
