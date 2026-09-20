@@ -43,13 +43,26 @@ async function fetchDepth(target: Target, sections: DepthSection[]): Promise<{ o
   return result.ok ? { ok: true, data: result.data } : { ok: false, error: errorHeadline(result.status, result.error) };
 }
 
-function closeEvidence(rc: RunnerContext): void {
+/**
+ * Takes the card off the screen.
+ *
+ * `keepOpen` is the difference between the two reasons that happens for. A user who pressed
+ * Close, Escape or Details again wants no card, and the intent goes with it. A teardown —
+ * the page moved to another token, and every mounted surface is dropped before the new check —
+ * is not the user closing anything, so the intent survives and `runner.tsx` re-opens the card
+ * on the new target.
+ */
+function dropEvidence(rc: RunnerContext, keepOpen = false): void {
   rc.evidenceOpening = null; // cancels an open still in flight
-  rc.evidenceOpen = null;
+  if (!keepOpen) rc.evidenceOpen = null;
   if (rc.evidenceMount) {
     rc.evidenceMount.ui.remove();
     rc.evidenceMount = null;
   }
+}
+
+function closeEvidence(rc: RunnerContext): void {
+  dropEvidence(rc);
 }
 
 /** Toggles the on-demand evidence card (Strip's "Details" / BlockScreen's evidence button),
@@ -147,8 +160,9 @@ async function openEvidence(rc: RunnerContext, adapter: VenueAdapter, target: Ta
   mount.update(node());
 }
 
+/** The runner's teardown: the card goes, the user's intent to have one stays. */
 export function closeEvidenceDock(rc: RunnerContext): void {
-  closeEvidence(rc);
+  dropEvidence(rc, true);
 }
 
 async function toggleMarkets(rc:RunnerContext,symbol:string,trigger:HTMLElement|null):Promise<void> {

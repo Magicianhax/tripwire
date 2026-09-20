@@ -185,6 +185,55 @@ describe("the open evidence card and a target change", () => {
     runner.dispose();
   });
 
+  // The change-detection loop clears everything on a URL change before it renders the new
+  // target, which is exactly how the Buy token changes on a swap form. The card has to survive
+  // that round trip, not only a direct re-render.
+  it("re-targets across the clear the navigation loop does first", async () => {
+    const runner = createGuardRunner(fakeCtx());
+    guardMock.mockResolvedValueOnce(response(spot(SPCX), "SPCX", "Space Exploration Technologies"));
+    await act(async () => {
+      await runner.render(adapter, spot(SPCX), keyFor(adapter.id, spot(SPCX)));
+    });
+    await settle();
+    guardMock.mockResolvedValueOnce(response(spot(SPCX), "SPCX", "Space Exploration Technologies"));
+    await openCard();
+    expect(cardText()).toContain("SPCX");
+
+    guardMock.mockResolvedValueOnce(response(spot(GIZA), "GIZA", "Giza"));
+    guardMock.mockResolvedValueOnce(response(spot(GIZA), "GIZA", "Giza"));
+    await act(async () => {
+      await runner.clear();
+      await runner.render(adapter, spot(GIZA), keyFor(adapter.id, spot(GIZA)));
+    });
+    await settle();
+    expect(find(".tw-card"), "the card came back for the new target").toBeTruthy();
+    expect(cardText()).toContain("GIZA");
+    expect(cardText()).not.toContain("SPCX");
+    runner.dispose();
+  });
+
+  it("never re-opens a card the user closed", async () => {
+    const runner = createGuardRunner(fakeCtx());
+    guardMock.mockResolvedValueOnce(response(spot(SPCX), "SPCX", "Space Exploration Technologies"));
+    await act(async () => {
+      await runner.render(adapter, spot(SPCX), keyFor(adapter.id, spot(SPCX)));
+    });
+    await settle();
+    guardMock.mockResolvedValueOnce(response(spot(SPCX), "SPCX", "Space Exploration Technologies"));
+    await openCard();
+    const close = find<HTMLButtonElement>(".tw-card-close")!;
+    await act(async () => close.click());
+    expect(find(".tw-card")).toBeNull();
+
+    guardMock.mockResolvedValueOnce(response(spot(GIZA), "GIZA", "Giza"));
+    await act(async () => {
+      await runner.render(adapter, spot(GIZA), keyFor(adapter.id, spot(GIZA)));
+    });
+    await settle();
+    expect(find(".tw-card"), "a closed card stays closed").toBeNull();
+    runner.dispose();
+  });
+
   it("drops a panel answer for the target the page has already left", async () => {
     const runner = createGuardRunner(fakeCtx());
     guardMock.mockResolvedValueOnce(response(spot(SPCX), "SPCX", "Space Exploration Technologies"));

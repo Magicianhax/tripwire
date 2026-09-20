@@ -152,9 +152,6 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     rc.currentKey = key;
     const symbol = gap && "symbol" in gap ? gap.symbol : undefined;
     rc.marketSymbol = symbol && /^[A-Za-z0-9][A-Za-z0-9.-]{0,39}$/.test(symbol) ? symbol : null;
-    // A card the user has open is re-pointed at the new target below, not left showing the old
-    // one's panel. Read before the teardown, which is what closes it.
-    const openEvidence = rc.evidenceOpen;
     // Tear the previous target's display and blocker down BEFORE any await: the old verdict
     // (a stale block, or a CLEAR for a token that's no longer selected) must never stay visible
     // while the new check is in flight.
@@ -185,9 +182,12 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     }
 
     await render_(adapter, target, key, verdict, headline, chipData);
-    // The card follows the page. Nothing to follow to — no target on the new page — leaves the
-    // strip alone rather than opening a card over a question it cannot answer.
-    if (openEvidence && target && rc.currentKey === key) await retargetEvidence(rc, adapter, target, openEvidence.initialTab);
+    // The card follows the page: the teardown above took the previous target's card off the
+    // screen but left the user's intent to have one (`closeEvidenceDock`). Nothing to follow
+    // to — no target on the new page — leaves the strip alone rather than opening a card over a
+    // question it cannot answer.
+    const reopen = rc.evidenceOpen;
+    if (reopen && target && rc.currentKey === key) await retargetEvidence(rc, adapter, target, reopen.initialTab);
   }
 
   /**
@@ -250,6 +250,7 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
   function dispose(): void {
     rc.currentKey = null;
     teardownMain();
+    rc.evidenceOpen = null;
     for (const timer of rc.unlockTimers.values()) clearTimeout(timer);
     rc.unlockTimers.clear();
   }

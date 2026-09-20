@@ -27,9 +27,10 @@
 .tw-market-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:12px 0; }
 .tw-market-metrics dt { color:var(--tw-text-2); font-size:11px; }
 .tw-market-metrics dd { margin:4px 0 0; font-size:13px; font-variant-numeric:tabular-nums; }
-.tw-pop .tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]) { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.tw-pop .tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]) { columns:2; }
 .tw-card[data-size="expanded"] .tw-tabpanel > * { min-width:0; }
-.tw-detail { grid-column:1 / -1; min-width:0; }
+.tw-card[data-size="expanded"] .tw-tabpanel > .tw-detail { column-span:all; }
+.tw-detail { min-width:0; }
 .tw-detail-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
 .tw-detail-columns { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; }
 [data-size="expanded"] .tw-detail-columns { grid-template-columns:minmax(240px,.8fr) minmax(0,1.6fr); }
@@ -63,5 +64,6 @@
 [data-size="expanded"] .tw-profile-summary { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 24px; align-items:start; }
 [data-size="expanded"] .tw-profile-summary > p, [data-size="expanded"] .tw-profile-summary > .tw-tags, [data-size="expanded"] .tw-profile-summary > .tw-readouts { grid-column:1 / -1; }
 @media(max-width:800px) {
-  .tw-pop .tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]), [data-size="expanded"] .tw-detail-columns, [data-size="expanded"] .tw-profile-summary { grid-template-columns:minmax(0,1fr); }
+  .tw-pop .tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]) { columns:1; }
+  [data-size="expanded"] .tw-detail-columns, [data-size="expanded"] .tw-profile-summary { grid-template-columns:minmax(0,1fr); }
 }

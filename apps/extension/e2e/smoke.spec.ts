@@ -7,6 +7,38 @@ import { BACKEND, BONK, expect, LENS_WALLET, test, WBTC_BASE, WIF } from "./fixt
 const EXTENSION_ORIGIN = `chrome-extension://${TRIPWIRE_EXTENSION_ID}`;
 
 /**
+ * The compact prediction card's first screen. Reported as "cramped, and it scrolls before it
+ * has said anything": the slug filled the header, the question was repeated as body text, and
+ * the tiles pushed the tab strip below the fold.
+ */
+test("@smoke Polymarket: the compact card shows its verdict, price and tabs without scrolling", async ({ context, request }) => {
+  await setPreset(request, "balanced");
+  const page = await context.newPage();
+  await page.route("https://polymarket.com/event/**", (route) =>
+    route.fulfill({ path: path.resolve("test/fixtures/venues/polymarket.html"), contentType: "text/html; charset=utf-8" }),
+  );
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("https://polymarket.com/event/friedrich-merz-out-as-chancellor-of-germany-before-2027");
+  await expect(page.locator(".tw-strip")).toBeVisible({ timeout: 20_000 });
+  await page.locator(".tw-strip-details").click();
+  const card = page.locator('.tw-pop[role="dialog"]');
+  await expect(card).toBeVisible();
+  await expect(card.locator(".tw-price-value")).toHaveText(/¢/, { timeout: 20_000 });
+
+  // The title is the market's question, never the slug from the URL.
+  const title = (await card.locator(".tw-card-title").textContent())!;
+  expect(title).not.toMatch(/^[a-z0-9]+(-[a-z0-9]+){3,}$/);
+  expect(title).toMatch(/\s/);
+
+  const cardBox = (await card.boundingBox())!;
+  for (const selector of [".tw-card-finding", ".tw-price-value", '[role="tablist"]']) {
+    const box = (await card.locator(selector).first().boundingBox())!;
+    expect(box.y + box.height, `${selector} is on the card's first screen`).toBeLessThanOrEqual(cardBox.y + cardBox.height);
+  }
+  expect(await card.locator(".tw-card-scroll").evaluate((el) => el.scrollTop), "nothing was scrolled to get there").toBe(0);
+});
+
+/**
  * Reported live: the Buy token changed on app.uniswap.org, the strip re-checked, and the open
  * evidence card kept the previous token's panel under the new token's address. The card follows
  * the page or it is not open at all.
@@ -517,9 +549,10 @@ test("@smoke Jumper: the strip fits its card at any width and never scrolls the 
     expect(await overflows(), `no horizontal scroll at ${width}px`).toEqual({ page: 0, card: 0 });
   }
 
-  // The full sentence stays reachable even when the pill truncates it.
+  // The full sentence stays reachable even when the pill truncates it — on the strip itself,
+  // because at a tight anchor width the sentence is not drawn at all.
   const finding = strip.locator(".tw-strip-finding");
-  expect(await finding.getAttribute("title")).toBe(await finding.textContent());
+  expect(await strip.getAttribute("title")).toBe(await finding.textContent());
 
   // The picker replaces the trade form without changing the selected token URL.
   // Neither the strip nor its dock fallback should obstruct choosing another asset.
@@ -667,7 +700,7 @@ test("@smoke Strips say what is actually wrong, and wrap rather than clip", asyn
     const style = getComputedStyle(el);
     return {
       text: el.textContent ?? "",
-      title: el.getAttribute("title") ?? "",
+      title: el.closest(".tw-strip")?.getAttribute("title") ?? "",
       clamp: style.webkitLineClamp,
       whiteSpace: style.whiteSpace,
       lines: Math.round(el.scrollHeight / parseFloat(style.lineHeight)),
