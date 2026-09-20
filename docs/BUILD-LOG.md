@@ -2448,3 +2448,121 @@ makes the Chromium layout test able to render a populated tab at all.
 - Two `impeccable` radius advisories stand on the new file: the 2px tab underline (DESIGN.md
   specifies it) and the 13px inner pill of the 16px segmented track (its concentric radius). Both
   are carried verbatim from `lib/ui/theme.css` and are not suppressed.
+
+# Card header and layout fixes (2026-09-20)
+
+Seven defects from one live session on polymarket.com, app.uniswap.org, pump.fun and jumper.xyz.
+This is layout, copy and error text plus one correctness bug. Nothing about what a card fetches,
+no verdict logic, no credit discipline and no change to the locate protocol or the origin guard.
+
+## The stale card (correctness, not cosmetics)
+
+Switching the Buy token on Uniswap left the open evidence card showing `$SPCX Space Exploration
+Technologies` over the *next* token's address, with the previous token's flow rows under it. That
+mismatch is the tell: the header's address came from the card's `target` prop and its symbol from
+the panel in hand.
+
+Two rules, each tested:
+
+- A guard response carries the target it was computed for. `sameTarget` (core) compares only the
+  identifying fields — an EVM address is case-insensitive, a symbol is a name and not an identity,
+  a perp side and a prediction outcome are part of the subject — and the card treats a panel that
+  is not its own exactly like one that has not arrived: skeletons, `aria-busy`, no numbers.
+- A target change re-points the open card at the new target instead of leaving it. The intent to
+  have a card open survives the runner's teardown (which is what the navigation loop does first on
+  a URL change) and is consumed by the next `render()`; the card comes back in its first frame and
+  fills from the new target's own panel call. A user who pressed Close is never overruled, and a
+  page with no target gets no card rather than a stale one.
+
+## The card header
+
+The prediction card titled itself with the market's slug and rendered the question below it as
+body text. Swapped: the question is the title, clamped to two lines with the whole sentence in the
+heading's `title`, and the slug is only what the first frame shows until the market answers. The
+market's own label inside its event ("80,000") became the quiet caption under it. The body states
+neither twice. The spot, perp and wallet headers already lead with a human name, so they are
+untouched.
+
+The expand/collapse tooltip covered the header text it was anchored above, and the card's own
+`overflow: hidden` clipped whatever escaped. A bubble anchored inside a 56px header has nowhere to
+go, so the control carries its name on the button — the same way the close button beside it always
+has. Same for the author-badge card's control.
+
+## The expanded card
+
+Two equal grid tracks cannot balance sections of different heights: the tallest leaves a hole the
+height of itself beside it. That is the ragged column Round 2.5 patched for the perp Positioning
+tab alone, and it is why "Proven winners by outcome" sat in the left column with an empty right
+one. The shared expanded tab panel is a two-column *flow* now — it balances by height,
+`break-inside` keeps each section whole, `column-span: all` carries the wide blocks (the spot flow
+layout with its own grid areas, the venue, position, holder and leaderboard tables, the book, the
+event picker, a bare row of figure tiles, and any line about the whole tab), and a tab with one
+ordinary block gets one centred column at a readable measure. The per-tab patches are gone.
+
+Two things the captures caught that the diff did not: `:has()` inside `:has()` is invalid and took
+the exemption rule down with it (it is a second rule now), and a bare `.tw-readouts` row needed
+the full width or it drew a two-wide stack beside nothing.
+
+## The compact card
+
+The prediction readout lost the repeated question and tightened its tiles (three per row, 4px
+gutters, 4/8 tile padding), so the verdict line, the price and the tab strip are on the card's
+first screen with nothing scrolled — asserted in Chromium, not eyeballed.
+
+## The strip on a narrow anchor
+
+On pump.fun's 316px trade panel the strip wrapped into four rows and ~90px between the amount
+field and the trade button. A strip is a line: under ~320px it drops the rule clause, tightens its
+gaps and truncates the finding to one line; under ~260px it drops the finding text and the venue's
+own logo (on that venue's page, the one thing the reader already knows) and keeps the verdict pill
+and Details on one 32px row. The sentence moved to the strip's own `title`, so it is one hover away
+at any width. Fixed in `fit.ts` and the `:host([data-narrow])` / `:host([data-tight])` rules, not
+per venue.
+
+## The block screen's geometry
+
+On jumper.xyz the block started ~45px left of the widget card, ended short of its right edge and
+floated over the Send/Receive fields — a 440px rect centred on a button inside a 416px card.
+`computeBlockRect` now takes the card (`hostBox`: the container `liftOutOfRow` already walks to,
+measured on its content box), clamps the width to `min(440px, card)`, aligns the left edge with the
+card's own and refuses to leave it. Covering the anchor and the extra blocked controls still wins
+over the alignment, so the block is never a panel beside the button it guards. The verdict itself
+was right — "Price is down 51% in 7 days, rule: <= −30%" is the drawdown signal the calibration
+round added, and the override line reads well; only the geometry was wrong.
+
+## The 400
+
+`Tripwire couldn't check this: invalid request` named neither the field nor a recovery. It now
+names the zod issue paths (three at most — a diagnosis, not a list) and, when the shape itself did
+not match (an unknown key or a field of the wrong type, which is what a stale service worker
+against a newer schema produces), adds one sentence: reload the extension to match the backend.
+No validation and no origin/Host check changed.
+
+## Tests
+
+New: `apps/extension/test/card-retarget.test.tsx` (5), `apps/extension/test/card-header.test.tsx`
+(6), `packages/core/test/target-identity.test.ts` (4), four `computeBlockRect` container cases,
+two `fit.ts` breakpoint cases, four `toResult` 400 cases. New e2e: the Uniswap token switch with a
+card open, the compact Polymarket card's first screen, the jumper block inside its card
+(`e2e/block-geometry.spec.ts`), and the pump.fun strip's one row at 300px and at 236px.
+
+## Verification
+
+- `pnpm verify`: typecheck clean across all three projects; **core 313, web 320, extension 833**
+  passed, 0 failed.
+- `pnpm -F extension build` OK (3.58 MB); `pnpm -F web build` OK.
+- `TRIPWIRE_E2E_PORT=3230 pnpm verify:e2e`: **33 passed, 5 skipped** (the capture-only specs), 0 failed.
+- Captures regenerated at port 3231 and opened: `prediction-card`, `prediction-expanded` (new),
+  `prediction-markets`, `perp-expanded`, `spot-expanded`, `block-jumper` (new), `strip-pumpfun` and
+  `strip-pumpfun-tight` (new), `x-badge-card-expanded`, `wallet-card-overview-expanded`,
+  `jumper-evidence-expanded`.
+- Zero Nansen credits: everything ran in replay.
+
+## Deferred
+
+- `test/popup-layout.test.tsx` (real Chromium, 13 measurements) is flaky under a loaded full-suite
+  run — it failed once and passed alone and on re-runs, three times. Not investigated here.
+- The prediction header's two-line clamp is tight in the compact card, where the plate, Replay tag
+  and two controls share the row: a long question reads "Will the price of Bitcoin be above…". The
+  full sentence is in the heading's `title` and in the expanded card. Giving the heading its own
+  row in the compact header is a layout decision for the next round.
