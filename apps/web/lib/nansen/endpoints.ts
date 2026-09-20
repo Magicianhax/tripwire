@@ -371,14 +371,6 @@ export const nansen = {
     }),
 
   /** Prediction card, expanded only: the market's resting book, one row per price level. */
-  pmOrderbook: (market_id: string) =>
-    nansenPost<Paged<Record<string, unknown>>>({
-      name: "pmOrderbook",
-      path: "prediction-market/orderbook",
-      body: { market_id, pagination: { page: 1, per_page: 40 } },
-      ttlMs: 2 * MIN,
-    }),
-
   pmScreener: (query: string) =>
     nansenPost<Paged<PmMarket>>({
       name: "pmScreener",

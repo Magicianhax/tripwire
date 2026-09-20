@@ -2,6 +2,8 @@ import { DEPTH_SECTION_CREDITS, type Candle, type PerpVenueId, type PerpVenueQuo
 import { hlBookDepth, hlCandles, hlFundingHistory, hlMarket, type BookDepth, type FundingPoint, type HlMarket } from "../hyperliquid/perp";
 import { crossVenueFunding } from "../venues";
 import { nansen } from "../nansen/endpoints";
+import { clobBook, type ClobLevel } from "../polymarket/clob";
+import { resolveMarket, toMarket } from "./prediction";
 import { settle } from "./util";
 
 /**
@@ -271,46 +273,99 @@ export async function spotHoldersSection(chain: string, tokenAddress: string): P
 
 // ---- Prediction: the resting book ---------------------------------------------------------------
 
-export type BookLevel = { price: number; size: number; cumulative: number | null };
+export type BookLevel = { price: number; size: number; cumulative: number };
 /** One outcome's two sides. Polymarket books are per outcome ("Yes", "No"), not per market. */
 export type OutcomeBook = { outcome: string; bids: BookLevel[]; asks: BookLevel[]; bestBid: number | null; bestAsk: number | null; spread: number | null };
 export type PredictionBookSection = { books: OutcomeBook[] | null; snapshotIso: string | null; errors: string[] };
 
-const isBid = (side: string | null) => side !== null && /^(buy|bid)$/i.test(side);
-const isAsk = (side: string | null) => side !== null && /^(sell|ask)$/i.test(side);
+/** Levels per side that cross the bridge. The CLOB answers every resting level down to a tenth
+ * of a cent; the card draws the top of the book and nothing below it. */
+export const BOOK_LEVELS = 15;
+
+const toNum = (v: unknown): number | null => {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  if (typeof v === "string" && v.trim() !== "" && Number.isFinite(Number(v))) return Number(v);
+  return null;
+};
+
+/** Sorted, capped, and cumulated from the touch outward, so the depth bar means "size resting
+ * between the best price and here" rather than a per-level size the eye has to add up. */
+function sideLevels(raw: ClobLevel[] | undefined, direction: "desc" | "asc"): BookLevel[] {
+  const levels: { price: number; size: number }[] = [];
+  for (const l of raw ?? []) {
+    const price = toNum(l?.price);
+    const size = toNum(l?.size);
+    if (price === null || size === null || size <= 0) continue;
+    levels.push({ price, size });
+  }
+  levels.sort((a, b) => (direction === "desc" ? b.price - a.price : a.price - b.price));
+  let cumulative = 0;
+  return levels.slice(0, BOOK_LEVELS).map((l) => {
+    cumulative += l.size;
+    return { price: l.price, size: l.size, cumulative };
+  });
+}
 
 /**
- * `prediction-market/orderbook` answers one row per price level per outcome per side. The card
- * wants a book per outcome, bids high-to-low and asks low-to-high, which is what this does.
+ * Both sides of both outcomes, for free (Round 1.2.7).
+ *
+ * This replaced a 1-credit `prediction-market/orderbook` page that asked for 40 rows with no
+ * ordering and came back 40-of-40 `('No','buy')` — one outcome, one side, so `bestAsk` and the
+ * spread were structurally null. Polymarket's own CLOB answers one token's whole book,
+ * unauthenticated, so the card asks it once per outcome token and pays nothing.
+ *
+ * The outcome names and the token ids both come from the Gamma market the card already resolved
+ * and cached for an hour, so this costs no extra lookup either. A token whose book fails names
+ * itself and the other outcome still renders.
  */
-export async function predictionBookSection(marketId: string): Promise<PredictionBookSection> {
-  const r = await settle(nansen.pmOrderbook(marketId), (d) => {
-    const rows = rowsOf(d);
-    if (rows.length === 0) return null;
-    const byOutcome = new Map<string, OutcomeBook>();
-    let snapshot: string | null = null;
-    for (const row of rows) {
-      const outcome = pickStr(row, ["outcome"]) ?? "—";
-      const price = pickNum(row, ["price"]);
-      const size = pickNum(row, ["size"]);
-      const side = pickStr(row, ["side"]);
-      snapshot ??= pickStr(row, ["snapshot_timestamp"]);
-      if (price === null || size === null) continue;
-      const book = byOutcome.get(outcome) ?? { outcome, bids: [], asks: [], bestBid: null, bestAsk: null, spread: null };
-      const level = { price, size, cumulative: pickNum(row, ["cumulative_size"]) };
-      if (isBid(side)) book.bids.push(level);
-      else if (isAsk(side)) book.asks.push(level);
-      byOutcome.set(outcome, book);
-    }
-    const books = [...byOutcome.values()].map((b) => {
-      b.bids.sort((x, y) => y.price - x.price);
-      b.asks.sort((x, y) => x.price - y.price);
-      b.bestBid = b.bids[0]?.price ?? null;
-      b.bestAsk = b.asks[0]?.price ?? null;
-      b.spread = b.bestBid !== null && b.bestAsk !== null ? b.bestAsk - b.bestBid : null;
-      return b;
-    });
-    return books.length > 0 ? { books, snapshot } : null;
-  });
-  return { books: r.value?.books ?? null, snapshotIso: r.value?.snapshot ?? null, errors: r.error ? [r.error] : [] };
+export async function predictionBookSection(slug: string): Promise<PredictionBookSection> {
+  let market: Awaited<ReturnType<typeof resolveMarket>>["market"] = null;
+  try {
+    market = (await resolveMarket(slug)).market;
+  } catch (e) {
+    return { books: null, snapshotIso: null, errors: [`Polymarket lookup failed: ${e instanceof Error ? e.message : e}`] };
+  }
+  if (!market) return { books: null, snapshotIso: null, errors: ["Market not found"] };
+  const dto = toMarket(market, null);
+  const tokenIds = dto.clobTokenIds ?? [];
+  if (tokenIds.length === 0) return { books: null, snapshotIso: null, errors: ["This market publishes no order-book tokens"] };
+
+  let outcomes: string[] = [];
+  try {
+    const parsed = JSON.parse(market.outcomes ?? "null") as unknown;
+    if (Array.isArray(parsed)) outcomes = parsed.map((o) => String(o));
+  } catch {
+    outcomes = [];
+  }
+
+  const errors: string[] = [];
+  let snapshotMs: number | null = null;
+  const books: OutcomeBook[] = [];
+  const results = await Promise.all(
+    tokenIds.map(async (id, i) => {
+      const outcome = outcomes[i] ?? `Outcome ${i + 1}`;
+      try {
+        return { outcome, book: await clobBook(id) };
+      } catch (e) {
+        errors.push(`${outcome} order book: ${e instanceof Error ? e.message : e}`);
+        return { outcome, book: null };
+      }
+    }),
+  );
+  for (const { outcome, book } of results) {
+    if (!book) continue;
+    const bids = sideLevels(book.bids, "desc");
+    const asks = sideLevels(book.asks, "asc");
+    if (bids.length === 0 && asks.length === 0) continue;
+    const ts = toNum(book.timestamp);
+    if (ts !== null && (snapshotMs === null || ts > snapshotMs)) snapshotMs = ts;
+    const bestBid = bids[0]?.price ?? null;
+    const bestAsk = asks[0]?.price ?? null;
+    books.push({ outcome, bids, asks, bestBid, bestAsk, spread: bestBid !== null && bestAsk !== null ? bestAsk - bestBid : null });
+  }
+  return {
+    books: books.length > 0 ? books : null,
+    snapshotIso: snapshotMs !== null ? new Date(snapshotMs).toISOString() : null,
+    errors,
+  };
 }

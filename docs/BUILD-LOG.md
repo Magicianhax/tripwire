@@ -734,3 +734,137 @@ New `warnings` channel on `SpotPanel` (`apps/web/lib/intel/spot.ts:76`, `apps/ex
 **ADR-0014: A documented API limitation is data, not a failure.** `tgm/flow-intelligence` returns `warnings[]` beside the rows it did return. Routing those through `panel.errors` would print "Unavailable:", read as an outage, and — because `uncheckedHeadline` consumes `panel.errors` — risk describing a healthy check as a broken one. Warnings therefore ride their own `SpotPanel.warnings` channel, capped in length and count, placed as captions under the row each one limits, and they can never change a verdict. The inverse still holds: a call that *threw* stays in `errors` and still yields UNCHECKED.
 
 **ADR-0015: Group indicator scores by vocabulary, not by the array they arrived in.** `tgm/indicators` returns `risk_indicators` and `reward_indicators`, but the live response puts a `high`-scored row in the first and a `low`-scored row in the second, while `price-momentum` — also a reward row — scores `bearish`. The arrays are provenance, not scale. Rendering therefore splits on whether the score word belongs to `low/med/high` or to `bearish/neutral/bullish`, so a severity pill and a direction pill never share a colour or a heading. Nansen's `1970-01-01` is read as "never", not as a date, because an age rendered from it states something false.
+
+---
+
+# Round 1.2 — the prediction card gets a price, a state and an honest PnL column
+
+Branch `feat/cockpit-ui`, on top of `20e31a2`. Brief: `docs/IMPROVEMENT-PLAN.md` §2, Round 1.2 (items 1.2.1–1.2.8). **Zero Nansen credits spent building it**, and the round is credit-negative at runtime: the Book tab drops from 1 credit to 0 (Polymarket's own CLOB), the holder fan-out is capped, and a settled market now costs a chip nothing at all.
+
+Before this round `PredictionBody` rendered a question and a proven-winners bar. No price, no volume, no liquidity, no resolution date, no market state — and the "PnL" column beside each holder was that wallet's **cross-market lifetime** figure printed in a per-position row.
+
+## Fixtures and credits
+
+`fixtures/nansen/gammaMarket.json` was hand-trimmed to the 9 fields the old mapper read, so replay could not exercise 1.2.1 at all. `scripts/record-prediction-fixtures.mjs` re-records it, plus `fixtures/nansen/clobBook.json` (both outcome tokens' order books) — **both APIs are free and unauthenticated, 0 Nansen credits**.
+
+**Finding:** the market every other prediction fixture was recorded against — 4441305, "Will the price of Bitcoin be above $72,000 on September 17?" — has been dropped from Gamma entirely. Both `?slug=` and `?id=` return `[]` for it: a settled daily market does not stay addressable. The recorder defaults to `bitcoin-above-80k-on-september-20-2026` (market 4527564), the same daily series, live and Yes/No, so the recorded question, outcomes and shape stay consistent with `pmTopHolders.json`, `pmTrades.json` and `pmPnlByAddress.json`. The recorded object has **84 fields**, of which the card maps 25.
+
+`fixtures/nansen/pmOrderbook.json` and the `pmOrderbook` wrapper (`apps/web/lib/nansen/endpoints.ts`) were deleted rather than left behind: after 1.2.7 the endpoint has no call site, and a 1-credit wrapper nobody calls is a trap for the next reader.
+
+## Per item
+
+### 1.2.1 — the Gamma market survives the panel DTO
+
+`GammaMarket` widened from 9 fields to the useful subset of the live 84 (`apps/web/lib/intel/prediction.ts:79`), mapped by `toMarket` (`:290`) into a `PredictionMarket` DTO (`:23`, mirrored at `apps/extension/lib/api-types.ts:130`): `bestBid`, `bestAsk`, `spread`, `lastTradePrice`, `oneDayPriceChange`, `oneWeekPriceChange`, `liquidityNum`, `volumeNum`, `volume24hr`, `volume1wk`, `endDateIso`, `startDateIso`, `negRisk`, `clobTokenIds`, `description`, `events`, `groupItemTitle`, `active`, `closed`, `acceptingOrders`, `umaResolutionStatuses`. Every field nullable; Gamma **omits** rather than nulls, and the recorded market carries `oneDayPriceChange` with no `oneWeekPriceChange` key at all, which is the case the dash test pins.
+
+It renders in a new readout block above the tabs (`MarketReadout`, `apps/extension/lib/ui/PredictionBody.tsx:100`). `description` sits behind a disclosure, capped at 1,200 chars on the backend (`prediction.ts:120`) and rendered as a text child — never `innerHTML`, never `dangerouslySetInnerHTML`.
+
+*Tests:* `apps/web/test/prediction.test.ts` "every field the card can say something true with reaches the panel" and "a field Gamma omits is null and does not blank the card"; `apps/extension/test/prediction-round-1-2.test.tsx` "the resolution prose is third-party text behind a disclosure, never markup" (a `<img onerror>` in the description survives as literal text, with no `img` and no `b` element in the DOM).
+
+### 1.2.2 — the price and the date
+
+`yesPrice` is the **mid of `bestBid`/`bestAsk`**, falling back to `lastTradePrice` and only then to the cached `outcomePrices` snapshot, with the source recorded beside it as `yesPriceSource` (`prediction.ts:303`). `MarketResolution` now carries `fetchedAtIso` (`:167`), so the card can state *when* that price was read rather than implying it is live off a 1h cache.
+
+The card prints `YES 91.8¢ +0.55¢` with `mid of the resting book · as of 2m ago` beneath it. `cents()` (`PredictionBody.tsx:25`) gives one decimal of a cent normally and two below a cent — a long shot resting at 0.15¢ must not read `0.1¢`.
+
+**Craft finding from the capture:** `endDateIso` is **date-only** (`"2026-09-20"`), so sourcing the resolution date from it printed a market that settles at 16:00 UTC as `12:00 AM UTC`. `marketDate` (`:70`) takes the full `endDate` first, prints no hour for a date-only value, and drops the year when it is the current one.
+
+*Tests:* `prediction.test.ts` "the headline price is the book's mid, never the cached outcomePrices snapshot" (all four source cases, plus a market with a deliberately stale snapshot); `prediction-round-1-2.test.tsx` "prices Yes off the resting book and says where the number came from", "the compact card states six figures…" (asserts `Sep 20, 16:00 UTC`, not midnight).
+
+### 1.2.3 — market state
+
+`marketState()` (`prediction.ts:190`): `closed` wins, then `acceptingOrders === false || active === false` is **paused**, then `live`, then `null` when Gamma says nothing. `judge()` no longer treats a settled market as ordinary — but it does not refuse it either: the market resolves, the state travels with it, and the holders and trades still render, labelled historical (`panel.historical`).
+
+A resolved market yields `null` from `predictionSignals`, so `rules/evaluate.ts` leaves the verdict **UNCHECKED** — the plan's requirement, and the reason the card can show settled evidence without asserting anything about it. In chip mode a resolved market returns before any Nansen call: **0 credits instead of 15**.
+
+`umaResolutionStatuses` is `"[]"` on the recorded market. Empty means *no resolution information*, so the line is omitted rather than rendered as "unresolved"; an absent field is `null`, which is a different thing again.
+
+Pill and copy live in the readout block (`PredictionBody.tsx:107`) rather than `CardHeader`, which is shared by four card kinds and would have gained a prop that only one of them ever sets.
+
+*Tests:* `prediction.test.ts` "a settled market reached by its own slug reads resolved, keeps its evidence and stays UNCHECKED", "a settled market costs a chip nothing at all", "acceptingOrders:false with closed:false is paused, not resolved", "an empty umaResolutionStatuses means no resolution information"; `prediction-round-1-2.test.tsx` "a settled market wears a resolved pill and says its evidence is history" / "a live market wears no pill at all".
+
+### 1.2.4 — the holder PnL column says which PnL it is
+
+`unrealized_pnl_usd` and `current_price` were already on `PmHolder` and already crossed the bridge; the table simply never drew them. Compact is five columns — Wallet / Side / Size / Entry / **PnL here** — and expanded adds **Now** and **Settled record** (`HoldersTab`, `PredictionBody.tsx:263`). The recorded top holder now reads `−$744.52` on this market with `+$34.5K · 68 of 558 won · 12%` as its lifetime record beside it, instead of a single unlabelled `+$13,788`.
+
+`positionPnl` (`:47`) prints this one column to the cent. The house `usd()` compacts, which is right for a magnitude and wrong here: the column exists *because* `−$745` and `+$13.8K` are different kinds of number, and a market settled in cents should not round its own result away. Everything else on the card keeps the compact formatter.
+
+*Tests:* `prediction-round-1-2.test.tsx` "the compact card shows this market's result, with its own header", "the expanded card adds the current price and the wallet's settled record, under distinct headers", "a holder with no record shows a dash there, never a zero", "every figure is in tabular numerals".
+
+### 1.2.5 — the judged market stops counting in its own weight
+
+**Measured on the fixture: the all-rows sum is $14,337.53 and the settled-only sum is $16,815.68** — a $2,478 gap produced entirely by open positions, one of which is the market under judgement (4441305, `market_resolved: false`, −$744.52). `recordFromPnlRows` (`packages/core/src/signals/prediction.ts:69`) counts `market_resolved === true` rows only and reports how many it summed.
+
+*Shipped differently from the brief, deliberately:* 1.2.8 removes `pnl-by-address` from the prediction path entirely, so there is no all-rows sum left in production to filter. The contamination is fixed **at the source** by `realized_pnl_usd`, which excludes every open position by construction — and the measurement above is pinned as a core test so the number cannot quietly drift, plus a call-site assertion that the card never issues a `pnl-by-address` request.
+
+*Tests:* `packages/core/test/prediction-record.test.ts` "the recorded wallet's settled-only record differs from the all-rows sum it replaced", "a wallet with nothing settled has no record, and is never scored as a zero"; `prediction.test.ts` "a 20-holder response issues at most 10 address calls, and never pnl-by-address".
+
+**Calibration gate — not closed.** The verdict mapping is untouched (`> 70` high, `> 50` warn, `null` UNCHECKED) and no threshold moved. What must be re-measured is written into `docs/CALIBRATION.md` §8.2: the distribution of `provenWinnerSplit`'s value under the old and new record across 20–30 live markets (~300 credits), which is the only thing that can say whether 50/70 still sit where they were calibrated.
+
+### 1.2.6 — side totals and concentration
+
+`sideTotals()` (`signals/prediction.ts:152`) lives beside `provenWinnerSplit` so the card and the signal read the sample the same way. It returns `yesUsd` / `noUsd` / `otherUsd`, the sample and valued counts, and `top10SharePct`. `positionValueUsd` (`:99`) is shared with the weight, so a holder that cannot be priced is excluded from both rather than counted as zero.
+
+Copy names the sample and nothing else: "Of the **20** largest tracked holders this market returned — not of Yes, and not of the market. Polymarket has many more holders than any one page of them."
+
+*Tests:* `prediction-record.test.ts` "1.2.6 …" — the recorded 20-holder page, the empty sample (nulls, never zeros), a one-sided sample with an unpriceable holder, and a balanced sample with a third outcome landing in `other`.
+
+### 1.2.7 — both sides of the book, for free
+
+New backend module `apps/web/lib/polymarket/clob.ts`: `GET https://clob.polymarket.com/book?token_id=…`, one request per outcome token, with the same discipline as `apps/web/lib/intel/resolve-pair.ts` — one fixed public origin, `AbortSignal.timeout(8_000)`, `redirect: "error"`, a 200-entry bounded cache and in-flight dedupe. Token ids are validated as decimal uint256 before they reach the URL. Replay serves `fixtures/nansen/clobBook.json`. The extension never touches it.
+
+`predictionBookSection` (`apps/web/lib/intel/depth.ts:321`) now takes the **slug**, reads `clobTokenIds` and the outcome names off the Gamma market the card already resolved and cached for an hour (so no extra lookup), and returns 15 levels a side with `cumulative` computed from the touch outward. `DEPTH_SECTION_CREDITS.predictionBook` is **0**, so the tab prints `free` through the existing `depthCostLabel`.
+
+The 1-credit page this replaced asked for `per_page: 40` with no ordering and came back 40-of-40 `('No','buy')` — one outcome, one side, so `bestAsk` and the spread were structurally null and the spread line never rendered. The card now shows both outcomes, both sides and a real spread.
+
+`cumulative` was parsed and never read before this round; the depth bar is now scaled on it, so a bar's length reads as "this much rests between the touch and here" rather than as a per-level size the eye has to add up. Each side states its total: "11,422 resting across the shown bids, 17,634 across the asks."
+
+**Finding from the capture:** the readout's `91.1¢ / 92.4¢` and the book's `91.6¢ / 91.7¢` legitimately disagree — Gamma's touch is an hourly snapshot, the CLOB's is live. Rather than hide one, the Book tab states its own read time and says so: "Book read 3m ago; the price above it is Polymarket's hourly snapshot, so the two touches can differ." That also puts `snapshotIso` on screen, which was otherwise computed and dropped.
+
+*Tests:* `prediction.test.ts` "reads one CLOB book per outcome token and produces a real spread" (both outcomes, ordering, monotonic cumulative, a positive spread, zero Nansen calls), "the section costs nothing, and the tab says so", "an outcome with no book drops out and the other still renders", "a market with no order-book tokens says so rather than failing the tab", "only a decimal CLOB token id ever reaches the URL"; `prediction-round-1-2.test.tsx` "the depth bar is scaled on cumulative size", "prints its price as free, not as a credit".
+
+### 1.2.8 — cap the holder fan-out and buy a real record
+
+`mapLimit(keys, 4, …)` over up to 20 holders is now capped at the **10 largest** (`prediction.ts:267`, `HOLDER_RECORD_CAP` at `:122`) and calls `prediction-market/address-summary` instead of `pnl-by-address`. Worst case per card: **5 + 10 = 15 credits, down from 25** — and a chip on an outcome-less or settled market still spends nothing.
+
+The record is `HolderRecord` (`signals/prediction.ts:17`): `pnlUsd` (settled only), `winRate`, `marketsWon`, `marketsTraded`, `walletAgeDays`, `settledMarkets`. `predictionSignals` takes `records` in place of the old `pnl` map and weights by `record.pnlUsd > 0` — **the same rule as before**, on a cleaner number.
+
+The evidence line states what was bought rather than implying a long history: `prediction-market/address-summary · realized_pnl_usd > 0 · "6 proven of 10 checked"`.
+
+**Calibration gate — not closed, and deliberately not approached.** The fixture wallet is **+$13.8K lifetime at a 12.2% win rate across 558 markets**, which a naive `win_rate > 0.5` rule would classify as a loser. `win_rate`, `markets_won` and `markets_traded` are therefore **rendered and never read by a rule**; `docs/CALIBRATION.md` §8.2.2 and §8.2.3 record what deriving a win-rate threshold, or a minimum-record gate, would require. A core test asserts the weight still comes from money and not from the win rate.
+
+*Tests:* `prediction.test.ts` "a 20-holder response issues at most 10 address calls…" (also asserts the ten bought are the ten largest, and that holder 20 has no record), "the signal's evidence states what was bought, never a longer record than that", "holders with no record carry no weight, and the card still renders them"; `prediction-record.test.ts` "takes realized PnL, never the total that mixes in the open judged position", "an address the summary has never seen is a record we do not have, not a record of zero", "a wallet with a high settled PnL and a 12% win rate still weighs by money, not by win rate".
+
+## Craft pass
+
+Three of these came out of opening the captures, not out of reading the diff.
+
+- **Twelve readout tiles do not fit a 440px card.** The first capture put five cramped tiles a row with "7d change" wrapping onto two lines and its dash orphaned below, and `Resolves` broken across four. The compact card now states **six** — Bid, Ask, Spread, 24h volume, Liquidity, Resolves — in two even rows of three; the expanded card states all thirteen over three rows of five. The compact set is what a reader needs before a trade: what it costs to get in, how deep it is, and when it settles.
+- **The expanded book stretched to 1280px**, putting half a screen of empty bar between a price and its size. `.tw-book` is capped at 760px in the expanded card.
+- **A prediction card said "token".** `defaultFinding` (`apps/extension/lib/ui/Panel.tsx:99`) hardcoded "None of your rules fired on this **token**" for every card kind; perp and prediction cards now say "market". One line, and it was on screen the whole time.
+- Resting totals round to whole shares: `11,422` rather than `11,422.18`.
+- New CSS is tokens only. `.tw-pm-state` is a statement of state, not an alarm — it never wears the block red, and a resolved market's icon is `--tw-text-3`. The smallest new type is `0.6875rem` (11px, the floor); the disclosure button is 24px tall; `Gavel`, `CircleSlash`, `ChevronRight` and `BookOpen` are Lucide; no emoji; every figure carries `tw-fig`.
+- The disclosure chevron rotates 90° in 140ms on `--tw-ease-out`, with a `prefers-reduced-motion` path that removes the transition.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 229, web 206, extension 530** tests passed (220 / 189 / 506 before the round).
+- `pnpm -F web build` and `pnpm -F extension build`: both OK.
+- `TRIPWIRE_E2E_PORT=3217 pnpm verify:e2e`: **18 passed, 4 capture-only specs skipped.** Port 3000 is held by a server this session did not start and was never touched.
+- Captures: `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3217 pnpm -F extension exec playwright test -c e2e/playwright.config.ts captures` — 4 passed. **New:** `prediction-card`, `prediction-holders`, `prediction-book`, produced by a new `prediction card captures` spec that runs the content script against the repo's own captured `polymarket.com` event DOM (`apps/extension/test/fixtures/venues/polymarket.html`). **Regenerated:** `x-badge-card-polymarket`, which had no generator at all before this round — the committed file dated from 2026-09-17 and had drifted away from what the code renders. Every capture in the run was opened and checked against its name.
+- `git diff --check`: clean.
+
+## Notes for the next round
+
+- **2.2's page-size work is now safe to sequence.** Raising `top-holders` from 20 to 100 no longer multiplies the per-address fan-out, because the fan-out is capped independently of the page size. It *does* widen the gap between "holders shown" and "holders with a record", which the Proven-winners copy already states.
+- **The event picker (2.2) can reuse `PredictionMarket`.** `eventSlug` and `eventTitle` already cross the bridge, so the sibling-market fetch has its key without a second parse.
+- `prediction-market/ohlcv` and the CLOB `prices-history` chart (2.2) can reuse `clobTokenIds` from the same cached resolution the Book tab reads; neither needs a new lookup.
+- `recordFromPnlRows` is exported and covered but has no production call site after 1.2.8. It is the only shape that can state *how many* settled markets a figure covers, which §8.2 will need; if the measurement run does not use it, delete it rather than leaving it.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**The prediction Book tab reads Polymarket's CLOB, not Nansen.** `prediction-market/orderbook` costs 1 credit and, as called, returned one outcome and one side — the recorded page is 40 of 40 `('No','buy')` — so `bestAsk` and the spread were structurally null and the card suppressed its own spread line. `GET clob.polymarket.com/book?token_id=…` is unauthenticated, free, and returns one outcome token's whole book. Two requests replace one credit and answer a question the paid call could not. The wrapper and its fixture were deleted rather than kept: a priced call with no call site is a trap. The request goes through the backend with `resolve-pair.ts`'s discipline (fixed origin, 8s timeout, `redirect: "error"`, bounded cache, in-flight dedupe) and the extension never talks to Polymarket directly. The trade-off accepted: the book's touch and Gamma's cached touch can disagree, and the card states both read times rather than picking a winner.
+
+**A settled prediction market is shown, not refused — and costs nothing.** `judge()` resolves a closed market and carries its state; the card renders its holders and trades labelled historical, and `predictionSignals` returns `null`, so the verdict is UNCHECKED. A chip on a settled market returns before any Nansen call (0 credits instead of 15), because the side comparison those credits buy cannot exist once the market has settled. Refusing outright would have thrown away the only honest thing left to show; scoring it would have asserted something about a decision nobody can still make.
+
+**The prediction card's proven-winner record is settled money only, and win rate is rendered but never ruled on.** `realized_pnl_usd` from the 1-credit `address-summary` replaces a sum of `total_pnl_usd` over every `pnl-by-address` row including the open position in the market being judged (measured: $14,337.53 against $16,815.68 on the recorded wallet). The verdict mapping is unchanged. `win_rate` ships as a rendered fact and as nothing else: the recorded wallet is +$13.8K lifetime at a 12.2% win rate across 558 markets, so a carried-over `> 0.5` threshold would classify one of the sample's largest winners as a loser. Deriving that threshold — and re-measuring whether 50/70 still hold under the new record — is a measurement run, specified in `docs/CALIBRATION.md` §8.

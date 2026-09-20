@@ -70,7 +70,7 @@ async function build(target: Target, sections: DepthSection[], timeframe: string
   }
 
   if (wanted.has("predictionBook")) {
-    if (target.kind === "prediction" && target.marketId) jobs.push(predictionBookSection(target.marketId).then((s) => void (out.predictionBook = s)));
+    if (target.kind === "prediction") jobs.push(predictionBookSection(target.slug).then((s) => void (out.predictionBook = s)));
     else skipped.push("predictionBook");
   }
 

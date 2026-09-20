@@ -12,6 +12,7 @@ import type {
   PerpVenueId,
   PerpVenueQuote,
   FlowRow,
+  HolderRecord,
   IndicatorsResp,
   LabelKind,
   NetflowRow,
@@ -22,6 +23,7 @@ import type {
   PmTrade,
   Rule,
   Signal,
+  SideTotals,
   SignalId,
   Target,
   TokenInfo,
@@ -124,10 +126,53 @@ export type PerpPanel = {
   errors: string[];
 };
 
+/** Live, not taking orders, or settled. `null` means Gamma did not say (Round 1.2.3). */
+export type MarketState = "live" | "paused" | "resolved";
+
+/** The useful subset of Polymarket's 84-field Gamma market object (Round 1.2.1). Every figure is
+ * nullable: Gamma omits fields rather than nulling them, so an absent one is a dash. */
+export type PredictionMarket = {
+  id: string;
+  question: string;
+  slug: string;
+  state: MarketState | null;
+  yesPrice: number | null;
+  yesPriceSource: "book" | "last-trade" | "cached" | null;
+  bestBid: number | null;
+  bestAsk: number | null;
+  spread: number | null;
+  lastTradePrice: number | null;
+  oneDayPriceChange: number | null;
+  oneWeekPriceChange: number | null;
+  liquidityUsd: number | null;
+  volumeUsd: number | null;
+  volume24hUsd: number | null;
+  volume1wkUsd: number | null;
+  endDate: string | null;
+  endDateIso: string | null;
+  startDateIso: string | null;
+  negRisk: boolean | null;
+  clobTokenIds: string[] | null;
+  description: string | null;
+  groupItemTitle: string | null;
+  eventTitle: string | null;
+  eventSlug: string | null;
+  active: boolean | null;
+  closed: boolean | null;
+  acceptingOrders: boolean | null;
+  umaResolutionStatuses: string[] | null;
+  pricedAtIso: string | null;
+};
+
 export type PredictionPanel = {
-  market: { id: string; question: string; slug: string; yesPrice: number | null; endDate: string | null } | null;
-  holders: (PmHolder & { key: string; pnl: number | null })[] | null;
+  market: PredictionMarket | null;
+  holders: (PmHolder & { key: string; record: HolderRecord | null })[] | null;
+  sides: SideTotals | null;
+  recordsChecked: number | null;
+  recordsCap: number;
   trades: PmTrade[] | null;
+  /** Holders and trades on a settled market are history, not a live read. */
+  historical: boolean;
   errors: string[];
 };
 
@@ -242,7 +287,7 @@ export type PerpTradersSection = {
 export type SpotHolderRow = { address: string | null; label: string | null; valueUsd: number | null; tokenAmount: number | null; sharePct: number | null };
 export type SpotHoldersSection = { holders: SpotHolderRow[] | null; top10SharePct: number | null; credits: number; errors: string[] };
 
-export type BookLevelDto = { price: number; size: number; cumulative: number | null };
+export type BookLevelDto = { price: number; size: number; cumulative: number };
 export type OutcomeBook = { outcome: string; bids: BookLevelDto[]; asks: BookLevelDto[]; bestBid: number | null; bestAsk: number | null; spread: number | null };
 export type PredictionBookSection = { books: OutcomeBook[] | null; snapshotIso: string | null; errors: string[] };
 

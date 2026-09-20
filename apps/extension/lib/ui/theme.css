@@ -2981,3 +2981,153 @@ div.tw-dock-chip {
   background: var(--tw-red-dim);
   color: var(--tw-red);
 }
+
+/* -------------------- Prediction market readout (Round 1.2) --------------------
+ *
+ * What the market is and what it costs, above the evidence tabs. The price is the resting
+ * book's mid, not Gamma's cached `outcomePrices`, so the number here and the number in the Book
+ * tab can never disagree.
+ */
+.tw-pm-readout {
+  display: grid;
+  gap: var(--tw-space-2);
+  margin-bottom: var(--tw-space-3);
+}
+
+.tw-pm-readout > .tw-question {
+  display: flex;
+  align-items: baseline;
+  gap: var(--tw-space-2);
+  min-width: 0;
+}
+
+/* The market's own label inside its event ("80,000"), which the question alone does not carry. */
+.tw-pm-group {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-tile);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tw-text-2);
+}
+
+/* Settled or paused. A statement of state, not an alarm: it never wears the block red. */
+.tw-pm-state {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: var(--tw-space-2) var(--tw-space-3);
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-raised);
+  font-size: 0.8125rem;
+  color: var(--tw-text-2);
+}
+
+.tw-pm-state .tw-icon {
+  align-self: center;
+  flex-shrink: 0;
+  color: var(--tw-amber);
+}
+
+.tw-pm-state[data-state="resolved"] .tw-icon {
+  color: var(--tw-text-3);
+}
+
+.tw-pm-state b {
+  font-weight: 600;
+  color: var(--tw-text);
+}
+
+.tw-pm-price {
+  display: grid;
+  gap: 2px;
+}
+
+.tw-pm-outcome {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tw-text-3);
+}
+
+/* Polymarket's own resolution prose, behind a disclosure: long, third-party, and text only. */
+.tw-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0 6px 0 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--tw-text-2);
+  cursor: pointer;
+}
+
+.tw-disclosure:hover {
+  color: var(--tw-text);
+}
+
+.tw-disclosure .tw-icon {
+  color: var(--tw-text-3);
+  transition: transform 140ms var(--tw-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-disclosure .tw-icon {
+    transition: none;
+  }
+}
+
+.tw-disclosure .tw-disclosure-open {
+  transform: rotate(90deg);
+}
+
+.tw-pm-rules-text {
+  margin: var(--tw-space-1) 0 0;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-left: 20px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--tw-text-2);
+  overflow-wrap: anywhere;
+}
+
+/* A holder's settled record: the money over the count it was earned across. */
+.tw-pm-record {
+  display: grid;
+  gap: 1px;
+  justify-items: end;
+}
+
+.tw-pm-record > .tw-meta {
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
+/* Three even tiles a row at 440px: six figures read as two rows, and "Sep 20, 2026, 16:00 UTC"
+   gets a column wide enough not to break into four lines. `auto-fit` would leave the sixth tile
+   alone on its own row. The expanded card keeps the wider default. */
+.tw-pm-readout .tw-market-readouts > .tw-readouts {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Thirteen tiles over three rows rather than one 1240px-wide row of two-line labels. */
+[data-size="expanded"] .tw-pm-readout .tw-market-readouts > .tw-readouts {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* At 440px the two sides of a book fill the card. In the expanded overlay they would stretch to
+   1280px and put half a screen of empty bar between a price and its size, so the ladder keeps a
+   readable measure and sits at the start of the section. */
+[data-size="expanded"] .tw-book {
+  max-width: 760px;
+}

@@ -5,7 +5,6 @@
 //   fixtures/nansen/tokenPerpTrades.json      hyperliquid/token-perp-trades
 //   fixtures/nansen/hyperliquidLeaderboard.json hyperliquid/hyperliquid-leaderboard
 //   fixtures/nansen/tokenHolders.json         tgm/holders                         (5 credits)
-//   fixtures/nansen/pmOrderbook.json          prediction-market/market-orderbook
 //
 // Free public APIs (no key, no credit, rate-limited only):
 //   fixtures/hyperliquid/metaAndAssetCtxs.json, fundingHistory.json, l2Book.json,
@@ -166,8 +165,8 @@ const marketId = (() => {
     return null;
   }
 })();
-if (marketId) await nansen("pmOrderbook", "prediction-market/orderbook", { market_id: marketId, pagination: { page: 1, per_page: 40 } });
-else summary.push({ name: "pmOrderbook", status: "skipped", credits: "-", note: "no market_id in pmTopHolders.json" });
+// The prediction Book tab no longer buys prediction-market/orderbook: it reads the free
+// two-sided Polymarket CLOB book instead (Round 1.2.7). See scripts/record-prediction-fixtures.mjs.
 
 console.table(summary);
 console.log(`Nansen credits spent: ${spent} (cap ${MAX_CREDITS})`);

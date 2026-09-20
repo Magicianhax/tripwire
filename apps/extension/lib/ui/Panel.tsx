@@ -96,14 +96,18 @@ function endpointCount(data: GuardResponse | PostIntelResponse): number {
   return set.size;
 }
 
-function defaultFinding(verdict: Verdict): string {
+/** A prediction card is about a market, not a token; a perp card is about a coin's market too. */
+const SUBJECT: Record<string, string> = { spot: "token", perp: "market", prediction: "market" };
+
+function defaultFinding(verdict: Verdict, kind: string): string {
+  const subject = SUBJECT[kind] ?? "token";
   switch (verdict) {
     case "CLEAR":
-      return "None of your rules fired on this token.";
+      return `None of your rules fired on this ${subject}.`;
     case "UNCHECKED":
-      return "Tripwire couldn't check this token.";
+      return `Tripwire couldn't check this ${subject}.`;
     default:
-      return "A rule fired on this token.";
+      return `A rule fired on this ${subject}.`;
   }
 }
 
@@ -297,7 +301,7 @@ export function Panel({
     body = <SpotBody panel={shownSpot!} hits={data.hits} signals={data.signals} initialTab={marketHome ? "markets" : initialTab} timeframe={timeframe} depth={depth} onNeedSections={requestSections} markets={markets} />;
 
   const top = data?.hits[0];
-  const finding = data === null ? null : top ? hitFinding(top) : headline || defaultFinding(data.verdict);
+  const finding = data === null ? null : top ? hitFinding(top) : headline || defaultFinding(data.verdict, kind);
   const cardChain = cardTarget?.kind === "spot" ? cardTarget.chain : (chain ?? null);
   const cardAddress = cardTarget?.kind === "spot" ? cardTarget.tokenAddress : (address ?? null);
   const token = spot ? (shownSpot?.token ?? null) : null;

@@ -21,7 +21,7 @@ export type DepthSection = (typeof DEPTH_SECTIONS)[number];
  * | `perpChart`      | Hyperliquid `candleSnapshot`                             | 0       |
  * | `perpTraders`    | `tgm/perp-pnl-leaderboard` 5 + `perp-leaderboard` 5 + `tgm/perp-trades` 1 | 11 |
  * | `spotHolders`    | `tgm/holders`                                            | 5       |
- * | `predictionBook` | `prediction-market/orderbook`                            | 1       |
+ * | `predictionBook` | Polymarket CLOB `/book`, one per outcome token            | 0       |
  *
  * Zero means the section is built entirely from free public exchange APIs, which are
  * rate-limited rather than metered.
@@ -32,7 +32,7 @@ export const DEPTH_SECTION_CREDITS: Record<DepthSection, number> = {
   perpTraders: 11,
   perpChart: 0,
   spotHolders: 5,
-  predictionBook: 1,
+  predictionBook: 0,
 };
 
 /** What a tab costs to open: the sum of the sections it has not already loaded. */

@@ -99,9 +99,9 @@ describe("intel builders (replay of live-recorded responses)", () => {
     expect(val(r.signals, "inside_liq_band")).not.toBeNull();
   });
 
-  it("prediction intel resolves slug and weights holders by pnl", async () => {
-    const r = await buildPredictionIntel({ kind: "prediction", slug: "bitcoin-above-72k-on-september-17-2026", outcome: "yes" }, "panel");
-    expect(r.panel.market?.id).toBe("4441305");
+  it("prediction intel resolves slug and weights holders by their settled record", async () => {
+    const r = await buildPredictionIntel({ kind: "prediction", slug: "bitcoin-above-80k-on-september-20-2026", outcome: "yes" }, "panel");
+    expect(r.panel.market?.id).toBe("4527564");
     expect(r.panel.holders?.length).toBe(20);
     expect(val(r.signals, "smart_side_disagrees")).not.toBeNull();
   });

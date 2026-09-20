@@ -48,7 +48,7 @@ function response(target: Target, verdict: GuardResponse["verdict"]): ApiResult<
       hits,
       unavailable: [],
       signals: [],
-      panel: { market: null, holders: null, trades: null, errors: [] },
+      panel: { market: null, holders: null, sides: null, recordsChecked: null, recordsCap: 10, trades: null, historical: false, errors: [] },
       rulesPreset: "balanced",
     },
   };

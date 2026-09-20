@@ -281,3 +281,30 @@ Budget was 120 and the meter delta is exactly 120, so the per-call "Credits: N" 
 4. `apps/web/lib/intel/spot.ts`: pass the screener/token-information volume through (1 extra credit per token, or reuse the panel's existing ohlcv candles for both volume and drawdown at no extra cost).
 5. Migration for saved custom rules: old `exit_pressure` / `fresh_buy_share` thresholds are in USD and percent-of-buying and have no honest conversion — map them to the new preset defaults and tell the user in `/history` that the rule was restated.
 6. Re-run this spike on a second day before shipping; one snapshot is not a calibration set.
+
+## 8. Open questions — the prediction verdict (opened by Round 1.2, 2026-09-20)
+
+Round 1.2 changed **what a "proven winner" is made of** on the prediction card, and shipped none of the threshold work that change eventually needs. This section is the debt, stated precisely enough to be paid without re-deriving it.
+
+### 8.1 What shipped, and why it is verdict-safe as written
+
+`smart_side_disagrees` (`packages/core/src/signals/prediction.ts`) still maps the same way it did before: `value > 70` → high, `> 50` → warn, else info, and `null` → UNCHECKED. Nothing in the preset table moved. Two inputs to that value changed:
+
+- **1.2.5 — the judged market stopped counting in its own weight.** The record was a sum of `total_pnl_usd` across every `prediction-market/pnl-by-address` row, *including the open position in the market being judged*. On the recorded wallet that all-rows sum is **$14,337.53** against a settled-only **$16,815.68** — a $2,478 swing from open positions alone (`packages/core/test/prediction-record.test.ts`). The shipped record is `realized_pnl_usd`, which excludes every open position by construction.
+- **1.2.8 — the record is now bought from `prediction-market/address-summary`**, capped at the 10 largest holders (worst case 15 credits per card, down from 25), and carries `win_rate`, `markets_won`, `markets_traded` and `wallet_age_days` alongside the settled PnL.
+
+Both are data changes under an unchanged mapping, so a card cannot become *less* cautious than before by accident: a holder whose record is missing carries zero weight, and if no holder on either side has a positive settled record the signal is `null` and the verdict is UNCHECKED.
+
+### 8.2 What must be re-measured before any of this becomes a threshold
+
+None of the following is wired into a rule today, and none of it may be without a measurement run of its own.
+
+1. **The direction and size of the 1.2.5 shift, across markets rather than one wallet.** The single recorded wallet moved *up* (14.3k → 16.8k) when its open positions were dropped. That is one sample and the sign is not general: a wallet carrying a large winning open position moves down. Needed: `top-holders` plus `address-summary` for 20–30 live Yes/No markets, and the distribution of `provenWinnerSplit`'s `value` under the old and new record side by side. Until that exists, nobody can say whether the current 50 / 70 boundaries still sit where they were calibrated. Estimated cost: 20 markets × (5 + 10) ≈ **300 credits**.
+2. **Whether a win-rate rule is usable at all.** The recorded wallet is **+$13.8K lifetime at a 12.2% win rate across 558 markets** (68 won). A naive `win_rate > 0.5` rule classifies that wallet as a loser while it is one of the largest positive-PnL accounts in the sample — long-shot books produce low win rates by construction. Any `smart_side_disagrees` variant that reads `win_rate` needs its own threshold derived from a real distribution, not carried over from the PnL rule. Not started.
+3. **`markets_traded` as a minimum-record gate.** "Proven" currently means "settled PnL above zero" at any sample size, so one lucky settled market weighs the same per dollar as 558. A minimum (`markets_traded >= N`, or a settled-count floor) is the obvious guard and has no measured N.
+4. **The residual 1.2.5 case.** `realized_pnl_usd` excludes the judged market only while that market is *open*. On a settled market it is inside the figure — which is harmless today, because a settled market yields `null` and UNCHECKED (1.2.3) and buys no records at all, but it stops being harmless the moment a resolved market is ever scored.
+5. **The 10-holder cap's effect on the split.** The cap is on the *record* fan-out, not on the holders: all 20 returned holders render, but only the 10 largest can ever carry weight. Whether truncating at 10 changes the Yes/No ratio materially is unmeasured; the sample is ordered by `position_size`, so the effect should be small, and "should be" is not a measurement.
+
+### 8.3 Ground rule
+
+Until 8.2.1 is run, treat the prediction verdict the way §4 treats the spot one: the **data** may improve freely, the **thresholds** may not move, and no new field may become a rule input. A change to `severity` in `predictionSignals`, or a new prediction entry in `packages/core/src/rules/presets.ts`, is a calibration change and belongs to a measurement run, not to a build round.

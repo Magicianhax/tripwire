@@ -195,6 +195,19 @@ test("wallet lens captures", async ({ context, extensionId }) => {
     await expect(badgePop.locator(".tw-badge-card")).toHaveAttribute("data-size", "expanded");
     await badges.waitForTimeout(200);
     await shot(badges, "x-badge-card-expanded");
+
+    // x-badge-card-polymarket: the other linked venue's card. It had no generator at all before
+    // Round 1.2, so the committed shot had drifted away from what the code renders.
+    await badgePop.getByRole("button", { name: "Collapse card" }).click();
+    await expect(badgePop).not.toHaveAttribute("data-size", "expanded");
+    await badges.keyboard.press("Escape");
+    const pmBadge = linked.locator('.tw-badge[data-venue="polymarket"]');
+    await expect(pmBadge).toBeVisible({ timeout: 15_000 });
+    await pmBadge.click();
+    const pmPop = badges.locator('.tw-pop[role="dialog"]');
+    await expect(pmPop.locator(".tw-badge-card")).toBeVisible();
+    await badges.waitForTimeout(200);
+    await shot(pmPop, "x-badge-card-polymarket");
   } finally {
     let cleanupResponses;
     try {
@@ -356,4 +369,48 @@ test("expand and perp depth captures", async ({ context }) => {
   await expect(spotCard.locator(".tw-table tbody tr")).toHaveCount(6, { timeout: 20000 });
   await shot(spot, "spot-holders-links");
   await spot.close();
+});
+
+
+/**
+ * The prediction card, rebuilt in Round 1.2: a price, a state, both sides of the free CLOB book
+ * and a PnL column that says which PnL it is. The venue page is the repo's own captured
+ * polymarket.com event DOM, so the content script runs against the real markup.
+ */
+test("prediction card captures", async ({ context }) => {
+  const page = await context.newPage();
+  await page.route("https://polymarket.com/event/**", (route) =>
+    route.fulfill({ path: path.resolve("test/fixtures/venues/polymarket.html"), contentType: "text/html; charset=utf-8" }),
+  );
+  await page.setViewportSize({ width: 1600, height: 1100 });
+  await putRules(page, { preset: "balanced" });
+  await page.goto("https://polymarket.com/event/friedrich-merz-out-as-chancellor-of-germany-before-2027");
+
+  await expect(page.locator(".tw-strip")).toBeVisible({ timeout: 20_000 });
+  await page.locator(".tw-strip-details").click();
+  const pop = page.locator('.tw-pop[role="dialog"]');
+  await expect(pop).toBeVisible();
+
+  // prediction-card: the readout block — price off the resting book, the market's own figures,
+  // and the proven-winner split beneath it.
+  await expect(pop.locator(".tw-price-value")).toHaveText(/¢/, { timeout: 20_000 });
+  await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await page.waitForTimeout(300);
+  await shot(pop, "prediction-card");
+
+  // prediction-holders: "PnL here" against the wallet's settled record.
+  await pop.getByRole("tab", { name: "Holders" }).click();
+  await expect(pop.locator(".tw-pm-holders tbody tr").first()).toBeVisible();
+  await page.waitForTimeout(200);
+  await shot(pop, "prediction-holders");
+
+  // prediction-book: both outcomes, both sides, free.
+  await pop.getByRole("button", { name: "Expand card" }).click();
+  await expect(pop).toHaveAttribute("data-size", "expanded");
+  await pop.getByRole("tab", { name: "Book" }).click();
+  await expect(pop.locator('.tw-book-side[data-side="ask"] li').first()).toBeVisible({ timeout: 20_000 });
+  await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await page.waitForTimeout(300);
+  await shot(page, "prediction-book");
+  await page.close();
 });

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { FlowRow, IndicatorsResp, NetflowRow, PerpPosition, PerpScreenerRow, PmHolder } from "../src/nansen-types";
 import { spotDerived, spotSignals, type SpotSignalInput } from "../src/signals/spot";
 import { perpSignals } from "../src/signals/perp";
-import { predictionSignals, provenWinnerSplit } from "../src/signals/prediction";
+import { EMPTY_RECORD, predictionSignals, provenWinnerSplit, type HolderRecord } from "../src/signals/prediction";
 import { evaluate } from "../src/rules/evaluate";
 import { PRESETS } from "../src/rules/presets";
 import type { Verdict } from "../src/types";
@@ -448,12 +448,16 @@ const holder = (side: string, size: number, price: number, owner: string): PmHol
   market_id: "1", address: owner, owner_address: "0x", side, position_size: size, avg_entry_price: price, current_price: price, unrealized_pnl_usd: 0,
 });
 
+/** A settled record keyed by holder key, the shape predictionSignals now reads (Round 1.2.8). */
+const records = (m: Record<string, number>): Record<string, HolderRecord> =>
+  Object.fromEntries(Object.entries(m).map(([k, pnlUsd]) => [k, { ...EMPTY_RECORD, pnlUsd }]));
+
 describe("predictionSignals", () => {
   it("everyone proven on NO and user buys YES -> 100", () => {
     const s = predictionSignals({
       outcome: "yes",
       holders: [holder("No", 1000, 0.5, "a"), holder("No", 500, 0.5, "b")],
-      pnl: { a: 50_000, b: 1_000 },
+      records: records({ a: 50_000, b: 1_000 }),
     });
     expect(get(s, "smart_side_disagrees").value).toBe(100);
   });
@@ -461,25 +465,25 @@ describe("predictionSignals", () => {
     const s = predictionSignals({
       outcome: "yes",
       holders: [holder("No", 1000, 0.5, "a"), holder("Yes", 1000, 0.5, "b")],
-      pnl: { a: -90_000, b: 9_000 },
+      records: records({ a: -90_000, b: 9_000 }),
     });
     expect(get(s, "smart_side_disagrees").value).toBe(0);
   });
   it("null without outcome, holders, or any proven holders", () => {
-    expect(get(predictionSignals({ holders: [holder("No", 1, 1, "a")], pnl: {} }), "smart_side_disagrees").value).toBeNull();
-    expect(get(predictionSignals({ outcome: "no", holders: [], pnl: {} }), "smart_side_disagrees").value).toBeNull();
-    expect(get(predictionSignals({ outcome: "no", holders: [holder("No", 1, 1, "a")], pnl: { a: -1 } }), "smart_side_disagrees").value).toBeNull();
+    expect(get(predictionSignals({ holders: [holder("No", 1, 1, "a")], records: records({}) }), "smart_side_disagrees").value).toBeNull();
+    expect(get(predictionSignals({ outcome: "no", holders: [], records: records({}) }), "smart_side_disagrees").value).toBeNull();
+    expect(get(predictionSignals({ outcome: "no", holders: [holder("No", 1, 1, "a")], records: records({ a: -1 }) }), "smart_side_disagrees").value).toBeNull();
   });
   it("only Yes/No holders count: other outcome sides are ignored", () => {
     const s = predictionSignals({
       outcome: "yes",
       holders: [holder("No", 1000, 0.5, "a"), holder("Up", 100_000, 0.5, "b"), holder("YES", 1000, 0.5, "c")],
-      pnl: { a: 10_000, b: 10_000, c: 10_000 },
+      records: records({ a: 10_000, b: 10_000, c: 10_000 }),
     });
     expect(get(s, "smart_side_disagrees").value).toBe(50);
   });
   it("null when the only proven winners hold a non Yes/No side", () => {
-    const s = predictionSignals({ outcome: "no", holders: [holder("Down", 1000, 0.5, "a")], pnl: { a: 10_000 } });
+    const s = predictionSignals({ outcome: "no", holders: [holder("Down", 1000, 0.5, "a")], records: records({ a: 10_000 }) });
     expect(get(s, "smart_side_disagrees").value).toBeNull();
   });
 });

@@ -2,7 +2,7 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { describe, expect, it, vi } from "vitest";
-import type { HitDto, PerpPanel, PostIntelResponse, SpotPanel } from "../lib/api-types";
+import type { GuardResponse, HitDto, PerpPanel, PostIntelResponse, SpotPanel } from "../lib/api-types";
 import { BlockScreen, phraseMatches } from "../lib/ui/BlockScreen";
 import { Chip } from "../lib/ui/Chip";
 import { Dock } from "../lib/ui/Dock";
@@ -627,11 +627,27 @@ describe("Evidence card tabs", () => {
     root.unmount();
   });
 
+  it("a prediction card's default finding is about a market, not a token", () => {
+    const panel = { market: null, holders: null, sides: null, recordsChecked: null, recordsCap: 10, trades: null, historical: false, errors: [] };
+    const data: GuardResponse = {
+      target: { kind: "prediction", slug: "will-x-happen" },
+      verdict: "CLEAR",
+      hits: [],
+      unavailable: [],
+      signals: [],
+      panel,
+      rulesPreset: "balanced",
+    };
+    const { container, root } = mountNode(<Panel data={data} title="will-x-happen" onClose={() => {}} />);
+    expect(container.querySelector(".tw-card-finding")?.textContent).toBe("None of your rules fired on this market.");
+    root.unmount();
+  });
+
   it("perp evidence is Positioning / Liquidations / Traders / Chart; prediction is Proven winners / Holders / Trades", () => {
     const perp = mountNode(<PerpBody panel={{ coin: "ETH", screener: null, positions: null, trades: null, errors: [] }} />);
     expect(tabLabels(perp.container)).toEqual(["Positioning", "Liquidations", "Traders11 credits", "Chart"]);
     perp.root.unmount();
-    const prediction = mountNode(<PredictionBody panel={{ market: null, holders: null, trades: null, errors: [] }} initialTab="holders" />);
+    const prediction = mountNode(<PredictionBody panel={{ market: null, holders: null, sides: null, recordsChecked: null, recordsCap: 10, trades: null, historical: false, errors: [] }} initialTab="holders" />);
     expect(tabLabels(prediction.container)).toEqual(["Proven winners", "Holders", "Trades"]);
     expect(selected(prediction.container)).toBe("Holders");
     prediction.root.unmount();

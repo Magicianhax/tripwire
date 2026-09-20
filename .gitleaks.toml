@@ -64,3 +64,14 @@ condition = "AND"
 paths = ['''fixtures/.*\.json$''']
 regexTarget = "line"
 regexes = ['''"token_address"\s*:\s*"0x[0-9a-fA-F]{40}"''']
+
+# Polymarket's Gamma market object nests an `events[]` entry carrying `pythTokenID`: the public
+# Pyth price-feed id the event resolves against (BTC/USD here). It is a 64-hex identifier
+# published in Pyth's own feed directory, it authenticates nothing, and the word "Token" is what
+# trips the default generic-api-key rule. Scoped to the replay fixtures and to that exact field.
+[[allowlists]]
+description = "Public Pyth price-feed ids in recorded Polymarket fixtures"
+condition = "AND"
+paths = ['''fixtures/.*\.json$''']
+regexTarget = "line"
+regexes = ['''"pythTokenID"\s*:\s*"[0-9a-fA-Fx]{1,70}"''']
