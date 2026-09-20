@@ -26,8 +26,8 @@ A Chrome extension with a local Next.js backend that puts Nansen onchain data on
 - Visual contract: `DESIGN.md`
 - Architecture: `docs/ARCHITECTURE.md`
 - Decision log (append-only): `docs/DECISIONS.md`
-- Spec and plan: `docs/superpowers/specs/`, `docs/superpowers/plans/`
-- Plan and cost log: `tasks/todo.md`
+- Takeover guide: `docs/HANDOFF.md`
+- Threshold calibration: `docs/CALIBRATION.md`
 
 ## Project rules
 

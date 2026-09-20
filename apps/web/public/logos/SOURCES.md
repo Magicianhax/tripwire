@@ -18,6 +18,7 @@ markup). In the extension they are chrome-extension:// URLs listed in web_access
 
 | File | Brand | Source URL | Format / notes | License / usage |
 |---|---|---|---|---|
+| tripwire.png | Tripwire | Original generated artwork; assets/brand/tripwire-source.png | Transparent PNG, 256px export; generated with built-in image generation, 2026-09-20 | Tripwire product identity; distinct from provider/venue marks |
 | nansen.svg | Nansen | https://www.nansen.ai/ (inline `data:image/svg+xml` orbital mark, same mark as https://www.nansen.ai/brand) | SVG, original colours | Nansen trademark; brand page offers logo assets for press/partners |
 | hyperliquid.png | Hyperliquid | https://app.hyperliquid.xyz/apple-touch-icon.png | 180px PNG → 96px PNG | Hyperliquid trademark; site icon |
 | polymarket.svg | Polymarket | https://polymarket.com/icons/safari-pinned-tab.svg | SVG, monochrome, fill #FFFFFF | Polymarket trademark; site icon |

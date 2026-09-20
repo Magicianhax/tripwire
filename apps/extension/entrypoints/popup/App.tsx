@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { presetChangeNeedsConfirm } from "@tripwire/core";
 import { browser } from "wxt/browser";
-import { getRules, health, ledger, setPreset } from "../../lib/api";
+import { getRules, health, setPreset } from "../../lib/api";
 import type { KeySource, RulesResponse } from "../../lib/api-types";
 import { listEnabledSites, removeSite, requestSite } from "../../lib/permissions";
 import { forgetWallets, readRecent, type RecentWallet } from "../../lib/recent-wallets";
 import { Tabs } from "../../lib/ui/Tabs";
 import { LOCATE_MESSAGE } from "../venues.content/locate";
 import { hereFrom, type Here } from "./here";
-import { ProtectionTab, type Counters, type Preset } from "./ProtectionTab";
+import { ProtectionTab, type Preset } from "./ProtectionTab";
 import { PopupFoot, PopupHead } from "./shell";
 import { SitesTab } from "./SitesTab";
 import { popupStatus } from "./status";
@@ -32,8 +32,8 @@ const hostOf = (origin: string) => {
 /**
  * The toolbar popup: a pinned header, three tabs and a pinned footer inside a fixed 420px box.
  *
- * Nothing here spends a Nansen credit. Opening it makes exactly three reads of the *local*
- * backend — health, rules and the call ledger — and changing tab makes none: every panel is
+ * Nothing here spends a Nansen credit. Opening it makes exactly two reads of the *local*
+ * backend — health and rules — and changing tab makes none: every panel is
  * already in the DOM and none of them fetches on show.
  */
 export default function App() {
@@ -44,7 +44,6 @@ export default function App() {
   const [pendingPreset, setPendingPreset] = useState<Preset | null>(null);
   const [saving, setSaving] = useState(false);
   const [presetError, setPresetError] = useState("");
-  const [counters, setCounters] = useState<Counters>(null);
   const [backendUrl, setBackendUrl] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlDraft, setBackendUrlDraft] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlError, setBackendUrlError] = useState("");
@@ -85,12 +84,6 @@ export default function App() {
       } else {
         setPresetError("Couldn't load rules. Is the backend running?");
       }
-    })();
-    // The local call ledger. A missing answer stays missing: the tiles print a dash.
-    (async () => {
-      const result = await ledger();
-      if (cancelled || !result.ok) return;
-      setCounters({ callsToday: result.data.callsToday, creditsToday: result.data.creditsToday, totalCalls: result.data.totalCalls });
     })();
     return () => {
       cancelled = true;
@@ -225,7 +218,6 @@ export default function App() {
                 here={here}
                 locateNote={locateNote}
                 onLocate={() => void locate()}
-                counters={counters}
               />
             ),
           },

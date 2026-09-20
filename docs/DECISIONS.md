@@ -7,13 +7,13 @@ Append-only. Never edit or delete an entry; supersede it with a new one.
 ## ADR-0001 Adopt project template (2026-09-17)
 **Status:** accepted
 **Context:** Project bootstrapped from `~/.claude/templates/project` during /ship.
-**Decision:** `PRODUCT.md`, `DESIGN.md`, `docs/ARCHITECTURE.md` and this log are the durable context; `tasks/todo.md` is the working plan.
+**Decision:** `PRODUCT.md`, `DESIGN.md`, `docs/ARCHITECTURE.md` and this log are the durable context; the working plan and per-round briefs stay out of the repository.
 **Consequences:** `/ship` reads these first.
 
 ## ADR-0002 Tripwire concept and scope (2026-09-17)
 **Status:** accepted
 **Context:** Nansen Meridian Buildathon. The user rejected dashboards, OSINT, and previously built ideas (Crowd vs Sharks, follow/fade, etc.).
-**Decision:** Build a browser extension with a local backend. It shows X post verdicts and blocks trade buttons on tier-1 venues (Jupiter, pump.fun, Uniswap, Jumper, Hyperliquid, Polymarket). Tier-2 venues get a docked panel. The spec is `docs/superpowers/specs/2026-09-17-tripwire-design.md`.
+**Decision:** Build a browser extension with a local backend. It shows X post verdicts and blocks trade buttons on tier-1 venues (Jupiter, pump.fun, Uniswap, Jumper, Hyperliquid, Polymarket). Tier-2 venues get a docked panel.
 **Consequences:** Venue DOMs change, so adapters are small and tested against fixtures, with a fallback to a docked panel.
 
 ## ADR-0003 Local SQLite via node:sqlite (2026-09-17)

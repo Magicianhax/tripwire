@@ -51,7 +51,6 @@ function markup(tab: "protection" | "sites" | "wallets"): string {
         here={HERE}
         locateNote="Highlighted on the page."
         onLocate={() => {}}
-        counters={{ callsToday: 7, creditsToday: 42, totalCalls: 616 }}
       />
     ) : tab === "sites" ? (
       <SitesTab here={{ host: "app.pendle.finance", origin: "https://app.pendle.finance", state: "off" }} sites={["https://debank.com", "https://etherscan.io"]} error="" onEnable={() => {}} onDisable={() => {}} />
@@ -62,7 +61,7 @@ function markup(tab: "protection" | "sites" | "wallets"): string {
     // The same wrapper main.tsx mounts into: the chain of definite heights runs through it.
     <div id="root">
     <div className="tw-popup">
-      <PopupHead status={{ text: "Connected · key via Nansen CLI", state: "connected" }} settingsOpen={false} onToggleSettings={() => {}} />
+      <PopupHead status={{ text: "Connected", state: "connected" }} settingsOpen={false} onToggleSettings={() => {}} />
       <div className="tw-tabs">
         <div className="tw-tablist" role="tablist" aria-label="Tripwire">
           {["Protection", "Sites", "Wallets"].map((label) => (

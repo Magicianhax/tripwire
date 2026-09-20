@@ -139,14 +139,24 @@ describe("popup shell", () => {
     expect(shown(container).textContent).toContain("Paranoid");
   });
 
-  it("costs nothing to open beyond the three local reads, and nothing at all to change tab", async () => {
+  it("only reads connection and rules on open, and nothing on tab changes", async () => {
     const { container } = await openPopup();
     const onOpen = state.sent.map((m) => `${m.type} ${m.method ?? ""} ${m.path ?? ""}`.trim());
-    expect(onOpen.sort()).toEqual(["api GET /api/ledger", "api GET /api/rules", "health"]);
+    expect(onOpen.sort()).toEqual(["api GET /api/rules", "health"]);
 
     await click(tabs(container)[1]!);
     await click(tabs(container)[2]!);
     expect(state.sent).toHaveLength(onOpen.length);
+  });
+
+  it("uses the Tripwire product mark in the header and preserves Nansen attribution", async () => {
+    const { container } = await openPopup();
+    const productMark = container.querySelector<HTMLImageElement>(".tw-wordmark img")!;
+    expect(productMark.getAttribute("src")).toContain("/logos/tripwire.png");
+    expect(productMark.getAttribute("width")).toBe("28");
+    expect(productMark.alt).toBe("");
+    expect(container.querySelector(".tw-wordmark")!.textContent).toBe("Tripwire");
+    expect(container.querySelector<HTMLImageElement>(".tw-popup-foot img")!.getAttribute("src")).toContain("/logos/nansen.svg");
   });
 
   it("moves focus with the arrow keys and only commits on Enter", async () => {
@@ -191,20 +201,19 @@ describe("popup shell", () => {
     expect(shown(container).textContent).toContain("Tripwire isn't showing anything on this tab.");
   });
 
-  it("reads today's figures from the local ledger", async () => {
+  it("keeps internal accounting out of the popup and does not request the ledger", async () => {
     const { container } = await openPopup();
     const tiles = [...shown(container).querySelectorAll(".tw-tile")].map((t) => t.textContent);
-    expect(tiles).toHaveLength(3);
-    expect(tiles.join(" ")).toContain("7");
-    expect(tiles.join(" ")).toContain("42");
-    expect(tiles.join(" ")).toContain("616");
+    expect(tiles).toHaveLength(0);
+    expect(container.textContent).not.toMatch(/Credits today|Calls today|Calls used|Nansen CLI|NANSEN_API_KEY/);
+    expect(state.sent.some((message) => message.path === "/api/ledger")).toBe(false);
   });
 
-  it("dashes the figures rather than inventing them when the backend is offline", async () => {
+  it("does not show accounting placeholders when the backend is offline", async () => {
     state.ledger = { ok: false, status: 0, json: { error: "backend_unreachable" } };
     const { container } = await openPopup();
     const values = [...shown(container).querySelectorAll(".tw-tile-value")].map((t) => t.textContent);
-    expect(values).toEqual(["—", "—", "—"]);
+    expect(values).toEqual([]);
   });
 
   it("offers the current site on Sites, and asks the browser for exactly that origin", async () => {
@@ -254,10 +263,10 @@ describe("popup shell", () => {
     expect(id.getAttribute("title")).toBe("0x7fdafde5cfb5465924316eced2d3715494c517d1");
   });
 
-  it("keeps the three local pages reachable from the footer", async () => {
+  it("keeps user controls reachable without linking to the internal ledger", async () => {
     const { container } = await openPopup();
     const links = [...container.querySelectorAll<HTMLAnchorElement>(".tw-popup-foot a")].map((a) => a.getAttribute("href"));
-    expect(links).toEqual(["http://127.0.0.1:3000/rules", "http://127.0.0.1:3000/ledger", "http://127.0.0.1:3000/history"]);
+    expect(links).toEqual(["http://127.0.0.1:3000/rules", "http://127.0.0.1:3000/history"]);
   });
 
   it("says the site is not enabled when the tab is somewhere Tripwire has no permission", async () => {

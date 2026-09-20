@@ -5,11 +5,19 @@ the button that buys it.
 
 Built for the Nansen Meridian Buildathon.
 
-## Demo
+## What it looks like
+
+Unmodified captures from the loaded extension on live public pages (details and source URLs in
+[`apps/web/public/showcase/README.md`](apps/web/public/showcase/README.md)). The same six run as
+the rotating gallery on the product page at `http://127.0.0.1:3000`.
+
+| | |
+|---|---|
+| **Uniswap — the block screen.** A real drawdown rule fired on GIZA/Base; the Swap button is covered until you type `I AM EXIT LIQUIDITY`. <br><img src="apps/web/public/showcase/exit-liquidity.jpg" alt="Tripwire's exit-liquidity block screen over Uniswap's swap button" width="440"> | **Hyperliquid — perp positioning.** Smart Money long/short split, funding and open interest normalized across five venues, liquidation bands. <br><img src="apps/web/public/showcase/hyperliquid.jpg" alt="Tripwire's perp positioning card above Hyperliquid's order form" width="440"> |
+| **X — author badge.** A Nansen entity match beside the profile name opens holdings, tags and realized PnL. <br><img src="apps/web/public/showcase/x-profile.jpg" alt="Tripwire's Nansen entity card beside a profile name on X" width="440"> | **Jumper — evidence beside the swap.** The token card sits next to the widget, sized to its anchor. <br><img src="apps/web/public/showcase/jumper.jpg" alt="Tripwire's token evidence card alongside Jumper's swap form" width="440"> |
+| **Polymarket — the wallet lens.** Any address on the page opens that wallet's Nansen, Hyperliquid and Polymarket record. <br><img src="apps/web/public/showcase/polymarket.jpg" alt="Tripwire's wallet card opened from Polymarket's leaderboard" width="440"> | **DEX Screener — the docked verdict.** A tier-2 venue gets the verdict chip and the same evidence card, never a block. <br><img src="apps/web/public/showcase/dexscreener.jpg" alt="Tripwire's token flow card beside a DEX Screener chart" width="440"> |
 
 Demo video: (link added at submission)
-
-A short GIF walkthrough, if added, lives in `docs/media/`.
 
 ## What it does
 
@@ -170,8 +178,10 @@ apps/web/             Next.js backend on 127.0.0.1:3000: Nansen access, cache, l
 apps/extension/        WXT Chrome MV3 extension: x.com content script, venue adapters +
                        block/dock UI, popup, background bridge
 fixtures/nansen/       live-recorded responses, used by replay mode and tests
-docs/                  ARCHITECTURE.md, DECISIONS.md, SPIKE.md
-scripts/                record-fixtures.mjs
+docs/                  ARCHITECTURE.md, DECISIONS.md, CALIBRATION.md, VENUE-CHECK.md,
+                       HANDOFF.md, SPIKE*.md, DIRECTION-CONTRACT.md
+scripts/                record-fixtures.mjs and the other fixture recorders
+assets/, apps/web/public/showcase/   brand source art and the product-page screenshots
 ```
 
 ## Nansen usage and the 1,000-call ledger
@@ -261,6 +271,14 @@ before running it).
   `pnpm exec playwright install chromium` once).
 - `node scripts/record-fixtures.mjs` — re-record fixtures from live Nansen calls (costs
   credits).
+- **Product page:** `/` renders the public product page (hero, the rotating screenshots above,
+  FAQ). `TRIPWIRE_PUBLIC_SITE=1` builds and serves *only* that page and its static assets —
+  every API route, `/rules`, `/history` and `/ledger` return 404, and no Nansen credential is
+  needed or used. See [`docs/public-site-deployment.md`](docs/public-site-deployment.md).
+
+**Not in this repository, on purpose:** per-round build reports, feature briefs, planning notes,
+agent scaffolding (`.claude/`, `.impeccable/`, `.superpowers/`), the local SQLite database and
+every `.env*.local`. The durable decisions live in `docs/DECISIONS.md` and the commit history.
 
 ## Troubleshooting
 

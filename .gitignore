@@ -36,6 +36,29 @@ tasks/*.local.md
 src/styles/tokens.css
 repomix.xml
 .data/
+apps/web/data/public-brief.json
+apps/web/data/public-brief.json.*.tmp
 *.tsbuildinfo
 next-env.d.ts
 .playwright-mcp/
+
+# --- repo hygiene: internal process artefacts stay on disk, not in the repo ---
+
+# agent/session scaffolding
+.claude/
+.impeccable/
+.superpowers/
+.playwright-mcp/
+scratch/
+
+# planning and per-round working notes (superseded by docs/ and the commit history)
+tasks/
+docs/briefs/
+docs/superpowers/
+docs/BUILD-LOG.md
+docs/IMPROVEMENT-PLAN.md
+
+# stray captures and pasted source material
+image.png
+nansen.txt
+*.local.md

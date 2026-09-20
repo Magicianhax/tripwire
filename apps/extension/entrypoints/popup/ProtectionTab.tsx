@@ -1,5 +1,5 @@
 import { Globe, Locate } from "lucide-react";
-import { BUILDATHON_CALL_CAP, VENUE_LOGOS, type VenueId } from "@tripwire/core";
+import { VENUE_LOGOS, type VenueId } from "@tripwire/core";
 import { Icon } from "../../lib/ui/icons";
 import { BrandMark } from "../../lib/ui/Logo";
 import { HERE_TEXT, type Here } from "./here";
@@ -7,10 +7,6 @@ import { HERE_TEXT, type Here } from "./here";
 export const PRESETS = ["degen", "balanced", "paranoid"] as const;
 export type Preset = (typeof PRESETS)[number];
 export const PRESET_LABELS: Record<Preset, string> = { degen: "Degen", balanced: "Balanced", paranoid: "Paranoid" };
-
-/** What the local ledger measured, or `null` while it is in flight or the backend is not there.
- * A figure nobody read prints as a dash: the popup never invents a count. */
-export type Counters = { callsToday: number; creditsToday: number; totalCalls: number } | null;
 
 /** The built-in hosts whose venue mark the "on this tab" row can show. Everything else is a
  * globe, because Tripwire ships no mark it does not own the rights to bundle. */
@@ -37,8 +33,6 @@ const VENUE_BY_HOST: Record<string, VenueId> = {
   "birdeye.so": "birdeye",
 };
 
-const n = (value: number) => value.toLocaleString("en-US");
-
 export function ProtectionTab({
   preset,
   pending,
@@ -50,7 +44,6 @@ export function ProtectionTab({
   here,
   locateNote,
   onLocate,
-  counters,
 }: {
   preset: Preset | "custom" | null;
   pending: Preset | null;
@@ -62,14 +55,8 @@ export function ProtectionTab({
   here: Here;
   locateNote: string;
   onLocate: () => void;
-  counters: Counters;
 }) {
   const venue = here.host ? VENUE_BY_HOST[here.host] : undefined;
-  const tiles = [
-    { label: "Calls today", value: counters ? n(counters.callsToday) : "—" },
-    { label: "Credits today", value: counters ? n(counters.creditsToday) : "—" },
-    { label: "Calls used", value: counters ? `${n(counters.totalCalls)} / ${n(BUILDATHON_CALL_CAP)}` : "—" },
-  ];
 
   return (
     <>
@@ -126,19 +113,6 @@ export function ProtectionTab({
         ) : null}
       </section>
 
-      <section className="tw-block" aria-labelledby="tw-today-label">
-        <h2 className="tw-block-label" id="tw-today-label">
-          Nansen usage
-        </h2>
-        <ul className="tw-tiles">
-          {tiles.map((tile) => (
-            <li key={tile.label} className="tw-tile">
-              <span className="tw-tile-label">{tile.label}</span>
-              <span className="tw-tile-value">{tile.value}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
     </>
   );
 }

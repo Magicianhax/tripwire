@@ -62,6 +62,9 @@ export const CHAIN_LOGOS: Partial<Record<Chain, BrandLogo>> = {
 /** Only for the "Powered by Nansen" credit, never as Tripwire's own logo. */
 export const NANSEN_LOGO: BrandLogo = { name: "Nansen", file: "logos/nansen.svg" };
 
+/** Tripwire's own product identity, distinct from its intelligence provider and venues. */
+export const TRIPWIRE_LOGO: BrandLogo = { name: "Tripwire", file: "logos/tripwire.png" };
+
 /**
  * The perp venues quoted in the cross-venue funding table. Hyperliquid already has a venue mark
  * above; the others are marks of exchanges Tripwire only *reads*, so they are kept in their own

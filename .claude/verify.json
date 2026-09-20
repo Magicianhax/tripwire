@@ -1,4 +1,0 @@
-{
-  "command": "pnpm verify",
-  "timeoutSec": 120
-}

@@ -1,5 +1,35 @@
 # Tripwire handoff
 
+## Faster horizontal carousel + genuine exit-liquidity capture — 2026-09-21
+
+User complained ofslow/stalledslider andmissingexitliquidityexample. SiteShowcase now3s cadence with450ms horizontaltransform, workingedgearrows andendclones; noimagehoverpause. Keyboard/reducedmotion/visibility safeguardsremain. First of6slides is actual Uniswap GIZA/Base block screenshot public/showcase/exit-liquidity.jpg:49%7ddrawdown triggered existing30%rule, I AM EXIT LIQUIDITY input empty/Override disabled. CapturedviaCUA, nofinancialaction orrulechanges. ProvenanceREADMEupdated.
+
+355webtests/typecheck/buildpassed;2browser tests coverautoadvanceunderhover,edgearrows,forward/backwardwrap/rapidclicks,reducedmotion/mobile;codereviewapproved. ActualuserbrowseralsoobservedExit→Hyperliquid;bothlocalhosttabsrefreshed. LocalserverPID5888. No commit/deploy.
+
+## Minimal autoplay + first-screen hero — 2026-09-20
+
+User rejected showcase chrome and tiny centered screenshots. SiteShowcase now fullwidth16:9 captures with only small dots/pause underneath; removed all visible heading/site-tab/caption/date/fullsize text.7sautoplay,240msopacitycrossfade, manualinstant, hover/focus/pagevisibility/intersectionpause, reducedmotionpauseddefault. Hydration cached-image readiness check prevents onLoad-beforeReact deadlock. New hero.css +page first-screen hero; screenshot section immediatelybelow.2browser regressions coveractualcycling/pause/resume/layout/reducedmotion; build/typecheck/review passed. CUA refreshed bothlocaltabs, firstatroothero andsecondslideshowwithPlayactivated. ServerPID19032 port3000. This supersedes prior manual/compact-stage guidance. No commit/deploy.
+
+## User correction: screenshots, not a market dashboard — 2026-09-20
+
+Homepage now SiteShowcase manual slider with five actual screenshots captured through CUA from user's updated extension: HyperliquidETH positioning, XVitalik entitycard, JumperWBTC check, Polymarket publicSPCEXBUYER wallet and DexscreenerCHUMP Robinhood. Assets apps/web/public/showcase/*.jpg with provenanceREADME. They are rawJPEGviewport captures (not PNG despite screenshotAPI name), public/loggedout pages, no walletsconnected/transactions. Data is labelledpoint-in-time.
+
+Removed MarketBrief frompage/navigation/copy and allhomepagepolling. Existingcollectorcode retainedprivate; publicproxy blocksallAPI inclpublicbrief and allows/showcase assets. Startuprefreshflag nowoff. Productshowcase340pxdesktop/220pxmobilewithsitebuttons,prevnext,fullsize.18focusedunit tests/typechecks,3browser tests,build and codereview passed. Both user's pre-existing localhost tabs refreshed throughCUA (they previouslycontainedstaleversions). FinalserverPID3928 at3000. Finalslidercapture scratch/review/site-showcase-final.jpg. This direction supersedes previous standalonebrief public-productdirection below.
+
+## Original logo + real market brief — 2026-09-20
+
+Original generated Tripwire mintT with diagonal cut now supplies site/nav/footer, popup, favicon and Chrome16/32/48/128 icons. Source/prompts assets/brand; deterministic resizing script scripts/export-tripwire-logo.mjs. Provider and token marks unchanged.
+
+Public site no longer contains ProductDemo mock figures. It is a research-led layout with MarketBrief client and /api/public-brief. Fixed WETH/WBTC Ethereum and WSOL Solana; actual hourly closes and24hchange (26h request, last25points), exactcontracttokeninformation volume/cap, flowsegments and deterministic commentary. Price explicitly labelled recordedclose. Live verified all3 populated; cache repeat preservedasOf. Snapshot file apps/web/data/public-brief.json ignored in git. Local service runs TRIPWIRE_PUBLIC_BRIEF_REFRESH=1; public mode can only read sanitizedartifact with no paidrefresh. Publish artifact separately per docs/public-site-deployment.md; no hosting/publisher provisioned.
+
+Latest gates:1,523 unit tests/alltypechecks,4browser tests inclactual live capture, builds passed. Code/security reviews approved. Local serverPID19484 on3000. Screenshots scratch/review/product-live-desktop.png/product-live-mobile.png/tripwire-logo-popup.png. Newpublicbrief tracing warnings removed; pre-existingpredictionfixture warnings remain. No commit/deploy done.
+
+## Product website — 2026-09-20
+
+Homepage now public-facing Tripwire landing page with responsive mint/dark design, interactive illustrative token/wallet/perp preview, supported sites, product context, packaged-release install steps and native details FAQs. No backend/key/replay/usage/history imports in homepage/layout. Download is unavailable until TRIPWIRE_REPOSITORY_URL names the actual GitHub owner/repo, then links to releases/latest. Toolbar popup no longer requests ledger or shows usage tiles/key provenance; honest Sample data status remains for replay evidence.
+
+Set TRIPWIRE_PUBLIC_SITE=1 for public deployment; it denies private API/admin routes and write methods regardless Host, preserving normal local backend behavior when unset. See docs/public-site-deployment.md. This is not a hosted multi-user data service. All1,497 tests and typechecks passed; both builds and production desktop/mobile product browser regression passed; scoped review approved. Local live server PID6640 on3000. No deployment or commit performed. Existing prediction fixture tracing build warnings remain outside this scope.
+
 ## Polymarket badges, CHUMP discovery and liquidation chart — 2026-09-20
 
 PM leaderboard badges now mount beside the visible name outside its clipping wrapper, not after the screen-reader-only stretched link. Same-shadow pointer-events override and 28px button fix click interception; profile markers have duplicate priority under the unchanged40-marker cap. Browser regression reproduces live site's z-index/pointer structure and tests mouse/keyboard opening without navigation.
@@ -96,7 +126,7 @@ Branch `feat/cockpit-ui` (not pushed; `master` is at the earlier `2e59a4b`). HEA
 - The stale Hazard `DESIGN.md` and missing ADR-0009..0012 have been reconciled with the built Nansen UI.
 - Live Jumper repair: floating Shadow hosts now retain their intended layer above hostile widgets, and LI.FI's current Sui id prints `Tripwire doesn't cover Sui` instead of a clamped numeric fallback.
 
-The former in-flight brief, `docs/briefs/expand-and-perp-depth.md`, is now closed subject to final human live-site testing. The complete audit, rulings, exact verification, and residual gaps are at the end of `docs/BUILD-LOG.md`.
+The per-round build reports and feature briefs that drove this work are kept out of the repository (see `.gitignore`); each round's rationale is in its commit messages, and the durable rulings are in `docs/DECISIONS.md`.
 
 ## What is left
 
@@ -116,8 +146,8 @@ The former in-flight brief, `docs/briefs/expand-and-perp-depth.md`, is now close
 
 ## How to work on it
 
-- Read `docs/briefs/*.md` before touching a feature; they carry the binding requirements and the reasons.
+- Read `docs/DECISIONS.md` and the relevant commit messages before touching a feature; they carry the binding requirements and the reasons.
 - Follow TDD: the suites are `pnpm -F @tripwire/core test`, `-F web test`, `-F extension test`; e2e loads the real built extension against stubbed X/Jupiter pages in `apps/extension/e2e`.
 - Record new fixtures with a script and one live run, never ad hoc, and keep the credit cost in the report.
 - Quote command output before claiming anything passes.
-- `.impeccable/` and `.superpowers/` are gitignored scratch; durable copies live in `docs/`.
+- `.impeccable/`, `.superpowers/`, `tasks/` and the per-round briefs are gitignored scratch; durable copies live in `docs/`.

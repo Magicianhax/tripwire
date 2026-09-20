@@ -8,6 +8,16 @@ import { hostAllowed } from "./lib/origin";
  * file convention, formerly `middleware`.)
  */
 export function proxy(request: NextRequest) {
+  // A marketing deployment is not a shared backend. Deny private routes even when a
+  // hosting proxy forwards a loopback Host, and never permit writes through the site.
+  if (process.env.TRIPWIRE_PUBLIC_SITE === "1") {
+    const path = request.nextUrl.pathname;
+    const publicPath = path === "/" || path.startsWith("/_next/static/") || path.startsWith("/logos/") || path.startsWith("/showcase/") || path === "/favicon.ico" || path === "/icon.png";
+    if (!publicPath || !["GET", "HEAD"].includes(request.method)) {
+      return new NextResponse("Not found", { status: 404 });
+    }
+    return NextResponse.next();
+  }
   const host = request.headers.get("host") ?? request.nextUrl.host;
   if (!hostAllowed(host)) return new NextResponse("Host not allowed", { status: 403 });
   return NextResponse.next();

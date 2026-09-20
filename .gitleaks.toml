@@ -20,8 +20,13 @@ description = "Bare 0x-prefixed 64-hex value (likely a private key)"
 regex = '''\b0x[0-9a-fA-F]{64}\b'''
 entropy = 3.5
 [rules.allowlist]
-# tx hashes, storage slots and bytes32 constants are also 64 hex; allow known-safe file types
-paths = ['''\.(json|lock|log|md)$''', '''broadcast/''', '''cache/''', '''out/''']
+# tx hashes, storage slots and bytes32 constants are also 64 hex; allow known-safe file types.
+# Test suites and recorded page captures carry public bytes32 pool ids (Robinhood/Dexscreener
+# pools are bytes32, not 20-byte addresses) — a pool id is public and authenticates nothing.
+paths = [
+  '''\.(json|lock|log|md|ya?ml)$''', '''broadcast/''', '''cache/''', '''out/''',
+  '''(^|/)test/''', '''(^|/)e2e/''', '''\.(test|spec)\.[jt]sx?$''', '''(^|/)\.playwright-mcp/''',
+]
 
 [[rules]]
 id = "solana-keypair-json"
@@ -75,3 +80,21 @@ condition = "AND"
 paths = ['''fixtures/.*\.json$''']
 regexTarget = "line"
 regexes = ['''"pythTokenID"\s*:\s*"[0-9a-fA-Fx]{1,70}"''']
+
+# Public onchain identifiers that name themselves. Nansen fixtures, the venue test suites, the
+# recorded venue DOM captures and the venue-check notes all carry ERC-20 contract addresses,
+# pool ids and token names under fields literally called `token_address`, `tokenAddress`,
+# `toToken`, `pairAddress` or `token_name`. The word "token" is what trips the default
+# generic-api-key rule; every one of these values is published onchain and authenticates
+# nothing. Scoped to those file kinds and to lines that name one of those fields, so the rule
+# still fires on an unannotated high-entropy string anywhere else.
+[[allowlists]]
+description = "Public token/pool identifiers in fixtures, tests, captures and venue notes"
+condition = "AND"
+paths = [
+  '''fixtures/.*\.json$''', '''(^|/)test/''', '''(^|/)e2e/''',
+  '''\.(test|spec)\.[jt]sx?$''', '''(^|/)\.playwright-mcp/''', '''(^|/)docs/VENUE-CHECK\.md$''',
+  '''(^|/)public/showcase/README\.md$''',
+]
+regexTarget = "line"
+regexes = ['''(?i)"?(token_address|tokenAddress|token_name|toToken|outputCurrency|pairAddress|poolId)"?\s*[:=]''']

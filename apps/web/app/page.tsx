@@ -1,122 +1,26 @@
-import { resolveApiKey, type KeySource } from "@/lib/nansen/key";
-import { creditsToday, isReplay } from "@/lib/nansen/client";
-import { ledgerSummary, recentChecks } from "@/lib/store";
-import { Meter } from "./_components/Meter";
-import { TargetLabel } from "./_components/TargetLabel";
-import { Time } from "./_components/Time";
-import { VerdictChip } from "./_components/VerdictChip";
+import { ArrowDown, ArrowUpRight, Download, MousePointer2 } from "lucide-react";
+import { repositoryLinks } from "@/lib/product";
+import { SiteShowcase } from "./_components/SiteShowcase";
 import { Venue } from "./_components/Brand";
+import { NansenAttribution } from "./_components/NansenAttribution";
 
-export const dynamic = "force-dynamic";
+export const dynamic="force-dynamic";
 
-const DAILY_CAP = Number(process.env.NANSEN_DAILY_CREDIT_CAP ?? 3000);
-const BUILDATHON_GOAL = 1000;
-
-const KEY_SOURCE_LABEL: Record<KeySource, string> = {
-  env: "NANSEN_API_KEY",
-  "nansen-cli": "Nansen CLI login",
-  none: "Not configured",
-};
-
-export default function StatusPage() {
-  const { source } = resolveApiKey();
-  const replay = isReplay();
-  const credits = creditsToday();
-  const { totalCalls } = ledgerSummary();
-  const checks = recentChecks(10);
-  const goalPct = Math.min(100, Math.round((totalCalls / BUILDATHON_GOAL) * 100));
-
-  return (
-    <>
-      <section className="tw-section">
-        <h1 className="tw-display">Status</h1>
-      </section>
-
-      <section className="tw-section">
-        <h2 className="tw-h2">Backend</h2>
-        <div className="tw-stat-row">
-          <div className="tw-stat">
-            <span className="tw-label tw-stat-label">API key</span>
-            <span className={`tw-stat-value${source === "none" ? " tw-chip-danger-text" : ""}`}>{KEY_SOURCE_LABEL[source]}</span>
-          </div>
-          <div className="tw-stat">
-            <span className="tw-label tw-stat-label">Replay mode</span>
-            <span className="tw-stat-value">{replay ? "On" : "Off"}</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="tw-section">
-        <h2 className="tw-h2">Credits &amp; calls</h2>
-        <div className="tw-stat-row">
-          <div className="tw-stat">
-            <span className="tw-label tw-stat-label">Credits today</span>
-            <span className="tw-num-fig tw-stat-value">
-              {credits} / {DAILY_CAP}
-            </span>
-            <Meter label={`Nansen credits used today: ${credits} of the ${DAILY_CAP} cap`} value={credits} max={DAILY_CAP} />
-          </div>
-          <div className="tw-stat">
-            <span className="tw-label tw-stat-label">Calls total</span>
-            <span className="tw-num-fig tw-stat-value">
-              {totalCalls} / {BUILDATHON_GOAL}
-            </span>
-            <Meter label={`Calls toward the buildathon goal: ${totalCalls} of ${BUILDATHON_GOAL}, ${goalPct}%`} value={totalCalls} max={BUILDATHON_GOAL} />
-          </div>
-        </div>
-      </section>
-
-      <section className="tw-section">
-        <h2 className="tw-h2">Load the extension</h2>
-        <ol className="tw-install-steps">
-          <li>
-            Build it: <code>pnpm -F extension build</code>
-          </li>
-          <li>
-            Open <code>chrome://extensions</code> in Chrome.
-          </li>
-          <li>Turn on Developer mode (top right).</li>
-          <li>
-            Click &quot;Load unpacked&quot; and select <code>apps/extension/.output/chrome-mv3</code>.
-          </li>
-        </ol>
-      </section>
-
-      <section className="tw-section">
-        <h2 className="tw-h2">Last 10 checks</h2>
-        {checks.length === 0 ? (
-          <p className="tw-empty">No checks yet. Open a post on X with the extension loaded to run one.</p>
-        ) : (
-          <div className="tw-table-wrap">
-            <table className="tw-table">
-              <thead>
-                <tr>
-                  <th scope="col">Time</th>
-                  <th scope="col">Venue</th>
-                  <th scope="col">Target</th>
-                  <th scope="col">Verdict</th>
-                </tr>
-              </thead>
-              <tbody>
-                {checks.map((c, i) => (
-                  <tr key={i}>
-                    <td>
-                      <Time ts={c.ts} />
-                    </td>
-                    <td className="tw-nowrap">
-                      <Venue id={c.venue} />
-                    </td>
-                    <td className="tw-nowrap"><TargetLabel json={c.target} /></td>
-                    <td>
-                      <VerdictChip verdict={c.verdict} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-    </>
-  );
+export default function ProductPage(){
+  const links=repositoryLinks(process.env.TRIPWIRE_REPOSITORY_URL);
+  return <div className="product research-site">
+    <section className="product-hero" aria-labelledby="hero-title">
+      <div className="hero-copy"><NansenAttribution/>
+        <h1 id="hero-title">Onchain intelligence.<br/><span>In your browser.</span></h1>
+        <p className="hero-description">The wallet behind the post. The flows behind the token.<br/>Tripwire brings Nansen to the places you already trade.</p>
+        <div className="hero-actions"><a href="#install" className="product-button"><Download size={18} aria-hidden="true"/>Get Tripwire for Chrome</a><a className="hero-see" href="#in-action">See it in action<ArrowDown size={16} aria-hidden="true"/></a></div>
+      </div>
+    </section>
+    <SiteShowcase/>
+    <section className="venue-band" aria-label="Supported sites"><p>Works where<br/><strong>you already are.</strong></p><div className="venue-list"><span className="product-x">𝕏 <span>X</span></span>{["dexscreener","uniswap","jumper","hyperliquid","polymarket"].map(id=><Venue key={id} id={id}/>)}</div></section>
+    <section id="features" className="workflow-section" aria-labelledby="features-title"><div><span className="brief-kicker">WITHOUT SWITCHING TABS</span><h2 id="features-title">A little more context.<br/>Right where you need it.</h2><p>Open a Nansen badge to inspect the wallet, token or market already on your screen.</p></div><div className="workflow-rows"><article><span>01</span><div><h3>A name becomes a profile.</h3><p>Open available Nansen wallet or entity insights beside a post or trader’s name.</p></div></article><article><span>02</span><div><h3>A token gets its context.</h3><p>See flows and holders for the exact selected contract. Other chains and perp markets stay clearly separate.</p></div></article><article><span>03</span><div><h3>A position gets a second look.</h3><p>On Hyperliquid, inspect perp positioning, funding and reported liquidation levels.</p></div></article></div></section>
+    <section id="install" className="install-section" aria-labelledby="install-title"><div className="install-intro"><span className="brief-kicker">TAKE IT WITH YOU</span><h2 id="install-title">Install Tripwire.</h2><p>Download the packaged extension from our release repository and add it to desktop Chrome.</p><NansenAttribution compact/>{links?<a className="product-button" href={links.release} target="_blank" rel="noopener noreferrer"><Download size={16} aria-hidden="true"/>Download extension<ArrowUpRight size={14} aria-hidden="true"/></a>:<><button className="product-button" disabled aria-describedby="release-note"><Download size={16} aria-hidden="true"/>Download coming soon</button><p id="release-note" className="release-note">The public package isn’t available yet. Its release link will appear here.</p></>}{links&&<a className="repository-link" href={links.repository} target="_blank" rel="noopener noreferrer">Source & releases on GitHub<ArrowUpRight size={14} aria-hidden="true"/></a>}</div><ol className="install-guide"><li><span>1</span><div><h3>Download the release ZIP</h3><p>Choose the packaged extension—not the source-code archive. Extract it to a folder you’ll keep.</p></div></li><li><span>2</span><div><h3>Add it in Chrome</h3><p>Open <code>chrome://extensions</code>, enable Developer mode and choose <strong>Load unpacked</strong>. Select the folder containing <code>manifest.json</code>.</p></div></li><li><span>3</span><div><h3>Pin and connect</h3><p>Pin Tripwire, follow the release’s connection instructions, then enable your chosen sites and refresh them.</p></div></li></ol></section>
+    <section id="faq" className="product-faq" aria-labelledby="faq-title"><h2 id="faq-title">A few details.</h2><div className="faq-list"><details><summary>Are these screenshots from the extension?</summary><p>Yes. They show Tripwire running on the named sites. The figures were recorded when each screenshot was taken; they are not live quotes.</p></details><details><summary>Does every wallet or token have data?</summary><p>Coverage depends on the asset, chain and available Nansen data. Tripwire keeps each token’s contract and chain explicit, and shows when information is unavailable.</p></details><details><summary>Does Tripwire trade for me?</summary><p>No. Tripwire presents evidence and can flag trades when your rules fire. You choose what to do and sign in your trading app. This information is not a guarantee of safety.</p></details><details><summary>What do I need to use the extension?</summary><p>Desktop Chrome and a configured Tripwire data connection. The current development build uses a local service. The public release will describe its setup requirements.</p></details></div></section>
+    <div className="product-closing"><MousePointer2 size={16} aria-hidden="true"/><span>Tripwire puts Nansen beside your next decision.</span><a href="#install">Get the extension<ArrowUpRight size={14} aria-hidden="true"/></a></div>
+  </div>;
 }

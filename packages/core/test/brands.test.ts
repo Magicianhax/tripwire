@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHAIN_LOGOS, chainLogo, NANSEN_LOGO, VENUE_LOGOS, venueLogo, VENUE_IDS } from "../src/brands";
+import { CHAIN_LOGOS, chainLogo, NANSEN_LOGO, TRIPWIRE_LOGO, VENUE_LOGOS, venueLogo, VENUE_IDS } from "../src/brands";
 import { CHAINS } from "../src/types";
 
 describe("brand logos", () => {
@@ -23,5 +23,10 @@ describe("brand logos", () => {
 
   it("names the Nansen mark", () => {
     expect(NANSEN_LOGO).toEqual({ name: "Nansen", file: "logos/nansen.svg" });
+  });
+
+  it("keeps the product identity distinct from the intelligence provider", () => {
+    expect(TRIPWIRE_LOGO).toEqual({ name: "Tripwire", file: "logos/tripwire.png" });
+    expect(TRIPWIRE_LOGO.file).not.toBe(NANSEN_LOGO.file);
   });
 });

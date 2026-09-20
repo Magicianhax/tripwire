@@ -1,0 +1,15 @@
+.site-showcase{min-width:0;scroll-margin-top:24px}
+.showcase-stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:6px;background:#080c0b}
+.showcase-track{display:flex;width:100%;height:100%;transition:transform 450ms cubic-bezier(.77,0,.175,1)}
+.showcase-stage img{display:block;flex:0 0 100%;min-width:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.showcase-stage[data-instant=true] .showcase-track{transition:none}
+.showcase-edge{position:absolute;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:40px;height:56px;border:1px solid #ffffff24;border-radius:6px;background:#07110dd9;color:#e4f5eb;cursor:pointer;z-index:1}
+.showcase-previous{left:10px}.showcase-next{right:10px}
+.showcase-controls{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 0 2px}
+.showcase-dots{display:flex;align-items:center;gap:2px}
+.showcase-dots button,.showcase-play{display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;background:transparent;cursor:pointer;color:#becfc5;border-radius:4px}
+.showcase-dots span{display:block;width:5px;height:5px;border-radius:50%;background:#7b8e81}
+.showcase-dots [aria-pressed=true] span{width:16px;border-radius:3px;background:#b9f5d0}
+.site-showcase button:focus-visible{outline:2px solid var(--tw-mint);outline-offset:1px}
+@media(hover:hover) and (pointer:fine){.showcase-dots button:hover span{background:#d3e7dc}.showcase-play:hover,.showcase-edge:hover{color:#fff;background:#17251d}}
+@media(prefers-reduced-motion:reduce){.showcase-track{transition:none}}

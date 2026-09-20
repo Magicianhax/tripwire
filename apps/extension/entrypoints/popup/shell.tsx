@@ -1,5 +1,5 @@
-import { CircleCheck, CircleX, History, Info, LoaderCircle, ScrollText, Settings, SlidersHorizontal, TriangleAlert } from "lucide-react";
-import { NANSEN_LOGO } from "@tripwire/core";
+import { CircleCheck, CircleX, History, Info, LoaderCircle, Settings, SlidersHorizontal, TriangleAlert } from "lucide-react";
+import { NANSEN_LOGO, TRIPWIRE_LOGO } from "@tripwire/core";
 import { Icon } from "../../lib/ui/icons";
 import { BrandMark } from "../../lib/ui/Logo";
 import { Tooltip } from "../../lib/ui/Tooltip";
@@ -16,7 +16,7 @@ export const PRIVACY_LINE = "Addresses you inspect go to your own local backend 
 export function PopupHead({ status, settingsOpen, onToggleSettings }: { status: PopupStatus; settingsOpen: boolean; onToggleSettings: () => void }) {
   return (
     <header className="tw-popup-head">
-      <h1 className="tw-wordmark">Tripwire</h1>
+      <h1 className="tw-wordmark"><BrandMark logo={TRIPWIRE_LOGO} size={28} />Tripwire</h1>
       <p className="tw-status" data-state={status.state} role="status" aria-live="polite">
         <Icon icon={status.state ? STATUS_ICON[status.state] : LoaderCircle} size={14} className={status.state ? undefined : "tw-spin"} />
         <span className="tw-status-text">{status.text}</span>
@@ -30,11 +30,10 @@ export function PopupHead({ status, settingsOpen, onToggleSettings }: { status: 
 
 const FOOT_LINKS = [
   { href: "/rules", label: "Rules", icon: SlidersHorizontal },
-  { href: "/ledger", label: "Ledger", icon: ScrollText },
   { href: "/history", label: "History", icon: History },
 ] as const;
 
-/** Pinned footer: the Nansen credit, the three local pages, and the privacy line as a tooltip. */
+/** Pinned footer: Nansen attribution, user controls, and the privacy line as a tooltip. */
 export function PopupFoot({ backendUrl }: { backendUrl: string }) {
   return (
     <footer className="tw-popup-foot">

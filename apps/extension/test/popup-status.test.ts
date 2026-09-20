@@ -2,25 +2,25 @@ import { describe, expect, it } from "vitest";
 import { popupStatus } from "../entrypoints/popup/status";
 
 describe("popupStatus", () => {
-  it("names the real key source when connected", () => {
-    expect(popupStatus({ ok: true, keySource: "nansen-cli", replay: false })).toEqual({ text: "Connected · key via Nansen CLI", state: "connected" });
-    expect(popupStatus({ ok: true, keySource: "env", replay: false })).toEqual({ text: "Connected · key via NANSEN_API_KEY", state: "connected" });
+  it("shows readiness without internal key configuration", () => {
+    expect(popupStatus({ ok: true, keySource: "nansen-cli", replay: false })).toEqual({ text: "Connected", state: "connected" });
+    expect(popupStatus({ ok: true, keySource: "env", replay: false })).toEqual({ text: "Connected", state: "connected" });
   });
 
-  it("no key: not ready, with the fix", () => {
-    expect(popupStatus({ ok: true, keySource: "none", replay: false })).toEqual({ text: "No Nansen key · run nansen login", state: "not-ready" });
+  it("no key: names the service issue without pointing to an unrelated setting", () => {
+    expect(popupStatus({ ok: true, keySource: "none", replay: false })).toEqual({ text: "Data service needs setup", state: "not-ready" });
   });
 
   it("no key but in replay mode: ready, not a warning -- recorded data needs no key", () => {
-    expect(popupStatus({ ok: true, keySource: "none", replay: true })).toEqual({ text: "Replay mode · recorded data, no key", state: "connected" });
+    expect(popupStatus({ ok: true, keySource: "none", replay: true })).toEqual({ text: "Sample data", state: "connected" });
   });
 
-  it("replay mode with a real key still names the key source (replay only changes the 'none' case)", () => {
-    expect(popupStatus({ ok: true, keySource: "env", replay: true })).toEqual({ text: "Connected · key via NANSEN_API_KEY", state: "connected" });
+  it("identifies sample data even with a real key", () => {
+    expect(popupStatus({ ok: true, keySource: "env", replay: true })).toEqual({ text: "Sample data", state: "connected" });
   });
 
   it("offline and checking", () => {
-    expect(popupStatus({ ok: false })).toEqual({ text: "Backend offline · run pnpm dev", state: "offline" });
-    expect(popupStatus(null)).toEqual({ text: "Checking backend…", state: undefined });
+    expect(popupStatus({ ok: false })).toEqual({ text: "Offline · check connection", state: "offline" });
+    expect(popupStatus(null)).toEqual({ text: "Connecting…", state: undefined });
   });
 });
