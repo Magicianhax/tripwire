@@ -183,7 +183,7 @@ describe("BadgeCard", () => {
     );
     const { container, root } = mountNode(node());
     const expand = container.querySelector<HTMLButtonElement>(".tw-card-size")!;
-    expect(document.getElementById(expand.getAttribute("aria-labelledby")!)?.textContent).toBe("Expand card");
+    expect(expand.getAttribute("aria-label")).toBe("Expand card");
     expect(expand.getAttribute("aria-pressed")).toBeNull();
     expect(container.querySelector(".tw-pop")?.getAttribute("data-size")).toBe("compact");
     expect(container.querySelector(".tw-badge-card")?.getAttribute("data-size")).toBe("compact");
@@ -193,7 +193,7 @@ describe("BadgeCard", () => {
     size = "expanded";
     act(() => root.render(node()));
     const collapse = container.querySelector<HTMLButtonElement>(".tw-card-size")!;
-    expect(document.getElementById(collapse.getAttribute("aria-labelledby")!)?.textContent).toBe("Collapse card");
+    expect(collapse.getAttribute("aria-label")).toBe("Collapse card");
     expect(collapse.getAttribute("aria-pressed")).toBeNull();
     expect(container.querySelector(".tw-pop")?.getAttribute("data-size")).toBe("expanded");
     expect(container.querySelector(".tw-badge-card")?.getAttribute("data-size")).toBe("expanded");

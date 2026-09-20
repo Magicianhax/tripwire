@@ -175,7 +175,7 @@ describe("WalletCard", () => {
     );
     const { container, root } = mountNode(node());
     const toggle = container.querySelector<HTMLButtonElement>(".tw-card-size")!;
-    expect(document.getElementById(toggle.getAttribute("aria-labelledby")!)?.textContent).toBe("Expand card");
+    expect(toggle.getAttribute("aria-label")).toBe("Expand card");
     expect(container.querySelector(".tw-pop")?.getAttribute("data-size")).toBe("compact");
     expect(container.querySelector(".tw-wallet-card")?.getAttribute("data-size")).toBe("compact");
     act(() => toggle.click());
@@ -186,7 +186,7 @@ describe("WalletCard", () => {
     expect(container.querySelector(".tw-pop")?.getAttribute("data-size")).toBe("expanded");
     expect(container.querySelector(".tw-wallet-card")?.getAttribute("data-size")).toBe("expanded");
     const collapse = container.querySelector(".tw-card-size")!;
-    expect(document.getElementById(collapse.getAttribute("aria-labelledby")!)?.textContent).toBe("Collapse card");
+    expect(collapse.getAttribute("aria-label")).toBe("Collapse card");
     root.unmount();
   });
 

@@ -198,9 +198,14 @@ describe("1.2.1 / 1.2.2 the card states a price, a date and the market's own num
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
   });
 
-  it("the market's own label inside its event is shown, because the question does not carry it", () => {
+  // The question and the market's label inside its event moved to the card header, which is
+  // where a reader looks for the name of the thing (see card-header.test.tsx). The body states
+  // each of them exactly zero times: it used to repeat the question above the price.
+  it("leaves the question and the market's own label to the header", () => {
     const c = render(<PredictionBody panel={panelOf()} />);
-    expect(c.querySelector(".tw-pm-group")!.textContent).toBe("80,000");
+    expect(c.querySelector(".tw-pm-group")).toBeNull();
+    expect(c.textContent).not.toContain(MARKET.question);
+    expect(c.textContent).not.toContain("80,000");
   });
 });
 

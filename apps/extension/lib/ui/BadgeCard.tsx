@@ -12,7 +12,6 @@ import { ReplayBadge } from "./ReplayBadge";
 import { HyperliquidBody, PolymarketBody } from "./VenueBody";
 import { PopoverContext } from "./Popover";
 import { Tabs, type TabDef } from "./Tabs";
-import { Tooltip } from "./Tooltip";
 
 export type BadgeCardProps = {
   handle: string;
@@ -69,19 +68,12 @@ export function BadgeCard({ handle, displayName, badges, initial, onClose, onSav
           </span>
         </div>
         <ReplayBadge replay={badges?.replay} />
+        {/* Named rather than tooltipped, for the same reason as the evidence card's control
+            (see `CardHeader` in panel-parts.tsx). */}
         {toggleSize ? (
-          <Tooltip label={size === "expanded" ? "Collapse card" : "Expand card"} align="end" placement="bottom">
-            {(labelId) => (
-              <button
-                type="button"
-                className="tw-card-size"
-                aria-labelledby={labelId}
-                onClick={toggleSize}
-              >
-                <Icon icon={size === "expanded" ? Minimize2 : Maximize2} size={16} />
-              </button>
-            )}
-          </Tooltip>
+          <button type="button" className="tw-card-size" aria-label={size === "expanded" ? "Collapse card" : "Expand card"} onClick={toggleSize}>
+            <Icon icon={size === "expanded" ? Minimize2 : Maximize2} size={16} />
+          </button>
         ) : null}
         <button type="button" className="tw-card-close" aria-label="Close" onClick={close}>
           <CloseIcon />

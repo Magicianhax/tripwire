@@ -253,7 +253,7 @@ describe("expanding the card", () => {
     expect(pop.getAttribute("aria-modal")).toBe("false");
     expect(container.querySelector(".tw-pop-backdrop")).toBeNull();
     const expand = container.querySelector(".tw-card-size")!;
-    expect(document.getElementById(expand.getAttribute("aria-labelledby")!)?.textContent).toBe("Expand card");
+    expect(expand.getAttribute("aria-label")).toBe("Expand card");
     const traders = [...container.querySelectorAll<HTMLButtonElement>('[role="tab"]')].find((tab) => tab.textContent?.startsWith("Traders"))!;
     act(() => traders.click());
     expect(traders.getAttribute("aria-selected")).toBe("true");
@@ -266,7 +266,7 @@ describe("expanding the card", () => {
     expect(expanded.getAttribute("aria-modal")).toBe("true");
     expect(container.querySelector(".tw-pop-backdrop")).not.toBeNull();
     const collapse = container.querySelector(".tw-card-size")!;
-    expect(document.getElementById(collapse.getAttribute("aria-labelledby")!)?.textContent).toBe("Collapse card");
+    expect(collapse.getAttribute("aria-label")).toBe("Collapse card");
     expect([...container.querySelectorAll<HTMLButtonElement>('[role="tab"]')].find((tab) => tab.textContent?.startsWith("Traders"))?.getAttribute("aria-selected")).toBe(
       "true",
     );

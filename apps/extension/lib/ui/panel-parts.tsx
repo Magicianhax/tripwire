@@ -9,7 +9,6 @@ import { Plate } from "./Plate";
 import { PopoverContext } from "./Popover";
 import { ReplayBadge } from "./ReplayBadge";
 import { decadeTicks, symlogFraction } from "./scales";
-import { Tooltip } from "./Tooltip";
 
 /** Center-zero split bar on a shared symmetric-log scale with decade ticks: selling extends left
  * of zero in red, buying right in mint, so direction carries the sign. A row whose rule fired
@@ -248,7 +247,10 @@ function Age({ iso, prefix }: { iso: string; prefix?: string }) {
 export function CardHeader({
   verdict,
   title,
+  fullTitle,
+  clamp = false,
   name,
+  caption,
   address,
   addressAction,
   since,
@@ -262,8 +264,18 @@ export function CardHeader({
   verdict?: Verdict | "LOADING";
   /** The headline name: "$WIF" when the token resolved, else the short address. */
   title: string;
+  /**
+   * The whole of a title the heading may have to cut short — a prediction market's question.
+   * It goes in the heading's `title` attribute, so the full sentence is one hover away.
+   */
+  fullTitle?: string | null;
+  /** Wraps the heading over at most two lines instead of clipping it to one. For a sentence
+   * ("Will United Russia (ER) gain the most seats…"), never for a symbol. */
+  clamp?: boolean;
   /** The token's full name ("dogwifhat"), shown beside the symbol. */
   name?: string | null;
+  /** A quiet line under the title: the market's own label inside its event ("United Russia"). */
+  caption?: string | null;
   /** The contract address, shown short and copyable under the name. */
   address?: string | null;
   /** Replaces the repeated address text with a labelled copy action (see AddressChip). */
@@ -291,32 +303,33 @@ export function CardHeader({
     <header className="tw-card-header">
       {showToken ? <TokenLogo url={logoUrl} symbol={title} chain={chain} tokenAddress={address} /> : null}
       <div className="tw-card-heading">
-        <h2 id={headingId} className="tw-card-title" tabIndex={-1}>
+        <h2 id={headingId} className="tw-card-title" data-clamp={clamp ? "" : undefined} title={fullTitle ?? undefined} tabIndex={-1}>
           <span className="tw-card-symbol">{title}</span>
           {name ? <span className="tw-card-name"> {name}</span> : null}
         </h2>
         <span className="tw-card-sub">
           <ChainLogo chain={chain} size={14} />
+          {caption ? <span className="tw-card-caption">{caption}</span> : null}
           {address ? <AddressChip address={address} label={addressAction} /> : null}
           {since ? <Age iso={since.iso} prefix={since.prefix} /> : null}
         </span>
       </div>
       {verdict ? <Plate verdict={verdict} className="tw-card-plate" /> : null}
       <ReplayBadge replay={replay} />
+      {/* Named, not tooltipped. A bubble anchored to a control in a 56px header has nowhere to
+          go that is not over the title or the line under it, and the card's own `overflow:
+          hidden` clips whatever survives that. The name is on the button, where the close
+          button next to it already carries its own. */}
       {toggleSize ? (
-        <Tooltip label={size === "expanded" ? "Collapse card" : "Expand card"} align="end" placement="bottom">
-          {(labelId) => (
-            <button
-              type="button"
-              className="tw-card-size"
-              // The label says what the press will do, not what the card currently is.
-              aria-labelledby={labelId}
-              onClick={toggleSize}
-            >
-              <Icon icon={size === "expanded" ? Minimize2 : Maximize2} size={16} />
-            </button>
-          )}
-        </Tooltip>
+        <button
+          type="button"
+          className="tw-card-size"
+          // The label says what the press will do, not what the card currently is.
+          aria-label={size === "expanded" ? "Collapse card" : "Expand card"}
+          onClick={toggleSize}
+        >
+          <Icon icon={size === "expanded" ? Minimize2 : Maximize2} size={16} />
+        </button>
       ) : null}
       {close ? (
         <button type="button" className="tw-card-close" aria-label="Close" onClick={close}>

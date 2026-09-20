@@ -317,8 +317,18 @@ export function Panel({
   const cardAddress = cardTarget?.kind === "spot" ? cardTarget.tokenAddress : (address ?? null);
   const token = spot ? (shownSpot?.token ?? null) : null;
   const logoUrl = spot ? (token?.logoUrl ?? shownSpot?.logoUrl ?? null) : null;
+  /**
+   * A prediction market is named by its question, not by its slug.
+   *
+   * The slug is what the click knew — it is in the URL — so it is what the first frame shows,
+   * and it is replaced by "Will United Russia (ER) gain the most seats…" the moment the market
+   * answers. The question is a sentence, so the heading wraps over two lines and keeps the
+   * whole of it in its title attribute rather than ending at an ellipsis with nothing behind it.
+   */
+  const question = kind === "prediction" && data !== null ? ((data.panel as PredictionPanel).market?.question ?? null) : null;
+  const groupItemTitle = kind === "prediction" && data !== null ? ((data.panel as PredictionPanel).market?.groupItemTitle ?? null) : null;
   // Nansen's own name for the token wins over the cashtag the post happened to use.
-  const headerTitle = token?.symbol ? `$${token.symbol}` : title;
+  const headerTitle = token?.symbol ? `$${token.symbol}` : (question ?? title);
   const since = postTimeIso ? { iso: postTimeIso } : checkedAtIso ? { iso: checkedAtIso, prefix: "checked" } : null;
   const nansenUrl = spot && cardChain && cardAddress ? nansenTokenUrl(cardChain, cardAddress) : null;
   const verdict: Verdict | "LOADING" = error ? "UNCHECKED" : (data?.verdict ?? "LOADING");
@@ -331,6 +341,9 @@ export function Panel({
         <CardHeader
           verdict={verdict}
           title={headerTitle}
+          fullTitle={question}
+          clamp={question !== null}
+          caption={groupItemTitle}
           name={token?.name ?? null}
           address={spot ? cardAddress : null}
           since={since}

@@ -154,10 +154,8 @@ function MarketReadout({ market, historical, picked, unknown }: { market: Predic
   const uma = market.umaResolutionStatuses;
   return (
     <div className="tw-pm-readout">
-      <p className="tw-question">
-        {market.question}
-        {market.groupItemTitle ? <span className="tw-pm-group tw-fig">{market.groupItemTitle}</span> : null}
-      </p>
+      {/* The question and the market's label inside its event are the card's header (Panel).
+          Repeating them here cost the compact card two lines before its price. */}
       {state ? (
         <p className="tw-pm-state" data-state={market.state}>
           <Icon icon={market.state === "resolved" ? Gavel : CircleSlash} size={14} />
