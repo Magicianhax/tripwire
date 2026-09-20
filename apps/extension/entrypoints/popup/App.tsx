@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { CircleCheck, CircleX, History, LoaderCircle, ScrollText, SlidersHorizontal, TriangleAlert } from "lucide-react";
+import { CircleCheck, CircleX, History, LoaderCircle, Locate, ScrollText, SlidersHorizontal, TriangleAlert } from "lucide-react";
 import { NANSEN_LOGO, presetChangeNeedsConfirm, VENUE_LOGOS, type VenueId } from "@tripwire/core";
 import { browser } from "wxt/browser";
 import { getRules, health, setPreset } from "../../lib/api";
 import type { KeySource, RulesResponse } from "../../lib/api-types";
 import { Icon } from "../../lib/ui/icons";
 import { BrandMark } from "../../lib/ui/Logo";
+import { LOCATE_MESSAGE } from "../venues.content/locate";
 import { popupStatus } from "./status";
 import { WalletLensSection } from "./WalletLensSection";
 
@@ -23,6 +24,10 @@ const VENUES: { tier: string; ids: VenueId[] }[] = [
 
 const STATUS_ICON = { connected: CircleCheck, offline: CircleX, "not-ready": TriangleAlert } as const;
 
+/** Said when the active tab's content script has nothing mounted — or is not there at all.
+ * Both are the same fact for the user, and neither is worth two different sentences. */
+const NOTHING_MOUNTED = "Tripwire isn't showing anything on this tab.";
+
 export default function App() {
   const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource; replay: boolean } | { ok: false } | null>(null);
   // The server-confirmed rules: what "weaker" is measured against. null until loaded.
@@ -34,6 +39,7 @@ export default function App() {
   const [backendUrl, setBackendUrl] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlDraft, setBackendUrlDraft] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlError, setBackendUrlError] = useState("");
+  const [locateNote, setLocateNote] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -110,6 +116,23 @@ export default function App() {
     await browser.storage.local.set({ backendUrl: next });
   }
 
+  /**
+   * "Where is it?" — the answer for a user who cannot find the verdict on a dense venue page.
+   * Asks the active tab's content script to light whatever it has mounted; the reply says
+   * whether there was anything, and that is what gets reported. A tab with no content script
+   * (or no venue page) rejects the message, which is the same answer: nothing is mounted here.
+   */
+  async function locate() {
+    setLocateNote("");
+    try {
+      const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+      const found = tab?.id === undefined ? false : await browser.tabs.sendMessage(tab.id, { type: LOCATE_MESSAGE });
+      setLocateNote(found ? "Highlighted on the page." : NOTHING_MOUNTED);
+    } catch {
+      setLocateNote(NOTHING_MOUNTED);
+    }
+  }
+
   const { text: statusText, state: statusState } = popupStatus(healthState);
 
   return (
@@ -148,6 +171,16 @@ export default function App() {
       {presetError ? (
         <p className="tw-field-hint" role="status">
           {presetError}
+        </p>
+      ) : null}
+
+      <button type="button" className="tw-button-quiet tw-locate" onClick={() => void locate()}>
+        <Icon icon={Locate} size={16} />
+        Show me where it is
+      </button>
+      {locateNote ? (
+        <p className="tw-locate-note" data-state={locateNote === NOTHING_MOUNTED ? "missing" : "found"} role="status" aria-live="polite">
+          {locateNote}
         </p>
       ) : null}
 

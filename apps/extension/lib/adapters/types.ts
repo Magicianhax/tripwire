@@ -24,6 +24,28 @@ export type TargetGap =
   /** The page names a token by symbol only (no address in the URL): resolve it and check it. */
   | { kind: "symbol"; symbol: string; chainHint?: Chain };
 
+/**
+ * Where on a venue page the eye already is, best first. The runner mounts the verdict to the
+ * first candidate that qualifies (`./placement.ts`), so the order is the product decision:
+ * the control the user is about to press, then the panel holding it, then the token's own
+ * identity, then the page's header.
+ */
+export type AnchorRole = "trade-button" | "trade-panel-header" | "token-identity" | "page-header";
+
+export type AnchorCandidate = {
+  role: AnchorRole;
+  /**
+   * Which side of the found element the strip goes on. Omitted, it follows the role: above a
+   * trade button (never covering it), below a header (the strip describes what the header
+   * names).
+   */
+  place?: "before" | "after";
+  /** Reads `textContent`/attributes only, like every other adapter method. */
+  find(doc: Document, url?: URL): HTMLElement | null;
+};
+
+export type Placement = { role: AnchorRole; place: "before" | "after"; element: HTMLElement };
+
 export interface VenueAdapter {
   /** e.g. "jupiter", "pumpfun", "uniswap", "jumper", "hyperliquid", "polymarket", "raydium", … */
   id: string;
@@ -42,6 +64,14 @@ export interface VenueAdapter {
    * dock-only (URL-derived target, no DOM interaction, nothing to block). `url` lets an
    * adapter withhold an anchor on a page of its own host whose trade form is uncaptured. */
   anchor?(doc: Document, url?: URL): HTMLElement | null;
+  /**
+   * Fallback anchors, best first, for when the trade button is absent or out of the first
+   * viewport — and, for a tier-2 adapter, the whole list. `anchor()` is always tried first for
+   * tier 1 (`placement.ts`'s `anchorCandidates`), so this can only ever ADD places to mount,
+   * never move the trade button the blocker binds to. Declared only where the page shape has
+   * actually been read; an unverified selector is a guess, and the Dock is the honest fallback.
+   */
+  anchorPriority?: AnchorCandidate[];
   /**
    * Extra one-click trade controls on the same page that must be blocked alongside `anchor`
    * — pump.fun's quick-buy chips, which place a trade with a single click and are correctly

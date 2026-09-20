@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { DepthSection, Target, Verdict, ViewTimeframe } from "@tripwire/core";
 import { createElementSetBinding } from "../../lib/adapters/anchor-binding";
 import { installBlocker } from "../../lib/adapters/blocker";
-import type { VenueAdapter } from "../../lib/adapters/types";
+import type { Placement, VenueAdapter } from "../../lib/adapters/types";
 import { depth, guard, override } from "../../lib/api";
 import type { DepthResponse, GuardResponse, SpotPanel } from "../../lib/api-types";
 import { cardSize, setCardSize, type CardSize } from "../../lib/card-size";
@@ -149,12 +149,15 @@ async function toggleMarkets(rc:RunnerContext,symbol:string,trigger:HTMLElement|
  * Strip above the anchor when one is present (tier 1), else a collapsed Dock chip. Never
  * installs a blocker. Dropped (not stored) if the page moved on, or something else already
  * mounted, while the shadow root was being created. */
-export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key: string): Promise<void> {
-  const found = adapter.tier === 1 ? (adapter.anchor?.(document, new URL(location.href)) ?? null) : null;
+export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key: string, placement: Placement | null): Promise<void> {
   // The strip goes above the whole action row, not beside the button inside it.
-  const anchor = found ? liftOutOfRow(found) : null;
+  const anchor = placement ? liftOutOfRow(placement.element) : null;
   const mount = anchor
-    ? await mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, <Strip verdict="LOADING" text="Checking…" replay={rc.replay} venue={adapter.id} />)
+    ? await mountReact(
+        rc.ctx,
+        { position: "inline", anchor, append: placement!.place },
+        <Strip verdict="LOADING" text="Checking…" replay={rc.replay} venue={adapter.id} />,
+      )
     : await mountReact(
         rc.ctx,
         { position: "inline" },
@@ -186,6 +189,9 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
         collapsed={collapsed}
         verdict={verdict}
         headline={headline}
+        // This dock is the fallback: no anchor on the page qualified, so nothing on screen
+        // points at it. It gets the one-time entrance and the verdict edge that earn a glance.
+        entrance
         onToggleCollapsed={() => void runContentTask(rc.ctx, toggle)}
         replay={rc.replay}
         venue={adapter.id}
@@ -243,6 +249,10 @@ export function createStripBinding(
   headline: string,
   unlocked: boolean,
   rule: string | null = null,
+  /** The placement the bound element came from: which side of it the strip sits on. A trade
+   * button is mounted above (never covering the venue's own action); a header is mounted below,
+   * because the strip describes what that header names. */
+  getPlacement: () => Placement | null = () => null,
 ) {
   let unfit: (() => void) | null = null;
 
@@ -250,6 +260,7 @@ export function createStripBinding(
     // The blocker binds to the trade button; the strip is inserted above the row that holds it,
     // so a venue that lays that row out horizontally does not squeeze the strip beside it.
     const anchor = liftOutOfRow(button);
+    const append = getPlacement()?.element === button ? getPlacement()!.place : "before";
     const text = unlocked ? `${headline}, unlocked for this session` : headline;
     const node = (
       <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} venue={adapter.id}
@@ -263,7 +274,7 @@ export function createStripBinding(
     // superseded target -- drop it instead of overwriting whatever the newer render set.
     const key = rc.currentKey;
     if (key === null) return;
-    const mount = await mountIfCurrent(() => rc.currentKey, key, () => mountReact(rc.ctx, { position: "inline", anchor, append: "before" }, node));
+    const mount = await mountIfCurrent(() => rc.currentKey, key, () => mountReact(rc.ctx, { position: "inline", anchor, append }, node));
     if (!mount) return;
     rc.mainMount = mount;
     // The strip describes this anchor, so it is never allowed to be wider than it.

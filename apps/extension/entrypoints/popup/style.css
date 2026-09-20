@@ -528,3 +528,26 @@ a.tw-recent-name:focus-visible {
   border-color: var(--tw-line-strong);
   color: var(--tw-text);
 }
+
+/* Round 1.6 — "Where is it?". The answer for a user who cannot find the verdict on a dense
+   venue page: a full-width action on the current tab, not a setting, so it reads as something
+   that happens to the page rather than something that configures the extension. */
+.tw-locate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  width: 100%;
+}
+
+.tw-locate-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--tw-text-2);
+}
+
+/* Nothing was mounted: a fact worth the warning colour, because the user asked a question and
+   the answer is "there is nothing to point at". */
+.tw-locate-note[data-state="missing"] {
+  color: var(--tw-amber);
+}

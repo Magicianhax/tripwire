@@ -9,6 +9,10 @@ const REVIEW_SELECTOR = '[data-testid="review-swap"]';
 /** The Buy field's token selector. Scoped to the output side on purpose: the Sell selector
  * (`choose-input-token`) is what the user is spending, which Tripwire has no verdict about. */
 const OUTPUT_TOKEN_SELECTOR = '[data-testid="choose-output-token"]';
+/** The swap widget on a token page, and the token's own identity row above the chart: the two
+ * places to put a verdict when the form has no pressable primary. Both are Uniswap's test ids. */
+const TRADE_PANEL_SELECTOR = '[data-testid="token-details-swap"]';
+const TOKEN_INFO_SELECTOR = '[data-testid="token-info-container"]';
 /**
  * `/explore/tokens/<chain>/<address>` — Uniswap's own token page, which names the chain AND
  * the exact contract in the path. `readTarget` read only `?outputCurrency=`, so `readGap` fell
@@ -94,5 +98,16 @@ export const uniswapAdapter: VenueAdapter = {
     if (review instanceof HTMLButtonElement && !review.disabled && isVisible(review)) return review;
     return findButton(doc, ANCHOR_RE);
   },
+  /**
+   * Both fallbacks are Uniswap's own test ids, read off the live
+   * `/explore/tokens/base/0x4ed4…` page at 1440x900 on 2026-09-20: the trade panel sits at
+   * x960 y284 (360x377) and the token identity header at x120 y173 (1200x58). Logged out,
+   * the explore page's swap form has no enabled primary at all, so without these the verdict
+   * for a page whose URL literally names the token went to the corner dock.
+   */
+  anchorPriority: [
+    { role: "trade-panel-header", find: (doc) => doc.querySelector<HTMLElement>(TRADE_PANEL_SELECTOR) },
+    { role: "token-identity", find: (doc) => doc.querySelector<HTMLElement>(TOKEN_INFO_SELECTOR) },
+  ],
   overridePhrase: OVERRIDE_PHRASES.spot,
 };

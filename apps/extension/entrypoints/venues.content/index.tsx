@@ -11,6 +11,7 @@ import { runContentTask } from "../../lib/content-lifecycle";
 import { createReplayFlag } from "../../lib/replay";
 import { TIER1_MATCHES, TIER2_MATCHES } from "../../lib/venues";
 import { createResultCache } from "../../lib/x/cache";
+import { LOCATE_MESSAGE } from "./locate";
 import { createGuardRunner, gapKey, keyFor } from "./runner";
 
 const DOM_DEBOUNCE_MS = 400;
@@ -129,6 +130,16 @@ export default defineContentScript({
     }
 
     void runContentTask(ctx, check);
+
+    // "Where is it?" from the popup: light whatever this page has mounted. The reply is the
+    // truth of the page -- false when nothing is mounted here -- so the popup can say that
+    // instead of claiming it flashed something the user then fails to find.
+    const onLocate = (message: unknown): Promise<boolean> | undefined => {
+      if ((message as { type?: string } | null)?.type !== LOCATE_MESSAGE) return undefined;
+      return Promise.resolve(ctx.isInvalid ? false : runner.locate());
+    };
+    browser.runtime.onMessage.addListener(onLocate);
+    ctx.onInvalidated(() => browser.runtime.onMessage.removeListener(onLocate));
 
     // SPA navigation: WXT patches the History API and fires this on every push/replaceState
     // or popstate. A 1s poll is a safety net for venues whose router doesn't go through it

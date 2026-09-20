@@ -9,28 +9,38 @@ export type DisplayAction = "none" | "rebind" | "switch";
  * render (`runner.tsx`'s `render_`) and every subsequent unchanged-key tick
  * (`resyncAnchor()`), so the two can never disagree about what "correct" looks like.
  *
- * - Tier 2 (no anchor concept at all) -> always "dock".
- * - Tier 1 with no anchor found (not yet mounted, or lost) -> "dock" (fallback; nothing to
- *   block, but the verdict still needs to be visible somewhere).
- * - Tier 1, anchor present, TRIPWIRE and not unlocked -> "block".
- * - Tier 1, anchor present, anything else (CAUTION/UNCHECKED/CLEAR, or an unlocked TRIPWIRE)
- *   -> "strip". UNCHECKED never produces "block".
+ * - Tier 1, trade button present, TRIPWIRE and not unlocked -> "block". The block screen binds
+ *   to the trade button and nothing else, whether or not that button is where the strip would
+ *   have gone: a block has to cover what it blocks.
+ * - A qualifying placement (`lib/adapters/placement.ts`: visible, out of any recycled grid, and
+ *   inside the first viewport at the page's default scroll) -> "strip". For tier 1 that
+ *   placement usually IS the trade button; for tier 2, and for a tier-1 page whose form has no
+ *   pressable primary, it is the venue's own header.
+ * - Nothing qualified -> "dock". The fallback, and the only case where the verdict is not
+ *   attached to something the user is already looking at — which is why the Dock earns an
+ *   entrance and a verdict-coloured edge.
+ *
+ * UNCHECKED never produces "block".
  */
 export function decideDisplay({
   tier,
   verdict,
   anchorPresent,
+  placementPresent,
   unlocked,
 }: {
   tier: 1 | 2;
   verdict: Verdict;
+  /** A tier-1 trade button for the blocker to bind to. */
   anchorPresent: boolean;
+  /** An anchor the strip may be mounted to; defaults to `anchorPresent` for callers that have
+   * no placement of their own (the tier-1 trade button is always the first candidate). */
+  placementPresent?: boolean;
   unlocked: boolean;
 }): DisplayMode {
-  if (tier === 2) return "dock";
-  if (!anchorPresent) return "dock";
-  if (verdict === "TRIPWIRE" && !unlocked) return "block";
-  return "strip";
+  const placed = placementPresent ?? anchorPresent;
+  if (tier === 1 && anchorPresent && verdict === "TRIPWIRE" && !unlocked) return "block";
+  return placed ? "strip" : "dock";
 }
 
 /**

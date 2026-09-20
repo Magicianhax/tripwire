@@ -1,13 +1,15 @@
 import type { Target, Verdict } from "@tripwire/core";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
 import { createAnchorBinding } from "../../lib/adapters/anchor-binding";
-import type { TargetGap, VenueAdapter } from "../../lib/adapters/types";
+import { placementFor } from "../../lib/adapters/placement";
+import type { Placement, TargetGap, VenueAdapter } from "../../lib/adapters/types";
 import { guard, type ApiResult } from "../../lib/api";
 import type { GuardResponse } from "../../lib/api-types";
 import { decideDisplay, nextAction } from "./display-state";
 import { hitRuleClause } from "../../lib/ui/panel-parts";
 import { createBlockBinding, createStripBinding, closeEvidenceDock, showChecking, showPrimaryDock } from "./displays";
 import { errorHeadline, gapHeadline, guardHeadline } from "./format";
+import { locateMounted } from "./locate";
 import { isUnlocked, type RunnerContext } from "./runner-state";
 
 export { gapKey, keyFor } from "./format";
@@ -19,6 +21,16 @@ function pageUrl(): URL | undefined {
   } catch {
     return undefined;
   }
+}
+
+/**
+ * The anchor this page's verdict should be mounted to, or null for the Dock fallback. Re-read
+ * on every tick rather than cached: a venue SPA replaces header nodes as freely as it replaces
+ * buttons, and an anchor that has scrolled or collapsed out of the first viewport stops
+ * qualifying. See `lib/adapters/placement.ts` for the conditions.
+ */
+function findPlacement(adapter: VenueAdapter): Placement | null {
+  return placementFor(adapter, document, pageUrl());
 }
 
 /**
@@ -97,16 +109,11 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
 
     const unlocked = target ? isUnlocked(rc, key) : false;
     const anchorPresent = adapter.tier === 1 && (adapter.anchor?.(document, pageUrl()) ?? null) != null;
-    const decision = decideDisplay({ tier: adapter.tier, verdict, anchorPresent, unlocked });
-
-    if (adapter.tier !== 1) {
-      // Tier 2 has no anchor concept at all -- decideDisplay always returns "dock" for it, and
-      // there's nothing for resyncAnchor to ever re-route, so it's left untracked.
-      rc.activeSession = null;
-      rc.currentDisplay = null;
-      await showPrimaryDock(rc, adapter, target, verdict, headline);
-      return;
-    }
+    // Where the verdict would be mounted if it is a strip: the first anchor that is visible, is
+    // not inside a recycled grid, and is inside the first viewport. Kept in a local so the
+    // binding's `find()` can refresh it on every tick without re-deciding the mode.
+    let placement = findPlacement(adapter);
+    const decision = decideDisplay({ tier: adapter.tier, verdict, anchorPresent, placementPresent: placement != null, unlocked });
 
     rc.activeSession = { adapter, target, key, verdict, headline, chipData };
     rc.currentDisplay = decision;
@@ -117,11 +124,19 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
       return;
     }
 
-    const find = () => adapter.anchor?.(document, pageUrl()) ?? null;
+    // A block binds to the trade button and only ever to the trade button; a strip binds to the
+    // placement, which for most tier-1 pages IS that button.
+    const find =
+      decision === "block"
+        ? () => adapter.anchor?.(document, pageUrl()) ?? null
+        : () => {
+            placement = findPlacement(adapter);
+            return placement?.element ?? null;
+          };
     const binding =
       decision === "block" && target && chipData
         ? createBlockBinding(rc, adapter, target, chipData, headline, key)
-        : createStripBinding(rc, adapter, target, verdict, headline, unlocked, chipData?.hits[0] ? hitRuleClause(chipData.hits[0]) : null);
+        : createStripBinding(rc, adapter, target, verdict, headline, unlocked, chipData?.hits[0] ? hitRuleClause(chipData.hits[0]) : null, () => placement);
     rc.syncExtras = "syncExtras" in binding ? (binding.syncExtras as () => void) : null;
     rc.anchorBinding = createAnchorBinding({ find, onBind: binding.onBind, onUnbind: binding.onUnbind });
     rc.anchorBinding.sync();
@@ -150,8 +165,9 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     if (target) {
       const pending: Promise<ApiResult<GuardResponse>> = guard(target, adapter.id, "chip");
       const replay = getReplay();
-      // Neutral "Checking…" (verdict LOADING, never a blocker) until the new result lands.
-      await showChecking(rc, adapter, key);
+      // Neutral "Checking…" (verdict LOADING, never a blocker) until the new result lands, in
+      // the place the verdict itself will take, so it does not jump across the page.
+      await showChecking(rc, adapter, key, findPlacement(adapter));
       const result = await pending;
       rc.replay = await replay;
       if (rc.currentKey !== key) return; // the page moved on while this was in flight
@@ -192,17 +208,22 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     const { adapter, target, key, verdict, headline, chipData } = rc.activeSession;
     const unlocked = target ? isUnlocked(rc, key) : false;
 
-    let anchorPresent: boolean;
+    // The trade button decides whether a block is possible; the placement decides whether a
+    // strip is. They are asked separately because they are different questions -- a page can
+    // have a blockable button below the fold and a header worth anchoring to above it.
+    const anchorPresent = adapter.tier === 1 && (adapter.anchor?.(document, pageUrl()) ?? null) != null;
+    let placementPresent = findPlacement(adapter) != null;
     if (rc.anchorBinding) {
       rc.anchorBinding.sync();
-      anchorPresent = rc.anchorBinding.anchor != null;
+      // "Bound" is the authority for the mode that is already showing: a block whose button is
+      // still bound stays a block, and a strip whose placement moved was just re-mounted by
+      // sync() onto the new node.
+      if (rc.currentDisplay === "strip") placementPresent = rc.anchorBinding.anchor != null;
       // The chips re-render on their own; the anchor node can stay put while they are replaced.
-      if (anchorPresent) rc.syncExtras?.();
-    } else {
-      anchorPresent = (adapter.anchor?.(document, pageUrl()) ?? null) != null;
+      if (rc.anchorBinding.anchor != null) rc.syncExtras?.();
     }
 
-    const decision = decideDisplay({ tier: adapter.tier, verdict, anchorPresent, unlocked });
+    const decision = decideDisplay({ tier: adapter.tier, verdict, anchorPresent, placementPresent, unlocked });
     const action = nextAction(rc.currentDisplay, decision);
     if (action === "none" || action === "rebind") return; // "rebind" already applied by sync() above
 
@@ -226,5 +247,14 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     rc.unlockTimers.clear();
   }
 
-  return { render, resyncAnchor, clear, dispose };
+  /**
+   * "Where is it?" — the popup's answer for a user who cannot find the verdict. Brings whatever
+   * is mounted into view and outlines it for a moment. Returns false when nothing is mounted on
+   * this page, which the popup says out loud rather than pretending it flashed something.
+   */
+  function locate(): boolean {
+    return locateMounted(rc.mainMount);
+  }
+
+  return { render, resyncAnchor, clear, dispose, locate };
 }

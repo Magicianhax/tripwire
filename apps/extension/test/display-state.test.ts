@@ -30,9 +30,22 @@ describe("decideDisplay", () => {
     expect(decideDisplay({ tier: 1, verdict: "UNCHECKED", anchorPresent: false, unlocked: false })).toBe("dock");
   });
 
-  it("tier 2 always dock, regardless of verdict or anchor presence", () => {
-    expect(decideDisplay({ tier: 2, verdict: "TRIPWIRE", anchorPresent: true, unlocked: false })).toBe("dock");
-    expect(decideDisplay({ tier: 2, verdict: "CLEAR", anchorPresent: false, unlocked: false })).toBe("dock");
+  it("tier 2 never blocks — it has no trade button — but takes a strip when it has a placement", () => {
+    // Round 1.6: a tier-2 venue with a header worth anchoring to (DexScreener's pair header)
+    // gets the strip there rather than a corner dock. It still never blocks: nothing to bind to.
+    expect(decideDisplay({ tier: 2, verdict: "TRIPWIRE", anchorPresent: false, placementPresent: true, unlocked: false })).toBe("strip");
+    expect(decideDisplay({ tier: 2, verdict: "CLEAR", anchorPresent: false, placementPresent: false, unlocked: false })).toBe("dock");
+  });
+
+  it("tier 1 with no trade button but a header placement -> strip, not the corner dock", () => {
+    // app.uniswap.org/explore logged out, and jup.ag/tokens/<mint>: the page names the token,
+    // the form has no pressable primary, and the verdict used to go to the dock.
+    expect(decideDisplay({ tier: 1, verdict: "CAUTION", anchorPresent: false, placementPresent: true, unlocked: false })).toBe("strip");
+  });
+
+  it("TRIPWIRE with a trade button blocks even when the placement is somewhere else", () => {
+    // A block has to cover what it blocks, wherever that button is.
+    expect(decideDisplay({ tier: 1, verdict: "TRIPWIRE", anchorPresent: true, placementPresent: false, unlocked: false })).toBe("block");
   });
 });
 

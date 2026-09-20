@@ -29,11 +29,18 @@ export type DockProps = {
   /** Passed through to the card's frame: anchored beside the chip, or the centred overlay. */
   size?: CardSize;
   onToggleSize?: () => void;
+  /**
+   * This dock is the primary display, not an on-demand card: nothing on the page points at it,
+   * so it arrives rather than appears (one 180ms slide-and-fade, `prefers-reduced-motion`
+   * honoured) and carries a verdict-coloured edge. The animation is CSS on the chip element,
+   * which React keeps across re-renders — so it plays once per mount, never on a toggle.
+   */
+  entrance?: boolean;
 };
 
 /** The tier-2 dock: a verdict chip pinned to the top-right edge that opens the evidence card
  * beside it (a bottom sheet under 720px). Always stacked below the block screen. */
-export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", children, replay, venue, size, onToggleSize }: DockProps) {
+export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", children, replay, venue, size, onToggleSize, entrance }: DockProps) {
   const [chip, setChip] = useState<HTMLButtonElement | null>(null);
 
   if (verdict === "LOADING") {
@@ -56,6 +63,7 @@ export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", chi
         className="tw-chip tw-dock-chip"
         data-verdict={verdict}
         data-venue={venue}
+        data-primary={entrance ? "" : undefined}
         onClick={onToggleCollapsed}
         aria-expanded={!collapsed}
         aria-haspopup="dialog"

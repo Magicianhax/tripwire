@@ -1526,3 +1526,121 @@ The brief's Hyperliquid sections are deferred (below), but it named the footnote
 **A price that varies with the wallet is stated as a ceiling.** The origin press makes two calls on an EVM wallet with a covered chain and one on a Solana wallet or an EVM wallet without one. Non-negotiable #8 requires the price before the press; it does not require a single number. "Up to 2 credits" over-states nothing and the response reports what was actually spent, where a flat "2 credits" would charge the user in words for a call that was never made.
 
 **The row says which chain, because this time Nansen said.** `profiler/address/pnl` accepts `chain: "all"` and returns chainless rows, which Round 1.5.7 had to apologise for on screen. `profiler/address/transactions` accepts `chain: "all"` and returns a `chain` on every row. The two look identical in a request body and are opposite in what they license the card to say, which is why each one was probed on its own first live call rather than reasoned about from the other.
+
+---
+
+# Round 1.6 — placement and visibility: the verdict where the eye already is
+
+Branch `feat/cockpit-ui`. Brief: `docs/briefs/placement-visibility.md`, in full. **0 Nansen credits** — nothing in this round fetches anything; it decides where what we already fetched is put.
+
+The report: *"on dexscreener positions of banners we are showing are on odd places like someone cannot catch without having good eye"*. The ruling this round works from is that a verdict nobody sees is a failed verdict, not a cosmetic note — so placement became a rule with conditions and tests, not a per-adapter habit.
+
+## 1.6.1 — `anchorPriority`: an anchor has to earn its place
+
+New module `lib/adapters/placement.ts`. A candidate qualifies only if it **exists and is rendered**, is **not inside a recycled container**, and its box is **inside the first viewport at the page's default scroll**. First qualifying candidate wins, in the brief's order: trade button → trade-panel header → token identity → page header (`AnchorRole`, `types.ts:24`).
+
+- **Document coordinates, not viewport ones** (`isInFirstViewport`, `placement.ts:70`). `rect.top + scrollY`. Reading the viewport box alone calls an element visible *because the page happens to be scrolled to it*, which is the opposite of the question being asked. A box may straddle the fold as long as 24px — one hit target — is above it.
+- **`anchor()` always leads for tier 1** (`anchorCandidates`, `placement.ts:110`). The runner prepends it; `anchorPriority` is the fallback list only. So Round 1.4's anchor tuning is untouched by construction, and no adapter can accidentally move the element the blocker binds to.
+- **Structural volatility signals only** (`VOLATILE_SELECTOR`, `placement.ts:85`): virtuoso scrollers, `role=grid|row|rowgroup|listbox|feed`, tables. A generic "is this a scroll container" heuristic was written and then **deleted**: it also rejects a trade form that happens to live in a scroll pane, which would have cost real anchors to catch a hypothetical one. `data-virtuoso-scroller` was read off the live DexScreener transactions pane.
+- **Geometry is injected** (`PlacementProbe`, `placement.ts:33`). happy-dom has no layout, so the unit suite states each venue's real 1440x900 numbers instead of pretending to measure them. An all-zero box is treated as *unmeasured* and accepted (`isUnmeasured`, `placement.ts:60`), so a layout-less environment falls back to the existing visibility check rather than silently deciding every anchor is invisible. A rendered element in a browser never reports all four as zero while `isVisible()` is true.
+
+*Tests:* `test/placement.test.ts` (30 cases).
+
+## 1.6.2 — DexScreener: under the pair header, not in the grid
+
+`pairHeader` (`dexscreener.ts:48`) is "the nearest block around the `$SYMBOL` heading that also carries the chain and DEX links" — which on the live page is exactly the badge row and nothing above or below it. **Selected structurally, never by class:** every class on that page is an emotion hash (`custom-16ghqzx`) that changes with each deploy.
+
+Read off `dexscreener.com/solana/<WIF mint>` at 1440x900 on 2026-09-20 with the Playwright MCP browser (read-only, tabs closed): left nav 0–210, chart panel at x210 whose top strip is the trending rail and whose body is a TradingView iframe over a Virtuoso pane, right data panel at x1106 headed by the token name (y0–46), then the pair identity row (**x1118 y54, 295x43**), then the price readouts.
+
+**Deviation from the brief, stated.** The brief says "the pair header at the top of the chart panel". On the live page the chart panel carries no pair header — it carries the trending rail and an iframe. The symbol, chain badge and price all live at the top of the **right data panel**, so that is where the anchor went. The brief's intent (symbol, price, chain badge; a strip directly under it, full width of that panel; not the pairs table, not a bottom widget) is met exactly; its description of which column that is was not what the page does.
+
+A `$`-headed row inside the Virtuoso pane is **skipped rather than taken** (`dexscreener.ts:56`): mounting in a recycled row is the "needs a good eye" failure this round exists to remove.
+
+Capture: `.impeccable/review/placement-dexscreener.png` — the strip under `$WIF/SOL · Solana · Orca`, above Price USD, inside the panel.
+
+*Tests:* `placement.test.ts` "dexscreener placement" (5 cases); `e2e/placement.spec.ts`.
+
+## 1.6.3 — Uniswap gets the two fallbacks its own test ids name
+
+`anchorPriority` (`uniswap.ts:104`): `[data-testid="token-details-swap"]` then `[data-testid="token-info-container"]`, read off the live `/explore/tokens/base/0x4ed4…` page (trade panel x960 y284 360x377; identity header x120 y173 1200x58). Logged out, that page's swap form has no enabled primary at all, so the verdict for a page whose URL *literally names the token* went to the corner dock.
+
+**No other tier-1 venue got fallbacks, deliberately.** jup.ag, pump.fun, jumper, Hyperliquid and Polymarket have a trade button, which is already the head candidate; a fallback selector for a page shape this repo has no capture of is a guess, and the Dock is the honest fallback. Their placement tests assert the condition that matters — the chosen anchor is the trade button and its box is inside 1440x900 at the default scroll.
+
+## 1.6.4 — Tier 2 can be anchored, and `decideDisplay` says which question is which
+
+`decideDisplay` (`display-state.ts:29`) now takes `anchorPresent` (a trade button for the blocker) and `placementPresent` (somewhere to mount a strip) as **separate** inputs, because they are separate questions: a page can have a blockable button below the fold and a header worth anchoring to above it. A block still binds to the trade button and only to the trade button — a block has to cover what it blocks.
+
+Consequences, both intended:
+
+- A tier-2 venue with a qualifying placement gets a **strip** instead of a corner dock. It still never blocks.
+- A tier-1 page whose form has no pressable primary gets a strip at its header instead of the dock.
+
+The runner's tier-2 early return is gone (`runner.tsx:113`), so tier 2 now has an `activeSession` and rides `resyncAnchor()` like tier 1 — which it needs, since a venue SPA replaces header nodes as freely as it replaces buttons. A strip binding's `find()` re-reads the placement each tick (`runner.tsx:130`), so an anchor that scrolls or collapses out of the first viewport hands the session back to the Dock.
+
+`AnchorCandidate.place` (`types.ts:33`) carries which side of the anchor the strip sits on, defaulting by role: **above** a trade button (never covering the venue's own action), **below** a header (the strip describes what the header names).
+
+*Tests:* `test/display-state.test.ts` (3 rewritten/added cases), `test/placement-runner.test.tsx` (6 cases) — including that exactly one `tripwire-ui` host is ever mounted, that the strip's siblings are the ones the placement implies, and that removing the anchor re-routes to the dock leaving nothing behind.
+
+## 1.6.5 — The dock, when it is the fallback, arrives
+
+`Dock` takes `entrance` (`Dock.tsx:36`), passed only by `showPrimaryDock` — the primary display, not the on-demand card — and rendered as `data-primary`. Two additions in `theme.css`:
+
+- **A verdict-coloured edge**: a 3px capsule inset at the chip's left. A cap rather than a coloured border on the whole pill, because the border already carries TRIPWIRE and CAUTION and **CLEAR and UNCHECKED had no colour at all**. UNCHECKED's edge is deliberately neutral white-55%, never mint: the e2e asserts the computed `::before` background is not `0, 255, 167`, because "UNCHECKED never looks like CLEAR" is a rule, not a preference.
+- **A 180ms slide-and-fade from the edge it lives on**, `both` fill so the first painted frame is already off-screen-right rather than a flash at rest. It plays once per mount: the animation is CSS on the chip element, which React keeps across `update()`, so a collapse toggle never restarts it.
+
+`prefers-reduced-motion` removes the movement and keeps both affordances — the dock is simply there, the outline is simply on.
+
+**The craft floor refuses a coloured left border above 1px on a card**; the brief asks for a verdict-coloured left edge by name, and a pinned brief overrides the floor. It is a 3px cap on a pill, not a border on a card, which is the narrowest way to honour both.
+
+Capture: `.impeccable/review/placement-dock-fallback.png`.
+
+## 1.6.6 — "Where is it?"
+
+`locate.ts` (new): scroll the mounted display into view, outline it for 1500ms, stop. The popup gets one button, `Show me where it is` (`popup/App.tsx:154`), which asks the active tab and **reports the answer it gets** — `Tripwire isn't showing anything on this tab.` when the content script says there is nothing to light, rather than claiming it flashed something the user then fails to find.
+
+- **The attribute goes inside the shadow root, never on the host** (`locate.ts:22`). WXT resets every host with `:host { all: initial !important }`, which outranks anything theme.css can say about `:host` — the same constraint that makes `fit.ts` travel as a custom property.
+- **No background change.** `browser.action` has a popup, so `action.onClicked` never fires; adding a handler there would have been dead code that reads like a feature. Clicking the extension icon opens the popup, and the popup is the action.
+- **No new permission.** `tabs.query({active: true, currentWindow: true})` returns a tab **id** without the `tabs` permission (only `url`/`title` are gated) and `activeTab` covers the send. Found the hard way: the first e2e drove it with a `{url: "https://dexscreener.com/*"}` filter, which returns nothing — venue hosts are content-script matches, not host permissions. The spec now asks the way the popup does.
+
+*Tests:* `placement-runner.test.tsx` "where is it?" (2 cases, incl. the timer releasing the outline); `e2e/placement.spec.ts` drives the real message from the service worker to the real content script. Capture: `.impeccable/review/placement-locate-pulse.png`.
+
+## Placement audit at 1440x900
+
+| Venue | Anchor taken | In first viewport | Verdict |
+|---|---|---|---|
+| dexscreener | pair identity row, strip below it | yes | fixed — was the corner dock |
+| uniswap (swap) | `review-swap` / `Swap`, strip above | yes | unchanged |
+| uniswap (explore, logged out) | trade panel → identity header | yes | fixed — was the corner dock |
+| jupiter | swap form primary, strip above | yes | unchanged |
+| pump.fun | `Place Trade`, strip above | yes | unchanged |
+| jumper | transaction button, strip above | yes | unchanged |
+| hyperliquid | order submit, strip above | yes | unchanged |
+| polymarket | outcome buy button, strip above | yes | unchanged |
+| any page, no qualifying anchor | dock, right edge | yes (fixed) | entrance + verdict edge added |
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 309, web 317, extension 762** tests passed (59 extension files).
+- `pnpm -F extension build` and `pnpm -F web build`: both OK.
+- `TRIPWIRE_E2E_PORT=3226 playwright test placement`: **9 passed**, three consecutive clean runs. Port 3000 was never touched.
+- Full e2e on 3226: 27 passed / 2 failed, then 14 passed / 1 failed for `smoke` alone — **a different test each run**, each failing with `Test timeout ... while setting up "context"` or `browser has been closed`, i.e. the persistent-Chromium launch under five other builds in the same tree. None reproduce in isolation and none are in the placement path.
+- Captures: `TRIPWIRE_CAPTURE=1` — 4 capture specs pass (`wallet lens captures` only under load). Opened `placement-dexscreener`, `placement-pumpfun`, `placement-uniswap`, `placement-dock-fallback` and `placement-locate-pulse`: each shows what its filename says. Re-opened the captures this change could have moved — `strip-uniswap-native`, `strip-narrow`, `block-pumpfun-quick-buy` — all unchanged, which is the expected result: a tier-1 page with a visible trade button takes the same anchor it always did.
+
+## Deferred, and why
+
+- **`jup.ag/tokens/<mint>` still has no fallback anchor.** Round 1.4 left it dock-only pending a capture; a token-identity selector there would be exactly right and would be a guess today. Unchanged from 1.4's own note.
+- **The remaining four tier-1 venues have no fallback anchors**, for the same reason (1.6.3).
+- **11 pre-existing `design-system-radius` findings in `theme.css`** (L722–L927) are untouched: they are earlier rounds' lines in a shared file this round may only add to. The one new off-scale value this round introduced was removed — the verdict edge uses `--tw-radius-pill`.
+- **The e2e venue stubs use the venues' own literal colours** (`#e7edf3`, `#5fd08a`), which the design hook flags. They imitate host pages, not Tripwire UI — the same pattern `pumpfun-block.spec.ts` already uses. Left as is.
+
+## Found while working, not fixed
+
+**`app.uniswap.org/explore` logged out: `anchor()` returns the `Swap` *tab*.** `findButton(doc, /^swap$/i)` (`uniswap.ts:95`) matches the Swap|Limit segmented control at x965 y289, which is a tab, not a trade button — confirmed on the live page. Placement is unaffected (the tab is in the first viewport, so the strip lands where it lands today), but this is a **blocking** concern: a TRIPWIRE verdict there would put a block screen over a tab. Not touched — `anchor()` is Round 1.4's and rewriting it mid-flight is exactly what this round was told not to do. It wants an `isToggleLike` reject in `uniswap.anchor`, one line, in a round that owns that file.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**Placement is a rule with conditions, not an adapter habit.** An anchor is mounted only if it is visible, outside any recycled container, and inside the first viewport at the page's *default* scroll — the last measured in document coordinates, so "the page happens to be scrolled there" can never pass for "the user can see it". Adapters declare ordered fallbacks; the trade button always leads for tier 1, so the element the blocker binds to cannot be moved by a placement change. Nothing qualifying is a real answer, and it means the Dock.
+
+**The dock is the fallback, and says so.** It is the only surface not attached to something the user is already looking at. That is what earns it a one-time entrance and a verdict-coloured edge — including a colour for CLEAR and a deliberately neutral one for UNCHECKED, which must never read as CLEAR — and it is why those are on `data-primary` and not on every dock chip.
+
+**When the popup cannot point at anything, it says so.** "Show me where it is" reports the content script's actual answer. A confident highlight of nothing is worse than the sentence "Tripwire isn't showing anything on this tab."
