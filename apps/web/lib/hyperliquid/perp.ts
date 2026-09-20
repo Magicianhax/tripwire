@@ -1,4 +1,5 @@
-import { singleSidedOi, venueFunding, type PerpVenueQuote } from "@tripwire/core";
+import { singleSidedOi, venueBasisBps, venueFunding, type MarginTier, type PerpVenueQuote } from "@tripwire/core";
+import { atCapFrom } from "../venues/derive";
 import { hyperliquidMarket } from "./client";
 
 /**
@@ -16,7 +17,10 @@ const num = (v: unknown): number | null => {
   return Number.isFinite(n) ? n : null;
 };
 
-type Universe = { name: string; szDecimals?: number; maxLeverage?: number; onlyIsolated?: boolean };
+type Universe = { name: string; szDecimals?: number; maxLeverage?: number; onlyIsolated?: boolean; marginTableId?: number };
+/** `[id, { description, marginTiers }]` pairs, already inside the `metaAndAssetCtxs` response
+ * the card fetches: the leverage ceiling steps down above stated notional thresholds. */
+type MarginTableEntry = [number, { description?: string; marginTiers?: { lowerBound?: string; maxLeverage?: number }[] }];
 type AssetCtx = {
   funding?: string;
   openInterest?: string;
@@ -27,7 +31,7 @@ type AssetCtx = {
   markPx?: string;
   midPx?: string | null;
 };
-type MetaAndAssetCtxs = [{ universe: Universe[] }, AssetCtx[]];
+type MetaAndAssetCtxs = [{ universe: Universe[]; marginTables?: MarginTableEntry[] }, AssetCtx[]];
 
 export type HlMarket = {
   coin: string;
@@ -46,6 +50,13 @@ export type HlMarket = {
   dayVolumeUsd: number | null;
   dayChangePct: number | null;
   maxLeverage: number | null;
+  /**
+   * The notional thresholds at which this market's leverage ceiling steps down, from the
+   * `marginTables` block that has always ridden along in this same response (Round 2.5). Null
+   * when the coin names no table, and a flat one-tier table is left for `leverageLadder` to
+   * reject — the headline already said it.
+   */
+  marginTiers: MarginTier[] | null;
 };
 
 /** `metaAndAssetCtxs`: mark, oracle, funding, open interest, 24h volume and max leverage for
@@ -74,6 +85,7 @@ export async function hlMarket(coin: string): Promise<HlMarket | null> {
    * for ETH), so it is not an independent check and is not treated as one.
    */
   const oi = singleSidedOi("hyperliquid", num(ctx.openInterest));
+  const marginTiers = readMarginTiers(data?.[0]?.marginTables, universe[index]!.marginTableId);
   const prev = num(ctx.prevDayPx);
   const funding = venueFunding("hyperliquid", num(ctx.funding));
   return {
@@ -90,11 +102,79 @@ export async function hlMarket(coin: string): Promise<HlMarket | null> {
     dayVolumeUsd: num(ctx.dayNtlVlm),
     dayChangePct: mark !== null && prev !== null && prev !== 0 ? ((mark - prev) / prev) * 100 : null,
     maxLeverage: universe[index]!.maxLeverage ?? null,
+    marginTiers,
   };
 }
 
+/** The coin's own margin table, as tiers, or null when the payload names none for it. */
+function readMarginTiers(tables: MarginTableEntry[] | undefined, id: number | undefined): MarginTier[] | null {
+  if (!Array.isArray(tables) || typeof id !== "number") return null;
+  const table = tables.find((t) => Array.isArray(t) && t[0] === id)?.[1];
+  const tiers = table?.marginTiers;
+  if (!Array.isArray(tiers)) return null;
+  const rows = tiers
+    .map((t) => {
+      const lower = num(t?.lowerBound);
+      return lower === null || typeof t?.maxLeverage !== "number" ? null : { lowerBoundUsd: lower, maxLeverage: t.maxLeverage };
+    })
+    .filter((t): t is MarginTier => t !== null);
+  return rows.length > 0 ? rows : null;
+}
+
+// ---- predictedFundings: when each venue next pays ---------------------------------------------
+
+/** What one venue is expected to pay next, from Hyperliquid's own cross-venue view. */
+export type HlPredictedFunding = { hlNextFundingMs: number | null };
+
+/** Hyperliquid spells the venues this way inside `predictedFundings`. */
+const HL_VENUE_KEY = "HlPerp";
+
+type PredictedFundingRow = [string, [string, { fundingRate?: string; nextFundingTime?: number; fundingIntervalHours?: number } | null][]];
+
+/**
+ * When Hyperliquid next pays funding on this coin.
+ *
+ * `predictedFundings` had a TTL entry and no caller outside the recorder. It is free, and it is
+ * the **only** source for Hyperliquid's next payment time: `metaAndAssetCtxs` states the current
+ * rate and never the schedule. The whole 234-coin payload is cached under one key, because the
+ * answer is the same list whichever coin asked for it.
+ *
+ * The rate it also carries is deliberately not read: the card's funding figures come from each
+ * venue's own payload, and a second opinion on the same number in the same row is a way for two
+ * cells to disagree.
+ */
+export async function hlPredictedFunding(coin: string): Promise<HlPredictedFunding | null> {
+  const { data } = await hyperliquidMarket<PredictedFundingRow[]>("predictedFundings", {}, { cacheKey: "all" });
+  if (!Array.isArray(data)) return null;
+  const wanted = coin.trim().toUpperCase();
+  const row = data.find((r) => Array.isArray(r) && typeof r[0] === "string" && r[0].toUpperCase() === wanted);
+  const venues = row?.[1];
+  if (!Array.isArray(venues)) return null;
+  const hl = venues.find((v) => Array.isArray(v) && v[0] === HL_VENUE_KEY)?.[1];
+  const next = num(hl?.nextFundingTime);
+  return { hlNextFundingMs: next !== null && next > 0 ? next : null };
+}
+
+// ---- perpsAtOpenInterestCap -------------------------------------------------------------------
+
+/**
+ * Whether Hyperliquid currently lists this coin among the perps at their open-interest cap.
+ *
+ * Free, a bare array of coin names, cached under a single key because the answer is the whole
+ * list either way. **Null means the list could not be read** — a failed free call must not come
+ * back as a reassuring "not capped". This renders as a line on the card and never as a block.
+ */
+export async function hlPerpAtOpenInterestCap(coin: string): Promise<boolean | null> {
+  try {
+    const { data } = await hyperliquidMarket<string[]>("perpsAtOpenInterestCap", {}, { cacheKey: "all" });
+    return atCapFrom(coin, data);
+  } catch {
+    return null;
+  }
+}
+
 /** The Hyperliquid row of the cross-venue table, from the same payload. */
-export function hlVenueQuote(market: HlMarket | null, coin: string, error: string | null): PerpVenueQuote {
+export function hlVenueQuote(market: HlMarket | null, coin: string, error: string | null, predicted?: HlPredictedFunding | null): PerpVenueQuote {
   return {
     venue: "hyperliquid",
     symbol: coin,
@@ -103,6 +183,13 @@ export function hlVenueQuote(market: HlMarket | null, coin: string, error: strin
     openInterestUsd: market?.openInterestUsd ?? null,
     volume24hUsd: market?.dayVolumeUsd ?? null,
     longAccountShare: null,
+    // Hyperliquid's reference is an oracle rather than an index of spot venues, which is why
+    // `PERP_VENUES.hyperliquid.basisReference` names it and the table's note says so.
+    indexPrice: market?.oraclePrice ?? null,
+    basisBps: venueBasisBps(market?.markPrice ?? null, market?.oraclePrice ?? null),
+    nextFundingMs: predicted?.hlNextFundingMs ?? null,
+    // Hyperliquid publishes no funding bound.
+    fundingCap: null,
     error,
   };
 }

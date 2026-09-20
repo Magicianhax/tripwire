@@ -1938,3 +1938,128 @@ is a better source for a field name than the docs, the CLI or a guess, and it tu
 been a 400 in front of a user into a two-second measurement. Worth doing deliberately for any new
 endpoint whose `order_by` matters: send the plausible field once, read the enum out of the
 rejection, then send the real request.
+
+---
+
+# Round 2.5 — perp depth: the venue fields that were already on the wire, and two priced presses
+
+Branch `feat/cockpit-ui`. Brief: `docs/IMPROVEMENT-PLAN.md` §3, Round 2.5. **6 Nansen credits spent building it**, in one recording run, against a budget of 10. At runtime the round adds **nothing** to any card load: every figure it draws comes from a payload the card already fetched or from a free public API, and the two things that cost credits are buttons that print their price before they are pressed.
+
+Round 1.3's findings bound this round and held: open interest stays per-venue through `PERP_VENUES.oiSides` and is not re-flattened, the null Smart Money row still reads unknown, the funding chart still states its real window, and the ladder still says whether its page was the whole population — the cohort ladder added here says it too.
+
+## Fixtures and credits
+
+`scripts/record-perp-depth-fixtures.mjs` records four files, refuses to pass 10 credits, and has a `--free` mode that needs no key:
+
+- `fixtures/venues/binance-openInterestHist.json` — `futures/data/openInterestHist?symbol=ETHUSDT&period=5m&limit=288`, **0 credits**, 288 buckets.
+- `fixtures/hyperliquid/perpsAtOpenInterestCap.json` — **0 credits**. Seven coins at the time of recording: CANTO, FTM, JELLY, LOOM, RLB, VINE, ZEREBRO. ETH is not one of them, which is the normal case the card has to render.
+- `fixtures/nansen/perpPositionsCohort.json` — `tgm/perp-positions` with `label_type: "all_traders"`, **5 credits**. 50 rows, `is_last_page: false`.
+- `fixtures/nansen/perpScreenerAll.json` — `perp-screener` with `trader_type: "all"`, **1 credit**. A probe, recorded and reported, deliberately not wired: see *Deferred*.
+
+`predictedFundings.json` was already in the repo and had no caller outside the recorder; this round is its first reader.
+
+**Not re-recorded:** `smPerpTrades.json` (still 12 × `Reduce`, zero opens — Round 1.3's note stands, and this round spends on no call in that family) and `perpPnlLeaderboard.json` (see *Deferred*).
+
+## Per item
+
+### The parsed-away venue fields, and the layout decision the brief asked for first
+
+The brief listed about twenty fields across five venues and said a layout decision had to come before a parser change, because the venue table is already six columns inside a 440px popover (non-negotiable #5). The decision: **one new column, expanded-only, and the rest of the fields go where they belong or do not ship at all.**
+
+- **Basis** takes that column (`VenueTable.tsx:104`), in basis points, from one formula applied only where the payload the table already fetches carries **both** halves (`venueBasisBps`, `packages/core/src/perp-venues.ts:169`). Three venues answer it: Binance −3.9, Hyperliquid −5.7, Bybit −4.4 on the recorded fixtures. OKX publishes a `premium` it computed against an index we never see and dYdX publishes an oracle with no mark, so both cells are dashes and the table's note says why. `PERP_VENUES[v].basisReference` records what each venue calls its own reference ("Index", "Oracle", or null), so the note names them rather than implying all five computed the same thing.
+- **The next funding time and the funding cap** ride under the funding figure in the same cell (`FundingCell`, `PerpBody`-adjacent at `VenueTable.tsx:80`), because that is what they are about — not as two more columns.
+- **The 24h change did not ship, on purpose.** Four of the five venues publish it and the brief listed it, but it is a property of the coin rather than of the venue: five near-identical cells in the widest table in the product, while "The market right now" already states it once. The rule applied instead is the one from Round 1.3.4 in its other direction — nothing is parsed that nothing renders — so `price24hPcnt`, `priceChange24H` and `priceChangePercent` are not read at all. A web test asserts the row carries no such field.
+- Binance `interestRate` and `estimatedSettlePrice`, Bybit's 24h high/low and bid/ask, and dYdX's `trades24H` and margin fractions are recorded as rejected below, each with its reason.
+
+*Tests:* `packages/core/test/perp-round-2-5.test.ts` "basis is one formula, applied only where both halves exist" (the three recorded pairs, a missing half, a zero denominator, the sign); `apps/web/test/perp-round-2-5.test.ts` "2.5.1" (the three figures through the real fetchers, the two blanks, the absent 24h field); `apps/extension/test/perp-round-2-5.test.tsx` "2.5.1" (six headers compact, Basis only when expanded, the dash on dYdX, the note).
+
+### The funding countdown, from `predictedFundings` and from each venue's own payload
+
+`nextFundingMs` is now on every row as an **absolute epoch** (`perp-venues.ts` `PerpVenueQuote`), and the label is computed in the extension against the reader's own clock by `countdownLabel`, ticking every 15 seconds with the interval cleared on unmount (`useNow`, `VenueTable.tsx:57`). This is not an optimisation: the backend caches each venue for 60 seconds and a popover sits open for minutes, so a remainder captured at fetch time would be wrong by the time it was read.
+
+Binance, Bybit and OKX each publish their own timestamp and it was being dropped; Hyperliquid publishes none in `metaAndAssetCtxs`, so its row comes from `predictedFundings` (`hlPredictedFunding`, `apps/web/lib/hyperliquid/perp.ts:146`), cached under one key because the 234-coin answer is the same list whichever coin asked. **dYdX gets a dash.** It settles hourly and the indexer does not say when, and deriving "the top of the next hour" would be this card's claim rather than the venue's.
+
+Two rules fell out of writing it. The last minute reads "in under a minute" rather than rounding up into a promise of a whole one. And a timestamp that passed **more than ten minutes ago is a stale snapshot, not an imminent payment**: it renders nothing. That one came from the e2e run — replay serves recorded payloads whose payment times are days old, and every row was reading "due now".
+
+*Tests:* `perp-round-2-5.test.ts` (core) "the funding countdown is computed from an absolute time" (six cases including the stale one); (web) "2.5.2" (each venue's own timestamp, Hyperliquid's from predictedFundings, dYdX's null); (extension) "2.5.2" (the label beside the interval, the absent one, the cap line).
+
+### The funding cap, two shapes and one render path
+
+Bybit publishes `fundingCap` as a single magnitude covering both bounds; OKX publishes `maxFundingRate` and `minFundingRate` as a signed pair that need not be symmetric. They cannot share a parser, so `normalizeFundingCap` (`perp-venues.ts:186`) turns both into `{ lower, upper }` and the card has one render path. A zero magnitude is "no cap stated", not "capped at zero".
+
+A cap is only worth screen space when the rate is near it, so `fundingCapPressure` measures the share of the bound the rate is heading for and the cell prints a line only above 50%: "90% of its 0.333% cap". On the recorded ETH data Bybit's rate is 1.06% of its own cap, so nothing renders — the populated path is unit-tested on synthetic rates, the same arrangement Round 1.3.4 has for the opens strip.
+
+### Open interest over time, named after the venue that published it
+
+Binance's `futures/data/openInterestHist` is the only open-interest history in the set; every other venue publishes a single current figure. So the section is titled "Open interest over time", its aside reads **Binance USD-M**, its legend reads **Binance ETHUSDT, 5m buckets**, and its note says the line is one venue's open interest rather than the table's (`OpenInterestHistory`, `VenueTable.tsx:245`; the section at `PerpBody.tsx` in the Positioning tab). Putting an unlabelled "OI 24h" delta under Hyperliquid's open-interest figure would have been the same class of error as Round 1.3.2's mixed conventions.
+
+`sumOpenInterestValue` is the one-side USD figure, the same convention as the table's own column (`oiSides: 1`), and the span is measured from the points that came back rather than from the window asked for (`oiTrend`). Weight 0, but the statistics host has its own 500-per-5-minute IP budget shared with the long/short ratio call the table already makes, so it is one request per coin per five minutes and it settles to null on any failure — the section is then absent rather than empty. `BINANCE_WEIGHT_PER_BUILD`'s table gained the row.
+
+### The open-interest cap, as a line and never as a block
+
+`perpsAtOpenInterestCap` is free, is a bare array of coin names, and had no caller. `hlPerpAtOpenInterestCap` (`hyperliquid/perp.ts:172`) reads it into **three** states, and `perpMarketSection.atOpenInterestCap` carries all three: `true`, `false`, and **null for "the list could not be read"**, which is not a synonym for "not capped". The card renders a line only on `true` (`OpenInterestCapNotice`, `PerpBody.tsx:93`), says what the cap does to orders in the venue's own terms, and ends "This is the venue's own list, not a Tripwire verdict".
+
+### Hyperliquid's leverage ladder, already inside the payload the card fetches
+
+`marginTables` and the per-asset `marginTableId` were undeclared in `metaAndAssetCtxs` and are now parsed into `HlMarket.marginTiers`. `leverageLadder` (`perp-venues.ts:283`) turns them into the notional thresholds at which the ceiling steps down, and returns **null for a single-tier table**, because "tier 1 of 1" says nothing the "Max leverage" tile did not. The brief's constraint — a tier means nothing without a position size and the card has no size input — is answered by shipping the thresholds rather than a tier number: on live ETH the note reads "Hyperliquid's ceiling steps down with position size: 25x up to $100M, then 15x", which is true without one.
+
+### The liquidation ladder for a cohort other than Smart Money
+
+`tgm/perp-positions` accepts `all_traders`, `whale` and `public_figure`. The brief made this conditional on §5's base-load decision because 5 credits per cohort cannot stack on an 11-credit card open — so it does not stack: the Liquidations tab still draws the Smart Money ladder the panel already bought, and the other three are **buttons that print "(5 credits)" before they are pressed** (`POST /api/perp/ladder`, `perpCohortLadderSection` at `apps/web/lib/intel/depth.ts:103`, the picker at `PerpBody.tsx:349`). §5's contested decision is about what a card load costs; nothing here changes that.
+
+The cohort is an enum rather than free text, refused before the request is sent, because a rejected call still costs a round trip and a ledger row. Answers are kept for the life of the card, so switching back is free and a second press never happens. `per_page` stays at 50 rather than climbing toward the endpoint's 1000: the ladder buckets into twelve price bands and the table pages six rows at a time, so rows 51+ would be bridge payload nobody can reach — and the aside already says out loud that 50 was a cap.
+
+**Measured on the recorded ETH pages:** all traders is $1.71B across its 50 rows against Smart Money's $573M, so the two ladders are genuinely different populations. **And the same wallet carries a different label in each** — `0x5b5d51…` is "Abraxas Capital" in the Smart Money page and "Uses \"EGAF\" HL Referral Code" in the all-traders one. The card says so, and says the verdict still read Smart Money's positions whatever the picker is showing.
+
+### One trader's win rate, one click at a time
+
+`tgm/perp-pnl-leaderboard` has no win-rate field; `profiler/perp-pnl-summary` does, at 1 credit (`POST /api/perp/win-rate`, `buildPerpWinRate` at `apps/web/lib/intel/perp.ts:111`). It is an **explicit click on one row and never a hover**: the expanded card lists twelve traders, and a hover trigger is twelve credits from one careless mouse pass. The window is `PERP_PNL_WINDOW_DAYS`, which is what the leaderboard itself asks for, so the two figures in the row describe the same 30 days.
+
+The percentage never ships alone. 41% across twelve closed trades and 41% across 585,166 are different claims, so the cell reads "41.4%" over "585,166 closed · 30d", and a null win rate says Nansen returned none rather than printing 0%.
+
+The column is **expanded-only**, like Round 1.3.8's sixth column: the compact card's leaderboard is already six columns in 440px.
+
+## Craft pass
+
+Four of these came out of opening the captures, not out of reading the diff.
+
+- **The win-rate button wrapped to three lines in every row**, which made each row 60px tall and pushed "$0.00" and "11.1%" into each other. Inside a table cell the column header already carries the noun, so the button carries only the price and its accessible name (`aria-label="Win rate for this trader, 1 credit"`). The leaderboard's cells also gained the 8px gutter Round 1.3 gave the venue table.
+- **Seven columns then overflowed one track of the expanded panel** and ran under the section beside it. The leaderboard now spans both tracks, exactly as the venue table and the Hyperliquid position table already do; "Largest recent trades" and "Top Hyperliquid accounts" sit side by side beneath it, which is a better reading order than before.
+- **Round 1.3's ragged column is fixed, and this round owed it.** Two equal grid tracks cannot balance sections of different heights, so the tall cohort block left a hole the height of itself — and this round adds two more sections to that tab. The expanded Positioning panel is now a two-**column** flow (`columns: 2`, `break-inside: avoid`, `column-span: all` for the venue table and the sources line), which balances by construction. It is scoped to that panel via `:has(.tw-cohorts)`, the same idiom Round 1.3 used: the price chart's canvas and the other cards' layouts were not measured inside a multi-column flow, and this round did not need them to be.
+- The open-interest note said "Binance" three times in one section, under a title and an aside that both already did.
+- New CSS is tokens only. The smallest new type is `0.6875rem` (11px, the floor), the cohort buttons are 24px tall, the open-interest line is the card's own foreground rather than the mint/red pair funding uses (open interest rising is neither good nor bad), no emoji, `Coins` and `AlertTriangle` are Lucide, every figure `tabular-nums`.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 309, web 317, extension 762** tests passed (308 / 316 / 762 before this round's last two, and all three counts include five other rounds' in-flight work in the same tree).
+- `pnpm -F web build`: OK; `/api/perp/ladder` and `/api/perp/win-rate` are in the route manifest. `pnpm -F extension build`: OK, 3.55 MB.
+- `TRIPWIRE_E2E_PORT=3225 pnpm verify:e2e`: **29 passed, 5 capture-only specs skipped.** Port 3000 was not touched. One earlier run failed three specs: one was this round's (the venue table's interval cell, fixed by the stale-timestamp rule above) and two were `.next` being rebuilt underneath the run by another session.
+- Captures: `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3225 … captures` — 4 passed. **New:** `perp-oi-history`, `perp-ladder-cohorts`, `perp-win-rate`. **Regenerated:** `perp-funding-venues`, `perp-cohorts`, `perp-expanded`, `perp-traders`, `liquidation-compact`, `liquidation-expanded`. Every one was opened; three of the four craft findings above came out of them.
+- `mount.test.tsx`'s CSS smoke ceiling was raised 80k → 96k. It is a smoke ceiling whose real guards are the two assertions above it (no inlined fonts, no `data:` URIs), and several rounds are adding to the theme in the same tree.
+
+## Deferred, and why
+
+- **`perp-screener` beyond `trader_type: "sm"`.** Probed live for 1 credit, and the probe is the finding: the `all` row returns `volume, buy_volume, sell_volume, buy_sell_pressure, trader_count, token_symbol, mark_price, funding, open_interest, previous_price_usd` and **no position fields at all**. The brief's plan was to use it as "the `all` denominator" for Smart Money's long/short — there is no denominator to be had, because that shape carries no `current_position_*` figures. A discriminated union is still the right shape for the notable-label variants, but it cannot serve the purpose this round wanted it for. The fixture is recorded for whoever wires the other variants.
+- **The leaderboard's `max_balance_held_usd` and `still_holding_balance_ratio`.** The brief flagged these as paid-for and free to show, with a caveat. Measured on the recorded page: **0 of 20 rows carry a non-zero value for either**, and `netflow_amount_usd` is 0 on all 20 as well. They cannot resolve `sideOfHolding`'s stated unknown — 8 of 20 rows have a non-zero `holding_amount` and the other 12 are genuinely flat. Rendering three columns of zeros would make the side ambiguity worse, not better. `roi_percent_realised` is populated on all 20, but the ROI column already prints `roi_percent_total`, which equals it wherever there is no unrealised leg.
+- **A second and third cohort fixture.** One live cohort was bought; replay serves that page for all three, which is stated in the endpoint's own comment. Two more would have been 10 credits for a shape already known.
+- **HIP-3 builder dexes.** `metaAndAssetCtxs` takes an optional `dex` that is still not passed, so a builder-deployed coin still falls through and renders the apology. The brief calls this the weak one and it is: resolving an arbitrary dex means an extra `allPerpMetas` round trip on every coin that misses the first dex, paid mostly by coins that do not exist.
+- **`jup.ag/perps` and Polymarket perps.** Unchanged from the brief's own reasoning: 6 credits per coin for three markets Nansen already covers through Hyperliquid, and an asset class `TargetGap` has no kind for. Neither is a parser change.
+- **Binance `interestRate` / `estimatedSettlePrice`, Bybit 24h high/low and bid/ask, dYdX `trades24H` and the margin fractions.** `interestRate` is the funding formula's constant component; a settlement estimate for a perpetual is not a price anyone trades at; the 24h range is the price chart's job; a spread column would be 2 of 5 rows, which is the same partial-column problem the basis constraint exists to prevent; `initialMarginFraction` is max leverage restated, on the one venue that publishes it.
+
+## Notes for the next round
+
+- **`PerpVenueQuote` is now the place a venue field lands**, and `apps/web/lib/venues/derive.ts` is where its parsing goes: pure functions over the recorded shapes, testable without a network. A new venue adds one `*QuoteFrom`, and `NO_EXTRAS` is what a row that answered nothing looks like.
+- **The expanded Positioning panel is a column flow, not a grid.** A section added to that tab needs `break-inside: avoid` (it inherits it) and, if it is wide, `column-span: all`. The other three perp tabs and every other card are unchanged.
+- The two priced presses are the first thing in `lib/ui` to call `lib/api` directly rather than through a callback prop. `Logo.tsx` already reaches the bridge for itself, so the precedent existed; the alternative was threading two perp-only callbacks through the shared `Panel` and both content-script runners.
+- `predictedFundings` also carries each venue's rate and interval, deliberately unread. If a venue ever stops publishing its own schedule, that is the fallback — but two opinions of the same number in one row is how two cells come to disagree.
+- The cohort picker's answers live for the life of the card only. If a user is expected to compare cohorts across cards, that wants a cache key, not a bigger component.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**A field the venue sends is not a field the table should print.** Round 2.5 was handed about twenty parsed-away venue fields and shipped four of them. The venue table both prints and sorts on its numbers inside a 440px popover, so the binding constraint was the layout, not the parser: one new column (basis, expanded-only), two things folded into the cell they belong to (the next funding time and the funding cap), one note under an existing tile (the leverage ladder), and everything else rejected with a stated reason. The clearest rejection is the 24h price change, which four venues publish and which the brief listed: it is a property of the coin, so a column of it prints one number five times while the card states it once already. The rule that decided each case is Round 1.3.4's, applied to clutter rather than to cost — nothing is parsed that nothing renders, so those fields are not read at all.
+
+**Basis has one formula and two blank cells, on purpose.** Three of the five venues publish both a mark and their own fair-value reference in payloads the table already fetches; OKX publishes a `premium` it derived against an index we never see, and dYdX publishes an oracle with no mark. Filling those two cells from anything else would put three differently computed numbers in one column and invite a comparison none of them supports, so they are dashes and the table's note names the venues whose figure is real and says what it is measured against. `PERP_VENUES[v].basisReference` records the convention beside `oiSides`, which is where Round 1.3 recorded the other one.
+
+**A countdown belongs to the reader's clock, and a stale timestamp is not an imminent event.** Venue answers are cached for 60 seconds and a card sits open for minutes, so "time remaining" is computed in the extension from the absolute epoch the venue published, ticking on an interval that is cleared on unmount. The rule that followed: a payment time that passed minutes ago honestly reads "due now", and one that passed hours ago renders nothing, because it is a stale snapshot and saying "due now" about it would assert a payment nobody reported. dYdX, which settles hourly and publishes no timestamp, gets a dash rather than a derived one — a schedule we know is still not a thing the venue said.
+
+**A cohort ladder is a press, so §5's base-load decision does not gate it.** `tgm/perp-positions` costs 5 credits per cohort and the perp panel already costs 12, which is why the brief made the cohort ladders conditional. They are conditional on *stacking*: the Liquidations tab still draws the Smart Money page the panel already bought, and the other three cohorts are buttons that state their price, spend once, and keep the answer for the life of the card. The measurement that made it worth buying is that the populations really differ — $1.71B across the all-traders page against $573M across Smart Money's, over the same 50 rows — and the finding that came with it is that **a wallet's label is a property of the page it was returned in**: the same address is "Abraxas Capital" in one and "Uses \"EGAF\" HL Referral Code" in the other. The card shows a label as a label, never as an identity, and says which population is on screen and that the verdict did not move with it.

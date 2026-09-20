@@ -99,7 +99,10 @@ describe("mountReact", () => {
     // from 60k when Round 1.1 added the price readout, exchange line, both-sides rows and the
     // indicator vocabulary styles, and again to 80k when Round 1.3 added the cohort bars, the
     // venue-table gutters and the stacked table cells; the card's CSS is expected to grow.
-    expect(shadowCss.length).toBeLessThan(80_000);
+    // Raised again to 96k during the Round 2 build, where several rounds add to the theme in
+    // the same tree (2.5's own share is the perp depth block: the open-interest sparkline, the
+    // cohort picker, the venue-cap line and the expanded Positioning column flow).
+    expect(shadowCss.length).toBeLessThan(96_000);
     for (const m of mounts) m.ui.remove();
   });
 

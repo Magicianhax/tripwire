@@ -1,6 +1,7 @@
 import {
   depthCostLabel,
   distanceToLiquidationPct,
+  leverageLadder,
   liquidationBands,
   positionCohorts,
   positionLadderAside,
@@ -9,8 +10,10 @@ import {
   type DepthSection,
   type PerpPosition,
 } from "@tripwire/core";
-import { Layers, Scale, TrendingUp, Users } from "lucide-react";
-import type { DepthResponse, HitDto, PerpPanel } from "../api-types";
+import { useState } from "react";
+import { AlertTriangle, Coins, Layers, Scale, TrendingUp, Users } from "lucide-react";
+import { perpLadder, perpWinRate } from "../api";
+import type { DepthResponse, HitDto, PerpLadderResponse, PerpPanel, PerpWinRateResponse } from "../api-types";
 import { rowLimit, useCardSize } from "./card-size";
 import { timeAgo, usd } from "./format";
 import { Icon } from "./icons";
@@ -18,7 +21,7 @@ import { Empty, HitList, price, Readouts, Section, signOf, Sources } from "./pan
 import { PriceChart } from "./PriceChart";
 import { SectionProblem, Skeleton } from "./Skeleton";
 import { Tabs, type TabDef } from "./Tabs";
-import { FundingHistory, VenueTable } from "./VenueTable";
+import { FundingHistory, OpenInterestHistory, VenueTable } from "./VenueTable";
 import { WalletLabel } from "./WalletLabel";
 import { LiquidationChart } from "./LiquidationChart";
 import { usePagination } from "./DataCharts";
@@ -62,6 +65,93 @@ export const signedPct = (value: number | null, digits: number): string =>
  * test pins this constant to the backend's own default so the two cannot drift apart again. */
 export const FUNDING_WINDOW_HOURS = 48;
 const FUNDING_SECTION_TITLE = `Funding, last ${FUNDING_WINDOW_HOURS}h`;
+
+/**
+ * A button that buys something, with the price on it before it is pressed (Round 2.5).
+ *
+ * Every paid thing this card adds is a press. Not a hover — the trader leaderboard is twelve
+ * rows in the expanded card, and a hover trigger would be twelve credits from one careless
+ * mouse pass. Not a tab or a segment either: Round 1.5 established that a control reachable by
+ * arrow key must not spend, because that is a credit per keypress.
+ */
+function PricedButton({
+  label,
+  credits,
+  onClick,
+  pending,
+  pressed,
+  priceOnly,
+}: {
+  label: string;
+  credits: number;
+  onClick: () => void;
+  pending: boolean;
+  pressed?: boolean;
+  /** Inside a table cell the column header carries the noun, so the button carries only the
+   *  price and its own accessible name. A three-line button in every row of a twelve-row table
+   *  is the same width problem as a seventh column. */
+  priceOnly?: boolean;
+}) {
+  const price = `${credits} ${credits === 1 ? "credit" : "credits"}`;
+  return (
+    <button
+      type="button"
+      className="tw-premium-button"
+      onClick={onClick}
+      disabled={pending}
+      aria-pressed={pressed}
+      aria-label={priceOnly ? `${label}, ${price}` : undefined}
+    >
+      <Icon icon={Coins} size={14} />
+      {pending ? "Asking…" : priceOnly ? price : `${label} (${price})`}
+    </button>
+  );
+}
+
+/**
+ * Hyperliquid's open-interest cap, as a line and never as a block (Round 2.5).
+ *
+ * Three states, and only one of them says anything: `true` is the venue's own list naming this
+ * coin, `false` is the list not naming it, and **null is the list not being readable** — which
+ * is not the same as "not capped" and therefore prints nothing at all.
+ */
+function OpenInterestCapNotice({ atCap, coin }: { atCap: boolean | null | undefined; coin: string }) {
+  if (atCap !== true) return null;
+  return (
+    <p className="tw-warnline" role="note">
+      <Icon icon={AlertTriangle} size={14} />
+      <span>
+        Hyperliquid lists <b>{coin}</b> among the perps at their open-interest cap. While a market sits at its cap the venue stops accepting orders that
+        would add to open interest; orders that reduce it still go through. This is the venue&rsquo;s own list, not a Tripwire verdict.
+      </span>
+    </p>
+  );
+}
+
+/**
+ * Where Hyperliquid's leverage ceiling steps down, in notional terms (Round 2.5).
+ *
+ * The margin table has always been inside the `metaAndAssetCtxs` response the card fetches. A
+ * tier only means something at a stated position size and this card has no size input, so the
+ * *thresholds* are what ship — they are true without one — and a flat one-tier table says
+ * nothing the "Max leverage" tile did not already say, so it renders nothing.
+ */
+function LeverageLadderNote({ tiers }: { tiers: { lowerBoundUsd: number; maxLeverage: number }[] | null | undefined }) {
+  const ladder = leverageLadder(tiers ?? null);
+  if (!ladder) return null;
+  return (
+    <p className="tw-note tw-meta">
+      Hyperliquid&rsquo;s ceiling steps down with position size: <b className="tw-fig">{ladder.topLeverage}x</b> up to{" "}
+      {ladder.steps.map((step, i) => (
+        <span key={step.fromUsd}>
+          {i > 0 ? ", then " : ""}
+          <b className="tw-fig">{usd(step.fromUsd)}</b>, then <b className="tw-fig">{step.maxLeverage}x</b>
+        </span>
+      ))}
+      .
+    </p>
+  );
+}
 
 /** The two-colour split bar itself: mint for the long share, red for the short. It is only ever
  * rendered from a real total, so a 50/50 bar on screen means the market is actually 50/50. */
@@ -262,6 +352,7 @@ function PositioningTab({ panel, hits, depth }: { panel: PerpPanel; hits: HitDto
       ) : null}
 
       <Section title="The market right now" aside="Hyperliquid">
+        <OpenInterestCapNotice atCap={market?.atOpenInterestCap} coin={panel.coin} />
         {has(depth, "perpMarket") ? (
           <Skeleton shape="tile" rows={2} label="Loading market data" />
         ) : market?.market ? (
@@ -284,6 +375,7 @@ function PositioningTab({ panel, hits, depth }: { panel: PerpPanel; hits: HitDto
                 ]}
               />
             </div>
+            <LeverageLadderNote tiers={market.market.marginTiers} />
             {book ? (
               <p className="tw-note">
                 Within <b className="tw-fig">±{book.bandPct}%</b> of mid there is <b className="tw-fig">{usd(book.bidUsd)}</b> of bids against{" "}
@@ -320,16 +412,79 @@ function PositioningTab({ panel, hits, depth }: { panel: PerpPanel; hits: HitDto
         <SectionProblem reasons={venues?.errors ?? []} />
       </Section>
 
-      <Sources>Nansen perp-screener, tgm/position-intelligence and smart-money/perp-trades; Hyperliquid, Binance, Bybit, OKX and dYdX public APIs</Sources>
+      {/* Open interest is a single point on every row of the table above: Binance is the only
+          venue in the set that publishes a history, so the section is titled after Binance and
+          never after the coin. Free, weight 0, and absent rather than empty when it fails. */}
+      {venues?.oiHistory ? (
+        <Section title="Open interest over time" aside="Binance USD-M">
+          <OpenInterestHistory series={venues.oiHistory} height={size === "expanded" ? 96 : 56} />
+          <p className="tw-note tw-meta">
+            One side of the book, on the same convention as the table&rsquo;s own column. The other four venues publish a current figure and no history, so
+            this line is one venue&rsquo;s open interest rather than the table&rsquo;s.
+          </p>
+        </Section>
+      ) : null}
+
+      <Sources>
+        Nansen perp-screener, tgm/position-intelligence and smart-money/perp-trades; Hyperliquid, Binance, Bybit, OKX and dYdX public APIs
+      </Sources>
       {markPrice === null ? null : <span className="tw-sr-only">Mark price {markPrice}</span>}
     </>
   );
 }
 
+/**
+ * The ladders the Liquidations tab can draw (Round 2.5).
+ *
+ * Smart Money is the one the panel already bought and the only one any verdict rests on. The
+ * other three are `tgm/perp-positions` asked for a different population: **5 credits each**, so
+ * each is a button with its price on it and nothing here fires on opening the tab.
+ */
+const LADDER_COHORTS = [
+  { id: "smart_money", name: "Smart Money" },
+  { id: "all_traders", name: "All traders" },
+  { id: "whale", name: "Whales" },
+  { id: "public_figure", name: "Public figures" },
+] as const;
+type LadderCohortId = (typeof LADDER_COHORTS)[number]["id"];
+/** Measured in the round's own recording run: the call bills 5 whichever cohort it names. */
+const LADDER_COHORT_CREDITS = 5;
+const cohortName = (id: LadderCohortId) => LADDER_COHORTS.find((c) => c.id === id)!.name;
+
+type LadderView = { positions: PerpPosition[]; isLastPage: boolean | null };
+
 function LiquidationsTab({ panel, depth }: { panel: PerpPanel; depth: DepthState }) {
   const size = useCardSize();
+  const [cohort, setCohort] = useState<LadderCohortId>("smart_money");
+  /** Answers already paid for, kept for the life of the card so switching back is free. */
+  const [bought, setBought] = useState<Partial<Record<LadderCohortId, LadderView>>>({});
+  const [pending, setPending] = useState<LadderCohortId | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function choose(id: LadderCohortId) {
+    if (id === "smart_money" || bought[id]) {
+      setCohort(id);
+      setError(null);
+      return;
+    }
+    if (pending) return;
+    setPending(id);
+    setError(null);
+    const result = await perpLadder(panel.coin, id as Exclude<LadderCohortId, "smart_money">);
+    setPending(null);
+    const section = result.ok ? result.data : null;
+    if (!section || !section.positions) {
+      setError(section?.errors?.[0] ?? (result.ok ? "Nansen returned no positions for this cohort." : result.error));
+      return;
+    }
+    setBought((prev) => ({ ...prev, [id]: { positions: section.positions!, isLastPage: section.isLastPage } }));
+    setCohort(id);
+  }
+
+  const view: LadderView =
+    cohort === "smart_money" ? { positions: panel.positions ?? [], isLastPage: panel.positionsIsLastPage } : (bought[cohort] ?? { positions: [], isLastPage: null });
   const markPrice = depth.data?.perpMarket?.market?.markPrice ?? panel.screener?.mark_price ?? panel.positions?.[0]?.mark_price ?? null;
-  const positions = panel.positions ?? [];
+  const positions = view.positions;
   const bands = liquidationBands(positions, markPrice);
   const hasTicks = positions.some((p) => p.liquidation_price !== null);
   // Keep all returned positions reachable without a long nested scrolling table.
@@ -337,22 +492,48 @@ function LiquidationsTab({ panel, depth }: { panel: PerpPanel; depth: DepthState
     .filter((p) => p.liquidation_price !== null)
     .sort((a, b) => b.position_value_usd - a.position_value_usd), 6);
   const shown = pagination.rows;
+  const name = cohortName(cohort);
 
   return (
     <>
-      <Section title="Liquidation ladder" aside="mark ±15%">
+      <Section title="Liquidation ladder" aside={`${name}, mark ±15%`}>
+        <div className="tw-cohort-picker" role="group" aria-label="Which traders to draw the ladder for">
+          {LADDER_COHORTS.map((c) =>
+            c.id === "smart_money" || bought[c.id] ? (
+              <button key={c.id} type="button" className="tw-cohort-choice" aria-pressed={cohort === c.id} onClick={() => void choose(c.id)}>
+                {c.name}
+              </button>
+            ) : (
+              <PricedButton
+                key={c.id}
+                label={c.name}
+                credits={LADDER_COHORT_CREDITS}
+                pending={pending === c.id}
+                pressed={cohort === c.id}
+                onClick={() => void choose(c.id)}
+              />
+            ),
+          )}
+        </div>
+        {error ? <SectionProblem reasons={[error]} /> : null}
         {markPrice && hasTicks ? (
           <>
             <LiquidationChart positions={positions} markPrice={markPrice} height={size === "expanded" ? 320 : 240} />
           </>
         ) : (
-          <Empty>No liquidation levels available for the returned positions.</Empty>
+          <Empty>No liquidation levels available for the returned {name} positions.</Empty>
+        )}
+        {cohort === "smart_money" ? null : (
+          <p className="tw-note tw-meta">
+            This ladder is Nansen&rsquo;s {name.toLowerCase()} page for {panel.coin}. Any rule this card fired still read Smart Money&rsquo;s positions, not
+            this cohort&rsquo;s, and a wallet can carry a different label in each page.
+          </p>
         )}
       </Section>
 
       <div className="tw-liquidation-summary">
       {bands ? (
-        <Section title="How much liquidates near here" aside="Smart Money">
+        <Section title="How much liquidates near here" aside={name}>
           <Readouts
             items={bands.map((b) => ({
               label: `Within ±${b.pct}%`,
@@ -368,7 +549,7 @@ function LiquidationsTab({ panel, depth }: { panel: PerpPanel; depth: DepthState
       ) : null}
 
       {shown.length > 0 ? (
-        <Section title="Largest Smart Money positions" aside={positionLadderAside(shown.length, positions.length, panel.positionsIsLastPage)}>
+        <Section title={`Largest ${name} positions`} aside={positionLadderAside(shown.length, positions.length, view.isLastPage)}>
           <table className="tw-table">
             <thead>
               <tr>
@@ -424,8 +605,61 @@ function LiquidationsTab({ panel, depth }: { panel: PerpPanel; depth: DepthState
   );
 }
 
+/**
+ * One trader's win rate, bought a row at a time (Round 2.5).
+ *
+ * `tgm/perp-pnl-leaderboard` carries no win-rate field of its own, so this is a second call:
+ * `profiler/perp-pnl-summary`, **1 credit**, over the same 30 days the leaderboard asked for,
+ * so the two figures in the row describe the same period. It is a click and never a hover, and
+ * the answer is kept for the life of the card so a second look is free.
+ *
+ * The percentage never ships alone: 41% across twelve closed trades and 41% across 585,166 are
+ * different claims, and only the second one is about a strategy.
+ */
+function WinRateCell({ address, state, onLoad }: { address: string | null; state: PerpWinRateResponse | "pending" | string | undefined; onLoad: () => void }) {
+  if (!address) return <td className="tw-num tw-meta">—</td>;
+  if (state === undefined || state === "pending") {
+    return (
+      <td className="tw-num">
+        <PricedButton label="Win rate for this trader" credits={1} pending={state === "pending"} onClick={onLoad} priceOnly />
+      </td>
+    );
+  }
+  if (typeof state === "string") return <td className="tw-num tw-meta">{state}</td>;
+  if (state.winRate === null) {
+    return (
+      <td className="tw-num tw-meta">
+        Nansen returned no win rate for this trader over {state.windowDays}d
+      </td>
+    );
+  }
+  return (
+    <td className="tw-num">
+      <span className="tw-fig">{(state.winRate * 100).toFixed(1)}%</span>
+      <span className="tw-meta tw-winrate-of">
+        {state.closedTrades === null ? `${state.windowDays}d` : `${state.closedTrades.toLocaleString("en-US")} closed · ${state.windowDays}d`}
+      </span>
+    </td>
+  );
+}
+
 function TradersTab({ depth, coin }: { depth: DepthState; coin: string }) {
   const size = useCardSize();
+  // Expanded only: the compact card already carries six columns in 440px, and a seventh would
+  // wrap every row (non-negotiable #5). The same ruling as Round 1.3.8's position table.
+  const showWinRate = size === "expanded";
+  const [rates, setRates] = useState<Record<string, PerpWinRateResponse | "pending" | string>>({});
+
+  async function loadWinRate(address: string) {
+    if (rates[address]) return;
+    setRates((prev) => ({ ...prev, [address]: "pending" }));
+    const result = await perpWinRate(address);
+    setRates((prev) => ({
+      ...prev,
+      [address]: result.ok ? (result.data.error ? result.data.error : result.data) : result.error,
+    }));
+  }
+
   const traders = depth.data?.perpTraders;
   const loading = has(depth, "perpTraders");
   const failure = depth.failed.perpTraders;
@@ -455,7 +689,7 @@ function TradersTab({ depth, coin }: { depth: DepthState; coin: string }) {
         {leaders.length === 0 ? (
           <Empty>Nansen returned no PnL leaderboard for this coin.</Empty>
         ) : (
-          <table className="tw-table">
+          <table className="tw-table tw-perp-leaders">
             <thead>
               <tr>
                 <th scope="col">Trader</th>
@@ -472,6 +706,11 @@ function TradersTab({ depth, coin }: { depth: DepthState; coin: string }) {
                 <th scope="col" className="tw-num">
                   Trades
                 </th>
+                {showWinRate ? (
+                  <th scope="col" className="tw-num">
+                    Win rate
+                  </th>
+                ) : null}
               </tr>
             </thead>
             <tbody>
@@ -491,6 +730,7 @@ function TradersTab({ depth, coin }: { depth: DepthState; coin: string }) {
                     {r.roiPct === null ? "—" : `${r.roiPct.toFixed(1)}%`}
                   </td>
                   <td className="tw-fig tw-num">{r.tradeCount ?? "—"}</td>
+                  {showWinRate ? <WinRateCell address={r.address} state={r.address ? rates[r.address] : undefined} onLoad={() => void loadWinRate(r.address!)} /> : null}
                 </tr>
               ))}
             </tbody>
@@ -564,7 +804,7 @@ function TradersTab({ depth, coin }: { depth: DepthState; coin: string }) {
 
       <SectionProblem reasons={traders.errors} />
       <Sources>
-        Nansen tgm/perp-pnl-leaderboard, tgm/perp-trades and perp-leaderboard
+        Nansen tgm/perp-pnl-leaderboard, tgm/perp-trades and perp-leaderboard{showWinRate ? "; profiler/perp-pnl-summary per win rate asked for" : ""}
       </Sources>
     </>
   );

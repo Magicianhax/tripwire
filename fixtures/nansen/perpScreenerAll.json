@@ -1,0 +1,21 @@
+{
+  "data": [
+    {
+      "volume": 1042625953.49997,
+      "buy_volume": 427686087.07802,
+      "sell_volume": 614939866.42195,
+      "buy_sell_pressure": -187253779.34393,
+      "trader_count": 8990,
+      "token_symbol": "ETH",
+      "mark_price": 2581.25,
+      "funding": 0.0000125,
+      "open_interest": 2686427627.9399996,
+      "previous_price_usd": 2638.9
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 1,
+    "is_last_page": true
+  }
+}

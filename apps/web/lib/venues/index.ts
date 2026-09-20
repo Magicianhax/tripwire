@@ -1,5 +1,6 @@
-import { PERP_VENUE_IDS, perpVenueSymbol, singleSidedOi, venueFunding, type PerpVenueId, type PerpVenueQuote } from "@tripwire/core";
-import { hlMarket, hlVenueQuote, type HlMarket } from "../hyperliquid/perp";
+import { PERP_VENUE_IDS, perpVenueSymbol, singleSidedOi, venueFunding, type OiHistorySeries, type PerpVenueId, type PerpVenueQuote } from "@tripwire/core";
+import { hlMarket, hlPredictedFunding, hlVenueQuote, type HlMarket, type HlPredictedFunding } from "../hyperliquid/perp";
+import { binanceQuoteFrom, bybitQuoteFrom, dydxQuoteFrom, NO_EXTRAS, oiHistoryFrom, okxQuoteFrom, type BinanceOiHistRow } from "./derive";
 import { venueGet, venueNum, VenueError } from "./http";
 
 /**
@@ -15,10 +16,12 @@ import { venueGet, venueNum, VenueError } from "./http";
 const FUNDING_TTL = 60_000;
 const OI_TTL = 60_000;
 const RATIO_TTL = 5 * 60_000;
+/** Five-minute buckets, so a shorter TTL would ask for a bucket that has not closed yet. */
+const OI_HISTORY_TTL = 5 * 60_000;
 
 // ---- Binance USD-M futures -----------------------------------------------------------------
 
-type BinancePremium = { symbol: string; markPrice?: string; lastFundingRate?: string; nextFundingTime?: number; time?: number; interestRate?: string };
+type BinancePremium = { symbol: string; markPrice?: string; indexPrice?: string; lastFundingRate?: string; nextFundingTime?: number; time?: number; interestRate?: string };
 type BinanceOi = { symbol: string; openInterest?: string };
 type BinanceRatio = { symbol: string; longAccount?: string; shortAccount?: string; longShortRatio?: string; timestamp?: number };
 type BinanceFundingInfo = { symbol: string; fundingIntervalHours?: number };
@@ -30,7 +33,8 @@ type BinanceTicker24h = { symbol: string; quoteVolume?: string; volume?: string 
  * Binance's request-weight budget for one venue-table build, counted rather than assumed.
  *
  * `fapi` allows 2,400 weight per minute per IP and the `futures/data` statistics host is
- * separate again, so five symbol-scoped requests is not close to a limit — but the budget is
+ * separate again (500 requests per 5 minutes, which the two calls below share), so six
+ * symbol-scoped requests is not close to a limit — but the budget is
  * shared with every other tab of every other user behind the same address, so each call below
  * states its weight and every one of them is symbol-scoped:
  *
@@ -41,6 +45,7 @@ type BinanceTicker24h = { symbol: string; quoteVolume?: string; volume?: string 
  * | `fapi/v1/ticker/24hr?symbol=`                  | 1      | 60s        |
  * | `fapi/v1/fundingInfo`                          | 1      | 6h         |
  * | `futures/data/globalLongShortAccountRatio`     | 0      | 5m         |
+ * | `futures/data/openInterestHist?symbol=`        | 0      | 5m         |
  *
  * The unfiltered form of `ticker/24hr` costs **80**, so the symbol is never optional here; the
  * same is true of `premiumIndex` (weight 10 unfiltered) and `openInterest`, which requires one.
@@ -93,14 +98,12 @@ async function binanceQuote(symbol: string): Promise<PerpVenueQuote> {
   // 24h turnover, quoted in USDT (Round 1.3.5). Like open interest and the account ratio it is
   // a nice-to-have: a rate-limited or 404ing ticker costs this one cell, never the row, because
   // it settles to null here instead of throwing out to `crossVenueFunding`'s catch.
-  const volume24h = await venueGet<BinanceTicker24h>({
+  const ticker = await venueGet<BinanceTicker24h>({
     venue: "binance",
     fixture: "binance-ticker24hr",
     url: `https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=${encodeURIComponent(symbol)}`,
     ttlMs: FUNDING_TTL,
-  })
-    .then((r) => venueNum(r?.quoteVolume))
-    .catch(() => null);
+  }).catch(() => null);
   const longShare = await venueGet<BinanceRatio[]>({
     venue: "binance",
     fixture: "binance-longShortRatio",
@@ -118,10 +121,38 @@ async function binanceQuote(symbol: string): Promise<PerpVenueQuote> {
     // `lastFundingRate` is quoted per funding interval, which is 8h unless fundingInfo says else.
     funding: venueFunding("binance", venueNum(premium?.lastFundingRate), intervalHours),
     openInterestUsd: singleSidedOi("binance", oiCoins !== null && mark !== null ? oiCoins * mark : null),
-    volume24hUsd: volume24h,
+    volume24hUsd: venueNum(ticker?.quoteVolume),
     longAccountShare: longShare,
+    // The index price, the basis against it, the 24h change and the next payment time were all
+    // already in these two payloads before Round 2.5 and none of them reached the card.
+    ...binanceQuoteFrom({ premium }),
     error: null,
   };
+}
+
+// ---- Binance open-interest history (the only over-time source in the set) --------------------
+
+/**
+ * 24 hours of Binance open interest, in five-minute buckets.
+ *
+ * Weight 0, but the `futures/data` statistics host has its own 500-requests-per-5-minutes IP
+ * budget, shared with the long/short account ratio the table already asks for — so this is one
+ * request per coin per five minutes, and it settles to null on any failure. The card names
+ * Binance on the chart: this is the only venue in the table publishing open interest over time,
+ * and a delta drawn from Binance must never be read as Hyperliquid's.
+ */
+async function binanceOiHistory(symbol: string): Promise<OiHistorySeries | null> {
+  try {
+    const rows = await venueGet<BinanceOiHistRow[]>({
+      venue: "binance",
+      fixture: "binance-openInterestHist",
+      url: `https://fapi.binance.com/futures/data/openInterestHist?symbol=${encodeURIComponent(symbol)}&period=5m&limit=288`,
+      ttlMs: OI_HISTORY_TTL,
+    });
+    return oiHistoryFrom(symbol, rows);
+  } catch {
+    return null;
+  }
 }
 
 // ---- Bybit v5 linear -----------------------------------------------------------------------
@@ -142,6 +173,11 @@ type BybitTicker = {
   nextFundingTime?: string;
   /** Bybit states the schedule per market, so nothing has to be inferred here. */
   fundingIntervalHour?: number | string;
+  /** The venue's own fair-value index. */
+  indexPrice?: string;
+  /** A single magnitude covering both funding bounds. OKX states a signed pair instead; both
+   * are normalised in `derive.ts` so the card has one render path. */
+  fundingCap?: string;
 };
 type BybitTickers = { retCode?: number; retMsg?: string; result?: { list?: BybitTicker[] } };
 
@@ -177,6 +213,7 @@ async function bybitQuote(symbol: string): Promise<PerpVenueQuote> {
     openInterestUsd: singleSidedOi("bybit", oiValue ?? (oiCoins !== null && mark !== null ? oiCoins * mark : null)),
     volume24hUsd: venueNum(t.turnover24h),
     longAccountShare: null,
+    ...bybitQuoteFrom(t),
     error: null,
   };
 }
@@ -184,7 +221,7 @@ async function bybitQuote(symbol: string): Promise<PerpVenueQuote> {
 // ---- OKX ------------------------------------------------------------------------------------
 
 type OkxEnvelope<T> = { code?: string; msg?: string; data?: T[] };
-type OkxFunding = { instId: string; fundingRate?: string; nextFundingTime?: string; fundingTime?: string };
+type OkxFunding = { instId: string; fundingRate?: string; nextFundingTime?: string; fundingTime?: string; maxFundingRate?: string; minFundingRate?: string; premium?: string };
 type OkxOi = { instId: string; oi?: string; oiCcy?: string; oiUsd?: string };
 type OkxTicker = { instId: string; last?: string; volCcy24h?: string; vol24h?: string };
 
@@ -233,6 +270,7 @@ async function okxQuote(instId: string): Promise<PerpVenueQuote> {
     openInterestUsd: singleSidedOi("okx", oiUsd ?? (oiCcy !== null && last !== null ? oiCcy * last : null)),
     volume24hUsd: venueNum(ticker?.volCcy24h) !== null && last !== null ? venueNum(ticker?.volCcy24h)! * last : null,
     longAccountShare: null,
+    ...okxQuoteFrom({ funding }),
     error: null,
   };
 }
@@ -280,6 +318,7 @@ async function dydxQuote(ticker: string): Promise<PerpVenueQuote> {
     openInterestUsd: singleSidedOi("dydx", oi !== null && price !== null ? oi * price : null),
     volume24hUsd: venueNum(m.volume24H),
     longAccountShare: null,
+    ...dydxQuoteFrom(),
     error: null,
   };
 }
@@ -302,6 +341,7 @@ function unavailable(venue: PerpVenueId, symbol: string, error: string): PerpVen
     openInterestUsd: null,
     volume24hUsd: null,
     longAccountShare: null,
+    ...NO_EXTRAS,
     error,
   };
 }
@@ -311,6 +351,12 @@ export type CrossVenueTable = {
   rows: PerpVenueQuote[];
   /** Venues with no contract for this coin at all, named so the table can say so once. */
   unmapped: PerpVenueId[];
+  /**
+   * Open interest over the last day, from the one venue in the table that publishes a history.
+   * It carries its own venue and symbol because it is *not* the table's open-interest column
+   * over time — it is Binance's, and the chart says so (Round 2.5).
+   */
+  oiHistory: OiHistorySeries | null;
 };
 
 /**
@@ -321,13 +367,21 @@ export async function crossVenueFunding(coin: string, hlPreloaded?: { market: Hl
   const unmapped: PerpVenueId[] = [];
   const jobs: Promise<PerpVenueQuote>[] = [];
 
+  /**
+   * Hyperliquid's own market payload says what funding *is* and never when it is next paid;
+   * `predictedFundings` does, for every venue it tracks, in one cached 234-coin answer. Only
+   * the Hyperliquid row reads it — Binance, Bybit and OKX each publish their own timestamp, and
+   * a venue's own payload is closer to the source than another venue's view of it.
+   */
+  const predicted = await hlPredictedFunding(coin).catch(() => null);
+
   const hlSymbol = perpVenueSymbol("hyperliquid", coin);
   if (hlSymbol === null) unmapped.push("hyperliquid");
-  else if (hlPreloaded) jobs.push(Promise.resolve(hlVenueQuote(hlPreloaded.market, hlSymbol, hlPreloaded.error)));
+  else if (hlPreloaded) jobs.push(Promise.resolve(hlVenueQuote(hlPreloaded.market, hlSymbol, hlPreloaded.error, predicted)));
   else
     jobs.push(
       hlMarket(hlSymbol).then(
-        (m) => hlVenueQuote(m, hlSymbol, m ? null : `Hyperliquid has no ${hlSymbol} market`),
+        (m) => hlVenueQuote(m, hlSymbol, m ? null : `Hyperliquid has no ${hlSymbol} market`, predicted),
         (e: unknown) => unavailable("hyperliquid", hlSymbol, e instanceof Error ? e.message : String(e)),
       ),
     );
@@ -344,11 +398,12 @@ export async function crossVenueFunding(coin: string, hlPreloaded?: { market: Hl
     );
   }
 
-  const rows = await Promise.all(jobs);
+  const binanceSymbol = perpVenueSymbol("binance", coin);
+  const [rows, oiHistory] = await Promise.all([Promise.all(jobs), binanceSymbol === null ? Promise.resolve(null) : binanceOiHistory(binanceSymbol)]);
   // Venues that answered first, biggest book first; the ones that didn't sink to the bottom.
   rows.sort((a, b) => {
     if (!!a.error !== !!b.error) return a.error ? 1 : -1;
     return (b.openInterestUsd ?? -1) - (a.openInterestUsd ?? -1);
   });
-  return { coin: coin.toUpperCase(), rows, unmapped };
+  return { coin: coin.toUpperCase(), rows, unmapped, oiHistory };
 }
