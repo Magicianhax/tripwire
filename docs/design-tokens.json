@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-20T00:00:00Z",
+  "title": "Design System: Tripwire",
+  "extensions": {
+    "colorMeta": {
+      "ground": { "role": "neutral", "displayName": "Nansen Near-Black", "canonical": "#06080B", "tonalRamp": ["#06080B", "#0B1016", "#111821", "#1B242F", "#2A3644", "#4A5866", "#7C8996", "#C3CBD3"] },
+      "panel": { "role": "neutral", "displayName": "Panel Slate", "canonical": "#0B1016", "tonalRamp": ["#05080C", "#0B1016", "#121A23", "#1C2833", "#2B3B49", "#4C6070", "#80949F", "#C6D2D9"] },
+      "raised": { "role": "neutral", "displayName": "Raised Slate", "canonical": "#111821", "tonalRamp": ["#070A0E", "#0D131A", "#111821", "#1A2531", "#293848", "#4A5F73", "#8195A6", "#C7D3DD"] },
+      "line": { "role": "neutral", "displayName": "Hairline 8%", "canonical": "rgba(255,255,255,0.08)", "tonalRamp": ["rgba(255,255,255,0.04)", "rgba(255,255,255,0.08)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0.16)", "rgba(255,255,255,0.24)", "rgba(255,255,255,0.4)", "rgba(255,255,255,0.6)", "rgba(255,255,255,0.8)"] },
+      "line-strong": { "role": "neutral", "displayName": "Hairline 16%", "canonical": "rgba(255,255,255,0.16)", "tonalRamp": ["rgba(255,255,255,0.04)", "rgba(255,255,255,0.08)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0.16)", "rgba(255,255,255,0.24)", "rgba(255,255,255,0.4)", "rgba(255,255,255,0.6)", "rgba(255,255,255,0.8)"] },
+      "glow": { "role": "neutral", "displayName": "Card-Edge Teal Glow", "canonical": "#061A1F", "tonalRamp": ["#030D10", "#061A1F", "#0A272E", "#0F3B45", "#165561", "#237F8F", "#4FB5C4", "#A6E0E8"] },
+      "scrim": { "role": "neutral", "displayName": "Overlay Scrim", "canonical": "rgba(0,0,0,0.60)", "tonalRamp": ["rgba(0,0,0,0.9)", "rgba(0,0,0,0.8)", "rgba(0,0,0,0.7)", "rgba(0,0,0,0.6)", "rgba(0,0,0,0.45)", "rgba(0,0,0,0.3)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.08)"] },
+      "shimmer": { "role": "neutral", "displayName": "Skeleton Shimmer", "canonical": "rgba(255,255,255,0.06)", "tonalRamp": ["rgba(255,255,255,0.02)", "rgba(255,255,255,0.06)", "rgba(255,255,255,0.1)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0.2)", "rgba(255,255,255,0.32)", "rgba(255,255,255,0.5)", "rgba(255,255,255,0.7)"] },
+      "text": { "role": "neutral", "displayName": "Statement White", "canonical": "#FFFFFF", "tonalRamp": ["#1A1D20", "#2B3035", "#41484F", "#5C646C", "#7C858E", "#A2AAB2", "#CED4D9", "#FFFFFF"] },
+      "text-2": { "role": "neutral", "displayName": "Secondary White 60%", "canonical": "rgba(255,255,255,0.60)", "tonalRamp": ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.2)", "rgba(255,255,255,0.3)", "rgba(255,255,255,0.4)", "rgba(255,255,255,0.5)", "rgba(255,255,255,0.6)", "rgba(255,255,255,0.8)", "#FFFFFF"] },
+      "text-3": { "role": "neutral", "displayName": "Tertiary White 40%", "canonical": "rgba(255,255,255,0.40)", "tonalRamp": ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.2)", "rgba(255,255,255,0.3)", "rgba(255,255,255,0.4)", "rgba(255,255,255,0.5)", "rgba(255,255,255,0.6)", "rgba(255,255,255,0.8)", "#FFFFFF"] },
+      "ink": { "role": "primary", "displayName": "Signal Ink", "canonical": "#03140D", "tonalRamp": ["#010806", "#03140D", "#062117", "#0A3325", "#104B37", "#1B7659", "#35B589", "#8FE3C7"] },
+      "mint": { "role": "primary", "displayName": "Nansen Mint", "canonical": "#00FFA7", "tonalRamp": ["#00281A", "#004A31", "#006D48", "#009160", "#00B679", "#00DC93", "#00FFA7", "#9BFFD9"] },
+      "mint-dim": { "role": "primary", "displayName": "Mint Tint 12%", "canonical": "rgba(0,255,167,0.12)", "tonalRamp": ["rgba(0,255,167,0.04)", "rgba(0,255,167,0.08)", "rgba(0,255,167,0.12)", "rgba(0,255,167,0.2)", "rgba(0,255,167,0.32)", "rgba(0,255,167,0.5)", "rgba(0,255,167,0.75)", "#00FFA7"] },
+      "mint-line": { "role": "primary", "displayName": "Mint Hairline 40%", "canonical": "rgba(0,255,167,0.40)", "tonalRamp": ["rgba(0,255,167,0.08)", "rgba(0,255,167,0.16)", "rgba(0,255,167,0.28)", "rgba(0,255,167,0.4)", "rgba(0,255,167,0.55)", "rgba(0,255,167,0.7)", "rgba(0,255,167,0.85)", "#00FFA7"] },
+      "red": { "role": "secondary", "displayName": "Tripwire Red", "canonical": "#FF5A6E", "tonalRamp": ["#2B0C11", "#4A141C", "#6B1D27", "#8F2733", "#B63340", "#DB4453", "#FF5A6E", "#FFB3BC"] },
+      "red-dim": { "role": "secondary", "displayName": "Red Tint 12%", "canonical": "rgba(255,90,110,0.12)", "tonalRamp": ["rgba(255,90,110,0.04)", "rgba(255,90,110,0.08)", "rgba(255,90,110,0.12)", "rgba(255,90,110,0.2)", "rgba(255,90,110,0.32)", "rgba(255,90,110,0.5)", "rgba(255,90,110,0.75)", "#FF5A6E"] },
+      "red-line": { "role": "secondary", "displayName": "Red Hairline 45%", "canonical": "rgba(255,90,110,0.45)", "tonalRamp": ["rgba(255,90,110,0.08)", "rgba(255,90,110,0.18)", "rgba(255,90,110,0.3)", "rgba(255,90,110,0.45)", "rgba(255,90,110,0.6)", "rgba(255,90,110,0.75)", "rgba(255,90,110,0.9)", "#FF5A6E"] },
+      "amber": { "role": "tertiary", "displayName": "Caution Amber", "canonical": "#F5B83D", "tonalRamp": ["#2A1E06", "#452F09", "#61430D", "#805912", "#A17118", "#C48C22", "#F5B83D", "#FBDFA6"] },
+      "amber-dim": { "role": "tertiary", "displayName": "Amber Tint 12%", "canonical": "rgba(245,184,61,0.12)", "tonalRamp": ["rgba(245,184,61,0.04)", "rgba(245,184,61,0.08)", "rgba(245,184,61,0.12)", "rgba(245,184,61,0.2)", "rgba(245,184,61,0.32)", "rgba(245,184,61,0.5)", "rgba(245,184,61,0.75)", "#F5B83D"] },
+      "amber-line": { "role": "tertiary", "displayName": "Amber Hairline 45%", "canonical": "rgba(245,184,61,0.45)", "tonalRamp": ["rgba(245,184,61,0.08)", "rgba(245,184,61,0.18)", "rgba(245,184,61,0.3)", "rgba(245,184,61,0.45)", "rgba(245,184,61,0.6)", "rgba(245,184,61,0.75)", "rgba(245,184,61,0.9)", "#F5B83D"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The local web pages' page heading only (36px Sora)." },
+      "wordmark": { "displayName": "Wordmark", "purpose": "\"Tripwire\" in the nav bar and popup head (22px Sora 700)." },
+      "headline": { "displayName": "Card Headline", "purpose": "A card's title: token symbol, venue or wallet identity (18px Sora)." },
+      "alarm": { "displayName": "Alarm", "purpose": "The block screen's \"TRIPWIRE\" word, in red." },
+      "verdict": { "displayName": "Verdict", "purpose": "The verdict plate's word. The only uppercase type in the system." },
+      "finding": { "displayName": "Finding", "purpose": "The one-sentence finding under a card header (17px expanded) and web body copy." },
+      "body": { "displayName": "Body", "purpose": "Default UI text, tabs, hit lines, buttons, table cells." },
+      "body-sm": { "displayName": "Dense Body", "purpose": "Chips, strips, section titles, evidence rows inside the 440px card." },
+      "label": { "displayName": "Label", "purpose": "Tile labels, metadata, rule text, footnotes." },
+      "label-sm": { "displayName": "Micro Label", "purpose": "The 11px floor: replay tags, monograms, chart axis text, cost tags." },
+      "data": { "displayName": "Data Mono", "purpose": "Addresses and hashes only; tabular with slashed zero." },
+      "figure": { "displayName": "Figure", "purpose": "The value in a readout tile; [data-sign] colours it mint, red or 60% white." }
+    },
+    "shadows": [
+      { "name": "float", "value": "0 16px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4)", "purpose": "Anything body-level and floating: evidence card, dock chip, block screen. Soft and ambient; never offset or hard-edged." },
+      { "name": "block-ring", "value": "0 16px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,90,110,0.12)", "purpose": "The block screen only: float plus a red halo that reads as a stopped state." },
+      { "name": "focus-ring", "value": "outline: 2px solid #00FFA7; outline-offset: 2px", "purpose": "Every focusable control, on every surface. Offset drops to 1px or -2px where a control is flush with its container." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "The system's only easing: card entry, overlay entry, backdrop fade, skeleton sweep, marker hover." },
+      { "name": "duration-entry", "value": "180ms", "purpose": "Card rise-and-fade (8px), expanded fade-and-scale (from 0.98), backdrop fade." },
+      { "name": "duration-state", "value": "140ms", "purpose": "Hover colour and border moves on inline markers." },
+      { "name": "skeleton-sweep", "value": "1.2s", "purpose": "Raised -> shimmer -> raised placeholder sweep; goes still (but stays visible) under prefers-reduced-motion." },
+      { "name": "spinner", "value": "900ms linear infinite", "purpose": "The only continuous rotation in the system." }
+    ],
+    "breakpoints": [
+      { "name": "expanded-narrow", "value": "1100px", "purpose": "Below this the expanded overlay takes 92vw / 88vh. The narrowest desktop window supported; there is no phone layout." },
+      { "name": "ledger-two-column", "value": "960px", "purpose": "Local /ledger page splits into two columns above this width." },
+      { "name": "narrow-anchor", "value": "320px", "purpose": "Measured on the mounted surface's ANCHOR, not the viewport: below it the strip stacks its finding onto a second row." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Verdict Plate",
+      "kind": "chip",
+      "refersTo": "verdict-plate-filled",
+      "description": "The shared state token for TRIPWIRE / CAUTION / CLEAR / UNCHECKED. Filled for alerts, outlined for CLEAR, dashed for unverified; each carries its own icon shape so no state is told apart by colour alone.",
+      "html": "<span class=\"ds-plate\" data-tone=\"warning\" data-mark=\"filled\"><svg class=\"ds-plate-i\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27z\"/><path d=\"m15 9-6 6\"/><path d=\"m9 9 6 6\"/></svg>TRIPWIRE</span> <span class=\"ds-plate\" data-tone=\"normal\" data-mark=\"outlined\"><svg class=\"ds-plate-i\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/><path d=\"m9 12 2 2 4-4\"/></svg>CLEAR</span> <span class=\"ds-plate\" data-mark=\"dashed\"><svg class=\"ds-plate-i\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M10.1 2.18a9.93 9.93 0 0 1 3.8 0\"/><path d=\"M17.6 3.71a9.95 9.95 0 0 1 2.69 2.7\"/><path d=\"M21.82 10.1a9.93 9.93 0 0 1 0 3.8\"/><path d=\"M20.29 17.6a9.95 9.95 0 0 1-2.7 2.69\"/><path d=\"M13.9 21.82a9.94 9.94 0 0 1-3.8 0\"/><path d=\"M6.4 20.29a9.95 9.95 0 0 1-2.69-2.7\"/><path d=\"M2.18 13.9a9.93 9.93 0 0 1 0-3.8\"/><path d=\"M3.71 6.4a9.95 9.95 0 0 1 2.7-2.69\"/></svg>UNCHECKED</span>",
+      "css": ".ds-plate { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px 0 6px; border: 1px solid rgba(255,255,255,0.16); border-radius: 16px; background: #111821; color: rgba(255,255,255,0.6); font-family: Sora, Inter, system-ui, sans-serif; font-size: 12px; font-weight: 600; line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; } .ds-plate-i { width: 14px; height: 14px; flex-shrink: 0; } .ds-plate[data-mark=\"filled\"][data-tone=\"warning\"] { background: #FF5A6E; border-color: #FF5A6E; color: #03140D; } .ds-plate[data-mark=\"filled\"][data-tone=\"caution\"] { background: #F5B83D; border-color: #F5B83D; color: #03140D; } .ds-plate[data-mark=\"outlined\"][data-tone=\"normal\"] { background: rgba(0,255,167,0.12); border-color: rgba(0,255,167,0.4); color: #00FFA7; } .ds-plate[data-mark=\"dashed\"] { border-style: dashed; }"
+    },
+    {
+      "name": "Verdict Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "The first object on X: a panel pill under a post holding the Nansen mark, the verdict plate and one truncated finding. A button with aria-expanded and aria-haspopup=dialog.",
+      "html": "<button class=\"ds-chip\" data-verdict=\"CLEAR\" aria-expanded=\"false\" aria-haspopup=\"dialog\"><svg class=\"ds-chip-mark\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#00FFA7\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 3a9 9 0 1 0 9 9\"/><path d=\"M12 8a4 4 0 1 0 4 4\"/></svg><span class=\"ds-plate ds-plate--clear\">CLEAR</span><span class=\"ds-chip-value\">Fresh wallets bought 61.4x what labeled wallets sold</span></button>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 30px; margin: 4px 0; padding: 3px 12px 3px 6px; border: 1px solid rgba(255,255,255,0.16); border-radius: 16px; background: #0B1016; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 13px; line-height: 1; text-align: left; cursor: pointer; } .ds-chip[data-verdict=\"TRIPWIRE\"] { border-color: rgba(255,90,110,0.45); } .ds-chip[data-verdict=\"CAUTION\"] { border-color: rgba(245,184,61,0.45); } .ds-chip-mark { width: 16px; height: 16px; flex-shrink: 0; } .ds-chip-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 500; line-height: 1.3; color: #FFFFFF; font-variant-numeric: tabular-nums; } .ds-chip[data-verdict=\"UNCHECKED\"] .ds-chip-value, .ds-chip[data-verdict=\"LOADING\"] .ds-chip-value { color: rgba(255,255,255,0.6); } .ds-chip:hover { background: #111821; } .ds-chip:focus-visible { outline: 2px solid #00FFA7; outline-offset: 2px; } .ds-plate--clear { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border: 1px solid rgba(0,255,167,0.4); border-radius: 16px; background: rgba(0,255,167,0.12); color: #00FFA7; font-family: Sora, Inter, system-ui, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Evidence Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The shared 440px floating shell for token, venue, author-badge and wallet evidence: header identity, verdict plate, close, finding sentence, then tabs. Body-level and fixed; never an inline expansion.",
+      "html": "<div class=\"ds-card\" role=\"dialog\" aria-label=\"Tripwire evidence\"><div class=\"ds-card-head\"><span class=\"ds-card-logo\" aria-hidden=\"true\"></span><div class=\"ds-card-heading\"><h2 class=\"ds-card-title\">$WIF</h2><div class=\"ds-card-sub\">EkpQ… · 3d ago</div></div><span class=\"ds-plate--clear\">CLEAR</span><button class=\"ds-card-close\" aria-label=\"Close\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></button></div><p class=\"ds-card-finding\">Smart money, whales and public figures sold 0.64% of 24h volume ($9.39K of $1.47M), 12 wallets</p></div>",
+      "css": ".ds-card { position: relative; display: flex; flex-direction: column; width: min(440px, calc(100vw - 32px)); max-height: min(70vh, 640px); overflow: hidden; background: #0B1016; color: #FFFFFF; border: 1px solid rgba(255,255,255,0.16); border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4); font-family: Inter, system-ui, sans-serif; font-feature-settings: \"tnum\"; animation: ds-pop-in 180ms cubic-bezier(0.16,1,0.3,1) both; } .ds-card::before { content: \"\"; position: absolute; inset: 0 0 auto; height: 96px; background: linear-gradient(180deg, #061A1F, transparent); pointer-events: none; } .ds-card > * { position: relative; } .ds-card-head { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 10px 8px 6px 16px; } .ds-card-logo { width: 28px; height: 28px; border-radius: 50%; background: #111821; flex-shrink: 0; } .ds-card-heading { flex: 1; min-width: 0; display: grid; gap: 2px; } .ds-card-title { margin: 0; font-family: Sora, Inter, system-ui, sans-serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: #FFFFFF; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-card-sub { display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 1; color: rgba(255,255,255,0.6); white-space: nowrap; overflow: hidden; } .ds-card-close { display: inline-grid; place-items: center; width: 32px; height: 32px; border: none; border-radius: 16px; background: transparent; color: rgba(255,255,255,0.6); cursor: pointer; } .ds-card-close:hover { color: #FFFFFF; background: #111821; } .ds-card-close:focus-visible { color: #FFFFFF; outline: 2px solid #00FFA7; outline-offset: 0; } .ds-card-finding { margin: 0; padding: 4px 16px 16px; font-size: 15px; font-weight: 500; line-height: 1.4; color: #FFFFFF; text-wrap: pretty; } @keyframes ds-pop-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }"
+    },
+    {
+      "name": "Card Tabs",
+      "kind": "nav",
+      "refersTo": "tab-selected",
+      "description": "A real WAI-ARIA tablist: one tab stop, automatic activation, wrapping arrow keys, Home/End. Sticky on the panel with an 8% underline; the selected tab is mint with a 2px mint underline. The row never wraps.",
+      "html": "<div class=\"ds-tablist\" role=\"tablist\" aria-label=\"Evidence\"><button class=\"ds-tab\" role=\"tab\" aria-selected=\"true\">Flow</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\" tabindex=\"-1\">Wallets</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\" tabindex=\"-1\">Risk<span class=\"ds-tab-cost\">1 credit</span></button></div>",
+      "css": ".ds-tablist { position: sticky; top: 0; display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: 12px; padding: 0 16px; background: #0B1016; border-bottom: 1px solid rgba(255,255,255,0.08); } .ds-tab { position: relative; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; min-height: 36px; padding: 0; border: none; background: transparent; color: rgba(255,255,255,0.6); font-family: Inter, system-ui, sans-serif; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; } .ds-tab:hover:not([aria-selected=\"true\"]) { color: #FFFFFF; } .ds-tab[aria-selected=\"true\"] { color: #00FFA7; } .ds-tab[aria-selected=\"true\"]::after { content: \"\"; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; border-radius: 2px; background: #00FFA7; } .ds-tab:focus-visible { outline: 2px solid #00FFA7; outline-offset: -2px; border-radius: 4px; } .ds-tab-cost { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.6); }"
+    },
+    {
+      "name": "Readout Tile",
+      "kind": "card",
+      "refersTo": "tile",
+      "description": "The figure tile: a 12px 60%-white label over a 14px semibold tabular figure on the raised surface. A rule-hit tile lights: red border, red tint, red label and value.",
+      "html": "<dl class=\"ds-readouts\"><div><dt>Portfolio</dt><dd>$1.24M</dd></div><div><dt>Realized PnL 90d</dt><dd data-sign=\"pos\">+$34.5K</dd></div><div data-lit><dt>Fresh wallets</dt><dd>100%</dd></div></dl>",
+      "css": ".ds-readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 6px; margin: 0; font-family: Inter, system-ui, sans-serif; } .ds-readouts > div { display: grid; gap: 2px; padding: 6px 10px; border: 1px solid transparent; border-radius: 8px; background: #111821; } .ds-readouts dt { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.6); } .ds-readouts dd { margin: 0; font-size: 14px; font-weight: 600; color: #FFFFFF; font-variant-numeric: tabular-nums; } .ds-readouts dd[data-sign=\"pos\"] { color: #00FFA7; } .ds-readouts dd[data-sign=\"neg\"] { color: #FF5A6E; } .ds-readouts > div[data-lit] { border-color: #FF5A6E; background: rgba(255,90,110,0.12); } .ds-readouts > div[data-lit] dt, .ds-readouts > div[data-lit] dd { color: #FF5A6E; }"
+    },
+    {
+      "name": "Block Screen",
+      "kind": "custom",
+      "refersTo": "button-override",
+      "description": "The venue blocker: a red-bordered panel card over the trade action with the rule hits, an evidence action, the safe-move line, and a typed override that stays disabled until the phrase matches.",
+      "html": "<div class=\"ds-block\" role=\"dialog\" aria-label=\"Trade blocked\"><div class=\"ds-block-band\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#FF5A6E\" stroke-width=\"1.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27z\"/><path d=\"m15 9-6 6\"/><path d=\"m9 9 6 6\"/></svg><div><h2 class=\"ds-block-heading\">TRIPWIRE</h2><div class=\"ds-block-sub\">Trade blocked by your rules</div></div></div><div class=\"ds-block-body\"><ul class=\"ds-block-hits\"><li><b>Fresh wallets are 100% of buying</b><span class=\"ds-block-rule\">rule: &gt; 50%</span></li></ul><p class=\"ds-block-safe\">Not trading is the safe move.</p><label class=\"ds-block-prompt\">Type <span class=\"ds-block-phrase\">I AM EXIT LIQUIDITY</span> to trade anyway</label><div class=\"ds-block-row\"><input class=\"ds-block-input\" /><button class=\"ds-block-override\" disabled>Override</button></div></div></div>",
+      "css": ".ds-block { display: flex; flex-direction: column; overflow: hidden; background: #0B1016; color: #FFFFFF; border: 1px solid #FF5A6E; border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,90,110,0.12); font-family: Inter, system-ui, sans-serif; } .ds-block-band { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(255,90,110,0.45); background: rgba(255,90,110,0.12); } .ds-block-heading { margin: 0; font-family: Sora, Inter, system-ui, sans-serif; font-size: 18px; font-weight: 700; line-height: 1.1; letter-spacing: 0.04em; color: #FF5A6E; } .ds-block-sub { font-size: 13px; font-weight: 500; line-height: 1.2; color: #FFFFFF; } .ds-block-body { display: grid; gap: 16px; padding: 12px 16px 16px; } .ds-block-hits { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; font-weight: 500; line-height: 1.35; } .ds-block-rule { display: block; font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); } .ds-block-safe { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; font-weight: 600; color: #00FFA7; } .ds-block-prompt { font-size: 13px; font-weight: 500; line-height: 1.6; color: rgba(255,255,255,0.6); } .ds-block-phrase { display: inline-block; padding: 1px 6px; border-radius: 6px; background: #111821; font-weight: 600; color: #FFFFFF; } .ds-block-row { display: flex; align-items: flex-end; gap: 8px; } .ds-block-input { flex: 1; min-height: 36px; padding: 0 12px; border: 1px solid rgba(255,255,255,0.16); border-radius: 8px; background: #06080B; color: #FFFFFF; caret-color: #00FFA7; font: inherit; font-size: 14px; } .ds-block-input:focus-visible { outline: 2px solid #00FFA7; outline-offset: 1px; border-color: transparent; } .ds-block-override { min-height: 36px; padding: 0 16px; border: 1px solid #FF5A6E; border-radius: 16px; background: transparent; color: #FF5A6E; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; } .ds-block-override:hover:not(:disabled) { background: rgba(255,90,110,0.12); } .ds-block-override:disabled { border-color: rgba(255,255,255,0.16); border-style: dashed; color: rgba(255,255,255,0.6); cursor: not-allowed; } .ds-block-override:focus-visible { outline: 2px solid #00FFA7; outline-offset: 2px; }"
+    },
+    {
+      "name": "Venue Strip",
+      "kind": "custom",
+      "refersTo": "strip",
+      "description": "The verdict above a venue's whole trade-action row: plate, a finding that wraps to two lines before it clips, an optional rule note, a mint Details action, and the official venue mark.",
+      "html": "<div class=\"ds-strip\" data-verdict=\"CAUTION\"><span class=\"ds-plate--caution\">CAUTION</span><span class=\"ds-strip-text\"><span class=\"ds-strip-finding\">Smart Money 24h netflow is −$401 on this pair</span></span><span class=\"ds-strip-rule\">rule: &lt; $0.00</span><button class=\"ds-strip-details\">Details<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"/></svg></button></div>",
+      "css": ".ds-strip { display: flex; align-items: center; gap: 8px; min-height: 32px; max-width: 100%; padding: 3px 4px 3px 8px; border: 1px solid rgba(255,255,255,0.16); border-radius: 16px; background: #0B1016; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 13px; font-weight: 500; box-sizing: border-box; } .ds-strip[data-verdict=\"CAUTION\"] { border-color: rgba(245,184,61,0.45); } .ds-strip[data-verdict=\"TRIPWIRE\"] { border-color: rgba(255,90,110,0.45); } .ds-strip > * { min-width: 0; } .ds-strip-text { flex: 1; display: flex; align-items: baseline; gap: 8px; min-width: 0; overflow: hidden; } .ds-strip-finding { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; line-height: 1.25; } .ds-strip-rule { flex-shrink: 0; font-size: 12px; color: rgba(255,255,255,0.6); } .ds-strip-details { display: inline-flex; align-items: center; gap: 2px; flex-shrink: 0; min-height: 24px; padding: 0 6px 0 10px; border: none; border-radius: 16px; background: transparent; color: #00FFA7; font: inherit; font-weight: 600; cursor: pointer; } .ds-strip-details:hover { background: rgba(0,255,167,0.12); } .ds-strip-details:focus-visible { outline: 2px solid #00FFA7; outline-offset: 1px; } .ds-plate--caution { display: inline-flex; align-items: center; flex-shrink: 0; height: 22px; padding: 0 8px; border-radius: 16px; background: #F5B83D; color: #03140D; font-family: Sora, Inter, system-ui, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The local pages' primary action: Nansen's mint pill with dark ink. Disabled is a locked control (dashed border), not a faded one.",
+      "html": "<button class=\"ds-btn-primary\">Save</button> <button class=\"ds-btn-primary\" disabled>Save</button> <button class=\"ds-btn-quiet\">Cancel</button>",
+      "css": ".ds-btn-primary { min-height: 40px; padding: 0 24px; border: 1px solid #00FFA7; border-radius: 16px; background: #00FFA7; color: #03140D; font-family: Inter, system-ui, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; } .ds-btn-primary:hover:not(:disabled) { filter: brightness(1.08); } .ds-btn-primary:focus-visible { outline: 2px solid #00FFA7; outline-offset: 2px; } .ds-btn-primary:disabled { background: #111821; border: 1px dashed rgba(255,255,255,0.16); color: rgba(255,255,255,0.6); cursor: default; } .ds-btn-quiet { min-height: 36px; padding: 0 24px; border: 1px solid rgba(255,255,255,0.16); border-radius: 16px; background: transparent; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; } .ds-btn-quiet:hover { background: #111821; } .ds-btn-quiet:focus-visible { outline: 2px solid #00FFA7; outline-offset: 2px; }"
+    },
+    {
+      "name": "Number Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "A rule threshold: a well cut into the panel (ground fill), right-aligned tabular figures, mint caret, and a focus ring that replaces the border rather than doubling it.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">when fresh wallets are more than</span><input class=\"ds-input-number\" type=\"text\" inputmode=\"numeric\" value=\"50\" /><span class=\"ds-field-label\">% of buying</span></label>",
+      "css": ".ds-field { display: inline-flex; align-items: center; gap: 4px; font-family: Inter, system-ui, sans-serif; font-size: 15px; color: #FFFFFF; } .ds-field-label { font-size: 15px; color: #FFFFFF; } .ds-input-number { width: 12ch; min-height: 34px; margin: 0 4px; padding: 2px 12px; border: 1px solid rgba(255,255,255,0.16); border-radius: 8px; background: #06080B; color: #FFFFFF; caret-color: #00FFA7; font-family: Inter, system-ui, sans-serif; font-size: 14px; font-variant-numeric: tabular-nums; text-align: right; } .ds-input-number:focus-visible { outline: 2px solid #00FFA7; outline-offset: 1px; border-color: transparent; } .ds-input-number[aria-invalid=\"true\"] { border-color: #FF5A6E; }"
+    },
+    {
+      "name": "Page Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link-active",
+      "description": "The local pages' quiet sticky bar: Sora wordmark, pill links, mint-on-mint-tint for the current page.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nav-row\"><a class=\"ds-wordmark\" href=\"#\">Tripwire</a><ul class=\"ds-nav-links\"><li><a class=\"ds-nav-link\" href=\"#\">Status</a></li><li><a class=\"ds-nav-link\" href=\"#\" aria-current=\"page\">Rules</a></li><li><a class=\"ds-nav-link\" href=\"#\">Ledger</a></li></ul></div></nav>",
+      "css": ".ds-nav { position: sticky; top: 0; background: #06080B; border-bottom: 1px solid rgba(255,255,255,0.08); } .ds-nav-row { display: flex; align-items: center; justify-content: space-between; gap: 0 24px; min-height: 64px; padding: 0 24px; } .ds-wordmark { font-family: Sora, Inter, system-ui, sans-serif; font-size: 22px; font-weight: 700; line-height: 1; color: #FFFFFF; text-decoration: none; } .ds-nav-links { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; } .ds-nav-link { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 16px; font-family: Inter, system-ui, sans-serif; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.6); text-decoration: none; } .ds-nav-link:hover { color: #FFFFFF; background: #111821; } .ds-nav-link[aria-current=\"page\"] { color: #00FFA7; background: rgba(0,255,167,0.12); } .ds-nav-link:focus-visible { outline: 2px solid #00FFA7; outline-offset: 2px; }"
+    },
+    {
+      "name": "Loading Skeleton",
+      "kind": "custom",
+      "refersTo": "tile",
+      "description": "Placeholders that reserve the destination section's exact height (18 / 20 / 52 / 28 / 132px) so nothing shifts when evidence lands. Still but visible under reduced motion.",
+      "html": "<div class=\"ds-skeleton\"><div class=\"ds-skeleton-row\" data-shape=\"gauge\"></div><div class=\"ds-skeleton-row\" data-shape=\"tile\"></div><div class=\"ds-skeleton-row\" data-shape=\"table\"></div><div class=\"ds-skeleton-row\" data-shape=\"chart\"></div></div>",
+      "css": ".ds-skeleton { display: grid; gap: 6px; } .ds-skeleton-row { height: 18px; border-radius: 8px; background: linear-gradient(90deg, #111821 0%, rgba(255,255,255,0.06) 50%, #111821 100%); background-size: 200% 100%; animation: ds-sweep 1.2s cubic-bezier(0.16,1,0.3,1) infinite; } .ds-skeleton-row[data-shape=\"gauge\"] { height: 20px; } .ds-skeleton-row[data-shape=\"tile\"] { height: 52px; } .ds-skeleton-row[data-shape=\"table\"] { height: 28px; } .ds-skeleton-row[data-shape=\"chart\"] { height: 132px; } @keyframes ds-sweep { from { background-position: 100% 0; } to { background-position: -100% 0; } } @media (prefers-reduced-motion: reduce) { .ds-skeleton-row { animation: none; background: #111821; } }"
+    },
+    {
+      "name": "Wallet Marker",
+      "kind": "button",
+      "refersTo": "wallet-marker",
+      "description": "An 18px inline control injected beside a wallet address anywhere on a granted page, with a 24px hit target from a pseudo-element and a mint tint while its card is open.",
+      "html": "<button class=\"ds-marker\" aria-label=\"Inspect wallet 0x7f…17d1 with Tripwire\" aria-expanded=\"false\"><svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 3a9 9 0 1 0 9 9\"/><path d=\"M12 8a4 4 0 1 0 4 4\"/></svg></button>",
+      "css": ".ds-marker { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; margin: 0 0 0 4px; padding: 2px; border: 1px solid transparent; border-radius: 6px; background: #111821; color: #FFFFFF; vertical-align: text-bottom; cursor: pointer; transition: background 140ms cubic-bezier(0.16,1,0.3,1), border-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-marker::after { content: \"\"; position: absolute; inset: -4px; } .ds-marker:hover, .ds-marker[aria-expanded=\"true\"] { border-color: rgba(0,255,167,0.4); background: rgba(0,255,167,0.12); } .ds-marker:focus-visible { outline: 2px solid #00FFA7; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Nansen Terminal, Dropped Into Someone Else's Page",
+    "overview": "Tripwire is not a widget that visits X and a DEX; it is a piece of Nansen's own product that arrives at the moment money is about to move. The ground is Nansen's near-black (#06080B), the surfaces are two quiet steps up from it, structure is drawn with one-pixel white hairlines at 8% and 16%, and the only bright colour in a calm state is mint. Density is high and the voice is flat: a verdict word, one sentence of finding, then Nansen-style rows of labelled figures with thin split bars. Nothing decorates; every coloured pixel is a value, a state, or a control.\n\nThe world is disciplined because it is a guest. Every content-script surface renders in React inside a Shadow DOM on a hostile page, so each component sets its own colour rather than inheriting one, and no surface is allowed to widen the venue card it sits in. Evidence is always a floating, body-level card — never an inline expansion that changes a tweet's or a trade form's height. The same card grows into a centred desktop overlay without switching to a second information architecture.\n\nThe build rejects the two worlds that came before it: the Hazard system (yellow-on-ink, stripes, condensed display type) and the \"Glass Cockpit\" (deep navy, purple glow, blur). It also rejects generic crypto-card decoration, emoji labels, and any hue-only encoding of state.",
+    "keyCharacteristics": [
+      "Near-black tonal layering (ground → panel → raised) with hairline borders; no drawn dividers heavier than 1px except a state border.",
+      "Mint is the only ambient accent; red and amber appear only when a rule fires or a figure is negative.",
+      "Inter for everything readable, with tabular numerals everywhere a figure appears; Sora only for headings and verdict words; JetBrains Mono only for addresses and hashes.",
+      "One radius family: 16px pills, 12px cards, 8px tiles, 24px for the expanded overlay.",
+      "Lucide icons at an absolute 1.5px stroke and bundled official brand marks; no glyph substitutes, no emoji.",
+      "Desktop-only. Reviewed at 1280 / 1440 / 1920px, supported down to roughly 1100px."
+    ],
+    "rules": [
+      { "name": "The Never-Green-For-Unknown Rule", "body": "Missing data is UNCHECKED, and UNCHECKED is neutral: 60% white on raised behind a dashed 16% border. It may never borrow mint, and it may never be styled to look like a pass.", "section": "colors" },
+      { "name": "The Shape-Before-Hue Rule", "body": "No state is told apart by colour alone. TRIPWIRE and CAUTION plates are filled, CLEAR is outlined, UNCHECKED and LOADING are dashed; each verdict carries its own Lucide shape (UNCHECKED is a dashed circle, never the CLEAR shield); signed figures carry their sign and their own geometry.", "section": "colors" },
+      { "name": "The Ink-On-Fill Rule", "body": "Text on any mint, red or amber fill is the signal ink (#03140D). White on mint and white on amber are both banned.", "section": "colors" },
+      { "name": "The 11px Floor Rule", "body": "Nothing renders below 11px (0.6875rem) — including SVG chart labels. If a layout needs smaller text, the layout is wrong.", "section": "typography" },
+      { "name": "The Tabular-Always Rule", "body": "Every figure is tabular. Figures stay in Inter rather than moving to the mono face: this is a Nansen data table, not a terminal.", "section": "typography" },
+      { "name": "The Sora-Sparingly Rule", "body": "Sora is for the heading, the wordmark and the verdict word. A sentence, a label, a row or a button never uses it.", "section": "typography" },
+      { "name": "The Anchor-Fit Rule", "body": "A mounted surface may never widen its host or create host-page horizontal scroll. fit.ts measures the narrowest usable ancestor content box, publishes it as --tw-fit-width on the shadow host (a custom property survives WXT's :host { all: initial !important } reset), and every mounted surface caps itself at it, updated by ResizeObserver.", "section": "layout" },
+      { "name": "The Lift-Out-Of-Row Rule", "body": "When a venue lays its trade button out in a horizontal flex or grid row, walk up out of that row and mount the strip above the whole row. Never squeeze the strip into a column beside the button.", "section": "layout" },
+      { "name": "The Narrow-Anchor Rule", "body": "Below a 320px anchor width — measured on the anchor, never on the viewport — the host gets data-narrow and the strip stacks: logo, verdict and Details stay on row one, the finding takes row two, the rule text is dropped. This is embedded-host resilience, not a mobile layout.", "section": "layout" },
+      { "name": "The Body-Level Evidence Rule", "body": "Floating evidence lives at body level with fixed positioning. It is never an inline expansion that changes a post's, form's or trade card's height.", "section": "layout" },
+      { "name": "The One-Gradient Rule", "body": "The system has exactly one decorative gradient: the glow-to-transparent wash across the top 96px of a card (140px expanded). The only other gradient permitted is functional — the skeleton's raised → shimmer → raised sweep.", "section": "elevation" },
+      { "name": "The No-Blur Rule", "body": "No backdrop-filter anywhere. Depth is tone, hairline and one soft shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do derive every colour, radius and space from the tokens in DESIGN.md's frontmatter; the extension theme, the popup and the local pages all declare the same set, and they must not diverge.",
+      "Do set an explicit color on every text-bearing component. Nothing inherits colour from the shadow host, whose WXT reset is the browser's black — that was the root cause of the unreadable chip.",
+      "Do pair colour with shape: filled / outlined / dashed plates, a distinct Lucide shape per verdict, and signed, labelled figures.",
+      "Do keep UNCHECKED neutral, name the endpoint or source when evidence is missing, and let a failed section become a named reason line.",
+      "Do cap every mounted surface at --tw-fit-width and lift the strip above a horizontal trade row.",
+      "Do state a paid section's credit price on the control before it is activated; expanding a card by itself spends nothing.",
+      "Do use Lucide at an absolute 1.5px stroke (12/14/16/20px, always aria-hidden), bundled official venue and chain SVGs with provenance recorded in apps/extension/public/logos/SOURCES.md, and the backend-proxied token image, falling back to a monogram.",
+      "Do keep text at 11px or larger, contrast at 4.5:1 or better (checked in Chromium by test/chip-contrast.test.tsx against the colour actually painted behind each element), and interactive targets at 24px or larger — 32–40px for primary actions.",
+      "Do design and review at 1280 / 1440 / 1920px and support desktop windows down to roughly 1100px."
+    ],
+    "donts": [
+      "Don't restore the Hazard world (yellow #FFD400, ink #0B0B0B, hazard stripes, Archivo, 3/6/10px radii) or the Glass Cockpit (deep navy, purple glow, glassmorphism).",
+      "Don't add a gradient beyond the card's top-edge glow and the skeleton's functional sweep, and never add backdrop-filter.",
+      "Don't use emoji, an icon font, or a generic glyph where an official mark exists; don't let the Nansen mark become Tripwire's own logo — it appears in the \"Powered by Nansen\" credit and as the inspect marker only.",
+      "Don't put white text on a mint or amber fill, or use 40% white for small interactive or explanatory copy.",
+      "Don't let a tab strip wrap to a second row, let a card become an inline expansion, or let any surface change the host page's width or document flow.",
+      "Don't encode a state with hue alone, and never let a missing answer render as CLEAR.",
+      "Don't add mobile layouts, touch-only affordances or phone captures; Tripwire is desktop-only.",
+      "Don't introduce a second display face, a condensed face, or system-ui as a display font — all three families ship with the extension."
+    ],
+    "notCanonized": [
+      "text-3 (40% white) measures roughly 3.9:1 on panel and does not clear the 4.5:1 floor at UI sizes; the build already steps back up to text-2 in several places. It stays in the token set for large/decorative use only and is not a system text colour.",
+      "Legacy narrow paths — the [data-sheet] bottom sheet, the 719.98px dock move, 600/800/960px web breakpoints, and the historical mobile.png / dock-mobile.png captures — survive from earlier rounds. They are carried resilience, not a mobile design system.",
+      "impeccable detect last reported 83 advisory findings (40 colour, 29 radius, 14 font-size) measured against the retired Hazard document plus e2e host stubs that imitate venue palettes on purpose. Not re-measured and not repaired here.",
+      "Extension content scripts register the three faces under \"Tripwire \"-prefixed family names while the popup and web pages load the same @fontsource files under their plain names. Same faces, two registrations."
+    ]
+  }
+}
