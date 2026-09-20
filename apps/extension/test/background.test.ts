@@ -166,4 +166,33 @@ describe("toResult", () => {
   it("passes a successful bridge response through", () => {
     expect(toResult({ ok: true, status: 200, json: { a: 1 } })).toEqual({ ok: true, data: { a: 1 } });
   });
+
+  // "Tripwire couldn't check this: invalid request" named nothing. The user hit it from a stale
+  // service worker talking to a newer schema, and the strip could not say so.
+  it("names the field a 400 rejected", () => {
+    const issues = [{ code: "too_small", path: ["sections", 0], message: "too small" }];
+    expect(toResult({ ok: false, status: 400, json: { error: "invalid request", issues } })).toEqual({
+      ok: false,
+      status: 400,
+      error: "invalid request (sections.0)",
+    });
+  });
+
+  it("says to reload the extension when the rejection is a schema mismatch", () => {
+    const issues = [{ code: "unrecognized_keys", path: ["target"], keys: ["outcomeLabel"], message: "Unrecognized key" }];
+    expect(toResult({ ok: false, status: 400, json: { error: "invalid request", issues } }).ok).toBe(false);
+    expect((toResult({ ok: false, status: 400, json: { error: "invalid request", issues } }) as { error: string }).error).toBe(
+      "invalid request (target). Reload the extension to match the backend.",
+    );
+  });
+
+  it("names at most three paths, and says nothing extra when the issue has no path", () => {
+    const many = [1, 2, 3, 4].map((n) => ({ code: "custom", path: ["f", n], message: "no" }));
+    expect((toResult({ ok: false, status: 400, json: { error: "invalid request", issues: many } }) as { error: string }).error).toBe(
+      "invalid request (f.1, f.2, f.3)",
+    );
+    expect((toResult({ ok: false, status: 400, json: { error: "invalid request", issues: [{ code: "custom", path: [], message: "no" }] } }) as { error: string }).error).toBe(
+      "invalid request",
+    );
+  });
 });
