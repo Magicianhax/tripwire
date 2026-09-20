@@ -1,0 +1,18 @@
+{
+  "closeTime": 1789906746234,
+  "count": 3583605,
+  "firstId": 8750847709,
+  "highPrice": "2669.00",
+  "lastId": 8754447147,
+  "lastPrice": "2576.26",
+  "lastQty": "0.022",
+  "lowPrice": "2562.31",
+  "openPrice": "2640.93",
+  "openTime": 1789820340000,
+  "priceChange": "-64.67",
+  "priceChangePercent": "-2.449",
+  "quoteVolume": "6337810216.17",
+  "symbol": "ETHUSDT",
+  "volume": "2429696.101",
+  "weightedAvgPrice": "2608.48"
+}

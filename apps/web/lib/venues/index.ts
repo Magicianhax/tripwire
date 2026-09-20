@@ -1,4 +1,4 @@
-import { PERP_VENUE_IDS, perpVenueSymbol, venueFunding, type PerpVenueId, type PerpVenueQuote } from "@tripwire/core";
+import { PERP_VENUE_IDS, perpVenueSymbol, singleSidedOi, venueFunding, type PerpVenueId, type PerpVenueQuote } from "@tripwire/core";
 import { hlMarket, hlVenueQuote, type HlMarket } from "../hyperliquid/perp";
 import { venueGet, venueNum, VenueError } from "./http";
 
@@ -22,6 +22,30 @@ type BinancePremium = { symbol: string; markPrice?: string; lastFundingRate?: st
 type BinanceOi = { symbol: string; openInterest?: string };
 type BinanceRatio = { symbol: string; longAccount?: string; shortAccount?: string; longShortRatio?: string; timestamp?: number };
 type BinanceFundingInfo = { symbol: string; fundingIntervalHours?: number };
+/** `quoteVolume` is the 24h turnover in the quote asset (USDT), which is the USD figure the
+ * table's other four rows carry. `volume` is the same window in ETH and is not comparable. */
+type BinanceTicker24h = { symbol: string; quoteVolume?: string; volume?: string };
+
+/**
+ * Binance's request-weight budget for one venue-table build, counted rather than assumed.
+ *
+ * `fapi` allows 2,400 weight per minute per IP and the `futures/data` statistics host is
+ * separate again, so five symbol-scoped requests is not close to a limit — but the budget is
+ * shared with every other tab of every other user behind the same address, so each call below
+ * states its weight and every one of them is symbol-scoped:
+ *
+ * | Request                                       | Weight | Cached for |
+ * |-----------------------------------------------|--------|------------|
+ * | `fapi/v1/premiumIndex?symbol=`                 | 1      | 60s        |
+ * | `fapi/v1/openInterest?symbol=`                 | 1      | 60s        |
+ * | `fapi/v1/ticker/24hr?symbol=`                  | 1      | 60s        |
+ * | `fapi/v1/fundingInfo`                          | 1      | 6h         |
+ * | `futures/data/globalLongShortAccountRatio`     | 0      | 5m         |
+ *
+ * The unfiltered form of `ticker/24hr` costs **80**, so the symbol is never optional here; the
+ * same is true of `premiumIndex` (weight 10 unfiltered) and `openInterest`, which requires one.
+ */
+export const BINANCE_WEIGHT_PER_BUILD = 4;
 
 /**
  * Binance's funding interval for this market, in hours.
@@ -66,6 +90,17 @@ async function binanceQuote(symbol: string): Promise<PerpVenueQuote> {
   })
     .then((r) => venueNum(r?.openInterest))
     .catch(() => null);
+  // 24h turnover, quoted in USDT (Round 1.3.5). Like open interest and the account ratio it is
+  // a nice-to-have: a rate-limited or 404ing ticker costs this one cell, never the row, because
+  // it settles to null here instead of throwing out to `crossVenueFunding`'s catch.
+  const volume24h = await venueGet<BinanceTicker24h>({
+    venue: "binance",
+    fixture: "binance-ticker24hr",
+    url: `https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=${encodeURIComponent(symbol)}`,
+    ttlMs: FUNDING_TTL,
+  })
+    .then((r) => venueNum(r?.quoteVolume))
+    .catch(() => null);
   const longShare = await venueGet<BinanceRatio[]>({
     venue: "binance",
     fixture: "binance-longShortRatio",
@@ -82,8 +117,8 @@ async function binanceQuote(symbol: string): Promise<PerpVenueQuote> {
     markPrice: mark,
     // `lastFundingRate` is quoted per funding interval, which is 8h unless fundingInfo says else.
     funding: venueFunding("binance", venueNum(premium?.lastFundingRate), intervalHours),
-    openInterestUsd: oiCoins !== null && mark !== null ? oiCoins * mark : null,
-    volume24hUsd: null,
+    openInterestUsd: singleSidedOi("binance", oiCoins !== null && mark !== null ? oiCoins * mark : null),
+    volume24hUsd: volume24h,
     longAccountShare: longShare,
     error: null,
   };
@@ -95,8 +130,14 @@ type BybitTicker = {
   symbol: string;
   markPrice?: string;
   fundingRate?: string;
+  /** Long **plus** short, in coins. Not read: see `bybitQuote`. */
   openInterest?: string;
+  /** Long **plus** short, in USDT. Not read: see `bybitQuote`. */
   openInterestValue?: string;
+  /** One side, in coins. */
+  singleOpenInterest?: string;
+  /** One side, in USDT — the figure this table's other four rows are quoted in. */
+  singleOpenInterestValue?: string;
   turnover24h?: string;
   nextFundingTime?: string;
   /** Bybit states the schedule per market, so nothing has to be inferred here. */
@@ -115,14 +156,25 @@ async function bybitQuote(symbol: string): Promise<PerpVenueQuote> {
   const t = body?.result?.list?.find((r) => r?.symbol === symbol) ?? body?.result?.list?.[0];
   if (!t) throw new VenueError("bybit", `Bybit has no ${symbol} market`);
   const mark = venueNum(t.markPrice);
-  const oiValue = venueNum(t.openInterestValue);
-  const oiCoins = venueNum(t.openInterest);
+  /**
+   * Bybit publishes the same market's open interest twice: `openInterestValue` counts long
+   * **plus** short, and `singleOpenInterestValue` counts one side. This row read the first one,
+   * which made Bybit look twice its size — and because `crossVenueFunding` sorts on this field,
+   * it put Bybit above venues with more open interest than it. The recorded ETH ticker is
+   * 1,954,642,843.92 against 977,321,434.21, exactly 2x.
+   *
+   * The coin fallback is the `single` one for the same reason, and a market that publishes
+   * neither degrades to null rather than being halved on an assumption: on an inverse or a
+   * newly listed contract we would not know which convention the leftover field followed.
+   */
+  const oiValue = venueNum(t.singleOpenInterestValue);
+  const oiCoins = venueNum(t.singleOpenInterest);
   return {
     venue: "bybit",
     symbol,
     markPrice: mark,
     funding: venueFunding("bybit", venueNum(t.fundingRate), venueNum(t.fundingIntervalHour)),
-    openInterestUsd: oiValue ?? (oiCoins !== null && mark !== null ? oiCoins * mark : null),
+    openInterestUsd: singleSidedOi("bybit", oiValue ?? (oiCoins !== null && mark !== null ? oiCoins * mark : null)),
     volume24hUsd: venueNum(t.turnover24h),
     longAccountShare: null,
     error: null,
@@ -178,7 +230,7 @@ async function okxQuote(instId: string): Promise<PerpVenueQuote> {
     symbol: instId,
     markPrice: last,
     funding: venueFunding("okx", venueNum(funding.fundingRate), okxInterval(funding)),
-    openInterestUsd: oiUsd ?? (oiCcy !== null && last !== null ? oiCcy * last : null),
+    openInterestUsd: singleSidedOi("okx", oiUsd ?? (oiCcy !== null && last !== null ? oiCcy * last : null)),
     volume24hUsd: venueNum(ticker?.volCcy24h) !== null && last !== null ? venueNum(ticker?.volCcy24h)! * last : null,
     longAccountShare: null,
     error: null,
@@ -216,6 +268,8 @@ async function dydxQuote(ticker: string): Promise<PerpVenueQuote> {
   const m = body?.markets?.[ticker];
   if (!m) throw new VenueError("dydx", `dYdX has no ${ticker} market`);
   const price = venueNum(m.oraclePrice);
+  // `openInterest`, one side. The payload's `baseOpenInterest` is the roughly-doubled sibling
+  // (13,993.985 against 6,873.883 on the recorded ETH market) and is deliberately not read.
   const oi = venueNum(m.openInterest);
   return {
     venue: "dydx",
@@ -223,7 +277,7 @@ async function dydxQuote(ticker: string): Promise<PerpVenueQuote> {
     markPrice: price,
     // dYdX v4 settles funding every hour and quotes `nextFundingRate` for that hour.
     funding: venueFunding("dydx", venueNum(m.nextFundingRate)),
-    openInterestUsd: oi !== null && price !== null ? oi * price : null,
+    openInterestUsd: singleSidedOi("dydx", oi !== null && price !== null ? oi * price : null),
     volume24hUsd: venueNum(m.volume24H),
     longAccountShare: null,
     error: null,

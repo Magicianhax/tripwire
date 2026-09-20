@@ -106,7 +106,7 @@ describe("toggleEvidence (D4)", () => {
 describe("evidence card popover", () => {
   const ok: ApiResult<GuardResponse> = {
     ok: true,
-    data: { target, verdict: "TRIPWIRE", hits: [], unavailable: [], signals: [], panel: { coin: "ETH", screener: null, positions: null, trades: null, errors: [] }, rulesPreset: "balanced" },
+    data: { target, verdict: "TRIPWIRE", hits: [], unavailable: [], signals: [], panel: { coin: "ETH", mode: "panel", screener: null, positions: null, positionsIsLastPage: null, positionsReturned: null, trades: null, cohorts: null, cohortsAtIso: null, tradesError: null, cohortsError: null, errors: [] }, rulesPreset: "balanced" },
   };
 
   it("opens as a body-level dialog anchored to its trigger, on the requested tab, and Escape closes it with focus back on the trigger", async () => {

@@ -140,6 +140,30 @@ export type PerpTrade = {
   value_usd: number;
   price_usd: number;
   block_timestamp: string;
+  /** Coin size and order type, both on the wire; the "opened in the last hour" strip reads them. */
+  token_amount?: number | null;
+  type?: string | null;
+  transaction_hash?: string | null;
+};
+
+/**
+ * `tgm/position-intelligence`: three cohorts' open perp exposure in one row (Round 1.3.3).
+ *
+ * Every figure is a **gross** USD amount — `*_total_usd` is longs plus shorts, verified on the
+ * recorded ETH row (79,597,764.64 + 28,777,976.03 = 108,375,740.67) — so nothing derived from
+ * it may be labelled net exposure. Hyperliquid perps only, and every field is nullable: a
+ * cohort Nansen has nothing for is unknown, never an even split.
+ */
+export type PerpPositionIntelligence = {
+  smart_trader_longs_usd: number | null;
+  smart_trader_shorts_usd: number | null;
+  smart_trader_total_usd: number | null;
+  whale_longs_usd: number | null;
+  whale_shorts_usd: number | null;
+  whale_total_usd: number | null;
+  public_figure_longs_usd: number | null;
+  public_figure_shorts_usd: number | null;
+  public_figure_total_usd: number | null;
 };
 
 export type PmMarket = {

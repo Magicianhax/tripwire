@@ -1,9 +1,0 @@
-- iframe [aria-hidden] [ref=f39e3]:
-  - generic [ref=f40e2]:
-    - generic [ref=f40e11]:
-      - heading [level=1] [ref=f40e12]:
-        - paragraph [ref=f40e13]: Status embed installed correctly
-      - generic [ref=f40e14]: This will be shown if an incident or maintenance is posted on your status page.
-      - link "View latest updates" [ref=f40e16] [cursor=pointer]:
-        - /url: https://hyperliquid.statuspage.io?utm_source=embed
-    - button [ref=f40e18] [cursor=pointer]

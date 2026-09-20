@@ -1,9 +1,0 @@
-[    8601ms] [ERROR] Permissions policy violation: accelerometer is not allowed in this document. @ https://sdk-cdn.prod.innerworks.me/bundle-1.5.2.js:13
-[    8601ms] [WARNING] The deviceorientation events are blocked by permissions policy. See https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md#sensor-features @ https://sdk-cdn.prod.innerworks.me/bundle-1.5.2.js:13
-[    8601ms] [ERROR] Permissions policy violation: accelerometer is not allowed in this document. @ https://sdk-cdn.prod.innerworks.me/bundle-1.5.2.js:13
-[    8601ms] [WARNING] The devicemotion events are blocked by permissions policy. See https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md#sensor-features @ https://sdk-cdn.prod.innerworks.me/bundle-1.5.2.js:13
-[    8602ms] [LOG] Sending metrics for user 13a86f3b-4685-4b2c-be41-dbbe1c0b9e65 @ https://sdk.prod.innerworks.me/main.js?d8f6c1cc974a31051860:0
-[   11844ms] TypeError: Cannot read properties of null (reading 'style')
-    at https://sdk-cdn.prod.innerworks.me/bundle-1.5.2.js:14:8722
-    at _0xc7c4cb (https://sdk-cdn.prod.innerworks.me/bundle-1.5.2.js:14:3806)
-    at https://sdk-cdn.prod.innerworks.me/bundle-1.5.2.js:14:4265

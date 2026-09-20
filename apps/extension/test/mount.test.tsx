@@ -97,8 +97,9 @@ describe("mountReact", () => {
     // A smoke ceiling on the theme, not a budget: what it guards is the two assertions above
     // (no inlined fonts, no data: URIs), both of which would add tens of KB at once. Raised
     // from 60k when Round 1.1 added the price readout, exchange line, both-sides rows and the
-    // indicator vocabulary styles; the card's CSS is expected to keep growing.
-    expect(shadowCss.length).toBeLessThan(72_000);
+    // indicator vocabulary styles, and again to 80k when Round 1.3 added the cohort bars, the
+    // venue-table gutters and the stacked table cells; the card's CSS is expected to grow.
+    expect(shadowCss.length).toBeLessThan(80_000);
     for (const m of mounts) m.ui.remove();
   });
 

@@ -1238,6 +1238,72 @@ input {
   color: var(--tw-red);
 }
 
+/* Three cohorts, three bars (Round 1.3.3). Each one owns its scale, so they are separated by a
+   rule rather than stacked flush: a reader has to see three measurements, not one chart. */
+.tw-cohorts {
+  display: grid;
+  gap: var(--tw-space-3);
+}
+
+.tw-cohort {
+  display: grid;
+  gap: var(--tw-space-2);
+}
+
+.tw-cohort + .tw-cohort {
+  padding-top: var(--tw-space-3);
+  border-top: 1px solid var(--tw-line);
+}
+
+.tw-cohort-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--tw-space-3);
+}
+
+.tw-cohort-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tw-text);
+}
+
+.tw-cohort-share {
+  font-size: 0.75rem;
+  color: var(--tw-text-2);
+}
+
+/* A cohort with no figures keeps the bar's height so the three rows stay aligned, and says
+   what it is instead of drawing an even split. */
+.tw-cohort-empty {
+  display: flex;
+  align-items: center;
+  min-height: 6px;
+  margin: 0;
+  font-size: 0.6875rem;
+  color: var(--tw-text-2);
+}
+
+/* Long, short and the gross in fixed columns rather than spread by `space-between`, so the
+   third figure lands under the bar's right edge instead of pushing "Short" into the middle. */
+.tw-cohorts .tw-longshort-legend {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: baseline;
+}
+
+.tw-cohorts .tw-longshort-legend > :last-child {
+  text-align: right;
+}
+
+/* A table cell carrying a figure and the longer-running one under it, the same two-line shape
+   the spot card's wallet amounts use. */
+.tw-stack-cell {
+  display: grid;
+  gap: 1px;
+  justify-items: end;
+}
+
 .tw-trade-list {
   list-style: none;
   margin: 0;
@@ -2405,7 +2471,34 @@ div.tw-dock-chip {
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-errors,
 .tw-card[data-size="expanded"] .tw-tabpanel > .tw-question,
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-venue-table),
+.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-hl-positions),
 .tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-book) {
+  grid-column: 1 / -1;
+}
+
+/* A full-width table leaves the cell beside the block before it empty; dense placement lets the
+   next one-column section backfill it instead of leaving a hole the height of the table. */
+.tw-wallet-card[data-size="expanded"] .tw-tabpanel:not([hidden]),
+.tw-badge-card[data-size="expanded"] .tw-tabpanel:not([hidden]) {
+  grid-auto-flow: row dense;
+}
+
+/* Three stacked cohort bars are about three times the height of the Smart Money bar they sit
+   beside, which left a column of nothing under the shorter one. Spanning the tall block over
+   two rows, with dense placement so the next section backfills, halves the ragged edge.
+   (The real fix is a masonry track, which the shared two-column tab panel does not have.) */
+.tw-card[data-size="expanded"] .tw-tabpanel > section:has(.tw-cohorts) {
+  grid-row: span 2;
+}
+
+.tw-card[data-size="expanded"] .tw-tabpanel:not([hidden]):has(.tw-cohorts) {
+  grid-auto-flow: row dense;
+}
+
+/* The badge card's "Linked by you / Unlink" row is one line tall and was sharing a grid row
+   with a six-tile block, which left a column of nothing under it. It is a statement about the
+   whole card, so it takes the whole width. */
+.tw-card[data-size="expanded"] .tw-tabpanel > .tw-link-status {
   grid-column: 1 / -1;
 }
 
@@ -2511,6 +2604,15 @@ div.tw-dock-chip {
 .tw-venue-table td,
 .tw-venue-table th[scope="row"] {
   padding: 8px 0;
+}
+
+/* Round 1.3.5 filled Binance's 24h volume, which had been an em dash, and the six columns
+   closed up until "Funding 8h" and "Annualised" touched in the header. Every cell after the
+   venue name keeps a gutter on its left, so two figures can never read as one. */
+.tw-venue-table th + th,
+.tw-venue-table td + td,
+.tw-venue-table th[scope="row"] + td {
+  padding-left: var(--tw-space-2);
 }
 
 /* -------------------- Funding history -------------------- */

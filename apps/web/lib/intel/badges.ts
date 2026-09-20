@@ -45,8 +45,17 @@ export type HyperliquidPosition = {
   markPx: number | null;
   liquidationPx: number | null;
   unrealizedPnlUsd: number | null;
+  /** The leverage the trader **configured** on this position, not the account's own ratio. */
   leverage: number | null;
   valueUsd: number | null;
+  /** Round 1.3.8: already on the wire, dropped by the mapper until now. */
+  returnOnEquity: number | null;
+  /** Negative means this position has paid funding; see `fundingFlow` in core. */
+  cumFundingAllTimeUsd: number | null;
+  cumFundingSinceOpenUsd: number | null;
+  /** The venue's ceiling for this market, which the configured leverage sits under. */
+  maxLeverage: number | null;
+  marginUsedUsd: number | null;
 };
 
 export type HyperliquidFill = { time: number; coin: string; dir: string; px: number | null; sz: number | null; closedPnlUsd: number | null };
@@ -55,6 +64,11 @@ export type HyperliquidBadge = {
   link: LinkRef;
   accountValueUsd: number | null;
   marginUsedUsd: number | null;
+  /** Round 1.3.8. Total open notional, what the account may withdraw, and what it must keep
+   * above the maintenance requirement — all three already inside the same free call. */
+  totalNotionalUsd: number | null;
+  withdrawableUsd: number | null;
+  maintenanceMarginUsd: number | null;
   positions: HyperliquidPosition[] | null;
   fills: HyperliquidFill[] | null;
   /** Sum of closedPnl over every fill the API returned (its most recent window). */
@@ -163,9 +177,23 @@ async function nansenBadge(match: { name: string; tags: string[]; matchedBy: "di
 }
 
 type ClearinghouseState = {
-  marginSummary?: { accountValue?: string; totalMarginUsed?: string };
+  marginSummary?: { accountValue?: string; totalMarginUsed?: string; totalNtlPos?: string };
+  crossMaintenanceMarginUsed?: string;
+  withdrawable?: string;
   assetPositions?: {
-    position: { coin: string; szi: string; entryPx?: string | null; positionValue?: string | null; unrealizedPnl?: string | null; liquidationPx?: string | null; leverage?: { value?: number } | null };
+    position: {
+      coin: string;
+      szi: string;
+      entryPx?: string | null;
+      positionValue?: string | null;
+      unrealizedPnl?: string | null;
+      liquidationPx?: string | null;
+      leverage?: { value?: number } | null;
+      returnOnEquity?: string | null;
+      maxLeverage?: number | null;
+      marginUsed?: string | null;
+      cumFunding?: { allTime?: string | null; sinceOpen?: string | null; sinceChange?: string | null } | null;
+    };
   }[];
 };
 type UserFill = { coin: string; px: string; sz: string; time: number; dir: string; closedPnl: string };
@@ -199,6 +227,11 @@ export async function hyperliquidProfile(address: string, opts: { nansenPerp?: b
           unrealizedPnlUsd: num(p.unrealizedPnl),
           leverage: num(p.leverage?.value),
           valueUsd,
+          returnOnEquity: num(p.returnOnEquity),
+          cumFundingAllTimeUsd: num(p.cumFunding?.allTime),
+          cumFundingSinceOpenUsd: num(p.cumFunding?.sinceOpen),
+          maxLeverage: num(p.maxLeverage),
+          marginUsedUsd: num(p.marginUsed),
         };
       })
     : null;
@@ -208,6 +241,9 @@ export async function hyperliquidProfile(address: string, opts: { nansenPerp?: b
   return {
     accountValueUsd: num(state.value?.marginSummary?.accountValue),
     marginUsedUsd: num(state.value?.marginSummary?.totalMarginUsed),
+    totalNotionalUsd: num(state.value?.marginSummary?.totalNtlPos),
+    withdrawableUsd: num(state.value?.withdrawable),
+    maintenanceMarginUsd: num(state.value?.crossMaintenanceMarginUsed),
     positions,
     fills: all ? all.slice(0, 10).map((f) => ({ time: f.time, coin: f.coin, dir: f.dir, px: num(f.px), sz: num(f.sz), closedPnlUsd: num(f.closedPnl) })) : null,
     fillsRealizedPnlUsd: all ? all.reduce((s, f) => s + (num(f.closedPnl) ?? 0), 0) : null,

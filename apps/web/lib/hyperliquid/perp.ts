@@ -1,4 +1,4 @@
-import { venueFunding, type PerpVenueQuote } from "@tripwire/core";
+import { singleSidedOi, venueFunding, type PerpVenueQuote } from "@tripwire/core";
 import { hyperliquidMarket } from "./client";
 
 /**
@@ -40,6 +40,7 @@ export type HlMarket = {
   fundingHourly: number | null;
   fundingPer8h: number | null;
   fundingAnnualPct: number | null;
+  /** One side of the book — see the note in `hlMarket`, which is where the halving happens. */
   openInterestCoins: number | null;
   openInterestUsd: number | null;
   dayVolumeUsd: number | null;
@@ -61,7 +62,18 @@ export async function hlMarket(coin: string): Promise<HlMarket | null> {
 
   const mark = num(ctx.markPx);
   const oracle = num(ctx.oraclePx);
-  const oi = num(ctx.openInterest);
+  /**
+   * `openInterest` is long **plus** short, so the card and the venue table halve it to the
+   * one-side figure every other venue publishes (`PERP_VENUES.hyperliquid.oiSides`).
+   *
+   * Fixing Bybit without fixing this would have traded one wrong ranking for another: Bybit's
+   * row was twice its real size, and Hyperliquid's still is. Measured rather than assumed —
+   * DefiLlama's dimension-adapters #9365 found Hyperliquid at 2.00x CoinMarketCap across 16
+   * windows, and our own recorded universe totals $10.59B at face value against $5.30B halved.
+   * Nansen's `perp-screener.open_interest` passes the same face value through (2,348,413,914
+   * for ETH), so it is not an independent check and is not treated as one.
+   */
+  const oi = singleSidedOi("hyperliquid", num(ctx.openInterest));
   const prev = num(ctx.prevDayPx);
   const funding = venueFunding("hyperliquid", num(ctx.funding));
   return {

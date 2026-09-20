@@ -17,6 +17,7 @@ import type {
   LabelKind,
   NetflowRow,
   PerpPosition,
+  PerpPositionIntelligence,
   PerpScreenerRow,
   PerpTrade,
   PmHolder,
@@ -120,9 +121,23 @@ export type SpotPanel = {
 
 export type PerpPanel = {
   coin: string;
+  /** Which load this panel came from: the sections only panel mode pays for use it to tell
+   * "not asked for" apart from "asked, and empty". */
+  mode: "chip" | "panel";
   screener: PerpScreenerRow | null;
   positions: PerpPosition[] | null;
+  /** Whether `tgm/perp-positions` said its page was the whole population; null when it did not
+   * say, which is a third answer and not a synonym for "complete" (Round 1.3.7). */
+  positionsIsLastPage: boolean | null;
+  positionsReturned: number | null;
   trades: PerpTrade[] | null;
+  /** smart-trader / whale / public-figure exposure, 1 credit, panel mode only (Round 1.3.3). */
+  cohorts: PerpPositionIntelligence | null;
+  cohortsAtIso: string | null;
+  /** Section-level gaps. Deliberately not in `errors`, which drives the card's "Unavailable:"
+   * list and reads as the whole check having failed. */
+  tradesError: string | null;
+  cohortsError: string | null;
   errors: string[];
 };
 
@@ -367,8 +382,16 @@ export type HyperliquidBadgePosition = {
   markPx: number | null;
   liquidationPx: number | null;
   unrealizedPnlUsd: number | null;
+  /** The leverage the trader **configured** on this position, not the account's own ratio. */
   leverage: number | null;
   valueUsd: number | null;
+  /** Round 1.3.8: fields the free `clearinghouseState` call already carried. */
+  returnOnEquity: number | null;
+  /** Negative means this position has paid funding (see `fundingFlow` in core). */
+  cumFundingAllTimeUsd: number | null;
+  cumFundingSinceOpenUsd: number | null;
+  maxLeverage: number | null;
+  marginUsedUsd: number | null;
 };
 
 export type HyperliquidBadgeFill = { time: number; coin: string; dir: string; px: number | null; sz: number | null; closedPnlUsd: number | null };
@@ -377,6 +400,9 @@ export type HyperliquidBadge = {
   link: BadgeLink;
   accountValueUsd: number | null;
   marginUsedUsd: number | null;
+  totalNotionalUsd: number | null;
+  withdrawableUsd: number | null;
+  maintenanceMarginUsd: number | null;
   positions: HyperliquidBadgePosition[] | null;
   fills: HyperliquidBadgeFill[] | null;
   fillsRealizedPnlUsd: number | null;

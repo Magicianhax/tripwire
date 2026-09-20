@@ -55,6 +55,7 @@ function position(i: number): PerpPosition {
 function perpGuard(positions = 20): GuardResponse {
   const panel: PerpPanel = {
     coin: "ETH",
+    mode: "panel",
     screener: {
       token_symbol: "ETH",
       mark_price: 2_500,
@@ -66,7 +67,13 @@ function perpGuard(positions = 20): GuardResponse {
       smart_money_shorts_count: 1,
     },
     positions: Array.from({ length: positions }, (_, i) => position(i)),
+    positionsIsLastPage: false,
+    positionsReturned: positions,
     trades: null,
+    cohorts: null,
+    cohortsAtIso: null,
+    tradesError: null,
+    cohortsError: null,
     errors: [],
   };
   return { target: { kind: "perp", coin: "ETH" }, verdict: "CLEAR", hits: [], unavailable: [], signals: [], panel, rulesPreset: "balanced" };
@@ -437,7 +444,7 @@ describe("expanding the card", () => {
     const { container, root } = mountNode(
       <CardSizeContext.Provider value="expanded">
         <PerpBody
-          panel={{ coin: "ETH", screener: null, positions: null, trades: null, errors: [] }}
+          panel={{ coin: "ETH", mode: "panel", screener: null, positions: null, positionsIsLastPage: null, positionsReturned: null, trades: null, cohorts: null, cohortsAtIso: null, tradesError: null, cohortsError: null, errors: [] }}
           depth={{ data: depth, loading: [], failed: {} }}
         />
       </CardSizeContext.Provider>,
@@ -484,7 +491,7 @@ describe("expanding the card", () => {
       const { container, root } = mountNode(
         <CardSizeContext.Provider value={size}>
           <PerpBody
-            panel={{ coin: "ETH", screener: null, positions: null, trades: null, errors: [] }}
+            panel={{ coin: "ETH", mode: "panel", screener: null, positions: null, positionsIsLastPage: null, positionsReturned: null, trades: null, cohorts: null, cohortsAtIso: null, tradesError: null, cohortsError: null, errors: [] }}
             initialTab="traders"
             depth={{ data: depth, loading: [], failed: {} }}
           />

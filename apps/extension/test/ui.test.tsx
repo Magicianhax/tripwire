@@ -367,6 +367,7 @@ describe("PerpBody liquidation ladder", () => {
   it("skips positions with a null liquidation_price without crashing", () => {
     const panel: PerpPanel = {
       coin: "BTC",
+      mode: "panel",
       screener: {
         token_symbol: "BTC",
         mark_price: 60000,
@@ -401,7 +402,13 @@ describe("PerpBody liquidation ladder", () => {
           upnl_usd: -500,
         },
       ],
+      positionsIsLastPage: true,
+      positionsReturned: 2,
       trades: null,
+      cohorts: null,
+      cohortsAtIso: null,
+      tradesError: null,
+      cohortsError: null,
       errors: [],
     };
 
@@ -644,7 +651,7 @@ describe("Evidence card tabs", () => {
   });
 
   it("perp evidence is Positioning / Liquidations / Traders / Chart; prediction is Proven winners / Holders / Trades", () => {
-    const perp = mountNode(<PerpBody panel={{ coin: "ETH", screener: null, positions: null, trades: null, errors: [] }} />);
+    const perp = mountNode(<PerpBody panel={{ coin: "ETH", mode: "panel", screener: null, positions: null, positionsIsLastPage: null, positionsReturned: null, trades: null, cohorts: null, cohortsAtIso: null, tradesError: null, cohortsError: null, errors: [] }} />);
     expect(tabLabels(perp.container)).toEqual(["Positioning", "Liquidations", "Traders11 credits", "Chart"]);
     perp.root.unmount();
     const prediction = mountNode(<PredictionBody panel={{ market: null, holders: null, sides: null, recordsChecked: null, recordsCap: 10, trades: null, historical: false, errors: [] }} initialTab="holders" />);

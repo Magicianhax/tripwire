@@ -2,6 +2,10 @@ import {
   depthCostLabel,
   distanceToLiquidationPct,
   liquidationBands,
+  positionCohorts,
+  positionLadderAside,
+  recentOpens,
+  smartMoneyLongShort,
   type DepthSection,
   type PerpPosition,
 } from "@tripwire/core";
@@ -53,29 +57,141 @@ const has = (state: DepthState, section: DepthSection) => state.loading.includes
 export const signedPct = (value: number | null, digits: number): string =>
   value === null ? "—" : `${value >= 0 ? "+" : "−"}${Math.abs(value).toFixed(digits)}%`;
 
-/** Long share in mint, short share in red, each named with its value and wallet count in the
- * legend so the split never relies on colour alone. */
+/** The window `hlFundingHistory` actually fetches. The chart used to sit under "Funding over the
+ * same window" above a series that is always 48h whatever window the price chart is on; a web
+ * test pins this constant to the backend's own default so the two cannot drift apart again. */
+export const FUNDING_WINDOW_HOURS = 48;
+const FUNDING_SECTION_TITLE = `Funding, last ${FUNDING_WINDOW_HOURS}h`;
+
+/** The two-colour split bar itself: mint for the long share, red for the short. It is only ever
+ * rendered from a real total, so a 50/50 bar on screen means the market is actually 50/50. */
+function SplitBar({ longPct, label }: { longPct: number; label: string }) {
+  return (
+    <div className="tw-longshort-bar" role="img" aria-label={label}>
+      <i className="tw-longshort-long" style={{ width: `${longPct}%` }} />
+      <i className="tw-longshort-short" style={{ width: `${100 - longPct}%` }} />
+    </div>
+  );
+}
+
+/** A wallet count Nansen did not send. `0 wallets` beside a real dollar figure is a claim. */
+const wallets = (count: number | null) =>
+  count === null ? null : (
+    <>
+      {" "}
+      <span className="tw-fig">{count}</span> wallet{count === 1 ? "" : "s"}
+    </>
+  );
+
+/**
+ * Smart Money's long against short.
+ *
+ * Until Round 1.3.1 this coerced both sides with `?? 0` and fell back to `50`, so a screener row
+ * with null position fields painted an even mint-and-red bar reading "Long $0 · 0 wallets /
+ * Short $0 · 0 wallets" — on the same screen as the signal line saying "Smart Money positioning
+ * unavailable". Unknown, nobody-positioned and evenly-split are three different answers now.
+ */
 function LongShortBar({ screener }: { screener: PerpPanel["screener"] }) {
-  const longUsd = screener?.current_smart_money_position_longs_usd ?? 0;
-  const shortUsd = Math.abs(screener?.current_smart_money_position_shorts_usd ?? 0);
-  const total = longUsd + shortUsd;
-  const longPct = total > 0 ? (longUsd / total) * 100 : 50;
-  const shortPct = 100 - longPct;
+  const split = smartMoneyLongShort(screener);
+  if (split.state === "unknown") return <Empty>Nansen returned no Smart Money position figures for this market.</Empty>;
+  if (split.state === "empty") return <Empty>No Smart Money is positioned in this market right now.</Empty>;
   return (
     <div className="tw-longshort">
-      <div className="tw-longshort-bar" role="img" aria-label={`Smart Money long ${longPct.toFixed(0)}%, short ${shortPct.toFixed(0)}%`}>
-        <i className="tw-longshort-long" style={{ width: `${longPct}%` }} />
-        <i className="tw-longshort-short" style={{ width: `${shortPct}%` }} />
-      </div>
+      <SplitBar longPct={split.longPct} label={`Smart Money long ${split.longPct.toFixed(0)}%, short ${split.shortPct.toFixed(0)}%`} />
       <div className="tw-longshort-legend">
         <span data-side="long">
-          Long <b className="tw-fig">{usd(longUsd)}</b> <span className="tw-fig">{screener?.smart_money_longs_count ?? 0}</span> wallets
+          Long <b className="tw-fig">{usd(split.longUsd)}</b>
+          {wallets(split.longCount)}
         </span>
         <span data-side="short">
-          Short <b className="tw-fig">{usd(shortUsd)}</b> <span className="tw-fig">{screener?.smart_money_shorts_count ?? 0}</span> wallets
+          Short <b className="tw-fig">{usd(split.shortUsd)}</b>
+          {wallets(split.shortCount)}
         </span>
       </div>
     </div>
+  );
+}
+
+/**
+ * Smart traders, whales and public figures, one bar each (Round 1.3.3).
+ *
+ * Each bar is normalised to **its own** long-plus-short total: whale exposure runs about twenty
+ * times the smart-trader figure on the recorded ETH row, and a shared scale would leave the one
+ * cohort this product is named after as a sliver. The gross is labelled "Long + short" for the
+ * same reason — Nansen's field is called `*_total_usd` and it is not net exposure.
+ */
+function CohortBars({ panel }: { panel: PerpPanel }) {
+  const cohorts = positionCohorts(panel.cohorts);
+  if (panel.mode === "chip") return <Empty>Cohort positioning loads with the full card.</Empty>;
+  if (panel.cohortsError) return <SectionProblem reasons={[panel.cohortsError]} />;
+  if (!panel.cohorts) return <Empty>Cohort positioning is Hyperliquid-only, and Nansen returned none for this market.</Empty>;
+  return (
+    <div className="tw-cohorts">
+      {cohorts.map((c) => (
+        <div className="tw-cohort" key={c.id}>
+          <div className="tw-cohort-head">
+            <span className="tw-cohort-name">{c.name}</span>
+            <span className="tw-cohort-share tw-fig">{c.longPct === null ? "—" : `${c.longPct.toFixed(0)}% long`}</span>
+          </div>
+          {c.state === "split" ? (
+            <SplitBar longPct={c.longPct!} label={`${c.name} long ${c.longPct!.toFixed(0)} percent, short ${(100 - c.longPct!).toFixed(0)} percent`} />
+          ) : (
+            <p className="tw-cohort-empty">{c.state === "unknown" ? "No figures for this cohort" : "Nobody in this cohort is positioned"}</p>
+          )}
+          <div className="tw-longshort-legend">
+            <span data-side="long">
+              Long <b className="tw-fig">{usd(c.longsUsd)}</b>
+            </span>
+            <span data-side="short">
+              Short <b className="tw-fig">{usd(c.shortsUsd === null ? null : Math.abs(c.shortsUsd))}</b>
+            </span>
+            <span className="tw-meta">
+              Long + short <span className="tw-fig">{usd(c.grossUsd)}</span>
+            </span>
+          </div>
+        </div>
+      ))}
+      <p className="tw-note tw-meta">
+        Nansen position intelligence, Hyperliquid perps only. Each bar is scaled to that cohort&rsquo;s own long-plus-short total, so the three are not to
+        scale with one another, and &ldquo;long + short&rdquo; is gross exposure rather than a net position.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Positions opened in the last hour (Round 1.3.4).
+ *
+ * `smart-money/perp-trades` costs 5 credits on every panel open and nothing rendered a row of
+ * it until now — `PerpBody` read the Traders tab's own trades instead. The response carries
+ * `action`, so the 24h page it already bought filters down to the opens. An hour with none in
+ * it says so, and says what it looked at, rather than showing a blank strip.
+ */
+function OpensStrip({ panel }: { panel: PerpPanel }) {
+  const size = useCardSize();
+  if (panel.mode === "chip") return <Empty>Smart Money&rsquo;s recent position changes load with the full card.</Empty>;
+  if (panel.tradesError) return <SectionProblem reasons={[panel.tradesError]} />;
+  if (panel.trades === null) return <Empty>Nansen returned no Smart Money trades for this market.</Empty>;
+  const { opens, latestOpenIso, tradeCount } = recentOpens(panel.trades, Date.now());
+  if (opens.length === 0) {
+    return (
+      <Empty>
+        No Smart Money opened a position in the last hour. The last 24h returned {tradeCount} position change{tradeCount === 1 ? "" : "s"}
+        {latestOpenIso ? `, the most recent open ${timeAgo(latestOpenIso)}` : ", none of them an open"}.
+      </Empty>
+    );
+  }
+  return (
+    <ul className="tw-trade-list">
+      {opens.slice(0, rowLimit(size, 4, 10)).map((t, i) => (
+        <li key={`${t.transaction_hash ?? t.trader_address}-${i}`}>
+          <WalletLabel label={t.trader_address_label} address={t.trader_address} />
+          <span data-side={t.side === "Short" ? "short" : "long"}>Opened {t.side.toLowerCase()}</span>
+          <span className="tw-fig">{usd(t.value_usd)}</span>
+          <span className="tw-fig tw-meta">{timeAgo(t.block_timestamp)}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -121,7 +237,15 @@ function PositioningTab({ panel, hits, depth }: { panel: PerpPanel; hits: HitDto
       ) : null}
 
       <Section title="Smart Money long vs short" aside={screener?.trader_count ? `${screener.trader_count} traders` : null}>
-        {screener ? <LongShortBar screener={screener} /> : <Empty>No positioning data came back for this market.</Empty>}
+        <LongShortBar screener={screener} />
+      </Section>
+
+      <Section title="Positioning by cohort" aside={panel.cohortsAtIso ? `as of ${timeAgo(panel.cohortsAtIso)}` : "Hyperliquid"}>
+        <CohortBars panel={panel} />
+      </Section>
+
+      <Section title="Opened in the last hour" aside="Smart Money">
+        <OpensStrip panel={panel} />
       </Section>
 
       {screener && (screener.smart_money_buy_volume !== null || screener.smart_money_sell_volume !== null) ? (
@@ -180,7 +304,7 @@ function PositioningTab({ panel, hits, depth }: { panel: PerpPanel; hits: HitDto
       </Section>
 
       {has(depth, "perpMarket") || (market?.funding && market.funding.length > 1) ? (
-        <Section title="Funding history" aside="Hyperliquid, per 8h">
+        <Section title={FUNDING_SECTION_TITLE} aside="Hyperliquid, per 8h">
           {has(depth, "perpMarket") ? <Skeleton shape="chart" rows={1} label="Loading funding history" /> : <FundingHistory points={market!.funding!} height={size === "expanded" ? 96 : 56} />}
         </Section>
       ) : null}
@@ -196,7 +320,7 @@ function PositioningTab({ panel, hits, depth }: { panel: PerpPanel; hits: HitDto
         <SectionProblem reasons={venues?.errors ?? []} />
       </Section>
 
-      <Sources>Nansen perp-screener, Hyperliquid, Binance, Bybit, OKX and dYdX public APIs</Sources>
+      <Sources>Nansen perp-screener, tgm/position-intelligence and smart-money/perp-trades; Hyperliquid, Binance, Bybit, OKX and dYdX public APIs</Sources>
       {markPrice === null ? null : <span className="tw-sr-only">Mark price {markPrice}</span>}
     </>
   );
@@ -244,7 +368,7 @@ function LiquidationsTab({ panel, depth }: { panel: PerpPanel; depth: DepthState
       ) : null}
 
       {shown.length > 0 ? (
-        <Section title="Largest Smart Money positions" aside={`${shown.length} of ${positions.length}`}>
+        <Section title="Largest Smart Money positions" aside={positionLadderAside(shown.length, positions.length, panel.positionsIsLastPage)}>
           <table className="tw-table">
             <thead>
               <tr>
@@ -465,8 +589,13 @@ function ChartTab({ depth, coin }: { depth: DepthState; coin: string }) {
         )}
         <SectionProblem reasons={chart?.errors ?? []} />
       </Section>
+      {/* Not "the same window": `hlFundingHistory` always fetches 48h whatever window the price
+          chart above it is on, and the chart's own legend has printed "last 48h" the whole
+          time. Threading the real window is deferred — the Positioning tab renders the same
+          array with no window control, and a 1h window would fall below the 2-point floor
+          `FundingHistory` draws nothing under. */}
       {market?.funding && market.funding.length > 1 ? (
-        <Section title="Funding over the same window" aside="per 8h">
+        <Section title={FUNDING_SECTION_TITLE} aside="Hyperliquid, per 8h">
           <FundingHistory points={market.funding} height={size === "expanded" ? 96 : 56} />
         </Section>
       ) : null}

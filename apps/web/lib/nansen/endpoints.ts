@@ -4,6 +4,7 @@ import type {
   IndicatorsResp,
   NetflowRow,
   PerpPosition,
+  PerpPositionIntelligence,
   PerpScreenerRow,
   PerpTrade,
   PmHolder,
@@ -423,12 +424,41 @@ export const nansen = {
       ttlMs: 2 * MIN,
     }),
 
+  /**
+   * Perp card, panel mode: Smart Money's position changes in this coin over the last 24h.
+   *
+   * 5 credits, and until Round 1.3.4 nothing rendered a single row of it. The response carries
+   * `action` (Open / Add / Reduce / Close), so it is filtered client-side into the "opened in
+   * the last hour" strip rather than being deleted or joined by a second call with
+   * `only_new_positions: true`. `per_page` is 50 rather than 12 because the filter throws most
+   * of the page away and a quiet coin would otherwise show an empty strip on a full response.
+   */
   smPerpTrades: (token_symbol: string) =>
     nansenPost<Paged<PerpTrade>>({
       name: "smPerpTrades",
       path: "smart-money/perp-trades",
-      body: { filters: { token_symbol }, lookback_hours: 24, only_new_positions: false, pagination: { page: 1, per_page: 12 } },
+      body: { filters: { token_symbol }, lookback_hours: 24, only_new_positions: false, pagination: { page: 1, per_page: 50 } },
       ttlMs: 5 * MIN,
+    }),
+
+  /**
+   * Perp card, panel mode: smart-trader, whale and public-figure longs and shorts in one row.
+   *
+   * **1 credit**, and it is the reason the perp panel is worth its 12: three cohorts instead of
+   * the screener's one, and the three genuinely disagree (on the recorded ETH row smart traders
+   * are 73% long, whales 54%, public figures 74%). Never on the chip — `buildPerpIntel` asks
+   * for it in panel mode only.
+   *
+   * Keyed by **symbol** even though the body field is spelled `token_address`: Nansen skips
+   * address validation for perps and its own CLI exposes this as `--symbol`. Hyperliquid perps
+   * only, and reliable from May 2025.
+   */
+  positionIntelligence: (token_symbol: string) =>
+    nansenPost<{ data?: PerpPositionIntelligence[] | null }>({
+      name: "positionIntelligence",
+      path: "tgm/position-intelligence",
+      body: { token_address: token_symbol },
+      ttlMs: PERP_SCREENER_TTL,
     }),
 
   /**

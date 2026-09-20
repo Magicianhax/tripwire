@@ -45,7 +45,10 @@ const lens = (over: Partial<WalletLensResponse> = {}): WalletLensResponse => ({
 const hyperliquid: NonNullable<WalletLensResponse["hyperliquid"]> = {
   accountValueUsd: 1_200_000,
   marginUsedUsd: 300_000,
-  positions: [{ coin: "ETH", side: "long", size: 120, entryPx: 2299.4, markPx: 2350.1, liquidationPx: 1800, unrealizedPnlUsd: 6084, leverage: 5, valueUsd: 282_012 }],
+  totalNotionalUsd: 282_012,
+  withdrawableUsd: 900_000,
+  maintenanceMarginUsd: 100_000,
+  positions: [{ coin: "ETH", side: "long", size: 120, entryPx: 2299.4, markPx: 2350.1, liquidationPx: 1800, unrealizedPnlUsd: 6084, leverage: 5, valueUsd: 282_012, returnOnEquity: null, cumFundingAllTimeUsd: null, cumFundingSinceOpenUsd: null, maxLeverage: null, marginUsedUsd: null }],
   fills: [{ time: Date.now() - 60_000, coin: "ETH", dir: "Close Long", px: 2350, sz: 4, closedPnlUsd: 240 }],
   fillsRealizedPnlUsd: 240,
   fillsWindow: { count: 1, fromMs: Date.now() - 60_000, toMs: Date.now() },

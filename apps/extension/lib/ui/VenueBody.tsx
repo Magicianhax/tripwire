@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
-import type { HyperliquidBadge, PolymarketBadge } from "../api-types";
+import { accountLeverage, fundingFlow, maintenanceBufferPct, type FundingFlow } from "@tripwire/core";
+import type { HyperliquidBadge, HyperliquidBadgePosition, PolymarketBadge } from "../api-types";
+import { useIsExpanded } from "./card-size";
 import { pct, timeAgo, usd } from "./format";
 import { Empty, price, Problems, Readouts, Section, signOf as sign, Sources } from "./panel-parts";
 import { usePagination } from "./DataCharts";
@@ -12,6 +14,37 @@ type PolymarketBody = Omit<PolymarketBadge, "link">;
 /** A win rate arrives as a fraction and reads as a percentage. */
 const rate = (v: number | null | undefined) => (v === null || v === undefined ? "—" : pct(v * 100));
 
+/** Whether a position **on screen** has no liquidation price, which is the normal case for
+ * cross margin. Read off the shown slice, not the whole account: a note explaining a dash the
+ * reader cannot see is noise, and on the recorded wallet the null-liquidation legs sit below
+ * the compact card's five rows. */
+const crossWithoutLiquidation = (positions: HyperliquidBadgePosition[]) => positions.some((p) => p.liquidationPx === null);
+
+/** Money out is red, money in is mint, nothing and unknown are neutral. */
+const fundingSign = (flow: FundingFlow) => (flow.direction === "paid" ? "neg" : flow.direction === "received" ? "pos" : "zero");
+
+/**
+ * What a position has paid or been paid in funding, in words rather than in a minus sign.
+ *
+ * Hyperliquid signs `cumFunding` from the account's point of view — negative means the account
+ * **paid** — and a bare "−$3.50M" under a "Funding" header is read both ways by different
+ * people. Two lines: this position since it was opened, and Hyperliquid's all-time total for
+ * this coin on this account, which is a longer history than the open position.
+ */
+function FundingCell({ sinceOpen, allTime }: { sinceOpen: number | null; allTime: number | null }) {
+  const since = fundingFlow(sinceOpen);
+  const total = fundingFlow(allTime);
+  if (since.direction === "unknown" && total.direction === "unknown") return <span className="tw-fig">—</span>;
+  return (
+    <span className="tw-stack-cell">
+      <span className="tw-fig" data-sign={fundingSign(since)}>
+        {since.direction === "unknown" ? "—" : since.direction === "flat" ? "none" : `${usd(since.usd)} ${since.direction}`}
+      </span>
+      <span className="tw-meta tw-fig">{total.direction === "unknown" ? "—" : `${usd(total.usd)} ${total.direction} all time`}</span>
+    </span>
+  );
+}
+
 /**
  * One wallet's Hyperliquid account, rendered the same way wherever the address came from: an
  * author badge's explicit wallet link, or a wallet the user clicked on a page. `head` is what
@@ -20,6 +53,12 @@ const rate = (v: number | null | undefined) => (v === null || v === undefined ? 
 export function HyperliquidBody({ badge, head }: { badge: HyperliquidBody; head?: ReactNode }) {
   const positions = badge.positions ?? [];
   const fills = badge.fills ?? [];
+  const expanded = useIsExpanded();
+  const shownPositions = positions.slice(0, expanded ? 10 : 5);
+  // Notional over equity: how levered the account is, which is a different number from the
+  // leverage a trader configured on any one position (both are on screen, labelled apart).
+  const leverage = accountLeverage(badge.totalNotionalUsd, badge.accountValueUsd);
+  const buffer = maintenanceBufferPct(badge.accountValueUsd, badge.maintenanceMarginUsd);
   return (
     <>
       {head}
@@ -27,6 +66,15 @@ export function HyperliquidBody({ badge, head }: { badge: HyperliquidBody; head?
         items={[
           { label: "Account value", value: usd(badge.accountValueUsd) },
           { label: "Margin used", value: usd(badge.marginUsedUsd) },
+          { label: "Withdrawable", value: usd(badge.withdrawableUsd) },
+          { label: "Account leverage", value: leverage === null ? "—" : `${leverage.toFixed(1)}x` },
+          // The two that only fit once the card has room for eight tiles.
+          ...(expanded
+            ? [
+                { label: "Open notional", value: usd(badge.totalNotionalUsd) },
+                { label: "Above maintenance", value: buffer === null ? "—" : `${buffer.toFixed(0)}%` },
+              ]
+            : []),
           // Nansen's perp PnL costs a credit, so the wallet lens does not ask for it. Two tiles
           // reading "—" would be a worse answer than no tiles.
           ...(badge.nansenPerp
@@ -41,43 +89,81 @@ export function HyperliquidBody({ badge, head }: { badge: HyperliquidBody; head?
         {positions.length === 0 ? (
           <Empty>No open positions on Hyperliquid.</Empty>
         ) : (
-          <table className="tw-table">
-            <thead>
-              <tr>
-                <th scope="col">Coin</th>
-                <th scope="col">Side</th>
-                <th scope="col" className="tw-num">
-                  Entry / Mark
-                </th>
-                <th scope="col" className="tw-num">
-                  Liq.
-                </th>
-                <th scope="col" className="tw-num">
-                  uPnL
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {positions.slice(0, 5).map((p) => (
-                <tr key={p.coin}>
-                  <td>{p.coin}</td>
-                  <td>
-                    <span className="tw-side" data-side={p.side}>
-                      {p.side === "short" ? "Short" : "Long"}
-                      {p.leverage ? ` ${p.leverage}x` : ""}
-                    </span>
-                  </td>
-                  <td className="tw-fig tw-num">
-                    {price(p.entryPx)} / {price(p.markPx)}
-                  </td>
-                  <td className="tw-fig tw-num">{price(p.liquidationPx)}</td>
-                  <td className="tw-fig tw-num" data-sign={sign(p.unrealizedPnlUsd)}>
-                    {usd(p.unrealizedPnlUsd, true)}
-                  </td>
+          <>
+            <table className="tw-table tw-hl-positions">
+              <thead>
+                <tr>
+                  <th scope="col">Coin</th>
+                  <th scope="col">Side</th>
+                  <th scope="col" className="tw-num">
+                    Entry / Mark
+                  </th>
+                  <th scope="col" className="tw-num">
+                    Liq.
+                  </th>
+                  <th scope="col" className="tw-num">
+                    uPnL
+                  </th>
+                  {/* One more column, not two: the return on equity rides under the uPnL it is
+                      the percentage of, the way the spot card stacks a wallet's two sides.
+                      Seven columns in the expanded card's right-hand track wrapped every cell. */}
+                  {expanded ? (
+                    <th scope="col" className="tw-num">
+                      Funding
+                    </th>
+                  ) : null}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {shownPositions.map((p) => (
+                  <tr key={p.coin}>
+                    <td>{p.coin}</td>
+                    <td>
+                      <span className="tw-side" data-side={p.side}>
+                        {p.side === "short" ? "Short" : "Long"}
+                        {p.leverage ? ` ${p.leverage}x` : ""}
+                      </span>
+                      {/* The trader's own setting against the venue's ceiling for this market:
+                          two different numbers that both read as "leverage". Only worth a
+                          column's width when they differ — "25x of 25x max" says nothing. */}
+                      {expanded && p.maxLeverage && p.maxLeverage !== p.leverage ? <span className="tw-meta"> of {p.maxLeverage}x max</span> : null}
+                    </td>
+                    <td className="tw-fig tw-num">
+                      {price(p.entryPx)} / {price(p.markPx)}
+                    </td>
+                    <td className="tw-fig tw-num">{price(p.liquidationPx)}</td>
+                    <td className="tw-num">
+                      <span className="tw-stack-cell">
+                        <span className="tw-fig" data-sign={sign(p.unrealizedPnlUsd)}>
+                          {usd(p.unrealizedPnlUsd, true)}
+                        </span>
+                        {/* Hyperliquid reports ROE as a fraction (−0.0299 is −2.99%). */}
+                        {expanded ? (
+                          <span className="tw-meta tw-fig" data-sign={sign(p.returnOnEquity)}>
+                            {p.returnOnEquity === null ? "—" : `${p.returnOnEquity >= 0 ? "+" : "−"}${Math.abs(p.returnOnEquity * 100).toFixed(1)}% ROE`}
+                          </span>
+                        ) : null}
+                      </span>
+                    </td>
+                    {expanded ? (
+                      <td className="tw-num">
+                        <FundingCell sinceOpen={p.cumFundingSinceOpenUsd} allTime={p.cumFundingAllTimeUsd} />
+                      </td>
+                    ) : null}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {/* Each sentence appears only when the thing it explains is on screen. */}
+            {crossWithoutLiquidation(shownPositions) || expanded ? (
+              <p className="tw-note tw-meta">
+                {crossWithoutLiquidation(shownPositions)
+                  ? "A dash under Liq. is Hyperliquid reporting no liquidation price for a cross position — no single price liquidates it. "
+                  : null}
+                {expanded ? "“Above maintenance” is how much of the account’s value sits above the margin it has to keep, not a distance to a level." : null}
+              </p>
+            ) : null}
+          </>
         )}
       </Section>
       <Section

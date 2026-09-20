@@ -38,3 +38,4 @@ repomix.xml
 .data/
 *.tsbuildinfo
 next-env.d.ts
+.playwright-mcp/

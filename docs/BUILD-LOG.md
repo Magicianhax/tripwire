@@ -871,6 +871,134 @@ Three of these came out of opening the captures, not out of reading the diff.
 
 ---
 
+# Round 1.3 — the perp card stops asserting things that are not true
+
+Branch `feat/cockpit-ui`, on top of `cbea2f3`. Brief: `docs/IMPROVEMENT-PLAN.md` §2, Round 1.3 (items 1.3.1–1.3.8). **1 Nansen credit spent building it** — a single live `tgm/position-intelligence` call to record the one fixture this repo did not already have. At runtime the round is credit-neutral, as the brief priced it: panel-mode perp goes from 11 credits of which 5 rendered nothing to 12 of which all render, and the chip stays at 6.
+
+Item 1.3.1 shipped first because it is a direct breach of non-negotiable #1 — a null Smart Money row painted a reassuring even bar — and the fix lived in a JSX default that neither the web nor the core suite could reach.
+
+## Fixtures and credits
+
+`scripts/record-perp-fixtures.mjs` records two files and refuses to spend more than 5 credits:
+
+- `fixtures/nansen/positionIntelligence.json` — `tgm/position-intelligence`, **1 credit**, the only spend in this round. Nine fields, three cohorts. Keyed by symbol through the body field spelled `token_address` (Nansen skips address validation for perps); the recorder falls back to `token_symbol` on a 4xx so a rename costs a request, not the fixture.
+- `fixtures/venues/binance-ticker24hr.json` — `fapi/v1/ticker/24hr?symbol=ETHUSDT`, free and unauthenticated.
+
+**Not re-recorded:** `smPerpTrades.json`. 1.3.4 raises that call's `per_page` from 12 to 50, but `smart-money/perp-trades` costs 5 credits and the round's budget is 5, so replay still exercises the recorded 12-row page. That page is 12 × `Reduce` and **zero opens**, which is what the market did in the recorded window — so replay, the captures and the e2e run all exercise the strip's *empty* state rather than its list. The list is covered by unit tests on synthetic rows.
+
+## Per item
+
+### 1.3.1 — a null Smart Money row reads unknown, not 50/50
+
+`smartMoneyLongShort` (`packages/core/src/perp-readout.ts:42`) returns one of three states and `LongShortBar` (`apps/extension/lib/ui/PerpBody.tsx:94`) renders each differently. The old code coerced both sides with `?? 0` and fell back to `total > 0 ? … : 50`, so a screener row with null position fields drew an even mint-and-red bar over "Long $0 · 0 wallets / Short $0 · 0 wallets" — on the same screen as `signals/perp.ts`'s "Smart Money positioning unavailable".
+
+The guard is on **both figures being null**, not on the total being zero, exactly as the brief required: a genuinely balanced market is a real 50/50 and has to survive. A fourth case fell out of writing it — both figures present and both zero, which is "no Smart Money is positioned here", a fact, and a different one from not knowing. A wallet count Nansen did not send now renders as nothing rather than as `0 wallets`.
+
+*Tests:* `packages/core/test/perp-readout.test.ts` "a null Smart Money row reads unknown, not 50/50" (five cases); `apps/extension/test/perp-round-1-3.test.tsx` "1.3.1" (no bar element at all in the unknown and empty states, exact bar widths for balanced and skewed, no `$0` and no `0 wallets`).
+
+### 1.3.2 — open interest is one side of the book, on every row
+
+Bybit's row read `openInterestValue`, which counts long **plus** short; `bybitQuote` now reads `singleOpenInterestValue` (`apps/web/lib/venues/index.ts:170`), with `singleOpenInterest × mark` as the fallback. A market publishing neither degrades to **null** rather than halving the legacy field on an assumption — on an inverse or newly listed contract we would not know which convention the leftover number followed.
+
+**The same change pinned down Hyperliquid, and the finding changes the brief's expected answer.** `metaAndAssetCtxs[1][i].openInterest` is *also* long-plus-short. Measured, not assumed: DefiLlama's `dimension-adapters` #9365 found Hyperliquid at **2.00x CoinMarketCap across 16 sampling windows** ($14.67B reported against CMC's $7.61B), and our own recorded universe totals $10.59B at face value against $5.30B halved. Nansen's `perp-screener.open_interest` passes the same face value through (2,348,413,914 for ETH), so it is not an independent check and is not treated as one. `hlMarket` now halves both the coin and the USD figure (`apps/web/lib/hyperliquid/perp.ts:76`).
+
+The convention is recorded per venue as `PERP_VENUES[v].oiSides` with the field we read named beside it (`packages/core/src/perp-venues.ts:39`), and applied through `singleSidedOi` (`:59`), which is null-in-null-out so a venue that did not answer can never read as zero open interest.
+
+**Measured result on the recorded fixtures:** Binance $5.62B, OKX $1.49B, Hyperliquid $1.198B, Bybit $977M, dYdX $16.8M. The sort order is therefore **Binance / OKX / Hyperliquid / Bybit / dYdX** — not the Binance / Hyperliquid / OKX / Bybit the brief's Test cell predicted, because that prediction assumed Hyperliquid's figure was already one-sided. Bybit still drops below OKX, which was the point of the item; Hyperliquid drops below OKX as well, which is the half the brief asked us to go and find.
+
+*Tests:* `apps/web/test/perp-round-1-3.test.ts` "1.3.2" (Bybit reads $977,321,434.21; Hyperliquid halves to 488,975.71 ETH; the full sort order; a ticker stripped of both `single*` fields yields a null cell and a live row); `packages/core/test/perp-readout.test.ts` "open interest is one side of the book on every row" (the map, the divisor, null handling, and the 2.0000x ratio inside Bybit's own recorded ticker).
+
+### 1.3.3 — three cohorts instead of one
+
+`nansen.positionIntelligence` (`apps/web/lib/nansen/endpoints.ts:456`), 1 credit, asked for in **panel mode only** (`apps/web/lib/intel/perp.ts:47`) — never on the chip. `positionCohorts` (`perp-readout.ts:93`) turns the row into three bars and `CohortBars` (`PerpBody.tsx:123`) renders them beside the existing one.
+
+Each bar is normalised to **its own** long-plus-short total: on the recorded ETH row whale gross is $2.13B against the smart-trader $108M, and a shared scale would have left the cohort this product is named after as a sliver. The recorded figures confirm the three are not redundant — smart traders 73% long, whales 54%, public figures 74%, the same spread the brief measured live.
+
+Nothing derived from `*_total_usd` is labelled net: the legend's third figure reads "Long + short", and the section's own note says it is gross exposure. The section states its as-of ("as of 1s ago") and names the dataset ("Nansen position intelligence, Hyperliquid perps only"). A cohort with two null figures renders "No figures for this cohort" and no bar.
+
+**Found while shipping:** a chip-mode panel can reach the card — the venue runner carries its cheap result into the popover while the panel fetch is in flight — so `PerpPanel` gained `mode`, and the sections only panel mode pays for say "loads with the full card" instead of reporting an unpaid call as an empty answer.
+
+*Tests:* `perp-readout.test.ts` "three cohorts, each on its own scale" (the three percentages, gross equals longs plus absolute shorts and never the difference, the whale/smart ratio, a null cohort, an empty cohort); `perp-round-1-3.test.tsx` "1.3.3" (three bars with their own widths, no cell labelled "net", the dataset and as-of lines, the unknown cohort, the chip copy); `perp-round-1-3.test.ts` (panel buys it, chip does not).
+
+### 1.3.4 — the repointed 5-credit call
+
+`smart-money/perp-trades` fired on every panel open, was stored as `panel.trades`, and nothing rendered a row of it. `recentOpens` (`perp-readout.ts:141`) filters the 24h page it already bought down to `action === "Open"` inside the last hour, and `OpensStrip` (`PerpBody.tsx:170`) renders it on the Positioning tab. `per_page` went from 12 to 50 (`endpoints.ts:440`), because the filter throws most of a page away.
+
+An `Add` is not an open and neither is a `Reduce` or a `Close`: the strip is titled "opened", so only opens are in it. An empty hour states what it looked at — "No Smart Money opened a position in the last hour. The last 24h returned 12 position changes, none of them an open." — and names the most recent open when there was one further back. That is the state replay shows, and it is the recorded truth rather than a blank strip.
+
+The call's error no longer lands in `panel.errors` (`apps/web/lib/intel/perp.ts:69`): `errors` drives the card's "Unavailable:" footer and the unchecked headline, and a section that failed to load is a gap in that section, not a broken check. It rides a `tradesError` channel and renders as a `SectionProblem` inside the strip — the same ruling as ADR-0014, applied to a failure rather than a warning.
+
+*Tests:* `perp-readout.test.ts` "the 5-credit trade call becomes the opens strip" (the filter, the add/reduce/close exclusions, the offset-free UTC stamp, a null call, an unparseable date, the recorded 12-row page); `perp-round-1-3.test.tsx` "1.3.4" (the list, the empty sentence with its count, the "most recent open" line, the failure as a section problem); `perp-round-1-3.test.ts` (the error channel).
+
+### 1.3.5 — Binance 24h volume
+
+`binanceQuote` now reads `quoteVolume` from `fapi/v1/ticker/24hr?symbol=` (`apps/web/lib/venues/index.ts:96`), so the largest venue in the table stops rendering an em dash in a column every other row fills. The call settles to null on any failure, exactly like open interest and the account ratio, so a rate-limited Binance costs that one cell and never the row.
+
+**The shared-IP budget, counted rather than assumed** (`venues/index.ts:48`, `BINANCE_WEIGHT_PER_BUILD`): a venue-table build makes five Binance requests — `premiumIndex` (weight 1, 60s cache), `openInterest` (1, 60s), `ticker/24hr` (1, 60s), `fundingInfo` (1, 6h) and `globalLongShortAccountRatio` (0, 5m, and on the separate `futures/data` host) — against a 2,400-per-minute per-IP allowance. Every one of them is symbol-scoped, which is not optional: the unfiltered `ticker/24hr` costs weight **80**.
+
+*Tests:* `perp-round-1-3.test.ts` "1.3.5" (the figure from the fixture, every non-error row now carrying a volume, and a missing ticker fixture leaving funding, open interest and the long-account share intact).
+
+### 1.3.6 — the funding chart's title states the window it fetched
+
+"Funding over the same window" sat above a series `hlFundingHistory` always fetches at 48h, whatever window the price chart is on, while the chart's own legend printed "last 48h". Both funding sections are now titled from one constant, `FUNDING_WINDOW_HOURS` (`PerpBody.tsx:63`), and a web test pins that constant to the backend's default by asserting that an explicit 48 returns the same series — so the two cannot drift apart again without a red test.
+
+Threading the real window stays deferred, for the reason the brief gives: the Positioning tab renders the same array with no window control, and a 1h window would fall below the two-point floor `FundingHistory` draws nothing under.
+
+*Tests:* `perp-round-1-3.test.ts` "1.3.6"; `perp-round-1-3.test.tsx` "1.3.6" (both mounted sections carry the title, and the old copy is nowhere in the tree).
+
+### 1.3.7 — the ladder says whether it is the whole set
+
+`buildPerpIntel` keeps `pagination.is_last_page` and the returned row count (`apps/web/lib/intel/perp.ts:64`), and `positionLadderAside` (`perp-readout.ts:162`) turns them into the aside (`PerpBody.tsx:371`). A truncated page reads "6 of the 50 largest returned"; a complete one reads "6 of 50"; a response with no `pagination` block at all reads "6 of 50 returned", because "the response did not say" is a third answer and not a synonym for "complete".
+
+*Tests:* `perp-readout.test.ts` "the ladder says whether it is the whole set"; `perp-round-1-3.test.tsx` "1.3.7" (all three asides rendered); `perp-round-1-3.test.ts` (the recorded page reports `is_last_page: false`).
+
+### 1.3.8 — the Hyperliquid account fields already on the wire
+
+`hyperliquidProfile` now keeps `returnOnEquity`, `cumFunding.{allTime,sinceOpen}`, `maxLeverage`, `marginUsed`, `withdrawable`, `crossMaintenanceMarginUsed` and `marginSummary.totalNtlPos` (`apps/web/lib/intel/badges.ts:230,244`). No extra request and no extra weight: it is the same free `clearinghouseState` call.
+
+- **Funding paid, in words.** `fundingFlow` (`perp-readout.ts:177`) reads Hyperliquid's sign convention — negative means the account paid — and `FundingCell` (`apps/extension/lib/ui/VenueBody.tsx:34`) prints "$1.76M paid" over "$4.89M paid all time" rather than a minus sign different readers interpret differently. Two lines, the position's own figure over the account's longer history for that coin.
+- **Three numbers that all read as "leverage", three labels.** `accountLeverage` (`perp-readout.ts:191`) derives 3.8x from notional over equity for its own tile; the trader's configured 25x stays in the Side cell; the venue's ceiling is appended only when it differs from the configured value, because "25x of 25x max" says nothing and costs a column's width.
+- **The maintenance tile is not a liquidation prediction.** `maintenanceBufferPct` (`perp-readout.ts:205`) is a share of account value, labelled "Above maintenance", and the note under the table says so — and the note about a dash under Liq. renders only when a position **on screen** has one, not when some position further down the account does. On the recorded wallet the null-liquidation legs sit below the compact card's five rows, so the first version of this note explained something the reader could not see.
+
+*Tests:* `perp-readout.test.ts` "the Hyperliquid account fields already on the wire" (paid / received / flat / unknown against the fixture's real `cumFunding` values, derived leverage against the configured 30x, the buffer against the same position's null `liquidationPx`); `perp-round-1-3.test.tsx` "1.3.8" (the words on screen, the two leverage labels, the buffer tile and its copy, ROE as a percentage of Hyperliquid's fraction, five columns compact against six expanded, and the note appearing only beside the dash it explains).
+
+## Craft pass
+
+Three of these came out of opening the captures, not out of reading the diff.
+
+- **`useCardSize()` answered "compact" for ever under the wallet and badge cards.** They set `data-size` from the Popover and render their bodies straight; only the evidence card's `Panel` provides `CardSizeContext`. So 1.3.8's expanded-only columns could never render, and the wallet card's own `useIsExpanded()` call had the same latent bug. `useCardSize` now falls back to the Popover's own size (`apps/extension/lib/ui/card-size.tsx:27`) and the context default is `null`, meaning "nobody said" rather than "compact".
+- **Seven columns did not fit the expanded card's right-hand track** — every cell wrapped and each row was three lines tall. ROE moved under the uPnL it is the percentage of (the spot card's two-line amount cell), and the positions table spans both columns when expanded, like the venue table already did. With dense placement the "Recent fills" section backfills the cell beside it instead of leaving a hole the height of the table, and the badge card's one-line "Linked by you" row takes the full width rather than sharing a row with a six-tile block.
+- **The venue table's headers touched.** Filling Binance's 24h volume closed the six columns up until "Funding 8h" and "Annualised" read as one word; every cell after the venue name now keeps an 8px left gutter.
+- `perp-funding-venues` no longer showed the venue table: two new sections above it pushed it below the fold of a 440px card. The capture scrolls to the section it is named after, and a new `perp-cohorts` capture covers the three bars.
+- The cohort legend is a three-column grid rather than `space-between`, so the gross figure lands under the bar's right edge instead of pushing "Short" into the middle. The cohort section's as-of reads "as of now", not "read now", which parses as an instruction.
+- New CSS is tokens only. The smallest new type is `0.6875rem` (11px, the floor) and that one line uses `--tw-text-2` rather than `--tw-text-3`, which does not clear 4.5:1 at that size. No emoji, no new icons, every figure `tabular-nums`.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 255, web 230, extension 621** tests passed (229 / 206 / 530 at the end of Round 1.2 — the web and extension counts also include another session's in-flight work, see Concerns).
+- `pnpm -F web build` and `pnpm -F extension build`: both OK (run through `verify:e2e`).
+- `TRIPWIRE_E2E_PORT=3217 pnpm verify:e2e`: **19 passed, 4 capture-only specs skipped.** Port 3000 is held by a server this session did not start and was never touched.
+- Captures: `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3217 pnpm -F extension exec playwright test -c e2e/playwright.config.ts captures` — 4 passed. `perp-funding-venues`, `perp-expanded`, `perp-traders`, `wallet-card-hyperliquid`, `wallet-card-expanded`, `x-badge-card-hyperliquid` and `x-badge-card-expanded` were regenerated and each opened to confirm it shows what its name says; **new:** `perp-cohorts`.
+- `mount.test.tsx`'s CSS smoke ceiling was raised 72k → 80k. It is a smoke ceiling whose real guards are the two assertions above it (no inlined fonts, no `data:` URIs).
+
+## Notes for the next round
+
+- **The expanded two-column tab panel has no masonry track**, so a tall section beside a short one leaves a ragged column. 1.3.3's cohort block is the tallest one yet; spanning it over two rows with dense placement halves the gap but does not remove it. The real fix is a layout change to the shared panel and belongs to a round that owns it, not to this one.
+- **§5's base-load decision is now the blocker for 2.5's cohort ladders.** Panel-mode perp is 12 credits; `tgm/perp-positions` at 5 credits per extra cohort cannot stack on that without moving the base first.
+- **`recentOpens` takes an explicit `nowMs`**, so a future "opened since the post" divider on a perp card can reuse it against `panel.postTimeIso` rather than wall-clock time.
+- The recorded `smPerpTrades` page contains no `Open` at all, so the strip's list path is covered only by synthetic rows. Re-recording it costs 5 credits and should ride along with the next run that spends on this endpoint family.
+- `PerpVenueMeta.oiSides` is the place any new venue states its convention. A venue added without measuring it will silently re-introduce the bug 1.3.2 fixed.
+
+## ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**A missing figure and an even split are different answers, and the difference lives in core.** `PerpBody`'s long/short bar coerced two nullable fields to zero and defaulted the split to 50/50, which drew a calm, symmetric bar over a market nothing is known about — the exact shape of non-negotiable #1, inside a JSX default where neither the backend nor the core suite could see it. The split now resolves in `packages/core` to one of *unknown*, *nobody is positioned* and *a real ratio*, and each renders differently. The guard is on both figures being null rather than on their total being zero, so a genuinely balanced market still draws a 50/50 bar; a wallet count Nansen did not send renders as nothing rather than as `0`. The same rule governs the three cohort bars added in the same round: a cohort with no figures says so.
+
+**Open interest is normalised to one side of the book, per venue, from measured evidence.** Venues publish open interest under two conventions — one side, and long-plus-short, which is exactly twice as big — and the cross-venue table both prints and *sorts on* that number. Bybit's row read `openInterestValue` (both sides) while `singleOpenInterestValue` sat beside it at exactly half; Hyperliquid's `openInterest` is both sides too, which DefiLlama's dimension-adapters #9365 measured at 2.00x CoinMarketCap over 16 windows and which our own recorded universe reproduces ($10.59B face value, $5.30B halved). Each venue's convention is now recorded as `oiSides` with the field we read named beside it, applied through one null-safe helper, and stated in the table's own note. Correcting only Bybit would have traded one wrong ranking for another: the honest order on the recorded data is Binance / OKX / Hyperliquid / Bybit / dYdX, not the Binance / Hyperliquid / OKX / Bybit predicted before Hyperliquid's convention was checked. A market whose convention cannot be determined renders a dash, never a halved guess.
+
+**A paid call that renders nothing is either rendered or deleted.** `smart-money/perp-trades` cost 5 credits on every perp panel open and no component read it; the card showed the Traders tab's own trades instead. It now filters, client-side, into the positions opened in the last hour — the one thing in a 24h page a reader can act on — and its failures ride a section-level channel rather than `panel.errors`, because that list drives the card's "Unavailable:" footer and the unchecked headline, and a strip that could not load is not a broken check. The same rule that deleted `pmOrderbook` in Round 1.2 applies here in its other direction: a priced call is a feature or it is a trap, and it does not get to be neither.
+
+---
+
 # Round 1.4 — pages that rendered nothing, and the one-click hole
 
 Branch `feat/cockpit-ui`. Nine items, all shipped. Net credit effect is **negative**: 1.4.1 stops a recurring 6-credit spend on a market that does not exist, and every other item turns a page that answered nothing into one that answers.

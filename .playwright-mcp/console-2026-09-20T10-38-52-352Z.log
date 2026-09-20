@@ -1,2 +1,0 @@
-[   15336ms] [ERROR] Access to XMLHttpRequest at 'https://pls.dexscreener.com/api/event' from origin 'https://dexscreener.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://dexscreener.com/solana:0
-[   15337ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://pls.dexscreener.com/api/event:0

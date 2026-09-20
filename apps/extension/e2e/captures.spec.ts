@@ -318,11 +318,20 @@ test("expand and perp depth captures", async ({ context }) => {
 
   const pop = page.locator('.tw-pop[role="dialog"]');
   await expect(pop).toBeVisible();
-  // perp-funding-venues: the cross-venue table in the anchored card, at 440px.
+  // perp-funding-venues: the cross-venue table in the anchored card, at 440px. Round 1.3 put
+  // two more sections above it, so the table has to be scrolled to before the shot or the
+  // capture stops showing the thing it is named after.
   await expect(pop.locator(".tw-venue-table tbody tr")).toHaveCount(5, { timeout: 20_000 });
   await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await pop.locator('section[aria-label="Funding & OI across venues"]').scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);
   await shot(pop, "perp-funding-venues");
+
+  // perp-cohorts: the three cohorts the 1-credit position-intelligence row buys (Round 1.3.3),
+  // with the Smart Money bar above them and the opens strip below.
+  await pop.locator('section[aria-label="Smart Money long vs short"]').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(200);
+  await shot(pop, "perp-cohorts");
 
   await pop.getByRole("tab", { name: "Liquidations" }).click();
   const compactLadder = pop.locator(".tw-liquidation-chart svg");

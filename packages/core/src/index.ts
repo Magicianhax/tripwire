@@ -6,6 +6,7 @@ export * from "./format";
 export * from "./signals/spot";
 export * from "./spot-readout";
 export * from "./signals/perp";
+export * from "./perp-readout";
 export * from "./signals/prediction";
 export * from "./rules/presets";
 export * from "./rules/evaluate";

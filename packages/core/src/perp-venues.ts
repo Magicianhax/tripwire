@@ -17,15 +17,49 @@ export type PerpVenueMeta = {
   fundingIntervalHours: number;
   /** What the venue settles its perps in, shown next to open interest. */
   quote: string;
+  /**
+   * How many sides of the book the open-interest figure **we read** from this venue counts.
+   *
+   * Open interest has two conventions in the wild: one side (every long has a short, so count
+   * the longs) and long-plus-short, which is exactly twice as big. A table that mixes them
+   * does not just print one wrong number — it sorts the venues into the wrong order, which is
+   * the thing a reader takes away from it. Every row here is therefore converted to the
+   * one-side figure, and this field records what the venue's own number was, with the field
+   * we read named beside it. See `singleSidedOi`.
+   */
+  oiSides: 1 | 2;
 };
 
 export const PERP_VENUES: Record<PerpVenueId, PerpVenueMeta> = {
-  hyperliquid: { name: "Hyperliquid", fundingIntervalHours: 1, quote: "USD" },
-  binance: { name: "Binance", fundingIntervalHours: 8, quote: "USDT" },
-  bybit: { name: "Bybit", fundingIntervalHours: 8, quote: "USDT" },
-  okx: { name: "OKX", fundingIntervalHours: 8, quote: "USDT" },
-  dydx: { name: "dYdX", fundingIntervalHours: 1, quote: "USD" },
+  // `metaAndAssetCtxs[1][i].openInterest` counts long **plus** short. Measured against an
+  // independent reference rather than assumed: DefiLlama's dimension-adapters #9365 found
+  // Hyperliquid at 2.00x CoinMarketCap over 16 sampling windows ($14.67B reported against
+  // CMC's $7.61B, corrected to $7.33B). Our own recorded universe totals $10.59B at face
+  // value, $5.30B halved.
+  hyperliquid: { name: "Hyperliquid", fundingIntervalHours: 1, quote: "USD", oiSides: 2 },
+  // `fapi/v1/openInterest`, the figure CMC and every tracker quote for Binance.
+  binance: { name: "Binance", fundingIntervalHours: 8, quote: "USDT", oiSides: 1 },
+  // We read `singleOpenInterestValue`, which Bybit publishes precisely because its sibling
+  // `openInterestValue` is both sides: in the recorded ETH ticker they are 977,321,434.21 and
+  // 1,954,642,843.92, exactly 2x.
+  bybit: { name: "Bybit", fundingIntervalHours: 8, quote: "USDT", oiSides: 1 },
+  // `oiCcy` / `oiUsd`, one side.
+  okx: { name: "OKX", fundingIntervalHours: 8, quote: "USDT", oiSides: 1 },
+  // `openInterest`, one side. The sibling `baseOpenInterest` in the same payload is roughly
+  // twice it (13,993.985 against 6,873.883 on the recorded ETH market) and is not read here.
+  dydx: { name: "dYdX", fundingIntervalHours: 1, quote: "USD", oiSides: 1 },
 };
+
+/**
+ * One venue's open interest as the **one-side** figure, from whatever convention it published.
+ *
+ * Null in, null out: a venue that did not answer must not read as zero open interest, and a
+ * halved null is still not a number.
+ */
+export function singleSidedOi(venue: PerpVenueId, value: number | null | undefined): number | null {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  return value / PERP_VENUES[venue].oiSides;
+}
 
 /**
  * Hyperliquid lists some high-supply memecoins at 1000x ("kPEPE" is 1000 PEPE). The centralised
@@ -126,7 +160,9 @@ export type PerpVenueQuote = {
   symbol: string;
   markPrice: number | null;
   funding: VenueFunding;
-  /** Open interest in USD. Venues quote it in coins or in quote currency; the client converts. */
+  /** Open interest in USD, always **one side of the book**: venues quote it in coins or in
+   * quote currency, and some quote long-plus-short, so the client converts both (see
+   * `singleSidedOi`). */
   openInterestUsd: number | null;
   volume24hUsd: number | null;
   /** Share of accounts (not size) that are long, 0-1, where the venue publishes it. */
