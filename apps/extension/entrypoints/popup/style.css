@@ -1,4 +1,9 @@
-/* Tripwire popup: the Nansen world at toolbar-popup size. Tokens match lib/ui/theme.css. */
+/* Tripwire popup: the Nansen world at toolbar-popup size. Tokens match lib/ui/theme.css.
+ *
+ * The shape is the local pages' shape shrunk to 420px: a pinned head and foot on the ground
+ * colour framing one panel-coloured working surface, with a tab strip on the panel's top edge.
+ * The popup is a fixed box — the document never scrolls, and exactly one region inside the
+ * active tab may. */
 :root {
   --tw-ground: #06080b;
   --tw-panel: #0b1016;
@@ -17,6 +22,7 @@
   --tw-radius-pill: 16px;
   --tw-radius-card: 12px;
   --tw-radius-tile: 8px;
+  --tw-radius-inline: 6px;
   --tw-space-1: 4px;
   --tw-space-2: 8px;
   --tw-space-3: 12px;
@@ -24,6 +30,11 @@
   --tw-font-ui: "Inter", system-ui, sans-serif;
   --tw-font-display: "Sora", "Inter", system-ui, sans-serif;
   --tw-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --tw-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Chrome's popup maximum is 800x600. 420 x 520 leaves the content room and still has the
+     head, the strip and the foot visible at once on every tab. */
+  --tw-popup-w: 420px;
+  --tw-popup-h: 520px;
 }
 
 * {
@@ -32,24 +43,33 @@
 
 html,
 body {
+  width: var(--tw-popup-w);
+  height: var(--tw-popup-h);
   margin: 0;
   padding: 0;
   color-scheme: dark;
 }
 
 body {
-  width: 360px;
-  background: var(--tw-panel);
+  overflow: hidden;
+  background: var(--tw-ground);
   color: var(--tw-text);
   font-family: var(--tw-font-ui);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.45;
   font-feature-settings: "tnum";
   -webkit-font-smoothing: antialiased;
 }
 
+/* The browser surfaces this design also owns. */
 ::selection {
   background: var(--tw-mint-dim);
+}
+
+.tw-tabpanel,
+.tw-recent-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tw-line-strong) transparent;
 }
 
 .tw-icon {
@@ -74,17 +94,36 @@ body {
   }
 }
 
+/* -------------------- Shell -------------------- */
+
+/* main.tsx mounts into #root, so the chain of definite heights has to run through it —
+   without this the popup's `height: 100%` is indefinite and the document scrolls. */
+#root {
+  height: 100%;
+}
+
+/* Flex rather than a row template, because the settings panel is an optional fourth child and
+   a template would hand its track to whichever element happened to land on it. */
 .tw-popup {
   display: flex;
   flex-direction: column;
-  gap: var(--tw-space-3);
-  padding: var(--tw-space-4);
+  height: 100%;
+  min-height: 0;
+}
+
+.tw-popup-head,
+.tw-settings,
+.tw-popup-foot {
+  flex: 0 0 auto;
 }
 
 .tw-popup-head {
   display: grid;
-  gap: var(--tw-space-2);
-  padding-bottom: var(--tw-space-3);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--tw-space-3);
+  height: 56px;
+  padding: 0 var(--tw-space-4);
   border-bottom: 1px solid var(--tw-line);
 }
 
@@ -92,8 +131,9 @@ body {
   margin: 0;
   font-family: var(--tw-font-display);
   font-weight: 700;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   line-height: 1.1;
+  letter-spacing: -0.01em;
   color: var(--tw-text);
 }
 
@@ -101,12 +141,20 @@ body {
 .tw-status {
   display: flex;
   align-items: center;
-  gap: var(--tw-space-2);
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.3;
   color: var(--tw-text-2);
+}
+
+.tw-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tw-status[data-state="connected"] {
@@ -122,17 +170,202 @@ body {
   color: var(--tw-amber);
 }
 
-.tw-field-label,
-.tw-field label {
-  margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 600;
+.tw-gear {
+  display: grid;
+  place-items: center;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-pill);
+  background: transparent;
+  color: var(--tw-text-2);
+  cursor: pointer;
+  transition: color 140ms var(--tw-ease), border-color 140ms var(--tw-ease);
+}
+
+.tw-gear:hover,
+.tw-gear[aria-expanded="true"] {
+  border-color: var(--tw-line-strong);
   color: var(--tw-text);
 }
 
-.tw-field-label {
-  margin-bottom: calc(var(--tw-space-1) - var(--tw-space-3));
+.tw-settings {
+  display: grid;
+  gap: var(--tw-space-1);
+  padding: var(--tw-space-3) var(--tw-space-4);
+  border-bottom: 1px solid var(--tw-line);
 }
+
+.tw-settings label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--tw-text-2);
+}
+
+.tw-settings input {
+  width: 100%;
+  min-height: 32px;
+  padding: 0 var(--tw-space-3);
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-ground);
+  color: var(--tw-text);
+  caret-color: var(--tw-mint);
+  font-family: var(--tw-font-mono);
+  font-size: 0.75rem;
+}
+
+.tw-settings input:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+/* -------------------- Tabs -------------------- */
+
+.tw-tabs {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  background: var(--tw-panel);
+}
+
+.tw-tablist {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--tw-space-4);
+  padding: 0 var(--tw-space-4);
+  border-bottom: 1px solid var(--tw-line);
+}
+
+.tw-tab {
+  appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--tw-text-2);
+  font-family: var(--tw-font-ui);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 140ms var(--tw-ease);
+}
+
+.tw-tab[aria-selected="true"] {
+  color: var(--tw-mint);
+  font-weight: 600;
+}
+
+.tw-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--tw-mint);
+}
+
+.tw-tab:not([aria-selected="true"]):hover {
+  color: var(--tw-text);
+}
+
+.tw-tab:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+/* The one region of the popup that may scroll. */
+.tw-tabpanel {
+  display: grid;
+  align-content: start;
+  gap: var(--tw-space-4);
+  min-height: 0;
+  padding: var(--tw-space-3) var(--tw-space-4) var(--tw-space-4);
+  overflow-y: auto;
+}
+
+.tw-tabpanel[hidden] {
+  display: none;
+}
+
+.tw-tabpanel:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: -2px;
+}
+
+/* The popup's one authored moment: the panel a tab reveals settles into place. */
+.tw-tabpanel:not([hidden]) {
+  animation: tw-panel-in 180ms var(--tw-ease) both;
+}
+
+@keyframes tw-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* -------------------- Blocks inside a panel -------------------- */
+
+.tw-block {
+  display: grid;
+  gap: var(--tw-space-2);
+  min-width: 0;
+}
+
+.tw-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tw-space-2);
+}
+
+.tw-block-label {
+  margin: 0;
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--tw-text);
+}
+
+.tw-sub-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--tw-text-2);
+}
+
+.tw-note,
+.tw-empty {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--tw-text-2);
+  text-wrap: pretty;
+}
+
+.tw-hint {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--tw-amber);
+}
+
+/* -------------------- Preset -------------------- */
 
 .tw-segmented {
   display: flex;
@@ -155,13 +388,12 @@ body {
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
+  transition: color 140ms var(--tw-ease), background-color 140ms var(--tw-ease);
 }
 
-@media (hover: hover) {
-  .tw-segmented button:not(:disabled):not([aria-pressed="true"]):hover {
-    color: var(--tw-text);
-    background: var(--tw-raised);
-  }
+.tw-segmented button:not(:disabled):not([aria-pressed="true"]):hover {
+  color: var(--tw-text);
+  background: var(--tw-raised);
 }
 
 .tw-segmented button:disabled {
@@ -181,7 +413,7 @@ body {
   outline-offset: 1px;
 }
 
-/* Weaken confirm: an amber tile. */
+/* Weakening the rules is confirmed on amber, not red: the user is agreeing, not being blocked. */
 .tw-confirm-row {
   display: grid;
   gap: var(--tw-space-2);
@@ -204,14 +436,20 @@ body {
   gap: var(--tw-space-2);
 }
 
+/* -------------------- Buttons -------------------- */
+
 .tw-button-danger,
 .tw-button-quiet {
   appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 32px;
-  padding: 0 var(--tw-space-4);
+  padding: 0 var(--tw-space-3);
   border-radius: var(--tw-radius-pill);
   font-family: var(--tw-font-ui);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -226,175 +464,12 @@ body {
   border: 1px solid var(--tw-line-strong);
   background: transparent;
   color: var(--tw-text);
+  transition: border-color 140ms var(--tw-ease), background-color 140ms var(--tw-ease);
 }
 
-.tw-button-danger:focus-visible,
-.tw-button-quiet:focus-visible {
-  outline: 2px solid var(--tw-mint);
-  outline-offset: 2px;
-}
-
-.tw-links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--tw-space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tw-links a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-height: 34px;
-  border: 1px solid var(--tw-line);
-  border-radius: var(--tw-radius-pill);
+.tw-button-quiet:hover {
+  border-color: var(--tw-mint-line);
   background: var(--tw-raised);
-  color: var(--tw-text);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.tw-links a .tw-icon {
-  color: var(--tw-text-2);
-}
-
-@media (hover: hover) {
-  .tw-links a:hover {
-    border-color: var(--tw-mint-line);
-  }
-}
-
-.tw-links a:focus-visible {
-  outline: 2px solid var(--tw-mint);
-  outline-offset: 2px;
-}
-
-.tw-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--tw-space-1);
-}
-
-.tw-field input {
-  min-height: 34px;
-  padding: 0 var(--tw-space-3);
-  background: var(--tw-ground);
-  border: 1px solid var(--tw-line-strong);
-  border-radius: var(--tw-radius-tile);
-  color: var(--tw-text);
-  caret-color: var(--tw-mint);
-  font-family: var(--tw-font-mono);
-  font-size: 0.8125rem;
-}
-
-.tw-field input:focus-visible {
-  outline: 2px solid var(--tw-mint);
-  outline-offset: 1px;
-  border-color: transparent;
-}
-
-.tw-field-hint {
-  margin: 0;
-  min-height: 1em;
-  font-size: 0.75rem;
-  color: var(--tw-amber);
-}
-
-.tw-venues {
-  display: grid;
-  gap: var(--tw-space-2);
-  padding-top: var(--tw-space-3);
-  border-top: 1px solid var(--tw-line);
-}
-
-.tw-venues .tw-field-label {
-  margin: 0;
-}
-
-.tw-venue-group {
-  display: grid;
-  gap: 6px;
-}
-
-.tw-venue-tier {
-  margin: 0;
-  font-size: 0.75rem;
-  color: var(--tw-text-2);
-}
-
-.tw-venue-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px var(--tw-space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tw-venue-list li {
-  display: flex;
-  align-items: center;
-  gap: var(--tw-space-2);
-  font-size: 0.8125rem;
-  color: var(--tw-text);
-}
-
-.tw-popup-foot {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-top: var(--tw-space-3);
-  border-top: 1px solid var(--tw-line);
-  font-size: 0.75rem;
-  color: var(--tw-text-2);
-}
-
-.tw-powered-name {
-  font-family: var(--tw-font-display);
-  font-weight: 600;
-  color: var(--tw-text);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ---- Wallet lens: per-site consent and the recent list ---- */
-
-.tw-lens {
-  display: grid;
-  gap: var(--tw-space-2);
-  padding-top: var(--tw-space-3);
-  border-top: 1px solid var(--tw-line);
-}
-
-.tw-lens-note {
-  margin: 0;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--tw-text-2);
-  text-wrap: pretty;
-}
-
-.tw-lens-on {
-  display: flex;
-  align-items: center;
-  gap: var(--tw-space-2);
-  min-height: 24px;
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--tw-text);
-}
-
-.tw-lens-on .tw-icon {
-  color: var(--tw-mint);
 }
 
 .tw-button-primary {
@@ -404,7 +479,7 @@ body {
   gap: var(--tw-space-2);
   appearance: none;
   width: 100%;
-  min-height: 32px;
+  min-height: 34px;
   padding: 0 var(--tw-space-4);
   border: 1px solid var(--tw-mint);
   border-radius: var(--tw-radius-pill);
@@ -413,21 +488,223 @@ body {
   font-family: var(--tw-font-ui);
   font-size: 0.8125rem;
   font-weight: 600;
-  text-align: center;
   cursor: pointer;
+  transition: filter 140ms var(--tw-ease);
 }
 
 .tw-button-primary:hover {
-  background: color-mix(in srgb, var(--tw-mint) 88%, #ffffff);
+  filter: brightness(1.08);
 }
 
-.tw-button-primary:focus-visible {
+/* A quiet text action that lives inside a row. */
+.tw-row-action {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-1);
+  min-height: 24px;
+  padding: 0 var(--tw-space-2);
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-pill);
+  background: transparent;
+  color: var(--tw-text-2);
+  font-family: var(--tw-font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 140ms var(--tw-ease), border-color 140ms var(--tw-ease);
+}
+
+.tw-row-action:hover {
+  border-color: var(--tw-line-strong);
+  color: var(--tw-text);
+}
+
+.tw-icon-action {
+  display: grid;
+  place-items: center;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-inline);
+  background: transparent;
+  color: var(--tw-text-2);
+  cursor: pointer;
+  transition: color 140ms var(--tw-ease), border-color 140ms var(--tw-ease);
+}
+
+.tw-icon-action:hover {
+  border-color: var(--tw-line-strong);
+  color: var(--tw-text);
+}
+
+.tw-icon-action[data-copied] {
+  color: var(--tw-mint);
+}
+
+.tw-button-danger:focus-visible,
+.tw-button-quiet:focus-visible,
+.tw-button-primary:focus-visible,
+.tw-row-action:focus-visible,
+.tw-icon-action:focus-visible,
+.tw-gear:focus-visible {
   outline: 2px solid var(--tw-mint);
   outline-offset: 2px;
 }
 
-.tw-site-list,
-.tw-recent-list {
+/* -------------------- On this tab -------------------- */
+
+.tw-here {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--tw-space-2) var(--tw-space-3);
+  min-height: 48px;
+  padding: var(--tw-space-2) var(--tw-space-2) var(--tw-space-2) var(--tw-space-3);
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-card);
+  background: var(--tw-raised);
+}
+
+.tw-here .tw-icon {
+  color: var(--tw-text-2);
+}
+
+.tw-here[data-state="builtin"] .tw-icon,
+.tw-here[data-state="granted"] .tw-icon {
+  color: var(--tw-mint);
+}
+
+.tw-here-id {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.tw-here-host {
+  overflow: hidden;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--tw-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tw-here-state {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: var(--tw-text-2);
+}
+
+.tw-locate {
+  flex-shrink: 0;
+  min-height: 28px;
+}
+
+.tw-locate-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--tw-text-2);
+}
+
+/* Nothing was mounted: a fact worth the warning colour, because the user asked a question and
+   the answer is "there is nothing to point at". */
+.tw-locate-note[data-state="missing"] {
+  color: var(--tw-amber);
+}
+
+.tw-here-on {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  min-height: 24px;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--tw-text);
+}
+
+.tw-here-on .tw-icon {
+  color: var(--tw-mint);
+}
+
+/* -------------------- Usage tiles -------------------- */
+
+.tw-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--tw-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tw-tile {
+  display: grid;
+  gap: 2px;
+  padding: 6px 10px;
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-raised);
+}
+
+.tw-tile-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--tw-text-2);
+}
+
+.tw-tile-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--tw-text);
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+}
+
+/* -------------------- Venues -------------------- */
+
+.tw-venue-group {
+  display: grid;
+  gap: 6px;
+}
+
+.tw-venue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tw-venue-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 28px;
+  padding: 0 var(--tw-space-2);
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-tile);
+  background: var(--tw-raised);
+}
+
+.tw-venue-name {
+  overflow: hidden;
+  font-size: 0.75rem;
+  color: var(--tw-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------- Granted sites -------------------- */
+
+.tw-site-list {
   display: grid;
   gap: var(--tw-space-1);
   margin: 0;
@@ -451,103 +728,216 @@ body {
   overflow: hidden;
   font-family: var(--tw-font-mono);
   font-size: 0.75rem;
+  color: var(--tw-text);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.tw-site-list .tw-button-quiet {
-  gap: var(--tw-space-1);
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  padding: 0 var(--tw-space-2);
-  border-color: transparent;
-  font-size: 0.75rem;
-  color: var(--tw-text-2);
+/* -------------------- Recent wallets -------------------- */
+
+.tw-recent-scroll {
+  display: grid;
+  align-content: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
-.tw-site-list .tw-button-quiet:hover {
-  border-color: var(--tw-line-strong);
-  color: var(--tw-text);
-}
-
-.tw-recent-list li {
-  display: flex;
+.tw-recent-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto 24px;
   align-items: center;
   gap: var(--tw-space-2);
-  min-height: 24px;
-  font-size: 0.8125rem;
+  min-height: 32px;
+  padding: 0 var(--tw-space-1) 0 0;
+  border-bottom: 1px solid var(--tw-line);
 }
 
-.tw-recent-list .tw-icon {
-  color: var(--tw-text-2);
+.tw-recent-row:last-child {
+  border-bottom: none;
 }
 
-.tw-recent-name {
-  flex: 1 1 auto;
+/* The whole cell is the target, not just the glyphs: an inline anchor's own box is 17px tall. */
+.tw-recent-id {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  min-height: 32px;
   overflow: hidden;
+  font-size: 0.8125rem;
   color: var(--tw-text);
   text-decoration: none;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-a.tw-recent-name:hover {
+.tw-recent-id[data-mono="true"] {
+  font-family: var(--tw-font-mono);
+  font-size: 0.75rem;
+}
+
+a.tw-recent-id:hover {
   color: var(--tw-mint);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-a.tw-recent-name:focus-visible {
+a.tw-recent-id:focus-visible {
   outline: 2px solid var(--tw-mint);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: var(--tw-radius-inline);
 }
 
-.tw-recent-list .tw-meta {
-  font-size: 0.75rem;
-  color: var(--tw-text-2);
-}
-
-.tw-venue-tier:has(.tw-clear-recent) {
-  display: flex;
+.tw-chain-chip {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.tw-clear-recent {
-  min-height: 24px;
-  padding: 0 var(--tw-space-2);
-  border-color: transparent;
-  font-size: 0.75rem;
+  gap: var(--tw-space-1);
+  height: 20px;
+  padding: 0 var(--tw-space-2) 0 var(--tw-space-1);
+  border: 1px solid var(--tw-line);
+  border-radius: var(--tw-radius-pill);
+  background: var(--tw-panel);
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--tw-text-2);
 }
 
-.tw-clear-recent:hover {
+.tw-recent-when {
+  font-size: 0.6875rem;
+  color: var(--tw-text-2);
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+}
+
+/* -------------------- Footer -------------------- */
+
+.tw-popup-foot {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--tw-space-2);
+  height: 40px;
+  padding: 0 var(--tw-space-3) 0 var(--tw-space-4);
+  border-top: 1px solid var(--tw-line);
+}
+
+.tw-powered {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  color: var(--tw-text-2);
+}
+
+.tw-powered-name {
+  font-family: var(--tw-font-display);
+  font-weight: 600;
+  color: var(--tw-text);
+}
+
+.tw-foot-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--tw-space-1);
+}
+
+.tw-foot-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-1);
+  min-height: 24px;
+  padding: 0 var(--tw-space-2);
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-pill);
+  color: var(--tw-text-2);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 140ms var(--tw-ease), border-color 140ms var(--tw-ease);
+}
+
+.tw-foot-links a:hover {
   border-color: var(--tw-line-strong);
   color: var(--tw-text);
 }
 
-/* Round 1.6 — "Where is it?". The answer for a user who cannot find the verdict on a dense
-   venue page: a full-width action on the current tab, not a setting, so it reads as something
-   that happens to the page rather than something that configures the extension. */
-.tw-locate {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--tw-space-2);
-  width: 100%;
+.tw-foot-links a:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 2px;
 }
 
-.tw-locate-note {
-  margin: 0;
-  font-size: 0.75rem;
+.tw-foot-info {
+  display: grid;
+  place-items: center;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-pill);
+  background: transparent;
   color: var(--tw-text-2);
+  cursor: pointer;
 }
 
-/* Nothing was mounted: a fact worth the warning colour, because the user asked a question and
-   the answer is "there is nothing to point at". */
-.tw-locate-note[data-state="missing"] {
-  color: var(--tw-amber);
+.tw-foot-info:hover {
+  border-color: var(--tw-line-strong);
+  color: var(--tw-text);
+}
+
+.tw-foot-info:focus-visible {
+  outline: 2px solid var(--tw-mint);
+  outline-offset: 2px;
+}
+
+/* -------------------- Tooltip (shared component, popup-sized) -------------------- */
+
+.tw-tooltip {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.tw-tooltip-content {
+  position: absolute;
+  z-index: 30;
+  right: 0;
+  bottom: calc(100% + 7px);
+  width: max-content;
+  max-width: 240px;
+  padding: 6px 8px;
+  border: 1px solid var(--tw-line-strong);
+  border-radius: var(--tw-radius-inline);
+  background: var(--tw-raised);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+  color: var(--tw-text);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(3px);
+  transition: opacity 100ms var(--tw-ease), transform 100ms var(--tw-ease), visibility 100ms;
+}
+
+.tw-tooltip:hover .tw-tooltip-content,
+.tw-tooltip:focus-within .tw-tooltip-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

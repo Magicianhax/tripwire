@@ -1,33 +1,41 @@
-import { useEffect, useState } from "react";
-import { CircleCheck, CircleX, History, LoaderCircle, Locate, ScrollText, SlidersHorizontal, TriangleAlert } from "lucide-react";
-import { NANSEN_LOGO, presetChangeNeedsConfirm, VENUE_LOGOS, type VenueId } from "@tripwire/core";
+import { useCallback, useEffect, useState } from "react";
+import { presetChangeNeedsConfirm } from "@tripwire/core";
 import { browser } from "wxt/browser";
-import { getRules, health, setPreset } from "../../lib/api";
+import { getRules, health, ledger, setPreset } from "../../lib/api";
 import type { KeySource, RulesResponse } from "../../lib/api-types";
-import { Icon } from "../../lib/ui/icons";
-import { BrandMark } from "../../lib/ui/Logo";
+import { listEnabledSites, removeSite, requestSite } from "../../lib/permissions";
+import { forgetWallets, readRecent, type RecentWallet } from "../../lib/recent-wallets";
+import { Tabs } from "../../lib/ui/Tabs";
 import { LOCATE_MESSAGE } from "../venues.content/locate";
+import { hereFrom, type Here } from "./here";
+import { ProtectionTab, type Counters, type Preset } from "./ProtectionTab";
+import { PopupFoot, PopupHead } from "./shell";
+import { SitesTab } from "./SitesTab";
 import { popupStatus } from "./status";
-import { WalletLensSection } from "./WalletLensSection";
+import { WalletsTab } from "./WalletsTab";
 
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
 const BACKEND_URL_RE = /^http:\/\/(127\.0\.0\.1|localhost):\d{1,5}$/;
-const PRESETS = ["degen", "balanced", "paranoid"] as const;
-type Preset = (typeof PRESETS)[number];
-const PRESET_LABELS: Record<Preset, string> = { degen: "Degen", balanced: "Balanced", paranoid: "Paranoid" };
-
-/** Where Tripwire runs: tier 1 venues get a block screen on the trade button, tier 2 a dock. */
-const VENUES: { tier: string; ids: VenueId[] }[] = [
-  { tier: "Blocks trades", ids: ["jupiter", "pumpfun", "uniswap", "jumper", "hyperliquid", "polymarket"] },
-  { tier: "Evidence dock", ids: ["raydium", "aerodrome", "pancakeswap", "1inch", "matcha", "cow", "axiom", "photon", "gmgn", "bullx", "dexscreener", "birdeye"] },
-];
-
-const STATUS_ICON = { connected: CircleCheck, offline: CircleX, "not-ready": TriangleAlert } as const;
 
 /** Said when the active tab's content script has nothing mounted — or is not there at all.
  * Both are the same fact for the user, and neither is worth two different sentences. */
 const NOTHING_MOUNTED = "Tripwire isn't showing anything on this tab.";
 
+const hostOf = (origin: string) => {
+  try {
+    return new URL(origin).host;
+  } catch {
+    return origin;
+  }
+};
+
+/**
+ * The toolbar popup: a pinned header, three tabs and a pinned footer inside a fixed 420px box.
+ *
+ * Nothing here spends a Nansen credit. Opening it makes exactly three reads of the *local*
+ * backend — health, rules and the call ledger — and changing tab makes none: every panel is
+ * already in the DOM and none of them fetches on show.
+ */
 export default function App() {
   const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource; replay: boolean } | { ok: false } | null>(null);
   // The server-confirmed rules: what "weaker" is measured against. null until loaded.
@@ -36,10 +44,16 @@ export default function App() {
   const [pendingPreset, setPendingPreset] = useState<Preset | null>(null);
   const [saving, setSaving] = useState(false);
   const [presetError, setPresetError] = useState("");
+  const [counters, setCounters] = useState<Counters>(null);
   const [backendUrl, setBackendUrl] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlDraft, setBackendUrlDraft] = useState(DEFAULT_BACKEND_URL);
   const [backendUrlError, setBackendUrlError] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [locateNote, setLocateNote] = useState("");
+  const [sites, setSites] = useState<string[] | null>(null);
+  const [tabUrl, setTabUrl] = useState<string | undefined>(undefined);
+  const [recent, setRecent] = useState<RecentWallet[]>([]);
+  const [siteError, setSiteError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -72,10 +86,35 @@ export default function App() {
         setPresetError("Couldn't load rules. Is the backend running?");
       }
     })();
+    // The local call ledger. A missing answer stays missing: the tiles print a dash.
+    (async () => {
+      const result = await ledger();
+      if (cancelled || !result.ok) return;
+      setCounters({ callsToday: result.data.callsToday, creditsToday: result.data.creditsToday, totalCalls: result.data.totalCalls });
+    })();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const refreshSites = useCallback(async () => {
+    setSites(await listEnabledSites());
+  }, []);
+
+  useEffect(() => {
+    void refreshSites();
+    void readRecent().then(setRecent);
+    (async () => {
+      try {
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        setTabUrl(tab?.url);
+      } catch {
+        setTabUrl(undefined);
+      }
+    })();
+  }, [refreshSites]);
+
+  const here: Here = hereFrom(tabUrl, sites);
 
   /** Stronger or same preset: save straight away. Weaker: ask inline first (never
    * window.confirm), matching /rules. The server logs every downgrade either way. */
@@ -117,7 +156,7 @@ export default function App() {
   }
 
   /**
-   * "Where is it?" — the answer for a user who cannot find the verdict on a dense page.
+   * "Show me where it is" — the answer for a user who cannot find the verdict on a dense page.
    * Asks the active tab's content scripts to light whatever they have mounted: the venue strip,
    * an X post's chip, a wallet-lens marker. Only the one that found something answers, so the
    * first reply is a real find; a tab where nothing is mounted (or no content script runs at
@@ -134,115 +173,76 @@ export default function App() {
     }
   }
 
-  const { text: statusText, state: statusState } = popupStatus(healthState);
+  async function enableHere() {
+    if (!here.origin) return;
+    setSiteError("");
+    const granted = await requestSite(here.origin).catch(() => false);
+    if (!granted) {
+      setSiteError(`${hostOf(here.origin)} wasn't enabled: the browser declined the permission.`);
+      return;
+    }
+    await refreshSites();
+  }
+
+  async function disableSite(site: string) {
+    setSiteError("");
+    if (!(await removeSite(site).catch(() => false))) {
+      setSiteError(`${hostOf(site)} couldn't be turned off. Remove it from the browser's extension settings.`);
+      return;
+    }
+    await refreshSites();
+  }
 
   return (
     <div className="tw-popup">
-      <header className="tw-popup-head">
-        <h1 className="tw-wordmark">Tripwire</h1>
-        <p className="tw-status" data-state={statusState} role="status" aria-live="polite">
-          <Icon icon={statusState ? STATUS_ICON[statusState] : LoaderCircle} size={16} className={statusState ? undefined : "tw-spin"} />
-          {statusText}
-        </p>
-      </header>
+      <PopupHead status={popupStatus(healthState)} settingsOpen={settingsOpen} onToggleSettings={() => setSettingsOpen((open) => !open)} />
 
-      <p className="tw-field-label" id="tw-preset-label">
-        Rules preset
-      </p>
-      <div className="tw-segmented" role="group" aria-labelledby="tw-preset-label" aria-busy={rules === null || saving}>
-        {PRESETS.map((p) => (
-          <button key={p} type="button" aria-pressed={preset === p} disabled={rules === null || saving} onClick={() => choosePreset(p)}>
-            {PRESET_LABELS[p]}
-          </button>
-        ))}
-      </div>
-      {pendingPreset ? (
-        <div className="tw-confirm-row" role="alert">
-          <p className="tw-confirm-text">Switch to {PRESET_LABELS[pendingPreset]}? This lowers or removes blocks.</p>
-          <div className="tw-confirm-actions">
-            <button type="button" className="tw-button-danger" onClick={() => void savePreset(pendingPreset)}>
-              Confirm
-            </button>
-            <button type="button" className="tw-button-quiet" onClick={() => setPendingPreset(null)}>
-              Cancel
-            </button>
-          </div>
+      {settingsOpen ? (
+        <div className="tw-settings">
+          <label htmlFor="tw-backend-url">Backend URL</label>
+          <input id="tw-backend-url" type="text" inputMode="url" spellCheck={false} value={backendUrlDraft} onChange={(e) => void saveBackendUrl(e.target.value)} />
+          {backendUrlError ? <p className="tw-hint">{backendUrlError}</p> : null}
         </div>
       ) : null}
-      {presetError ? (
-        <p className="tw-field-hint" role="status">
-          {presetError}
-        </p>
-      ) : null}
 
-      <button type="button" className="tw-button-quiet tw-locate" onClick={() => void locate()}>
-        <Icon icon={Locate} size={16} />
-        Show me where it is
-      </button>
-      {locateNote ? (
-        <p className="tw-locate-note" data-state={locateNote === NOTHING_MOUNTED ? "missing" : "found"} role="status" aria-live="polite">
-          {locateNote}
-        </p>
-      ) : null}
+      <Tabs
+        label="Tripwire"
+        tabs={[
+          {
+            id: "protection",
+            label: "Protection",
+            content: (
+              <ProtectionTab
+                preset={preset}
+                pending={pendingPreset}
+                busy={saving}
+                error={presetError}
+                onChoose={choosePreset}
+                onConfirm={() => {
+                  if (pendingPreset) void savePreset(pendingPreset);
+                }}
+                onCancel={() => setPendingPreset(null)}
+                here={here}
+                locateNote={locateNote}
+                onLocate={() => void locate()}
+                counters={counters}
+              />
+            ),
+          },
+          {
+            id: "sites",
+            label: "Sites",
+            content: <SitesTab here={here} sites={sites} error={siteError} onEnable={() => void enableHere()} onDisable={(site) => void disableSite(site)} />,
+          },
+          {
+            id: "wallets",
+            label: "Wallets",
+            content: <WalletsTab recent={recent} onClear={() => void forgetWallets().then(() => readRecent()).then(setRecent)} />,
+          },
+        ]}
+      />
 
-      <ul className="tw-links">
-        <li>
-          <a href={`${backendUrl}/rules`} target="_blank" rel="noopener noreferrer">
-            <Icon icon={SlidersHorizontal} size={16} />
-            Rules
-          </a>
-        </li>
-        <li>
-          <a href={`${backendUrl}/ledger`} target="_blank" rel="noopener noreferrer">
-            <Icon icon={ScrollText} size={16} />
-            Ledger
-          </a>
-        </li>
-        <li>
-          <a href={`${backendUrl}/history`} target="_blank" rel="noopener noreferrer">
-            <Icon icon={History} size={16} />
-            History
-          </a>
-        </li>
-      </ul>
-
-      <div className="tw-field">
-        <label htmlFor="tw-backend-url">Backend URL</label>
-        <input
-          id="tw-backend-url"
-          type="text"
-          inputMode="url"
-          spellCheck={false}
-          value={backendUrlDraft}
-          onChange={(e) => saveBackendUrl(e.target.value)}
-        />
-        <p className="tw-field-hint">{backendUrlError}</p>
-      </div>
-
-      <section className="tw-venues" aria-labelledby="tw-venues-label">
-        <h2 className="tw-field-label" id="tw-venues-label">
-          Works on
-        </h2>
-        {VENUES.map((group) => (
-          <div key={group.tier} className="tw-venue-group">
-            <p className="tw-venue-tier">{group.tier}</p>
-            <ul className="tw-venue-list">
-              {group.ids.map((id) => (
-                <li key={id}>
-                  <BrandMark logo={VENUE_LOGOS[id]} size={16} />
-                  {VENUE_LOGOS[id].name}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </section>
-
-      <WalletLensSection />
-
-      <footer className="tw-popup-foot">
-        Powered by <BrandMark logo={NANSEN_LOGO} size={14} /> <span className="tw-powered-name">Nansen</span>
-      </footer>
+      <PopupFoot backendUrl={backendUrl} />
     </div>
   );
 }
