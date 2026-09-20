@@ -36,6 +36,9 @@ export type RunnerContext = {
   /** Identity token of an evidence-Dock open still in flight (null when none); closing clears
    * it, which cancels that open. See `toggleEvidence` in `displays.tsx`. */
   evidenceOpening: object | null;
+  /** The open evidence card's own state, so a target change can re-point it at the new target
+   * instead of leaving the previous token's panel on screen. Null when no card is open. */
+  evidenceOpen: { initialTab?: string } | null;
   blocker: { release(): void } | null;
   resizeObserver: ResizeObserver | null;
   repositionCleanup: (() => void) | null;

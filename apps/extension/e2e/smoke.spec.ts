@@ -6,6 +6,35 @@ import { BACKEND, BONK, expect, LENS_WALLET, test, WBTC_BASE, WIF } from "./fixt
 
 const EXTENSION_ORIGIN = `chrome-extension://${TRIPWIRE_EXTENSION_ID}`;
 
+/**
+ * Reported live: the Buy token changed on app.uniswap.org, the strip re-checked, and the open
+ * evidence card kept the previous token's panel under the new token's address. The card follows
+ * the page or it is not open at all.
+ */
+test("@smoke Uniswap: changing the Buy token re-targets the open evidence card", async ({ context, request }) => {
+  await setPreset(request, "balanced");
+  const WETH_BASE = "0x4200000000000000000000000000000000000006";
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`https://app.uniswap.org/swap?chain=base&outputCurrency=${WBTC_BASE}`);
+  await expect(page.locator(".tw-strip")).toBeVisible({ timeout: 20_000 });
+  await page.locator(".tw-strip-details").click();
+  const card = page.locator('.tw-pop[role="dialog"]');
+  await expect(card).toBeVisible();
+  await expect(card.locator(".tw-addr-text")).toHaveText("0x05…2B9c", { timeout: 20_000 });
+
+  // The venue's own token picker: the URL and the Buy field move together.
+  await page.evaluate((address) => {
+    history.replaceState({}, "", `/swap?chain=base&outputCurrency=${address}`);
+    (window as unknown as { setBuyToken(symbol: string): void }).setBuyToken("WETH");
+  }, WETH_BASE);
+
+  // The card stays, re-pointed: the new token's address in the header, and no frame of the old
+  // token's evidence under it.
+  await expect(card).toBeVisible();
+  await expect(card.locator(".tw-addr-text")).toHaveText("0x42…0006", { timeout: 20_000 });
+});
+
 test("@smoke Jumper: native ETH is checked under Nansen's same-chain identifier", async ({ context, request }) => {
   await setPreset(request, "balanced");
   const targets: { chain: string; tokenAddress: string }[] = [];

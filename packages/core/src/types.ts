@@ -30,6 +30,32 @@ export type PredictionTarget = {
 export type Target = SpotTarget | PerpTarget | PredictionTarget;
 export type TargetKind = Target["kind"];
 
+/**
+ * What a target is *about*, as one string: the subject a verdict and a panel belong to.
+ *
+ * Only the identifying fields count. A spot token is its chain and contract (the symbol is a
+ * name, not an identity, and an EVM address is case-insensitive); a perp is its coin and the
+ * side being taken; a prediction is its market and the outcome the page has selected. Two
+ * targets with the same key describe the same trade, so one's evidence may be shown under the
+ * other's header — and two with different keys never may.
+ */
+export function targetKey(target: Target): string {
+  switch (target.kind) {
+    case "spot":
+      return `spot:${target.chain}:${target.tokenAddress.toLowerCase()}`;
+    case "perp":
+      return `perp:${target.coin.toLowerCase()}:${target.side ?? ""}`;
+    case "prediction":
+      return `prediction:${target.slug}:${target.marketId ?? ""}:${(target.outcomeLabel ?? target.outcome ?? "").toLowerCase()}`;
+  }
+}
+
+/** Whether two targets name the same subject. Two absent targets match; one absent never does. */
+export function sameTarget(a: Target | null | undefined, b: Target | null | undefined): boolean {
+  if (!a || !b) return !a && !b;
+  return targetKey(a) === targetKey(b);
+}
+
 /** Every signal a rule may reference. The four spot flow/price signals are volume-normalized
  * (docs/CALIBRATION.md): the USD-denominated `exit_pressure`/`sm_netflow_24h` and the
  * degenerate `fresh_buy_share` were removed in the 2026-09-17 recalibration. */

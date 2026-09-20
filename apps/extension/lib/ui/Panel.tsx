@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { nansenTokenUrl, VERDICT_TIMEFRAME, type DepthSection, type Target, type Verdict, type ViewTimeframe } from "@tripwire/core";
+import { nansenTokenUrl, sameTarget, VERDICT_TIMEFRAME, type DepthSection, type Target, type Verdict, type ViewTimeframe } from "@tripwire/core";
 import type { DepthResponse, GuardResponse, Market, PerpPanel, PersonIntelResponse, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
 import { BadgeCheck } from "lucide-react";
 import { CardSizeContext } from "./card-size";
@@ -199,7 +199,7 @@ function useDepth(onDepth: DepthLoader | undefined): [DepthState, (sections: Dep
  * the one-line finding, the author's Nansen label, evidence tabs by target kind, and the source
  * line. Mounts with skeletons and fills in; never waits for data to exist. */
 export function Panel({
-  data,
+  data: answered,
   error,
   title,
   onClose,
@@ -218,6 +218,17 @@ export function Panel({
   enableMarkets = false,
   navigation,
 }: PanelProps) {
+  /**
+   * The evidence, but only if it is this card's.
+   *
+   * A guard response carries the target it was computed for. When the page moves on — the Buy
+   * token changes on a swap form, the coin changes on a perp venue — the card is re-pointed at
+   * the new target before its answer lands, and an answer for the old one must not be painted
+   * under the new one's header. It is treated exactly like an answer that has not arrived yet:
+   * skeletons, `aria-busy`, no numbers. (Reported live on Uniswap: "$SPCX Space Exploration
+   * Technologies" over the next token's address, with the previous token's flow rows.)
+   */
+  const data = answered !== null && "target" in answered && target && !sameTarget(answered.target, target) ? null : answered;
   const [marketChoice, setMarketChoice] = useState<Market | null>(null);
   const [marketHome, setMarketHome] = useState(false);
   const cardRef = useRef<HTMLElement>(null);

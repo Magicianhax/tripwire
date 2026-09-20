@@ -30,6 +30,7 @@ function rcFor(): RunnerContext {
     mainMount: null,
     evidenceMount: null,
     evidenceOpening: null,
+    evidenceOpen: null,
     blocker: null,
     resizeObserver: null,
     repositionCleanup: null,

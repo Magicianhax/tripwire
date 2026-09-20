@@ -45,6 +45,7 @@ async function fetchDepth(target: Target, sections: DepthSection[]): Promise<{ o
 
 function closeEvidence(rc: RunnerContext): void {
   rc.evidenceOpening = null; // cancels an open still in flight
+  rc.evidenceOpen = null;
   if (rc.evidenceMount) {
     rc.evidenceMount.ui.remove();
     rc.evidenceMount = null;
@@ -62,8 +63,28 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
     return;
   }
   if (rc.evidenceOpening) return; // already opening
+  await openEvidence(rc, adapter, target, trigger, initialTab);
+}
+
+/**
+ * Re-points an open evidence card at the page's new target (`runner.tsx` calls this after a
+ * target change tore the previous card down).
+ *
+ * The card comes back in its first frame — skeletons per section, the new identity in the
+ * header — and fills in from the new target's own panel call, exactly as it would if it had
+ * just been opened. It is anchored to the bound trade button rather than to the Details button
+ * that opened it, because the strip carrying that button was just re-mounted for the new
+ * target. A card for a page that now has no target is not re-opened at all.
+ */
+export async function retargetEvidence(rc: RunnerContext, adapter: VenueAdapter, target: Target, initialTab?: string): Promise<void> {
+  if (rc.evidenceMount || rc.evidenceOpening) return;
+  await openEvidence(rc, adapter, target, rc.anchorBinding?.anchor ?? null, initialTab);
+}
+
+async function openEvidence(rc: RunnerContext, adapter: VenueAdapter, target: Target, trigger: HTMLElement | null, initialTab?: string): Promise<void> {
   const opening = {};
   rc.evidenceOpening = opening;
+  rc.evidenceOpen = { initialTab };
   const openedForKey = rc.currentKey;
   const stillWanted = () => (rc.evidenceOpening === opening || rc.evidenceMount === mount) && rc.currentKey === openedForKey;
 
