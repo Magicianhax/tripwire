@@ -2816,3 +2816,168 @@ div.tw-dock-chip {
 .tw-addr-copy:focus-visible .tw-addr-action {
   color: var(--tw-text);
 }
+
+/* -------------------- Round 1.1: what the card already paid for -------------------- */
+
+/* The gauges column now stacks the flow stack and the 24h split, so it needs its own rhythm
+   rather than inheriting the layout grid's single slot. */
+.tw-spot-flow-gauges {
+  display: grid;
+  gap: var(--tw-space-4);
+  align-content: start;
+}
+
+/*
+ * The price, stated (1.1.1). A trading readout, not a hero metric: the figure is the biggest
+ * thing in the section because it is the answer to "what does this cost", the change sits on
+ * its baseline, and the window's range is one muted line under it. No tile, no accent panel.
+ */
+.tw-price-readout {
+  display: grid;
+  gap: 2px;
+  margin-bottom: var(--tw-space-2);
+}
+
+.tw-price-now {
+  display: flex;
+  align-items: baseline;
+  gap: var(--tw-space-2);
+  margin: 0;
+  min-width: 0;
+}
+
+.tw-price-value {
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--tw-text);
+}
+
+.tw-card[data-size="expanded"] .tw-price-value {
+  font-size: 1.75rem;
+}
+
+.tw-price-change {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.tw-price-range {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/*
+ * Exchange net flow (1.1.6). Its own line under the stack, never a bar in it: the sign means
+ * the opposite of every cohort row above, and it carries no wallet count to put on a scale.
+ */
+.tw-exchange-flow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: var(--tw-space-2) 0 0;
+  padding-top: var(--tw-space-2);
+  border-top: 1px solid var(--tw-line);
+  font-size: 0.8125rem;
+  color: var(--tw-text-2);
+}
+
+.tw-exchange-flow .tw-icon {
+  flex-shrink: 0;
+  color: var(--tw-text-3);
+}
+
+.tw-exchange-flow b {
+  font-weight: 600;
+  color: var(--tw-text);
+}
+
+/* A documented limitation, sitting under the row it limits. A caption, not an alert: it is not
+   red, it does not carry the error icon, and it never claims the call failed. */
+.tw-seg-warning {
+  margin: 0 0 var(--tw-space-2);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* Both sides of every wallet (1.1.4): the row's own other-side figure under its headline
+   amount, and the tag for a wallet that traded both ways. */
+.tw-wallet-rows li {
+  grid-template-columns: minmax(0, 1fr) 44px 96px;
+  align-items: center;
+}
+
+/* The tag sits under the name, not beside it: on a 440px card a pill in the name's own line
+   truncates "Wintermute Market Making" to "Wintermute Ma…", and who the wallet is matters more
+   than the tag. This also mirrors the amount cell's two-line shape across the row. */
+.tw-wallet-cell {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+/* The name still gets the whole column and still truncates; only the tag is content-width. */
+.tw-tag.tw-both-sides {
+  justify-self: start;
+  padding: 0 6px;
+  border-color: var(--tw-line);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  color: var(--tw-text-2);
+}
+
+.tw-row-amount-other {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--tw-text-2);
+}
+
+/* Indicators (1.1.8): the name and, under it, the peer ranking and the last trigger the
+   5 credits already bought. */
+.tw-indicator-rows li {
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: 6px 0;
+}
+
+.tw-indicator-cell {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tw-indicator-meta {
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.tw-indicator-meta b {
+  font-weight: 600;
+  color: var(--tw-text);
+}
+
+/* A score's pill takes its colour from its own vocabulary: severity is amber then red,
+   direction is red / neutral / mint. Neither borrows the other's meaning. */
+.tw-score[data-level="medium"] {
+  background: var(--tw-amber-dim);
+  color: var(--tw-amber);
+}
+
+.tw-score[data-level="low"],
+.tw-score[data-score="neutral"] {
+  background: var(--tw-raised);
+  color: var(--tw-text-2);
+}
+
+.tw-score[data-score="bullish"] {
+  background: var(--tw-mint-dim);
+  color: var(--tw-mint);
+}
+
+.tw-score[data-score="bearish"] {
+  background: var(--tw-red-dim);
+  color: var(--tw-red);
+}

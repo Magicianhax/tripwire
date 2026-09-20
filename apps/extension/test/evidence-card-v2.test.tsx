@@ -70,6 +70,17 @@ const token: TokenInfo = {
   volume24hUsd: 1_471_491,
   liquidityUsd: 3_533_476,
   priceUsd: 0.185,
+  fdvUsd: 186_435_297,
+  totalHolders: 86_022,
+  deploymentDateIso: "2023-11-20T19:22:43.000Z",
+  circulatingSupply: 998_926_392,
+  totalSupply: 998_926_392,
+  buyVolumeUsd: 703_148,
+  sellVolumeUsd: 768_342,
+  totalBuys: 8_204,
+  totalSells: 10_497,
+  uniqueBuyers: 642,
+  uniqueSellers: 1_641,
 };
 
 const candles = (n: number, from = Date.UTC(2026, 8, 16, 0, 0, 0)): Candle[] =>

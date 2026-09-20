@@ -64,6 +64,18 @@ test("captures", async ({ context }) => {
   await expect(card.locator(".tw-window-note")).toHaveText("Verdict uses 1d · viewing 7d");
   await card.locator('section[aria-label="Net flow by wallet type"]').scrollIntoViewIfNeeded();
   await shot(card, "x-popover-7d");
+
+  // x-popover-wallets: both sides of every wallet, with the tag and the secondary figure.
+  await card.getByRole("tab", { name: "Wallets" }).click();
+  await expect(card.locator(".tw-wallet-rows li").first()).toBeVisible();
+  await page.waitForTimeout(200);
+  await shot(card, "x-popover-wallets");
+
+  // x-popover-risk: the token record block and the two indicator vocabularies.
+  await card.getByRole("tab", { name: "Risk" }).click();
+  await expect(card.locator('section[aria-label="Market"] .tw-readouts')).toBeVisible();
+  await page.waitForTimeout(200);
+  await shot(card, "x-popover-risk");
   await page.close();
 
   // block-evidence: the block screen with its evidence card open beside it.

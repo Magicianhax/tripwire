@@ -1,8 +1,12 @@
 import {
   CANDLE_INTERVAL,
+  indicatorTriggerDate,
+  MAX_WARNINGS,
   MS_PER_TIMEFRAME,
   spotDerived,
   spotSignals,
+  toFlowWarnings,
+  toIsoInstant,
   VERDICT_TIMEFRAME,
   type Candle,
   type FlowRow,
@@ -42,7 +46,13 @@ export type SpotPanel = {
   viewFlow: FlowRow | null;
   viewTimeframe: ViewTimeframe;
   netflow: { h1: number | null; h24: number | null; d7: number | null; d30: number | null; symbol: string | null; traders: number | null } | null;
-  indicators: { type: string; score: string; percentile: number | null }[] | null;
+  /**
+   * Every indicator the 5-credit call returned, with the three fields it already carries:
+   * the raw `score` (whose *vocabulary* decides the grouping, not the array it arrived in),
+   * the peer `percentile` and the last trigger. `lastTriggerIso` is already normalised —
+   * Nansen's "never" (the Unix epoch) is null here, not a 56-year-old date.
+   */
+  indicators: { type: string; score: string; percentile: number | null; signal: number | null; lastTriggerIso: string | null }[] | null;
   marketCapUsd: number | null;
   topBuyers: WhoRow[] | null;
   topSellers: WhoRow[] | null;
@@ -56,6 +66,14 @@ export type SpotPanel = {
   /** The token logo from Nansen token information, https only, else null. */
   logoUrl: string | null;
   errors: string[];
+  /**
+   * Documented limitations `tgm/flow-intelligence` sent back with the data it *did* return.
+   *
+   * Deliberately not `errors`: "Fresh wallets —" is a limitation of the endpoint, not a fetch
+   * failure, and routing it through `errors` would print "Unavailable:" and read as an outage.
+   * Capped in length and count by `toFlowWarnings`.
+   */
+  warnings: string[];
 };
 
 /** A remote token logo the extension may render as an <img>: an https URL of sane length. */
@@ -75,16 +93,36 @@ const text = (v: unknown, max = 80): string | null => (typeof v === "string" && 
 /** Nansen writes memecoin symbols both ways ("$WIF" and "WIF"); the card adds its own "$". */
 const stripCashtag = (s: string | null) => (s === null ? null : s.replace(/^\$/, "") || null);
 
+/**
+ * The whole `tgm/token-information` record, not the eight fields the card used to keep.
+ *
+ * `num` returns null for anything that is not a finite number, so an absent field stays absent:
+ * a token with no reported holders reads "—", never "0 holders", which would be a claim.
+ */
 export function toTokenInfo(raw: TokenInformationResponse | null | undefined, priceUsd: number | null = null): TokenInfo | null {
   if (!raw) return null;
+  const details = raw.token_details;
+  const metrics = raw.spot_metrics;
   return {
     name: text(raw.name, 120),
     symbol: stripCashtag(text(raw.symbol, 32)),
     logoUrl: safeLogoUrl(raw.logo),
-    marketCapUsd: num(raw.token_details?.market_cap_usd),
-    volume24hUsd: num(raw.spot_metrics?.volume_total_usd),
-    liquidityUsd: num(raw.spot_metrics?.liquidity_usd),
+    marketCapUsd: num(details?.market_cap_usd),
+    volume24hUsd: num(metrics?.volume_total_usd),
+    liquidityUsd: num(metrics?.liquidity_usd),
     priceUsd,
+    fdvUsd: num(details?.fdv_usd),
+    totalHolders: num(metrics?.total_holders),
+    deploymentDateIso: toIsoInstant(details?.token_deployment_date),
+    circulatingSupply: num(details?.circulating_supply),
+    totalSupply: num(details?.total_supply),
+    // `timeframe: "1d"` is hardcoded at the call site, so this split is always 24h.
+    buyVolumeUsd: num(metrics?.buy_volume_usd),
+    sellVolumeUsd: num(metrics?.sell_volume_usd),
+    totalBuys: num(metrics?.total_buys),
+    totalSells: num(metrics?.total_sells),
+    uniqueBuyers: num(metrics?.unique_buyers),
+    uniqueSellers: num(metrics?.unique_sellers),
   };
 }
 
@@ -123,8 +161,10 @@ export async function buildSpotIntel(
   const drawdownTo = bucketNow(DRAWDOWN_TTL);
   const drawdownFrom = new Date(drawdownTo.getTime() - DRAWDOWN_DAYS * 24 * 3_600_000);
 
+  // The whole flow-intelligence envelope, not just its first row: `warnings[]` rides beside the
+  // data and has to survive the mapper (1.1.7).
   const [flow, netflow, indicators, info, history] = await Promise.all([
-    settle(nansen.flowIntel(chain, tokenAddress, VERDICT_TIMEFRAME), (d) => d.data?.[0]),
+    settle(nansen.flowIntel(chain, tokenAddress, VERDICT_TIMEFRAME), (d) => ({ row: d.data?.[0] ?? null, warnings: toFlowWarnings(d.warnings) })),
     settle(nansen.smNetflow(chain, tokenAddress), (d) => d.data?.[0]),
     settle(nansen.indicators(chain, tokenAddress), (d) => d),
     settle(nansen.tokenInformation(chain, tokenAddress), (d) => d.data),
@@ -139,8 +179,11 @@ export async function buildSpotIntel(
   // signals need the difference to tell UNCHECKED from CLEAR.
   const failed = { flow: !!flow.error, netflow: !!netflow.error, market: !!info.error, price: !!history.error };
 
+  // The flow row itself; the warnings that came with it travel on their own channel.
+  const flowRow = flow.value?.row ?? null;
+
   const signals = spotSignals({
-    flow: flow.value,
+    flow: flowRow,
     netflow: netflow.value,
     indicators: indicators.value,
     author: opts.author,
@@ -150,7 +193,7 @@ export async function buildSpotIntel(
     failed,
     chain,
   });
-  const derived = spotDerived({ flow: flow.value, vol24: token?.volume24hUsd ?? null });
+  const derived = spotDerived({ flow: flowRow, vol24: token?.volume24hUsd ?? null });
 
   // token-information and the drawdown history are now verdict inputs, so their failure is a
   // real evidence gap (it turns the spot signals UNCHECKED), not a cosmetic one.
@@ -161,9 +204,9 @@ export async function buildSpotIntel(
 
   const panel: SpotPanel = {
     token,
-    flow: flow.value,
+    flow: flowRow,
     flowTimeframe: VERDICT_TIMEFRAME,
-    viewFlow: flow.value,
+    viewFlow: flowRow,
     viewTimeframe,
     netflow: netflow.value
       ? {
@@ -180,6 +223,9 @@ export async function buildSpotIntel(
           type: i.indicator_type,
           score: i.score,
           percentile: i.signal_percentile,
+          signal: typeof i.signal === "number" && Number.isFinite(i.signal) ? i.signal : null,
+          // Nansen writes "never triggered" as 1970-01-01; that is unknown, not a date.
+          lastTriggerIso: indicatorTriggerDate(i.last_trigger_on),
         }))
       : null,
     marketCapUsd: token?.marketCapUsd ?? indicators.value?.token_info?.market_cap_usd ?? null,
@@ -192,6 +238,7 @@ export async function buildSpotIntel(
     postTimeIso: opts.postTimeIso ?? null,
     logoUrl: token?.logoUrl ?? null,
     errors,
+    warnings: flow.value?.warnings ?? [],
   };
 
   if (opts.mode === "panel") {
@@ -212,12 +259,16 @@ export async function buildSpotIntel(
       settle(nansen.ohlcv(chain, tokenAddress, interval, isoNoMs(chartFrom), isoNoMs(chartTo), chartTtl), (d) => d.data),
       viewTimeframe === VERDICT_TIMEFRAME
         ? Promise.resolve(null)
-        : settle(nansen.flowIntel(chain, tokenAddress, viewTimeframe), (d) => d.data?.[0]),
+        : settle(nansen.flowIntel(chain, tokenAddress, viewTimeframe), (d) => ({ row: d.data?.[0] ?? null, warnings: toFlowWarnings(d.warnings) })),
     ]);
     panel.topBuyers = buyers.value;
     panel.topSellers = sellers.value;
     panel.chart = { timeframe: viewTimeframe, interval, candles: candles.value };
-    if (viewFlow) panel.viewFlow = viewFlow.value;
+    if (viewFlow) {
+      panel.viewFlow = viewFlow.value?.row ?? null;
+      // The window the user picked has its own limitations; keep both, without repeats.
+      panel.warnings = [...new Set([...panel.warnings, ...(viewFlow.value?.warnings ?? [])])].slice(0, MAX_WARNINGS);
+    }
     panel.errors.push(...[buyers.error, sellers.error, candles.error, viewFlow?.error].filter((e): e is string => !!e));
   }
 

@@ -94,9 +94,11 @@ describe("mountReact", () => {
     // Each shadow root carries only the (small) theme, without @font-face.
     const shadowCss = mounts[0]!.ui.shadow.querySelector("style")?.textContent ?? "";
     expect(shadowCss).not.toContain("@font-face");
-    // A ceiling on the theme itself. What it guards is the two assertions above (no inlined
-    // fonts, no data: URIs); the number is generous enough for the card's own CSS to grow.
-    expect(shadowCss.length).toBeLessThan(60_000);
+    // A smoke ceiling on the theme, not a budget: what it guards is the two assertions above
+    // (no inlined fonts, no data: URIs), both of which would add tens of KB at once. Raised
+    // from 60k when Round 1.1 added the price readout, exchange line, both-sides rows and the
+    // indicator vocabulary styles; the card's CSS is expected to keep growing.
+    expect(shadowCss.length).toBeLessThan(72_000);
     for (const m of mounts) m.ui.remove();
   });
 

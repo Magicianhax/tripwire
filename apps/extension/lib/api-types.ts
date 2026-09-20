@@ -92,7 +92,9 @@ export type SpotPanel = {
   viewFlow?: FlowRow | null;
   viewTimeframe?: ViewTimeframe;
   netflow: { h1: number | null; h24: number | null; d7: number | null; d30: number | null; symbol: string | null; traders?: number | null } | null;
-  indicators: { type: string; score: string; percentile: number | null }[] | null;
+  /** `signal` and `lastTriggerIso` are optional: an older backend drops them at the DTO, and the
+   * card simply omits those two lines rather than inventing them. */
+  indicators: { type: string; score: string; percentile: number | null; signal?: number | null; lastTriggerIso?: string | null }[] | null;
   marketCapUsd: number | null;
   topBuyers: WhoRow[] | null;
   topSellers: WhoRow[] | null;
@@ -106,6 +108,12 @@ export type SpotPanel = {
    * it, and the header shows a monogram. */
   logoUrl?: string | null;
   errors: string[];
+  /**
+   * Documented limitations `tgm/flow-intelligence` returned *with* its data — not failures.
+   * Rendered as captions under the rows they are about; they never reach `SectionProblem` and
+   * never change a verdict. Optional: an older backend does not send them.
+   */
+  warnings?: string[];
 };
 
 export type PerpPanel = {

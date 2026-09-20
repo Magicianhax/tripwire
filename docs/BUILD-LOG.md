@@ -638,3 +638,99 @@ Two shapes were measured rather than assumed: `profiler/address/pnl-summary` ans
 - **The out-of-coverage chain table is hand-written.** It names the chains Jumper and Uniswap route to today; a chain that is not in it reads "chain 59144"-style, which is true but less useful than a name.
 - **Uniswap's DOM fallback depends on `data-testid="choose-output-token"`,** captured on 2026-09-17. If Uniswap renames it, the page falls back to the old "no target on this page" rather than breaking.
 - Port 3000 still runs a server this session did not start; `pnpm -F web build` rewrote `apps/web/.next` again, so that server probably needs a restart. No request was sent to it.
+
+---
+
+# Round 1.1 — the spot card states a price and stops throwing away the token record
+
+Branch `feat/cockpit-ui`, on top of `a406f9c`. Brief: `docs/IMPROVEMENT-PLAN.md` §2, Round 1.1 (items 1.1.1–1.1.8 plus the indicators TTL). **Zero new Nansen calls.** Everything drawn here comes out of responses the card already fetched and paid for; the one cost change is the indicators TTL, which is credit-negative.
+
+## Per item
+
+### 1.1.1 — Price on the card face
+
+The card now states the price above the chart, outside it. `priceReadout` (`packages/core/src/spot-readout.ts:213`) turns the panel's candles into price / change / low–high; `PriceReadout` (`apps/extension/lib/ui/SpotBody.tsx:98`) renders it in the Flow tab's Price section (`SpotBody.tsx:267`), using `formatPrice`'s significant-digit rule so a memecoin reads `$0.00000424` rather than `$0.00`. A one-candle window still prints a price and a range and dashes the change; no candles falls back to the token record's price; nothing at all is a dash. `priceRange` (`SpotBody.tsx:77`) writes both ends at one precision, so a range never reads `$0.9800–$1.02`.
+
+*Tests:* `packages/core/test/spot-readout.test.ts` "the price readout survives a window the chart refuses to draw" (four cases including a zero first close); `apps/extension/test/spot-round-1-1.test.tsx` "1.1.1 the card states the price" (one candle, zero candles, record fallback, memecoin digits).
+
+### 1.1.2 — Token record block
+
+`TokenInformationResponse` widened (`apps/web/lib/nansen/endpoints.ts:52`) and `toTokenInfo` now maps the whole record (`apps/web/lib/intel/spot.ts:102`): `fdv_usd`, `total_holders`, `token_deployment_date`, `circulating_supply`, `total_supply`. `TokenInfo` gained the matching nullable fields (`packages/core/src/nansen-types.ts:30`). `toIsoInstant` (`spot-readout.ts:134`) reads Nansen's offset-free `"2023-11-20 19:22:43"` as UTC — `new Date()` would have read it as the reader's local time and shifted it by up to a day. The RiskTab "Market" block is now a 4×2 `Readouts` (`SpotBody.tsx:505`) carrying Market cap / FDV / 24h volume / Liquidity / Holders / Token age / Circulating / Total supply, captioned "Holders, supply and age are a daily snapshot and can be up to 24h old" — the as-of window the review asked for, because the whole block is one call on a 24h TTL.
+
+*Tests:* `apps/web/test/intel.test.ts` "the token record survives the mapper" (every fixture field maps; an absent field is null while a reported `0` stays `0`); `spot-round-1-1.test.tsx` "1.1.2 the token record block" (figures, the as-of caption, an empty record renders no block at all, a partial record dashes the rest).
+
+### 1.1.3 — 24h buy/sell split
+
+`buy_volume_usd`, `sell_volume_usd`, `total_buys`, `total_sells`, `unique_buyers`, `unique_sellers` now reach the card. `SplitSection` (`SpotBody.tsx:325`) renders them in the Flow tab under the segment rows, labelled **24h** because `endpoints.ts:204` hardcodes `timeframe: "1d"`. Gated on `splitIsReadable` (`packages/core/src/signals/spot.ts:56`), which reuses `MIN_VOL24_USD`: below the floor every tile is a dash and the card says why. Readout only — nothing here feeds a signal or a verdict in this round.
+
+*Tests:* `packages/core/test/spot-readout.test.ts` "the 24h split is printed only where a percentage of volume means something"; `spot-round-1-1.test.tsx` "1.1.3 the 24h buy/sell split" (figures, dashes below the floor, no section when the split is absent).
+
+### 1.1.4 — Both sides of every wallet
+
+`WalletList` (`SpotBody.tsx:352`) gained a secondary figure per row (`sold $49.8K` under `$49.9K`) and a "both sides" tag.
+
+**Finding:** the two recorded top-20 pages share *no* address, so a tag derived from page overlap would never have fired on the fixture. Every `who-bought-sold` row already carries both of its own volumes, so `tradedBothSides` (`spot-readout.ts:189`) marks a round-trip from the row itself and keeps `bothSidesKeys` page overlap as a second source. A null on either side cannot make the tag fire. The recorded #2 top buyer — bought $49,893.51, sold $49,844.62, net $48.89 — now reads as what it is instead of as a $49.9k buyer.
+
+Copy: "**Both sides** marks a wallet that bought and sold inside this window. Wallets outside the two top-20 lists are not compared." It does not claim only these wallets round-tripped.
+
+*Tests:* `spot-readout.test.ts` "wallets that appear on both recorded pages" (the bot, the empty overlap, a null side); `spot-round-1-1.test.tsx` "1.1.4 both sides of every wallet" (the bot's tag and sell side, `sold $0.00` distinct from `sold —`, the sample copy, the mirrored seller column).
+
+### 1.1.5 — The chip carries the symbol
+
+`chipLabel` (`apps/extension/lib/ui/format.ts:20`) returns the resolved ticker once `tgm/token-information` answers and the short address otherwise; `x.content/index.tsx:142,285` threads it, and `renderChip` *updates* the existing mount rather than remounting, so the anchor cannot move and the post cannot reflow. `Chip` gained `isSymbol` (`Chip.tsx:22`): the cashtag is spoken only for a real ticker, so an unresolved contract chip announces "contract EKpQ…zcjm", never "$EKpQ…zcjm". The card the chip opens is now titled `$WIF` **from its first frame** (`index.tsx:190`) instead of showing a base58 string it replaced a second later.
+
+*Scope note:* the chip's visible pill shows the chain logo, the verdict plate and the finding. The symbol only ever appeared in the loading plate and in the accessible name, and no token logo was added to the chip — so the review's "the logo proxy is cache-only, so the chip needs a monogram fallback" caveat does not apply here. Widening the pill with a logo would have put the anchor-fit rule at risk for no new information.
+
+*Tests:* `spot-round-1-1.test.tsx` "1.1.5 the chip relabels to the token's symbol" (relabel, failed lookup, length cap, aria-label, same-button update); e2e `smoke.spec.ts` "the card is on screen before its data" now asserts the first frame says `$WIF`.
+
+### 1.1.6 — Exchange net flow
+
+`exchangeFlowCopy` (`spot-readout.ts:25`) and `ExchangeFlowLine` (`SpotBody.tsx:126`) put it on its own line below the stack (`SpotBody.tsx:239`), never inside it: a negative figure means **tokens left exchanges**, the opposite polarity to the five cohorts, and it can never carry a wallet count (`exchange_wallet_count` is always 0). Copy is `$127K left exchanges` / `moved onto exchanges` / `No net movement to or from exchanges` / `Exchange flow unavailable for this window`.
+
+*Tests:* `spot-readout.test.ts` "exchange net flow reads at its own polarity" (all four directions, plus `FLOW_STACK_FIELDS` proving the field is not a stack row); `spot-round-1-1.test.tsx` "1.1.6" (the recorded value, six bars in the stack and none of them exchange, the inverted and null cases).
+
+### 1.1.7 — Flow-intelligence warnings
+
+New `warnings` channel on `SpotPanel` (`apps/web/lib/intel/spot.ts:76`, `apps/extension/lib/api-types.ts:116`), filled by `toFlowWarnings` (`spot-readout.ts:66`, capped at 6 × 240 chars) from the envelope the mapper used to discard (`endpoints.ts:168`). It never touches `panel.errors`, so `SectionProblem` and the "Unavailable:" list stay empty and the verdict is untouched. `flowWarningRow` (`spot-readout.ts:53`) places each warning under the row it limits — the fresh-wallets one inside the gauge stack, the exchange one under the exchange line, anything unplaceable under the section. The view window's own warnings merge in without repeats and stay capped.
+
+*Tests:* `apps/web/test/intel.test.ts` "flow-intelligence warnings are their own channel" (populates `warnings`, leaves `errors` empty; the 7d merge); `spot-round-1-1.test.tsx` "1.1.7 warnings render as captions, not as failures".
+
+### 1.1.8 — Indicators
+
+`signal`, `signal_percentile` and `last_trigger_on` now cross the panel DTO (`apps/web/lib/intel/spot.ts:228`). The render splits on the **score vocabulary**, not the array name (`SpotBody.tsx:492`): `scoreVocabulary` (`spot-readout.ts:93`) puts `cex-flows` (a risk row scored `high`) and `concentration-risk` (a reward row scored `low`) on the severity scale and `price-momentum` (`bearish`) on the direction scale, which array-based grouping got wrong. `indicatorTriggerDate` (`spot-readout.ts:118`) returns null for the epoch, so `1970-01-01` renders "last fired unknown" rather than "56 years ago". The percentile is labelled "Nth percentile of comparable tokens" — a peer ranking, not a severity. Directional scores get their own pill colours so `bullish` never wears the alarm amber.
+
+*Tests:* `spot-readout.test.ts` "indicators group by score vocabulary, not by the array they arrived in"; `apps/web/test/intel.test.ts` "indicators carry what the 5 credits already bought"; `spot-round-1-1.test.tsx` "1.1.8" (grouping, unknown trigger, peer-ranking copy, pill colours, the empty state).
+
+### Also in this round — indicators TTL 6h → 24h
+
+`INDICATORS_TTL` (`apps/web/lib/nansen/endpoints.ts:160`). Nansen recomputes indicator scores in a daily batch, so three of every four calls bought the same answer. Verdict-safe: the only signal reading this response is `risk_high_count`, which is in no shipped preset — asserted rather than assumed (`apps/web/test/intel.test.ts`, "the indicators TTL is a day, not six hours"). Saves about 5 credits per token per day.
+
+## Craft pass
+
+- The "both sides" tag first sat beside the wallet name and truncated "Wintermute Market Making" to "Wintermute Ma…". It now sits under the name (`theme.css`, `.tw-wallet-cell`), mirroring the amount cell's two-line shape, so the identity keeps the full column and still ellipsises.
+- The price range wrote its two ends at different precisions (`$0.9800–$1.02`); `priceRange` fixes both to the smaller end's digit count.
+- Supply reads `998.9M`, holders read `86,022`: a supply is a magnitude, a holder count is exact.
+- `.tw-score` now takes its colour from its own vocabulary (severity amber/red, direction red/neutral/mint) instead of defaulting every non-`high` score to caution amber.
+- No emoji, Lucide only (`Landmark` is the one new icon), every new text style ≥ 11px, every figure `tabular-nums`.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 220, web 189, extension 506** tests passed (200 / 179 / 477 before the round).
+- `pnpm -F web build` and `pnpm -F extension build`: both OK.
+- `TRIPWIRE_E2E_PORT=3217 pnpm verify:e2e`: **18 passed, 3 capture-only specs skipped.** Port 3000 is held by a server this session did not start and was never touched.
+- Captures: `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3217 pnpm -F extension exec playwright test -c e2e/playwright.config.ts captures` — 3 passed. `x-popover`, `spot-expanded`, `x-popover-wallets`, `x-popover-risk`, `card-skeleton` and `block-evidence` were regenerated and each opened to confirm it shows what its name says. `x-popover-wallets` and `x-popover-risk` had no generator at all (last written 2026-09-17); both are now produced by `captures.spec.ts`.
+- `git diff --check`: clean.
+
+## Notes for the next round
+
+- **`apps/extension/test/mount.test.tsx`'s CSS ceiling was raised 60k → 72k.** It is a smoke ceiling whose real guards are the two assertions above it (no inlined fonts, no `data:` URIs); the theme was already at 59.9k before this round, so any CSS at all would have tripped it.
+- **The recorded `whoBought`/`whoSold` pages are 8 rows each with zero overlap**, so the cross-page half of "both sides" is not exercised against a real intersection. The row-level path is the one that fires on the fixture, and it is the stronger signal anyway.
+- **Warnings render in Nansen's own words** (`fresh_wallets_wallet_count is always 0 …`), which leaks a field name into the UI. Paraphrasing would mean asserting something Nansen did not say. If this copy is judged too raw, the fix is a curated map from known warning text to product wording, not a rewrite at render time.
+- The directional-indicator section sits below the compact card's fold on the Risk tab; it is covered by unit tests rather than by a capture.
+- Nothing in this round needed a field the recorded fixtures lack, so no fixture was re-recorded and no live call was made.
+
+### ADR-worthy (text for `docs/DECISIONS.md`, not written there)
+
+**ADR-0014: A documented API limitation is data, not a failure.** `tgm/flow-intelligence` returns `warnings[]` beside the rows it did return. Routing those through `panel.errors` would print "Unavailable:", read as an outage, and — because `uncheckedHeadline` consumes `panel.errors` — risk describing a healthy check as a broken one. Warnings therefore ride their own `SpotPanel.warnings` channel, capped in length and count, placed as captions under the row each one limits, and they can never change a verdict. The inverse still holds: a call that *threw* stays in `errors` and still yields UNCHECKED.
+
+**ADR-0015: Group indicator scores by vocabulary, not by the array they arrived in.** `tgm/indicators` returns `risk_indicators` and `reward_indicators`, but the live response puts a `high`-scored row in the first and a `low`-scored row in the second, while `price-momentum` — also a reward row — scores `bearish`. The arrays are provenance, not scale. Rendering therefore splits on whether the score word belongs to `low/med/high` or to `bearish/neutral/bullish`, so a severity pill and a direction pill never share a colour or a heading. Nansen's `1970-01-01` is read as "never", not as a date, because an age rendered from it states something false.

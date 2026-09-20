@@ -1,22 +1,33 @@
-import { useState, type ReactNode } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import {
+  ageInDays,
+  bothSidesKeys,
   depthCostLabel,
+  exchangeFlowCopy,
+  flowWarningRow,
   NETFLOW_TILE_TIMEFRAME,
+  priceReadout,
+  scoreVocabulary,
+  severityLevel,
+  MIN_VOL24_USD,
+  splitIsReadable,
+  tradedBothSides,
   VERDICT_TIMEFRAME,
   VIEW_TIMEFRAMES,
   type DepthSection,
   type FlowRow,
+  type FlowWarningRow,
   type Signal,
   type ViewTimeframe,
 } from "@tripwire/core";
 import type { HitDto, SpotPanel } from "../api-types";
-import { Brain, Fish, LogOut, Megaphone, PieChart, Sprout, Trophy } from "lucide-react";
+import { Brain, Fish, Landmark, LogOut, Megaphone, PieChart, Sprout, Trophy } from "lucide-react";
 import { rowLimit, useCardSize } from "./card-size";
-import { usd } from "./format";
+import { timeAgo, usd } from "./format";
 import { Icon } from "./icons";
-import { Empty, HitList, Section, SegmentRow, signOf } from "./panel-parts";
-import { EMPTY_DEPTH, type DepthState } from "./PerpBody";
-import { PriceChart } from "./PriceChart";
+import { Empty, HitList, Readouts, Section, SegmentRow, signOf } from "./panel-parts";
+import { EMPTY_DEPTH, signedPct, type DepthState } from "./PerpBody";
+import { formatPrice, PriceChart } from "./PriceChart";
 import { Segmented } from "./Segmented";
 import { SectionProblem, Skeleton as LoadingBlock } from "./Skeleton";
 import { Tabs, type TabDef } from "./Tabs";
@@ -48,6 +59,89 @@ function Skeleton({ rows = 3, tall = false }: { rows?: number; tall?: boolean })
 /** Which lazy section each spot tab needs. Only Holders costs anything, and it exists only in
  * the expanded card, where there is room for it. */
 export const SPOT_TAB_SECTIONS: Record<string, DepthSection[]> = { flow: [], wallets: [], risk: [], holders: ["spotHolders"] };
+
+/** A whole count ("86,022 holders"), or a dash. Never rounded to "86K": the point of the figure
+ * is that it is exact at the moment of the snapshot. */
+const count = (n: number | null | undefined): string =>
+  typeof n === "number" && Number.isFinite(n) ? Math.round(n).toLocaleString("en-US") : "—";
+
+/** A token supply: billions of units, so compact, and never a bare "0" for an absent figure. */
+const supply = (n: number | null | undefined): string =>
+  typeof n === "number" && Number.isFinite(n) ? n.toLocaleString("en-US", { notation: "compact", maximumFractionDigits: 1 }) : "—";
+
+/**
+ * A low–high pair written at one precision, so the two ends line up: `$0.9800–$1.0200`, never
+ * `$0.9800–$1.02`, which reads as two different kinds of number. The smaller end sets the
+ * precision because it is the one that needs the digits.
+ */
+function priceRange(low: number, high: number): string {
+  const digits = (formatPrice(low).split(".")[1] ?? "").length;
+  if (digits === 0) return `${formatPrice(low)}–${formatPrice(high)}`;
+  const fixed = (v: number) => `$${v.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+  return `${fixed(low)}–${fixed(high)}`;
+}
+
+/** How old the contract is, from its deployment date. Days while that is still readable, then
+ * years — "671d" tells a reader less than "1.8y". */
+function tokenAge(iso: string | null | undefined): string {
+  const days = ageInDays(iso);
+  if (days === null) return "—";
+  return days < 365 ? `${days}d` : `${(days / 365).toFixed(1)}y`;
+}
+
+/**
+ * The price of the token the user is about to buy, stated on the card face (1.1.1).
+ *
+ * Deliberately outside `PriceChart`, which returns null below two points: a one-candle window
+ * still has a price, and hovering a chart is not how anyone should learn what a token costs.
+ */
+function PriceReadout({ panel, view }: { panel: SpotPanel; view: ViewTimeframe }) {
+  const { priceUsd, changePct, lowUsd, highUsd } = priceReadout(panel.chart?.candles, panel.token?.priceUsd ?? null);
+  const hasRange = lowUsd !== null && highUsd !== null;
+  return (
+    <div className="tw-price-readout">
+      <p className="tw-price-now">
+        {/* formatPrice keeps significant digits, so a memecoin reads $0.00000212, not $0.00. */}
+        <span className="tw-price-value tw-fig">{priceUsd === null ? "—" : formatPrice(priceUsd)}</span>
+        <span className="tw-price-change tw-fig" data-sign={signOf(changePct)}>
+          {signedPct(changePct, 2)}
+          <span className="tw-sr-only"> over {view}</span>
+        </span>
+      </p>
+      <p className="tw-price-range tw-meta">
+        <span className="tw-fig">{hasRange ? priceRange(lowUsd, highUsd) : "—"}</span>{" "}
+        <span>{view} low to high</span>
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Exchange net flow, on its own line and never in the segment stack (1.1.6).
+ *
+ * Its polarity is the opposite of the five cohorts — negative means tokens *left* exchanges —
+ * and it can never carry a wallet count, so putting it in the stack next to rows that do would
+ * invert its meaning and invent a population.
+ */
+function ExchangeFlowLine({ valueUsd }: { valueUsd: number | null }) {
+  const copy = exchangeFlowCopy(valueUsd);
+  if (copy.direction === "unknown" || copy.direction === "flat") {
+    return (
+      <p className="tw-exchange-flow" data-direction={copy.direction}>
+        <Icon icon={Landmark} size={14} />
+        <span>{copy.text}</span>
+      </p>
+    );
+  }
+  return (
+    <p className="tw-exchange-flow" data-direction={copy.direction}>
+      <Icon icon={Landmark} size={14} />
+      <span>
+        <b className="tw-fig">{usd(Math.abs(valueUsd!))}</b> {copy.text}
+      </span>
+    </p>
+  );
+}
 
 /** Labeled money's net USD flow in whatever window is on screen: the three segments the
  * `labeled_exit_pct` rule is measured from, summed. */
@@ -83,13 +177,18 @@ function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: 
 
   const rows = flow
     ? [
-        { label: "Smart Traders", icon: Brain, value: flow.smart_trader_net_flow_usd, lit: exitLit(flow.smart_trader_net_flow_usd) },
-        { label: "Whales", icon: Fish, value: flow.whale_net_flow_usd, lit: exitLit(flow.whale_net_flow_usd) },
-        { label: "Public Figures", icon: Megaphone, value: flow.public_figure_net_flow_usd, lit: exitLit(flow.public_figure_net_flow_usd) },
-        { label: "Top PnL", icon: Trophy, value: flow.top_pnl_net_flow_usd, lit: null },
-        { label: "Fresh wallets", icon: Sprout, value: flow.fresh_wallets_net_flow_usd, lit: null },
+        { key: "smart_trader" as const, label: "Smart Traders", icon: Brain, value: flow.smart_trader_net_flow_usd, lit: exitLit(flow.smart_trader_net_flow_usd) },
+        { key: "whale" as const, label: "Whales", icon: Fish, value: flow.whale_net_flow_usd, lit: exitLit(flow.whale_net_flow_usd) },
+        { key: "public_figure" as const, label: "Public Figures", icon: Megaphone, value: flow.public_figure_net_flow_usd, lit: exitLit(flow.public_figure_net_flow_usd) },
+        { key: "top_pnl" as const, label: "Top PnL", icon: Trophy, value: flow.top_pnl_net_flow_usd, lit: null },
+        { key: "fresh_wallets" as const, label: "Fresh wallets", icon: Sprout, value: flow.fresh_wallets_net_flow_usd, lit: null },
       ]
     : [];
+
+  // Documented limitations, placed under the row each one is about (1.1.7). They are captions,
+  // not failures: nothing here reaches SectionProblem or the "Unavailable:" list.
+  const warnings = panel.warnings ?? [];
+  const warningsFor = (row: FlowWarningRow | null) => warnings.filter((w) => flowWarningRow(w) === row);
   const max = Math.max(1, ...rows.map((r) => Math.abs(r.value ?? 0)), Math.abs(labeled ?? 0), Math.abs(thresholdUsd ?? 0));
 
   const absorption = panel.absorption ?? null;
@@ -126,9 +225,28 @@ function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: 
                 <div className="tw-gauges">
                   <SegmentRow label="Labeled wallets" icon={LogOut} value={labeled} max={max} lit={lamp(exitHit)} rule threshold={thresholdUsd} />
                   {rows.map((r) => (
-                    <SegmentRow key={r.label} label={r.label} icon={r.icon} value={r.value} max={max} lit={r.lit} />
+                    <Fragment key={r.label}>
+                      <SegmentRow label={r.label} icon={r.icon} value={r.value} max={max} lit={r.lit} />
+                      {warningsFor(r.key).map((w) => (
+                        <p key={w} className="tw-seg-warning tw-meta">
+                          {w}
+                        </p>
+                      ))}
+                    </Fragment>
                   ))}
                 </div>
+                {/* Its own line below the stack: opposite polarity, no wallet count (1.1.6). */}
+                <ExchangeFlowLine valueUsd={flow?.exchange_net_flow_usd ?? null} />
+                {warningsFor("exchange").map((w) => (
+                  <p key={w} className="tw-seg-warning tw-meta">
+                    {w}
+                  </p>
+                ))}
+                {warningsFor(null).map((w) => (
+                  <p key={w} className="tw-seg-warning tw-meta">
+                    {w}
+                  </p>
+                ))}
                 {onVerdictWindow && absorption !== null ? (
                   <p className="tw-note">
                     Fresh wallets bought <b className="tw-fig">{absorption.toFixed(1)}x</b> what labeled wallets sold.
@@ -138,11 +256,15 @@ function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: 
               </>
             )}
           </Section>
+          <SplitSection token={panel.token ?? null} />
         </div>
       ) : null}
 
       <div className="tw-spot-flow-chart">
         <Section title="Price" aside={panel.token?.symbol ? `$${panel.token.symbol}` : null}>
+          {/* The price is stated before the chart is drawn, and survives a window the chart
+              refuses (under two points). */}
+          {loading ? <Skeleton rows={1} /> : <PriceReadout panel={panel} view={view} />}
           {loading ? (
             <Skeleton rows={1} tall />
           ) : (
@@ -192,17 +314,70 @@ function FlowTab({ panel, hits, signals, timeframe }: { panel: SpotPanel; hits: 
   );
 }
 
-function WalletList({ rows, side }: { rows: { name: string | null; address: string; amount: number | null }[]; side: "sell" | "buy" }) {
+/**
+ * The 24h buy/sell split (1.1.3): a readout, not a signal.
+ *
+ * `tgm/token-information` is requested with `timeframe: "1d"`, so this is always a day's
+ * figures whatever window the rest of the tab is showing — hence the fixed "24h" label. Below
+ * the volume floor the figures are a handful of bots that a reader would take for a crowd, so
+ * the tiles print dashes and say why.
+ */
+function SplitSection({ token }: { token: SpotPanel["token"] }) {
+  if (!token) return null;
+  const readable = splitIsReadable(token.volume24hUsd);
+  const has = [token.buyVolumeUsd, token.sellVolumeUsd, token.uniqueBuyers, token.uniqueSellers].some((v) => v !== null && v !== undefined);
+  if (!has) return null;
+  const figure = <T,>(value: T | null | undefined, render: (v: T) => string) => (readable && value !== null && value !== undefined ? render(value) : "—");
+  return (
+    <Section title="Buys and sells" aside="24h">
+      <Readouts
+        items={[
+          { label: "Bought", value: figure(token.buyVolumeUsd, (v) => usd(v)), sign: readable ? "pos" : undefined },
+          { label: "Sold", value: figure(token.sellVolumeUsd, (v) => usd(v)), sign: readable ? "neg" : undefined },
+          { label: "Buyers", value: figure(token.uniqueBuyers, count) },
+          { label: "Sellers", value: figure(token.uniqueSellers, count) },
+        ]}
+      />
+      {readable ? (
+        <p className="tw-note">
+          <b className="tw-fig">{count(token.totalBuys)}</b> buys against <b className="tw-fig">{count(token.totalSells)}</b> sells in the last 24 hours.
+        </p>
+      ) : (
+        <p className="tw-note">Below {usd(MIN_VOL24_USD)} of 24h volume these counts are a handful of wallets, so Tripwire does not print them.</p>
+      )}
+    </Section>
+  );
+}
+
+function WalletList({
+  rows,
+  side,
+}: {
+  rows: { name: string | null; address: string; amount: number | null; otherAmount: number | null; bothSides: boolean }[];
+  side: "sell" | "buy";
+}) {
   const max = Math.max(1, ...rows.map((r) => r.amount ?? 0));
+  // The word for the *other* side, so the secondary figure names itself on every row.
+  const otherWord = side === "buy" ? "sold" : "bought";
   return (
     <ul className="tw-rows tw-wallet-rows" data-side={side}>
       {rows.map((r, i) => (
         <li key={i}>
-          <WalletLabel label={r.name} address={r.address} />
+          <span className="tw-wallet-cell">
+            <WalletLabel label={r.name} address={r.address} />
+            {r.bothSides ? <span className="tw-tag tw-both-sides">both sides</span> : null}
+          </span>
           <span className="tw-row-bar" aria-hidden="true">
             <i style={{ width: `${((r.amount ?? 0) / max) * 100}%` }} />
           </span>
-          <span className="tw-fig tw-row-amount">{usd(r.amount)}</span>
+          <span className="tw-fig tw-row-amount">
+            {usd(r.amount)}
+            {/* A reported zero is a measurement ("sold $0.00"); a missing figure is a dash.
+                The two must never look the same. */}
+            <span className="tw-row-amount-other">
+              {otherWord} {usd(r.otherAmount)}
+            </span>
+          </span>
         </li>
       ))}
     </ul>
@@ -216,62 +391,144 @@ function WalletsTab({ panel }: { panel: SpotPanel }) {
   const sellers = (panel.topSellers ?? []).slice(0, limit);
   const buyers = (panel.topBuyers ?? []).slice(0, limit);
   if (sellers.length === 0 && buyers.length === 0) return <Empty>No top buyers or sellers came back for this window.</Empty>;
+  // Every row already carries both of its own volumes; page overlap is a second source, because
+  // the two top-20 cuts rank different wallets and frequently share none (1.1.4).
+  const overlap = bothSidesKeys(panel.topBuyers, panel.topSellers);
+  const note = (
+    <p className="tw-note">
+      <b>Both sides</b> marks a wallet that bought and sold inside this window. Wallets outside the two top-20 lists are not compared.
+    </p>
+  );
   return (
     <>
       {sellers.length > 0 ? (
         <Section title="Top sellers" aside="Sold">
-          <WalletList side="sell" rows={sellers.map((w) => ({ name: w.address_label, address: w.address, amount: w.sold_volume_usd }))} />
+          <WalletList
+            side="sell"
+            rows={sellers.map((w) => ({
+              name: w.address_label,
+              address: w.address,
+              amount: w.sold_volume_usd,
+              otherAmount: w.bought_volume_usd,
+              bothSides: tradedBothSides(w, overlap),
+            }))}
+          />
         </Section>
       ) : null}
       {buyers.length > 0 ? (
         <Section title="Top buyers" aside="Bought">
-          <WalletList side="buy" rows={buyers.map((w) => ({ name: w.address_label, address: w.address, amount: w.bought_volume_usd }))} />
+          <WalletList
+            side="buy"
+            rows={buyers.map((w) => ({
+              name: w.address_label,
+              address: w.address,
+              amount: w.bought_volume_usd,
+              otherAmount: w.sold_volume_usd,
+              bothSides: tradedBothSides(w, overlap),
+            }))}
+          />
         </Section>
       ) : null}
+      {note}
     </>
   );
 }
 
+type IndicatorRow = NonNullable<SpotPanel["indicators"]>[number];
+
+/**
+ * One indicator: its name, what Nansen scored it, where that sits against comparable tokens,
+ * and when it last fired.
+ *
+ * The percentile is a **peer ranking**, not a severity — 87th percentile means "higher than 87%
+ * of comparable tokens", which on a `low` score is not a warning — so it is labelled as one. An
+ * unknown last trigger prints "last fired unknown", never a date derived from the Unix epoch.
+ */
+function IndicatorList({ rows }: { rows: IndicatorRow[] }) {
+  return (
+    <ul className="tw-rows tw-indicator-rows">
+      {rows.map((r, i) => {
+        const level = severityLevel(r.score);
+        const triggered = r.lastTriggerIso ?? null;
+        return (
+          <li key={`${r.type}-${i}`}>
+            <span className="tw-indicator-cell">
+              <span className="tw-row-name">{r.type}</span>
+              <span className="tw-indicator-meta tw-meta">
+                {r.percentile === null || r.percentile === undefined ? (
+                  "rank against peers —"
+                ) : (
+                  <>
+                    <b className="tw-fig">{Math.round(r.percentile)}th</b> percentile of comparable tokens
+                  </>
+                )}
+                {triggered ? (
+                  <>
+                    {", last fired "}
+                    <time className="tw-fig" dateTime={triggered}>
+                      {timeAgo(triggered)}
+                    </time>
+                  </>
+                ) : (
+                  ", last fired unknown"
+                )}
+              </span>
+            </span>
+            <span className="tw-score" data-level={level ?? undefined} data-score={r.score.toLowerCase()}>
+              {r.score}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 function RiskTab({ panel, hits }: { panel: SpotPanel; hits: HitDto[] }) {
-  const risk = (panel.indicators ?? []).filter((i) => /high|medium/i.test(i.score));
+  const indicators = panel.indicators ?? [];
+  // Split on the score's vocabulary, not on the array it arrived in: the live response puts a
+  // `high`-scored risk row and a `low`-scored reward row on the same severity scale, and
+  // `price-momentum` on a bearish/neutral/bullish one (1.1.8).
+  const severity = indicators.filter((i) => scoreVocabulary(i.score) === "severity" && /high|med/i.test(i.score));
+  const direction = indicators.filter((i) => scoreVocabulary(i.score) === "direction");
   const token = panel.token;
+  const hasRecord =
+    !!token &&
+    [token.marketCapUsd, token.volume24hUsd, token.liquidityUsd, token.fdvUsd, token.totalHolders, token.deploymentDateIso, token.circulatingSupply].some(
+      (v) => v !== null && v !== undefined,
+    );
   return (
     <>
       <Section title="Rules that fired">{hits.length > 0 ? <HitList hits={hits} /> : <Empty>None of your rules fired.</Empty>}</Section>
-      {token && (token.marketCapUsd !== null || token.volume24hUsd !== null || token.liquidityUsd !== null) ? (
-        <Section title="Market">
-          <dl className="tw-readouts">
-            <div>
-              <dt>Market cap</dt>
-              <dd className="tw-fig">{usd(token.marketCapUsd)}</dd>
-            </div>
-            <div>
-              <dt>24h volume</dt>
-              <dd className="tw-fig">{usd(token.volume24hUsd)}</dd>
-            </div>
-            <div>
-              <dt>Liquidity</dt>
-              <dd className="tw-fig">{usd(token.liquidityUsd)}</dd>
-            </div>
-          </dl>
+      {hasRecord ? (
+        <Section title="Market" aside="Nansen token record">
+          <div className="tw-market-readouts">
+            <Readouts
+              items={[
+                { label: "Market cap", value: usd(token!.marketCapUsd) },
+                { label: "FDV", value: usd(token!.fdvUsd) },
+                { label: "24h volume", value: usd(token!.volume24hUsd) },
+                { label: "Liquidity", value: usd(token!.liquidityUsd) },
+                { label: "Holders", value: count(token!.totalHolders) },
+                { label: "Token age", value: tokenAge(token!.deploymentDateIso) },
+                { label: "Circulating", value: supply(token!.circulatingSupply) },
+                { label: "Total supply", value: supply(token!.totalSupply) },
+              ]}
+            />
+          </div>
+          {/* The whole block is one call on a 24h cache, so it has to say so: on a launch that
+              is minutes old the holder count can be a day behind the chart above it. */}
+          <p className="tw-note">Holders, supply and age are a daily snapshot and can be up to 24h old.</p>
         </Section>
       ) : null}
-      <Section title="Risk indicators">
-        {risk.length > 0 ? (
-          <ul className="tw-rows">
-            {risk.map((r, i) => (
-              <li key={i}>
-                <span className="tw-row-name">{r.type}</span>
-                <span className="tw-score" data-level={/high/i.test(r.score) ? "high" : "medium"}>
-                  {r.score}
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <Empty>No medium or high risk indicators.</Empty>
-        )}
+      <Section title="Risk indicators" aside={severity.length > 0 ? "medium and high" : null}>
+        {severity.length > 0 ? <IndicatorList rows={severity} /> : <Empty>No medium or high risk indicators.</Empty>}
       </Section>
+      {direction.length > 0 ? (
+        <Section title="Directional signals" aside="bearish to bullish">
+          <IndicatorList rows={direction} />
+        </Section>
+      ) : null}
     </>
   );
 }

@@ -11,7 +11,7 @@ import { runContentTask } from "../../lib/content-lifecycle";
 import { createReplayFlag } from "../../lib/replay";
 import type { PersonIntelResponse, PostIntelResponse, ResolveResponse } from "../../lib/api-types";
 import { Chip } from "../../lib/ui/Chip";
-import { shortAddr } from "../../lib/ui/format";
+import { chipLabel, shortAddr } from "../../lib/ui/format";
 import { mountReact } from "../../lib/ui/mount";
 import { Panel } from "../../lib/ui/Panel";
 import { Popover } from "../../lib/ui/Popover";
@@ -136,6 +136,11 @@ export default defineContentScript({
       // This address is a token, not a wallet: the wallet lens must not also mark it.
       claimToken(target.tokenAddress);
 
+      // The chip opens carrying the only name the post gave us -- the short contract address --
+      // and relabels to the ticker once `tgm/token-information` answers (1.1.5). The chip's own
+      // check already pays for that call, so this costs nothing and adds no request.
+      let chipName = chipLabel(symbol, null);
+
       let expanded = false;
       let lastVerdict: Verdict | "LOADING" = "LOADING";
       let lastHeadline = "";
@@ -144,14 +149,16 @@ export default defineContentScript({
       const chipMount = await mountReact(
         ctx,
         { position: "inline", anchor: tweetTextEl, append: "after" },
-        <Chip verdict={lastVerdict} symbol={symbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void runContentTask(ctx, panel.toggle)} />,
+        <Chip verdict={lastVerdict} symbol={chipName.text} isSymbol={chipName.isSymbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void runContentTask(ctx, panel.toggle)} />,
       );
       stopHostClicks(chipMount.ui.shadowHost);
       mounts.track(article, chipMount);
 
       function renderChip(): void {
+        // An update, never a remount: the chip keeps its element, so relabelling cannot move the
+        // anchor or reflow the post around it.
         chipMount.update(
-          <Chip verdict={lastVerdict} symbol={symbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void runContentTask(ctx, panel.toggle)} />,
+          <Chip verdict={lastVerdict} symbol={chipName.text} isSymbol={chipName.isSymbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void runContentTask(ctx, panel.toggle)} />,
         );
       }
 
@@ -177,7 +184,10 @@ export default defineContentScript({
           const chipButton = chipMount.ui.shadow.querySelector<HTMLButtonElement>(".tw-chip");
           // Captured here, not read inside the render closure: `token` is the resolved one this
           // chip was built from, and TS can't see that it stays non-null across the callback.
-          const cardTitle = symbol;
+          // The card's first frame names the token the same way its last one will: once the
+          // chip's own check has resolved a ticker, the cashtag is already correct, so the
+          // header never flips from `0x1234…abcd` to `$WIF` under the reader.
+          const cardTitle = chipName.isSymbol ? `$${chipName.text}` : chipName.text;
           let size: CardSize = cardSize("spot");
           let panelResult: ApiResult<PostIntelResponse> | null = null;
           let personResult: ApiResult<PersonIntelResponse> | null = null;
@@ -271,6 +281,8 @@ export default defineContentScript({
       if (chipResult.ok) {
         lastVerdict = chipResult.data.verdict;
         lastHeadline = chipHeadline(chipResult.data);
+        // A failed or empty tokenInformation leaves the short address standing.
+        chipName = chipLabel(symbol, chipResult.data.panel.token?.symbol);
       } else {
         lastVerdict = "UNCHECKED";
         lastHeadline = chipErrorHeadline(chipResult.status, chipResult.error);

@@ -42,14 +42,37 @@ export const CANDLE_TTL: Record<string, number> = {
   "1h": 15 * MIN,
 };
 
-/** `tgm/token-information` as the API returns it. */
+/**
+ * `tgm/token-information` as the API returns it.
+ *
+ * Every field is optional: this is the recorded shape, not a contract, and `toTokenInfo` turns
+ * anything absent into `null` rather than a zero. `spot_metrics` is scoped by the request's
+ * `timeframe`, which is hardcoded to `"1d"` below — so every figure inside it is 24h.
+ */
 export type TokenInformationResponse = {
   name?: string | null;
   symbol?: string | null;
   contract_address?: string | null;
   logo?: string | null;
-  token_details?: { market_cap_usd?: number | null; fdv_usd?: number | null } | null;
-  spot_metrics?: { volume_total_usd?: number | null; liquidity_usd?: number | null } | null;
+  token_details?: {
+    market_cap_usd?: number | null;
+    fdv_usd?: number | null;
+    /** UTC, space-separated, no offset ("2023-11-20 19:22:43"). */
+    token_deployment_date?: string | null;
+    circulating_supply?: number | null;
+    total_supply?: number | null;
+  } | null;
+  spot_metrics?: {
+    volume_total_usd?: number | null;
+    liquidity_usd?: number | null;
+    total_holders?: number | null;
+    buy_volume_usd?: number | null;
+    sell_volume_usd?: number | null;
+    total_buys?: number | null;
+    total_sells?: number | null;
+    unique_buyers?: number | null;
+    unique_sellers?: number | null;
+  } | null;
 };
 
 const DAY = 24 * HOUR;
@@ -126,9 +149,29 @@ export type PmAddressTrade = {
   buyer?: string | null;
 };
 
+/**
+ * `tgm/indicators`: **5 credits**, and Nansen recomputes the scores in a daily batch, so asking
+ * four times a day bought the same answer four times. 24h, not 6h.
+ *
+ * Verdict-safe: the only signal that reads this response is `risk_high_count`, which is in no
+ * shipped preset (`packages/core/src/rules/presets.ts`, `signals/spot.ts`). Saves about
+ * 5 credits per token per day.
+ */
+export const INDICATORS_TTL = 24 * HOUR;
+
 export const nansen = {
+  /**
+   * `warnings[]` is part of this response and is **not** a failure: it carries documented
+   * limitations ("exchange_wallet_count is always 0"). It rides its own channel to the card so
+   * a limitation never renders as "Unavailable:" and never turns a verdict UNCHECKED.
+   */
   flowIntel: (chain: string, token_address: string, timeframe: string) =>
-    nansenPost<{ data: FlowRow[] }>({ name: "flowIntel", path: "tgm/flow-intelligence", body: { chain, token_address, timeframe }, ttlMs: 5 * MIN }),
+    nansenPost<{ data: FlowRow[]; warnings?: unknown }>({
+      name: "flowIntel",
+      path: "tgm/flow-intelligence",
+      body: { chain, token_address, timeframe },
+      ttlMs: 5 * MIN,
+    }),
 
   whoBoughtSold: (chain: string, token_address: string, side: "BUY" | "SELL", from: string, to: string) =>
     nansenPost<Paged<WhoRow>>({
@@ -163,7 +206,7 @@ export const nansen = {
     }),
 
   indicators: (chain: string, token_address: string) =>
-    nansenPost<IndicatorsResp>({ name: "indicators", path: "tgm/indicators", body: { chain, token_address }, ttlMs: 6 * HOUR }),
+    nansenPost<IndicatorsResp>({ name: "indicators", path: "tgm/indicators", body: { chain, token_address }, ttlMs: INDICATORS_TTL }),
 
   ohlcv: (chain: string, token_address: string, timeframe: string, from: string, to: string, ttlMs: number = OHLCV_TTL) =>
     nansenPost<{ data: Candle[] }>({

@@ -4,6 +4,7 @@ export * from "./addresses";
 export * from "./timeframe";
 export * from "./format";
 export * from "./signals/spot";
+export * from "./spot-readout";
 export * from "./signals/perp";
 export * from "./signals/prediction";
 export * from "./rules/presets";

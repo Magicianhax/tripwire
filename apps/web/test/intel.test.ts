@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { resetDb } from "@/lib/db";
 import { _resetClientState } from "@/lib/nansen/client";
-import { buildSpotIntel, safeLogoUrl } from "@/lib/intel/spot";
+import { buildSpotIntel, safeLogoUrl, toTokenInfo } from "@/lib/intel/spot";
 import { buildPerpIntel } from "@/lib/intel/perp";
 import { buildPredictionIntel } from "@/lib/intel/prediction";
 import { resolveCashtag } from "@/lib/intel/resolve";
@@ -118,5 +118,96 @@ describe("intel builders (replay of live-recorded responses)", () => {
     expect(hit.topHoldings.length).toBeGreaterThan(0);
     const miss = await buildPersonIntel({ handle: "randomdegen", displayName: "random degen 🐸" });
     expect(miss.entity).toBeNull();
+  });
+});
+
+// --- Round 1.1: the second half of the responses we already pay for ------------------------
+
+describe("the token record survives the mapper (1.1.2 / 1.1.3)", () => {
+  it("maps every field of the recorded token-information response", async () => {
+    const raw = JSON.parse(fs.readFileSync(path.join(FIXTURES, "tokenInformation.json"), "utf8")).data;
+    const token = toTokenInfo(raw, 0.185)!;
+    expect(token.fdvUsd).toBeCloseTo(186_435_297.96, 2);
+    expect(token.totalHolders).toBe(86_022);
+    expect(token.deploymentDateIso).toBe("2023-11-20T19:22:43.000Z");
+    expect(token.circulatingSupply).toBe(998_926_392);
+    expect(token.totalSupply).toBe(998_926_392);
+    expect(token.buyVolumeUsd).toBeCloseTo(703_148.28, 2);
+    expect(token.sellVolumeUsd).toBeCloseTo(768_342.97, 2);
+    expect(token.totalBuys).toBe(8_204);
+    expect(token.totalSells).toBe(10_497);
+    expect(token.uniqueBuyers).toBe(642);
+    expect(token.uniqueSellers).toBe(1_641);
+    // The eight fields that already worked are untouched.
+    expect(token.symbol).toBe("WIF");
+    expect(token.marketCapUsd).toBeGreaterThan(0);
+    expect(token.priceUsd).toBe(0.185);
+  });
+
+  it("an absent field is null, never 0 — a zero would be a claim about the token", () => {
+    const empty = toTokenInfo({ name: "x", symbol: "X", token_details: {}, spot_metrics: {} })!;
+    for (const [key, value] of Object.entries(empty)) {
+      if (key === "name" || key === "symbol") continue;
+      expect(value, key).toBeNull();
+    }
+    // A partial record keeps what it has and nulls the rest.
+    const partial = toTokenInfo({ spot_metrics: { total_holders: 0 } })!;
+    expect(partial.totalHolders).toBe(0); // a reported zero is a measurement
+    expect(partial.uniqueBuyers).toBeNull(); // an unreported field is not
+    expect(toTokenInfo(null)).toBeNull();
+  });
+
+  it("the whole record reaches the chip's panel without a second call", async () => {
+    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
+    expect(r.panel.token?.totalHolders).toBe(86_022);
+    expect(r.panel.token?.uniqueSellers).toBe(1_641);
+    expect(r.panel.token?.deploymentDateIso).toMatch(/^2023-11-20T/);
+  });
+});
+
+describe("flow-intelligence warnings are their own channel (1.1.7)", () => {
+  it("populates panel.warnings and leaves panel.errors empty", async () => {
+    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
+    expect(r.panel.warnings.length).toBe(2);
+    expect(r.panel.warnings.join(" ")).toMatch(/exchange_wallet_count/);
+    // The documented limitation must never be printed as a failed call.
+    expect(r.panel.errors).toEqual([]);
+    for (const w of r.panel.warnings) expect(r.panel.errors).not.toContain(w);
+  });
+
+  it("the view window's warnings merge in without repeats and stay capped", async () => {
+    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "panel", timeframe: "7d" });
+    expect(r.panel.warnings.length).toBe(2);
+    expect(new Set(r.panel.warnings).size).toBe(r.panel.warnings.length);
+    expect(r.panel.errors).toEqual([]);
+  });
+});
+
+describe("indicators carry what the 5 credits already bought (1.1.8)", () => {
+  it("every indicator crosses with its score, percentile, signal and last trigger", async () => {
+    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
+    const rows = r.panel.indicators!;
+    expect(rows.length).toBe(8);
+    const cex = rows.find((i) => i.type === "cex-flows")!;
+    expect(cex.score).toBe("high");
+    expect(cex.percentile).toBeCloseTo(87.88, 1);
+    expect(cex.signal).toBeCloseTo(0.0314, 3);
+    // 1970-01-01 is Nansen's "never": it must not reach the card as a date.
+    expect(cex.lastTriggerIso).toBeNull();
+    expect(rows.find((i) => i.type === "btc-reflexivity")!.lastTriggerIso).toBe("2026-09-15T00:00:00.000Z");
+    // Both vocabularies arrive; the card groups on the score, not the array.
+    expect(rows.some((i) => i.score === "bearish")).toBe(true);
+    expect(rows.find((i) => i.type === "concentration-risk")!.score).toBe("low");
+  });
+});
+
+describe("the indicators TTL is a day, not six hours", () => {
+  it("costs 5 credits per token per day and feeds no shipped preset", async () => {
+    const { INDICATORS_TTL } = await import("@/lib/nansen/endpoints");
+    expect(INDICATORS_TTL).toBe(24 * 60 * 60_000);
+    const { PRESETS } = await import("@tripwire/core");
+    for (const [name, rules] of Object.entries(PRESETS)) {
+      expect(rules.some((r) => r.signal === "risk_high_count"), name).toBe(false);
+    }
   });
 });

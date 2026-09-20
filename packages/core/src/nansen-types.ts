@@ -20,7 +20,13 @@ export type FlowRow = {
   fresh_wallets_avg_flow_usd?: number | null;
 };
 
-/** `tgm/token-information`: the token's identity and its current spot metrics. */
+/**
+ * `tgm/token-information`: the token's identity, its token record and its current spot metrics.
+ *
+ * Every figure is nullable and a null is a measurement gap, never a zero: the card prints a dash
+ * for anything the response did not carry. The whole object is one call on a 24h TTL
+ * (TOKEN_INFO_TTL), so the record fields are a daily snapshot and are captioned as one.
+ */
 export type TokenInfo = {
   name: string | null;
   symbol: string | null;
@@ -30,6 +36,25 @@ export type TokenInfo = {
   volume24hUsd: number | null;
   liquidityUsd: number | null;
   priceUsd: number | null;
+  /** Fully diluted valuation (`token_details.fdv_usd`). */
+  fdvUsd: number | null;
+  /** Distinct holders (`spot_metrics.total_holders`), as of the snapshot. */
+  totalHolders: number | null;
+  /** When the contract was deployed, as an ISO instant; Nansen sends a space-separated UTC
+   * timestamp with no offset. Null when absent or unparseable — never a guessed date. */
+  deploymentDateIso: string | null;
+  circulatingSupply: number | null;
+  totalSupply: number | null;
+  /**
+   * The 24h buy/sell split. `endpoints.ts` hardcodes `timeframe: "1d"`, so these are always a
+   * day's figures whatever window the card is showing, and the card must label them 24h.
+   */
+  buyVolumeUsd: number | null;
+  sellVolumeUsd: number | null;
+  totalBuys: number | null;
+  totalSells: number | null;
+  uniqueBuyers: number | null;
+  uniqueSellers: number | null;
 };
 
 export type NetflowRow = {

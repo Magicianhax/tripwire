@@ -88,7 +88,11 @@ describe("Flow gauges light the rule-tripping rows", () => {
       fresh_wallets_net_flow_usd: 576_000,
     } as SpotPanel["flow"],
     flowTimeframe: "1d",
-    token: { name: "dogwifhat", symbol: "WIF", logoUrl: null, marketCapUsd: 185_000_000, volume24hUsd: 1_471_491, liquidityUsd: null, priceUsd: null },
+    token: {
+      name: "dogwifhat", symbol: "WIF", logoUrl: null, marketCapUsd: 185_000_000, volume24hUsd: 1_471_491, liquidityUsd: null, priceUsd: null,
+      fdvUsd: null, totalHolders: null, deploymentDateIso: null, circulatingSupply: null, totalSupply: null,
+      buyVolumeUsd: null, sellVolumeUsd: null, totalBuys: null, totalSells: null, uniqueBuyers: null, uniqueSellers: null,
+    },
       netflow: { h1: 0, h24: -401, d7: -1_220, d30: 536 } as SpotPanel["netflow"],
     indicators: null,
     marketCapUsd: null,

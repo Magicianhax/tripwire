@@ -643,9 +643,10 @@ test("@smoke the card is on screen before its data, with a skeleton per section"
   // The card is up while the panel request is still hanging: that is the whole point.
   await expect(card).toBeVisible();
   await expect(card).toHaveAttribute("aria-busy", "true");
-  // It already names the target the click knew about -- the post mentions a mint, so that is
-  // the short address -- and the pill is the spinner rather than a verdict word.
-  await expect(card.locator(".tw-card-symbol")).toHaveText("EKpQ…zcjm");
+  // It already names the target the click knew about. The chip's own check resolved the mint
+  // to its ticker before the click (Round 1.1.5), so the first frame says $WIF rather than a
+  // base58 string it would replace a second later. The pill is the spinner, not a verdict word.
+  await expect(card.locator(".tw-card-symbol")).toHaveText("$WIF");
   await expect(card.locator(".tw-card-plate")).toHaveText("Checking");
   // Every section reserves the height its content will take.
   const skeletons = card.locator(".tw-skeleton");
@@ -654,8 +655,8 @@ test("@smoke the card is on screen before its data, with a skeleton per section"
   expect(reserved).toBeGreaterThan(10);
 
   release!();
-  // Then the real card, in the same element, with no second mount -- and the header upgrades
-  // from the address to the name Nansen gave the token.
+  // Then the real card, in the same element, with no second mount -- and the header keeps the
+  // name it already had rather than changing it under the reader.
   await expect(card.locator(".tw-card-finding")).toHaveText(/\w/, { timeout: 20_000 });
   await expect(card.locator(".tw-card-symbol")).toHaveText("$WIF");
   await expect(card).not.toHaveAttribute("aria-busy", "true");

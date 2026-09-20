@@ -50,7 +50,7 @@ const has = (state: DepthState, section: DepthSection) => state.loading.includes
 
 /** A percentage that always carries its sign, so a positive rate is never read as a negative
  * one at a glance. A true minus sign, matching every other figure in the card. */
-const signedPct = (value: number | null, digits: number): string =>
+export const signedPct = (value: number | null, digits: number): string =>
   value === null ? "—" : `${value >= 0 ? "+" : "−"}${Math.abs(value).toFixed(digits)}%`;
 
 /** Long share in mint, short share in red, each named with its value and wallet count in the

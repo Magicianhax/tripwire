@@ -44,6 +44,17 @@ export const TOKEN_RISKS = new Set(["concentration-risk", "liquidity-risk", "tok
 // --- Activity guards (docs/CALIBRATION.md §4.1) -------------------------------------------
 /** Below this much 24h volume, a percentage of volume is noise. */
 export const MIN_VOL24_USD = 250_000;
+
+/**
+ * Whether the 24h buy/sell split is worth printing (Round 1.1.3).
+ *
+ * The same activity guard the flow signals use: on a token doing $3k a day, "642 buyers against
+ * 1,641 sellers" is a handful of bots, and a reader takes it for a crowd. Below the floor — or
+ * with no volume measured at all — the split prints dashes, not figures. It is a readout, not a
+ * signal: nothing here reaches a verdict.
+ */
+export const splitIsReadable = (vol24: number | null | undefined): boolean =>
+  typeof vol24 === "number" && Number.isFinite(vol24) && vol24 >= MIN_VOL24_USD;
 /** Labeled segments must have moved at least this share of 24h volume to be worth reading. */
 export const MIN_LABELED_GROSS_SHARE = 0.005;
 /** Wallets behind a labeled flow before it can warn, and before it can block. */
