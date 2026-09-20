@@ -1,3 +1,162 @@
+# CHUMP Dexscreener identity and liquidation readability (2026-09-20)
+
+- [x] Trace Robinhood pool resolution; preserve the exact returned base-token contract for standard and v4 pools.
+- [x] Replace the unlabelled liquidation sketch with responsive price-axis clusters and inspectable position values.
+- [x] Repair Polymarket leaderboard badge placement and pointer handling around stretched profile links; enlarge to a real 28px target.
+- [x] Preserve main leaderboard badges when the wallet appears again in lower-page cards.
+- [x] Run unit/browser regressions, review the scoped changes, build and restart the local backend.
+
+Review: exact CHUMP contract returned live for Robinhood v3 and v4 pools. Liquidation chart has price labels, adaptive precision, inspectable aggregated values and a responsive 240/320px chart; summary/table grouped together. PM live DOM inspection identified stretched-link interception; a browser reproduction proves name alignment, 28px button target and mouse/keyboard opening without navigation. Scope reviews approved. All typechecks and 859 unit tests passed (core200/web182/extension477); production builds passed. Local backend PID21472 running live on3000. Reload the unpacked extension and affected pages to use the build.
+
+---
+
+# Cross-market exploration on X and DEXes (2026-09-20)
+
+- [x] Preserve selected trade chain/contract; eliminate cross-chain symbol substitution.
+- [x] Return spot and perp search markets with identity, chain, price, volume and explicit supported-detail status.
+- [x] Add Markets view to X/DEX spot cards, with lazy same-market evidence and perp detail navigation; keep Hyperliquid perps-only.
+- [x] Exercise ZEC/SPCX-style results, strict identity, paid-tab boundaries and isolated failures; build, capture and review.
+
+Result: ticker-only X posts now open a market catalog rather than an arbitrary chain's verdict. Contract posts and supported DEX trades keep scoped evidence with a Markets tab; identified unsupported DEX assets can browse available markets too. Search results keep exact addresses/chains, distinguish related tickers, separate spot/perp volumes, paginate, show market snapshots and link to Nansen. Supported detail targets drill into the existing charts/flows/holders or perp sections lazily; Near and namespaced perps remain snapshot+external-detail entries. Robinhood spot checks are supported and strict chain hints never fall back elsewhere. UI designed directly for this session; no Impeccable used.
+
+Live validation: ZEC returned7 spot/perp/related results including Near; SPCX returned17. Robinhood SPCX resolved exactly to0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea and returned20buyers/20sellers/noerrors. Units: core200/web179/extension466 and typechecks passed. Backend/extension builds passed; final reviewer approved after unsupported-DEX entry and numeric ticker-prefix corrections.
+
+---
+
+# Track native ETH rather than exclude it (2026-09-20)
+
+- [x] Verify Nansen native ETH identity using live search and Arbitrum guard panel.
+- [x] Normalize venue ETH/NATIVE/zero markers to Nansen's same-chain 0xeeee identifier on Ethereum, Arbitrum, Base and Optimism.
+- [x] Verify the full chip and evidence request path with a browser regression.
+
+Live result: Ethereum name/logo/price, populated flow intelligence,20 buyers,20 sellers, no errors. This supersedes the earlier unsupported-native ETH ruling; avoiding the zero burn-address request did not require disabling tracking.
+
+---
+
+# X badge tooltip clipping (2026-09-20)
+
+- [x] Lift hover/focus labels into the native popover top layer, retaining their accessible naming association.
+- [x] Clamp tooltip placement to the viewport and clean up scroll/resize listeners on close.
+- [x] Reproduce clipping with overflow-hidden post and profile headers; verify both labels remain visible above the header.
+
+Verified:51 focused unit tests,2 browser tests,typecheck/build; scoped review approved. Badge/card behavior unchanged. Reload extension and page for the new tooltip implementation.
+
+---
+
+# Native ETH correction (2026-09-20)
+
+- [x] Recognize zero-address and NATIVE markers as native coins, preserving the selection and skipping contract evidence requests.
+- [x] Use the selected chain's native symbol, and keep raw upstream JSON/request IDs out of popup errors.
+- [x] Verify60 focused adapter tests,168 web tests, production builds and scoped code review (approved).
+
+---
+
+# Badge recovery after backend shutdown (2026-09-20)
+
+- [x] Confirm actual backend status before changing identity parsing: port3000 was offline, and restarting it restored Vitalik's successful live entity response.
+- [x] Start the local server as a detached hidden process with logs under scratch/local-server.*.log.
+- [x] Retry offline author lookups after a shared health probe, with a bounded batch and no overlapping recovery loop.
+- [x] Catch rejected wallet-link save/unlink operations and recognize invalidation errors across realms.
+- [x] Verify recovery regression tests, browser badges and review.
+
+Verified: extension461 tests (including3 offline/recovery/disposal regressions), typecheck/build, and3 focused browser tests passed; review approved. Detached node PID8552 remained healthy after subsequent commands, replay:false; guarded Vitalik lookup returned the entity with no errors. New pasted venue log could not be attributed to a remaining current venue mount escape; current async bind callbacks are already guarded. Added catches for two confirmed X link-update paths.
+
+---
+
+# Jumper selector and coverage copy (2026-09-20)
+
+- [x] Suppress the strip, dock and open evidence while a visible Jumper token/network picker is open or no output token is selected.
+- [x] Preserve cancellation of pending guards and restore the selected-token strip on picker close.
+- [x] Name Stellar and selected token in unsupported coverage copy; remove numeric IDs and the technical no-target message.
+- [x] Preserve chain/contract identity instead of substituting cross-chain ticker matches.
+
+Verified: extension458 tests, typecheck and build passed; focused Jumper/coverage browser tests2 passed; reviewer approved with no findings.
+
+---
+
+# Live-data correctness and popup redesign (2026-09-20)
+
+- [x] Fix misleading replay wallet/token identity and repeated logos; verify the reported Matt wallet with live data and improve label resolution.
+- [x] Resolve Dexscreener base token from the actual page rather than treating a pair address as a token; bound the dock to its panel/viewport.
+- [x] Fix invalidated extension context handling, robust popup layering and real X main-profile badge discovery.
+- [x] Replace long holder/wallet tables with compact pagination and data-based distribution charts; apply PnL colors and responsive grid sizing.
+- [x] Finish row-specific Nansen links and short accessible tooltips.
+- [x] Run browser regressions, inspect captures and review before rebuilding for local testing.
+
+Review: modern-web-guidance used for top-layer promotion and intrinsic responsive grid sizing. Native manual popover wrapper preserves the existing focus/anchor contract with a feature-detected fallback. Context invalidation cancels obsolete async mounts/tasks. X nested identity wrappers are covered. Dex public API resolves the reported pool to the exact TIPPED mint, cached with stale-URL guards; dock is bounded to320px at bottom-right. Wallet/entity details now have Summary/Holdings/Performance views, allocation/PnL charts, and paged lists; the holder tab has a distribution chart and six rows/page. Logo requests validate identity and use versioned live/replay caches, preserving Solana case. Actual Matt wallet returned SOL/BRRR/USDC and +$103566.50 realized PnL; TIPPED returned its actual token info,20buyers,20sellers, no errors.
+
+Verification: core200/web168/extension456 tests passed; production builds passed; final browser smoke suite14 passed; captures3 passed and inspected, with the final wallet/entity capture rerun passing. Reviewer APPROVE. Live server running on port3000 with replay:false. All new work remains uncommitted.
+
+Known API limits: both free address-search methods returned no Matt label though the Nansen website shows one. Premium labels were not silently fetched. Historical balances return paginated token/day rows, so a complete90-day curve was not invented from one incomplete page; charts use real allocation and token PnL. Scroll remains an accessibility fallback for small windows/zoom, not hidden clipping.
+
+---
+
+# Row-specific Nansen links (2026-09-20)
+
+- [x] Add a shared external-link arrow with a View on Nansen tooltip and an accessible row-specific name.
+- [x] Link holder/buyer/seller/trader wallet rows, prediction holders, linked wallet addresses, portfolio tokens and top PnL tokens to their exact Nansen destination.
+- [x] Keep missing wallet addresses non-interactive and preserve safe new-tab link attributes.
+
+---
+
+# Entity discovery and richer profiles (2026-09-20)
+
+- [x] Add profile-header badge discovery for ordinary X handles and preserve tweet badges.
+- [x] Surface additional measured entity data: portfolio breakdown, more holdings, trade activity, top PnL tokens, and direct Nansen entity link.
+- [x] Verify exact matching for non-ENS names and make replay status explicit on badge cards.
+- [x] Test profile navigation, unknown accounts, card contents, and existing badge behavior; rebuild and review.
+- [x] Start the local backend in live mode for real coverage and verify known figures through the guarded API.
+
+Results: core 200 / web 161 tests passed; extension final suite 447 passed. Production builds succeeded; full replay smoke 13 passed, 3 capture-only skipped. Final semantic-layout profile and author-badge smoke tests passed. Captures passed 3, with profile/header and expanded entity images inspected. Review approved after lookup-failure retry and truncated-count wording fixes. Live backend on port3000 now reports replay:false. Guarded lookups returned ZachXBT (20 holdings/11 chains) and Vitalik Buterin (20 holdings/10 chains), no errors, using four credits total. Reload the unpacked extension and refresh X to load new content scripts and clear page-session replay caches.
+
+---
+
+# Card credit-usage cleanup (2026-09-20)
+
+- [x] Remove credits-used totals from evidence and wallet card footers; preserve dashboard accounting and prices before paid actions.
+- [x] Update existing wallet and Perp browser assertions to require no usage totals in card footers.
+
+---
+
+# X badge alignment (2026-09-20)
+
+- [x] Keep author badges on the name/verification line with a 4px gap.
+- [x] Restore modified name-wrapper styles when the badge mount is removed.
+- [x] Verify the actual badge/verification bounding boxes and card interaction in Chromium.
+
+Result: extension typecheck, 24 focused unit tests, production build, and the author-badge browser test pass. Browser coverage asserts a 4px horizontal gap and matching vertical centers beside a verification icon in X's column wrapper.
+
+---
+
+# Jumper live-site repair plan (2026-09-20)
+
+Goal: fix the live Jumper screenshots: Tripwire evidence must render above the host widget in compact and expanded modes, while unsupported Bitcoin/Sui copy stays specific and readable inside the narrow strip.
+
+## Plan
+
+- [x] Trace the Shadow DOM mount host and Jumper adapter/chain-name paths; prove the stacking and copy root causes from source and the live DOM.
+- [x] Add regression coverage for a hostile high-z-index Jumper widget, compact/expanded card visibility, supported tokens, and named unsupported chains.
+- [x] Implement the smallest host-layer and constrained-strip fixes without weakening host-fit, focus, or paid-call guarantees.
+- [x] Run focused tests, extension typecheck/build, full verification, replay E2E, and capture/live-browser inspection.
+- [x] Run final code review, address findings, update lessons/patterns and this review record.
+
+## Review
+
+Complete. Live computed styles proved WXT's shadow reset reduced the evidence host to `static / auto / inline`, below Jumper's `z-index: 1110` widget. `mountReact` now restores WXT's floating-host contract with a later same-shadow rule, leaving inline mounts and pointer behavior unchanged. LI.FI's current Sui ID now maps to `Sui`, so the existing two-line strip displays complete copy without a layout workaround.
+
+Verification:
+
+- Focused red/green tests: mount stacking and Sui naming failed before the fix, then passed (28 tests).
+- `pnpm verify`: core 200, web 159, extension 436; all typechecks clean.
+- Sequential production builds passed; replay E2E passed 12 with 3 capture-only specs skipped.
+- Capture run passed 3; compact/expanded Jumper evidence and the Sui strip were visually inspected clean.
+- Final independent review: **APPROVE**, zero findings at every severity.
+- `git diff --check`: clean.
+
+The built extension must be reloaded from `apps/extension/.output/chrome-mv3` before rechecking the live Jumper tab.
+
+---
+
 # Tripwire: Codex takeover plan (2026-09-19)
 
 Goal: take over the `feat/cockpit-ui` branch from the 2026-09-18 Claude handoff, finish the in-flight expand/skeleton/perp-depth brief, and leave the branch verified and documented.

@@ -1,4 +1,5 @@
 import { browser } from "wxt/browser";
+import { nansenChainSlug } from "@tripwire/core";
 
 /**
  * A token's picture, fetched by the background from the local backend's `/api/token-logo` and
@@ -18,8 +19,8 @@ import { browser } from "wxt/browser";
 const cache = new Map<string, Promise<string | null>>();
 
 export async function tokenLogoDataUrl(chain: string | null | undefined, address: string | null | undefined): Promise<string | null> {
-  if (!chain || !address) return null;
-  const key = `${chain}|${address.toLowerCase()}`;
+  if (!chain || !address || !nansenChainSlug(chain)) return null;
+  const key = `${chain}|${chain === "solana" ? address : address.toLowerCase()}`;
   const cached = cache.get(key);
   if (cached) return cached;
 

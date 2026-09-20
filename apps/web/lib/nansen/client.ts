@@ -184,9 +184,10 @@ export async function nansenPost<T>(opts: CallOpts): Promise<NansenResult<T>> {
         continue;
       }
       if (!res.ok) {
-        const text = (await res.text().catch(() => "")).slice(0, 300);
+        await res.body?.cancel().catch(() => {});
         if (hit) return { data: hit.value as T, cached: true, stale: true, storedAt: hit.storedAt, creditsUsed: credits };
-        throw new NansenError(res.status, `Nansen ${opts.name} failed (${res.status}): ${text}`);
+        const reason = res.status === 401 || res.status === 403 ? "access denied" : res.status === 429 ? "rate limit reached" : res.status === 400 || res.status === 422 ? "request not supported" : "service temporarily unavailable";
+        throw new NansenError(res.status, `Nansen ${opts.name}: ${reason}`);
       }
       const data = (await res.json()) as T;
       writeCache(key, data, opts.ttlMs);

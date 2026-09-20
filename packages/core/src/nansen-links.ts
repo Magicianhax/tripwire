@@ -16,6 +16,7 @@ export const NANSEN_CHAIN_SLUGS: Record<Chain, string> = {
   polygon: "polygon",
   optimism: "optimism",
   avalanche: "avalanche",
+  robinhood: "robinhood",
 };
 
 export function nansenChainSlug(chain: string): string | null {

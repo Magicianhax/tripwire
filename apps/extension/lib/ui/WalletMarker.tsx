@@ -12,7 +12,7 @@ export const refLabel = (ref: WalletRef): string => (ref.kind === "ens" || ref.k
  * can still tell them apart, and its hit target is 24px through a pseudo-element while the mark
  * itself stays 14px and out of the host's way.
  */
-export function WalletMarker({ ref: walletRef, open, onClick }: { ref: WalletRef; open: boolean; onClick: () => void }) {
+export function WalletMarker({ ref: walletRef, presentation, open, onClick }: { ref: WalletRef; presentation?: "profile"; open: boolean; onClick: () => void }) {
   const label = `Inspect wallet ${refLabel(walletRef)} with Tripwire`;
   return (
     <Tooltip label={label}>
@@ -20,12 +20,13 @@ export function WalletMarker({ ref: walletRef, open, onClick }: { ref: WalletRef
         <button
           type="button"
           className="tw-wallet-marker"
+          data-presentation={presentation}
           aria-labelledby={labelId}
           aria-expanded={open}
           data-open={open ? "" : undefined}
-          onClick={onClick}
+          onClick={(event) => { event.preventDefault(); event.stopPropagation(); onClick(); }}
         >
-          <BrandMark logo={NANSEN_LOGO} size={14} />
+          <BrandMark logo={NANSEN_LOGO} size={presentation === "profile" ? 20 : 14} />
         </button>
       )}
     </Tooltip>

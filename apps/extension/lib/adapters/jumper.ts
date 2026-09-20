@@ -1,5 +1,5 @@
 import type { Target } from "@tripwire/core";
-import { chainLabel, evmTarget, EVM_CHAIN_IDS, isNativeEvm, isNativeSymbol, JUMPER_SOLANA_CHAIN_ID, readTokenSymbol, solanaTarget } from "./chains";
+import { chainLabel, evmTarget, EVM_CHAIN_IDS, isNativeEvm, isNativeSymbol, JUMPER_SOLANA_CHAIN_ID, NATIVE_SYMBOLS, readTokenSymbol, solanaTarget } from "./chains";
 import { findButtons, isNavigation, isVisible } from "./dom";
 import { OVERRIDE_PHRASES, type TargetGap, type VenueAdapter } from "./types";
 
@@ -18,10 +18,19 @@ export const jumperAdapter: VenueAdapter = {
   match(url) {
     return HOSTS.has(url.hostname);
   },
-  readTarget(_doc, url): Target | null {
+  shouldHide(doc, url) {
+    const inputs = doc.querySelectorAll<HTMLInputElement>('[id^="widget-"] input[placeholder="Search by token or address"], [id^="widget-"] input[placeholder="Search network"]');
+    if (Array.from(inputs).some(isVisible)) return true;
+    return !url.searchParams.get("toToken") && !readTokenSymbol(doc.querySelector(TO_TOKEN_SELECTOR));
+  },
+  readTarget(doc, url): Target | null {
     const toToken = url.searchParams.get("toToken");
     const toChain = url.searchParams.get("toChain");
-    if (!toToken || !toChain) return null;
+    if (!toChain) return null;
+    if (!toToken) {
+      const chain = EVM_CHAIN_IDS[Number(toChain)];
+      return chain && readTokenSymbol(doc.querySelector(TO_TOKEN_SELECTOR)) === "ETH" && NATIVE_SYMBOLS[chain] === "ETH" ? evmTarget(chain,"ETH") : null;
+    }
     if (toChain === JUMPER_SOLANA_CHAIN_ID) return solanaTarget(toToken);
     const chain = EVM_CHAIN_IDS[Number(toChain)];
     if (!chain) return null; // unknown chain -> UNCHECKED dock is fine
@@ -37,8 +46,11 @@ export const jumperAdapter: VenueAdapter = {
 
     if (toChain) {
       const evm = EVM_CHAIN_IDS[Number(toChain)];
-      if (toChain !== JUMPER_SOLANA_CHAIN_ID && !evm) return { kind: "unsupported-chain", label: chainLabel(toChain) };
-      if (toToken && evm && isNativeEvm(toToken)) return { kind: "native-asset", symbol: "ETH" };
+      if (toChain !== JUMPER_SOLANA_CHAIN_ID && !evm) {
+        const symbol = readTokenSymbol(doc.querySelector(TO_TOKEN_SELECTOR));
+        return { kind: "unsupported-chain", label: chainLabel(toChain), ...(symbol ? { symbol } : {}) };
+      }
+      if (toToken && evm && isNativeEvm(toToken)) return { kind: "native-asset", symbol: NATIVE_SYMBOLS[evm] };
       if (toToken && isNativeSymbol(toToken, evm ?? "solana")) return { kind: "native-asset", symbol: toToken.toUpperCase() };
       if (toToken) return null; // a real token on a covered chain already became a target
     }

@@ -9,6 +9,7 @@ export const EVM_CHAIN_IDS: Record<number, Chain> = {
   137: "polygon",
   10: "optimism",
   43114: "avalanche",
+  4663: "robinhood",
 };
 
 /** Jumper's non-numeric Solana "chain id". */
@@ -17,6 +18,8 @@ export const JUMPER_SOLANA_CHAIN_ID = "1151111081099710";
 /** Uniswap's `chain` query-param names -> Chain. */
 export const UNISWAP_CHAIN_NAMES: Record<string, Chain> = {
   mainnet: "ethereum",
+  robinhood: "robinhood",
+  "robinhood-chain": "robinhood",
   ethereum: "ethereum",
   base: "base",
   arbitrum: "arbitrum",
@@ -53,19 +56,23 @@ export const GMGN_CHAIN_SEGMENTS: Record<string, Chain> = {
   avax: "avalanche",
 };
 
-const NATIVE_EVM_RE = /^(eth|0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee)$/i;
+const NATIVE_EVM_RE = /^(eth|native|0x0{40}|0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee)$/i;
 
-/** True for the native-ETH placeholder ("ETH" or the 0xeeee… sentinel address) — we don't
- * guard natives (no ERC-20 to look up on Nansen). Not applied to Solana: the wrapped-SOL mint
+/** True for native-coin placeholders (ETH, NATIVE, zero or 0xeeee… sentinel addresses).
+ * Normalize verified native identities before requesting Nansen data. Not applied to Solana: the wrapped-SOL mint
  * (`So111…112`) is a real, guardable token address there. */
 export function isNativeEvm(value: string): boolean {
   return NATIVE_EVM_RE.test(value);
 }
 
-/** Builds an EVM spot target, or null when `address` is missing or the native-ETH sentinel. */
+/** Nansen indexes native ETH under this identifier, rather than a venue's zero marker. */
+export const NANSEN_NATIVE_ETH = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+const NATIVE_ETH_CHAINS = new Set<Chain>(["ethereum", "arbitrum", "base", "optimism"]);
+
+/** Preserve the selected chain and normalize verified native ETH identities for Nansen. */
 export function evmTarget(chain: Chain, address: string | null | undefined): SpotTarget | null {
   if (!address) return null;
-  if (isNativeEvm(address)) return null;
+  if (isNativeEvm(address)) return NATIVE_ETH_CHAINS.has(chain) ? { kind: "spot", chain, tokenAddress: NANSEN_NATIVE_ETH, symbol: "ETH" } : null;
   return { kind: "spot", chain, tokenAddress: address };
 }
 
@@ -98,7 +105,8 @@ export const OTHER_CHAIN_NAMES: Record<string, string> = {
   // LI.FI non-EVM ids (docs.li.fi Bitcoin tx example uses 20000000000001).
   "20000000000001": "Bitcoin",
   "1151111081099710": "Solana",
-  "1001": "Sui",
+  "9270000000000000": "Sui",
+  "1201081091099710": "Stellar",
   // EVM chains Nansen's token endpoints do not cover.
   "324": "zkSync Era",
   "59144": "Linea",
@@ -145,6 +153,7 @@ export const NATIVE_SYMBOLS: Record<Chain, string> = {
   bnb: "BNB",
   polygon: "POL",
   avalanche: "AVAX",
+  robinhood: "ETH",
 };
 
 /** POL was MATIC until 2024 and both spellings are still in the wild. */

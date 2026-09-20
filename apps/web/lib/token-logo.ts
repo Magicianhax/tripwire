@@ -1,5 +1,5 @@
 import { getDb } from "./db";
-import { nansenPeek } from "./nansen/client";
+import { isReplay, nansenPeek } from "./nansen/client";
 import { TOKEN_INFO_TTL, type TokenInformationResponse } from "./nansen/endpoints";
 
 /**
@@ -31,7 +31,8 @@ export type LogoFailure = { ok: false; status: 400 | 404 | 502; reason: string }
 export type LogoBytes = { ok: true; body: Uint8Array; contentType: string; cached: boolean };
 export type LogoResult = LogoBytes | LogoFailure;
 
-const cacheKey = (chain: string, address: string) => `logo|${chain}|${address.toLowerCase()}`;
+// Version out bytes cached before identity checks; Solana addresses are case-sensitive.
+const cacheKey = (chain: string, address: string) => `logo-v2|${isReplay() ? "replay" : "live"}|${chain}|${chain === "solana" ? address : address.toLowerCase()}`;
 
 /** The logo URL Nansen already gave us for this token, or null. Cache-only: no credit is spent. */
 export function cachedLogoUrl(chain: string, tokenAddress: string): string | null {
@@ -40,6 +41,10 @@ export function cachedLogoUrl(chain: string, tokenAddress: string): string | nul
     path: "tgm/token-information",
     body: { chain, token_address: tokenAddress, timeframe: "1d" },
   });
+  const returnedAddress = payload?.data?.contract_address;
+  if (!returnedAddress || (chain === "solana" ? returnedAddress !== tokenAddress : returnedAddress.toLowerCase() !== tokenAddress.toLowerCase())) return null;
+  // The bundled token-information recording is WIF on Solana, not a generic logo source.
+  if (isReplay() && chain !== "solana") return null;
   const logo = payload?.data?.logo ?? null;
   if (!logo) return null;
   try {

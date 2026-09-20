@@ -23,6 +23,7 @@ export type WalletHit = {
   /** The empty inline element Tripwire created for this marker. */
   slot: HTMLElement;
   key: string;
+  presentation?: "profile";
 };
 
 const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "INPUT", "SELECT", "OPTION", "CODE", "PRE"]);
@@ -58,6 +59,21 @@ export type ScanOptions = {
 
 let counter = 0;
 
+/** PM uses a stretched, screen-reader-only link before the actual row content. */
+function profileNameAnchor(link: HTMLAnchorElement): Element | null {
+  const url = new URL(link.href);
+  if (url.hostname !== "polymarket.com" && url.hostname !== "www.polymarket.com") return null;
+  if (!url.pathname.startsWith("/profile/")) return null;
+  const row = link.closest("li");
+  const label = link.textContent?.trim();
+  if (!row || !label || !link.querySelector(".sr-only")) return null;
+  const name = [...row.querySelectorAll("p")].find((p) => p.textContent?.trim() === label && !p.closest("a"));
+  if (!name) return null;
+  // The paragraph's wrapper clips long names. Its parent is the horizontal name/social row.
+  const wrapper = name.parentElement;
+  return wrapper?.parentElement && wrapper !== row ? wrapper : null;
+}
+
 function makeSlot(doc: Document): HTMLElement {
   const slot = doc.createElement("span");
   slot.setAttribute(SLOT_ATTR, "");
@@ -92,8 +108,17 @@ export function scanForWallets(root: ParentNode, opts: ScanOptions): WalletHit[]
     if (!ref || !accept(ref)) continue;
     state.markedHrefs.add(a);
     const slot = makeSlot(doc);
-    a.after(slot);
-    hits.push({ ref, slot, key: nextKey(ref) });
+    const profileAnchor = profileNameAnchor(a as HTMLAnchorElement);
+    if (profileAnchor) {
+      slot.setAttribute("data-tripwire-profile-marker", "");
+      slot.style.pointerEvents = "auto";
+      slot.style.flexShrink = "0";
+      slot.style.alignSelf = "center";
+      profileAnchor.after(slot);
+    } else {
+      a.after(slot);
+    }
+    hits.push({ ref, slot, key: nextKey(ref), ...(profileAnchor ? { presentation: "profile" as const } : {}) });
   }
 
   const walker = doc.createTreeWalker(node, NodeFilter.SHOW_TEXT, {

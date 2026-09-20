@@ -80,8 +80,8 @@ describe("uniswap", () => {
     });
   });
 
-  it("native ETH -> null (we don't guard natives)", () => {
-    expect(read(uniswapAdapter, "https://app.uniswap.org/swap?chain=ethereum&outputCurrency=ETH")).toBeNull();
+  it("native ETH maps to Nansen's native identifier", () => {
+    expect(read(uniswapAdapter, "https://app.uniswap.org/swap?chain=ethereum&outputCurrency=ETH")).toEqual({kind:"spot",chain:"ethereum",tokenAddress:`0x${"e".repeat(40)}`,symbol:"ETH"});
   });
 
   it("missing chain param -> null (controller ruling: no defaulted chain)", () => {

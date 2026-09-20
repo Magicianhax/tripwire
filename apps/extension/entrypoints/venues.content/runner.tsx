@@ -122,6 +122,8 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
    */
   async function render(adapter: VenueAdapter, target: Target | null, key: string, gap: TargetGap | null = null): Promise<void> {
     rc.currentKey = key;
+    const symbol = gap && "symbol" in gap ? gap.symbol : undefined;
+    rc.marketSymbol = symbol && /^[A-Za-z0-9][A-Za-z0-9.-]{0,39}$/.test(symbol) ? symbol : null;
     // Tear the previous target's display and blocker down BEFORE any await: the old verdict
     // (a stale block, or a CLEAR for a token that's no longer selected) must never stay visible
     // while the new check is in flight.

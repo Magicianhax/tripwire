@@ -46,6 +46,7 @@ export type RunnerContext = {
    * yet). Read by `resyncAnchor()` via `nextAction(currentDisplay, decideDisplay(...))`. */
   currentDisplay: DisplayMode | null;
   currentKey: string | null;
+  marketSymbol?: string | null;
   /** Backend replay mode (recorded fixtures): every display renders the REPLAY watermark. */
   replay: boolean;
   unlocks: Map<string, number>;

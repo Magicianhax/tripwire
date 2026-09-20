@@ -6,7 +6,7 @@ import { TRIPWIRE_EXTENSION_ID } from "@tripwire/core";
 import { resetDb } from "@/lib/db";
 import { _resetClientState } from "@/lib/nansen/client";
 import { _forgetLogo, MAX_LOGO_BYTES, tokenLogo } from "@/lib/token-logo";
-import { extractLabels } from "@/lib/intel/wallet";
+import { extractLabels, walletLabelOf } from "@/lib/intel/wallet";
 import { POST as walletPOST } from "@/app/api/wallet/route";
 import { POST as labelsPOST } from "@/app/api/wallet/labels/route";
 import { GET as logoGET } from "@/app/api/token-logo/route";
@@ -51,7 +51,12 @@ describe("POST /api/wallet", () => {
     expect(body.input).toBe(ADDRESS);
     expect(body.portfolio.totalUsd).toBeGreaterThan(0);
     expect(body.portfolio.holdings.length).toBeGreaterThan(0);
-    expect(body.portfolio.holdings.length).toBeLessThanOrEqual(6);
+    expect(body.portfolio.holdings).toHaveLength(20);
+    expect(body.sampleData).toBe(true);
+    expect(body.portfolio.chainHoldings.reduce((sum: number, row: { valueUsd: number }) => sum + row.valueUsd, 0)).toBeCloseTo(body.portfolio.totalUsd);
+    expect(body.portfolio.holdingsTruncated).toBe(false);
+    expect(body.pnl.topPnlTokens).toHaveLength(5);
+    expect(body.pnl.topPnlTokens[0].symbol).toBe("LIT");
     expect(body.pnl.windowDays).toBe(90);
     expect(typeof body.pnl.winRate).toBe("number");
     // chainGuess is where the wallet's money actually is: the fixture's largest holding is on Arbitrum.
@@ -158,6 +163,12 @@ describe("POST /api/wallet/labels", () => {
 });
 
 describe("extractLabels", () => {
+  it("does not attribute an unrelated entity search result to a wallet", () => {
+    expect(walletLabelOf(ADDRESS, [{ name: "Vitalik", tags: [] }])).toBeNull();
+    expect(walletLabelOf(ADDRESS, [{ name: "Other", tags: [], address: WIF }])).toBeNull();
+    expect(walletLabelOf(ADDRESS, [{ name: "Named wallet", tags: [], address: ADDRESS.toUpperCase() }])?.text).toBe("Named wallet");
+    expect(walletLabelOf(WIF, [{ name: "Other", tags: [], address: WIF.toLowerCase() }])).toBeNull();
+  });
   it("reads labels out of the shapes profiler/labels might use", () => {
     expect(extractLabels({ labels: ["Smart Trader", "Fund"] })).toEqual(["Smart Trader", "Fund"]);
     expect(extractLabels({ data: [{ label: "Whale" }, { label: "Whale" }] })).toEqual(["Whale"]);
@@ -174,6 +185,15 @@ describe("GET /api/token-logo", () => {
   const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 1, 2, 3, 4]);
   const image = (type: string, bytes: Uint8Array = png) =>
     new Response(bytes.slice().buffer as ArrayBuffer, { status: 200, headers: { "content-type": type, "content-length": String(bytes.byteLength) } });
+
+  it("never substitutes the WIF replay logo for another holding or case-distinct Solana address", async () => {
+    const fetchMock = vi.fn(async () => image("image/png"));
+    vi.stubGlobal("fetch", fetchMock);
+    for (const [chain, address] of [["ethereum", ADDRESS], ["solana", WIF.toLowerCase()], ["ethereum", WIF]]) {
+      expect(await tokenLogo(chain!, address!)).toEqual({ ok: false, status: 404, reason: "no logo known for this token" });
+    }
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 
   it("rejects bad params", async () => {
     expect((await logoGET(req("/api/token-logo"))).status).toBe(400);

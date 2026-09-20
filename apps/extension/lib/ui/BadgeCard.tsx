@@ -1,13 +1,14 @@
 import { useContext, useId } from "react";
-import { cleanLabel, NANSEN_LOGO, venueLogo, type WalletVenue } from "@tripwire/core";
-import { BadgeCheck, CircleAlert, Maximize2, Minimize2 } from "lucide-react";
-import type { AuthorBadgesResponse, BadgeLink, HyperliquidBadge, NansenBadge, PolymarketBadge } from "../api-types";
+import { NANSEN_LOGO, venueLogo, type WalletVenue } from "@tripwire/core";
+import { Maximize2, Minimize2 } from "lucide-react";
+import type { AuthorBadgesResponse, BadgeLink } from "../api-types";
 import { badgeVenues, type BadgeVenue } from "./BadgeRow";
-import { pct, timeAgo, usd } from "./format";
-import { CloseIcon, Icon, LABEL_KIND_ICON } from "./icons";
+import { CloseIcon, Icon } from "./icons";
 import { LinkStatus, LinkWallet } from "./LinkWallet";
-import { BrandMark, ChainLogo, monogram } from "./Logo";
-import { Empty, Problems, Readouts, Section, signOf as sign, Sources } from "./panel-parts";
+import { BrandMark } from "./Logo";
+import { Empty, NansenLink, Problems } from "./panel-parts";
+import { EntityProfile } from "./EntityProfile";
+import { ReplayBadge } from "./ReplayBadge";
 import { HyperliquidBody, PolymarketBody } from "./VenueBody";
 import { PopoverContext } from "./Popover";
 import { Tabs, type TabDef } from "./Tabs";
@@ -23,64 +24,6 @@ export type BadgeCardProps = {
   onSave: (venue: WalletVenue, address: string) => Promise<string | null>;
   onUnlink: (venue: WalletVenue) => Promise<string | null>;
 };
-
-const rate = (v: number | null | undefined) => (v === null || v === undefined ? "—" : pct(v * 100));
-
-function NansenTab({ badge, handle }: { badge: NansenBadge | undefined; handle: string }) {
-  if (!badge) return <Empty>No Nansen label for @{handle}.</Empty>;
-  return (
-    <>
-      <p className="tw-person">
-        <Icon icon={BadgeCheck} size={16} />
-        <span>
-          Nansen label: <b>{badge.entity}</b>
-        </span>
-      </p>
-      {badge.tags.length > 0 ? (
-        <ul className="tw-tags">
-          {badge.tags.map((tag) => {
-            const clean = cleanLabel(tag);
-            return (
-              <li key={tag} className="tw-tag">
-                <Icon icon={LABEL_KIND_ICON[clean.kind]} size={14} />
-                {clean.text || tag}
-              </li>
-            );
-          })}
-        </ul>
-      ) : null}
-      <Readouts
-        items={[
-          { label: "Holdings", value: usd(badge.totalHoldingsUsd) },
-          { label: `Realized PnL ${badge.pnlWindowDays}d`, value: usd(badge.realizedPnlUsd, true), sign: sign(badge.realizedPnlUsd) },
-          { label: "Win rate", value: rate(badge.winRate) },
-        ]}
-      />
-      <Section title="Top holdings">
-        {badge.topHoldings.length === 0 ? (
-          <Empty>No holdings came back for this entity.</Empty>
-        ) : (
-          <ul className="tw-rows tw-holding-rows">
-            {badge.topHoldings.map((h) => (
-              <li key={`${h.chain}-${h.symbol}`}>
-                <span className="tw-holding-name">
-                  <span className="tw-token-logo tw-monogram" aria-hidden="true" style={{ width: 20, height: 20 }}>
-                    {monogram(h.symbol)}
-                  </span>
-                  <span className="tw-row-name">{h.symbol}</span>
-                  <ChainLogo chain={h.chain} size={14} />
-                </span>
-                <span className="tw-fig">{usd(h.valueUsd)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Section>
-      <Problems errors={badge.errors} />
-      <Sources>Nansen entity balances and PnL summary</Sources>
-    </>
-  );
-}
 
 /**
  * The author badge card: the same floating card as the post evidence, with one tab per badge the
@@ -105,7 +48,7 @@ export function BadgeCard({ handle, displayName, badges, initial, onClose, onSav
     const label = venue === "nansen" ? "Nansen" : venue === "hyperliquid" ? "Hyperliquid" : "Polymarket";
     const content =
       venue === "nansen" ? (
-        <NansenTab badge={badges?.nansen} handle={handle} />
+        badges?.nansen ? <EntityProfile badge={badges.nansen} expanded={size === "expanded"} /> : <Empty>No Nansen label for @{handle}.</Empty>
       ) : venue === "hyperliquid" ? (
         <HyperliquidBody badge={badges!.hyperliquid!} head={<LinkStatus venue="hyperliquid" link={badges!.hyperliquid!.link} onUnlink={onUnlink} />} />
       ) : (
@@ -125,6 +68,7 @@ export function BadgeCard({ handle, displayName, badges, initial, onClose, onSav
             <span className="tw-meta">@{handle}</span>
           </span>
         </div>
+        <ReplayBadge replay={badges?.replay} />
         {toggleSize ? (
           <Tooltip label={size === "expanded" ? "Collapse card" : "Expand card"} align="end" placement="bottom">
             {(labelId) => (
@@ -151,6 +95,7 @@ export function BadgeCard({ handle, displayName, badges, initial, onClose, onSav
       </div>
       <footer className="tw-card-footer">
         <div className="tw-card-credit">
+          {badges?.nansen ? <NansenLink href={badges.nansen.nansenUrl ?? `https://app.nansen.ai/profiler?chain=all&entity=${encodeURIComponent(badges.nansen.entity)}&tab=overview`} /> : null}
           <p className="tw-meta tw-powered">
             Powered by <BrandMark logo={NANSEN_LOGO} size={14} /> <span className="tw-powered-name">Nansen</span>
           </p>

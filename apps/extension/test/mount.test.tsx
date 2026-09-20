@@ -36,6 +36,21 @@ function uiCssCtx(): ContentScriptContext {
 }
 
 describe("mountReact", () => {
+  it("removes active roots on context invalidation and refuses late mounts", async () => {
+    const callbacks = new Set<() => void>();
+    let invalid = false;
+    const ctx = {
+      options: {}, get isInvalid() { return invalid; },
+      onInvalidated(callback: () => void) { callbacks.add(callback); return () => callbacks.delete(callback); },
+    } as unknown as ContentScriptContext;
+    let mount!: Awaited<ReturnType<typeof mountReact>>;
+    await act(async () => { mount = await mountReact(ctx, { position: "inline" }, <span>active</span>); });
+    invalid = true;
+    await act(async () => { for (const callback of [...callbacks]) callback(); });
+    expect(mount.ui.shadowHost.isConnected).toBe(false);
+    expect(() => mount.update(<span>late</span>)).not.toThrow();
+    await expect(mountReact(ctx, { position: "inline" }, <span>late</span>)).rejects.toThrow("Extension context invalidated");
+  });
   it("modal mounts never intercept pointer events outside their own interactive children", async () => {
     let mount!: Awaited<ReturnType<typeof mountReact>>;
     await act(async () => {
@@ -45,6 +60,12 @@ describe("mountReact", () => {
     // WXT makes the modal container position:fixed; inset:0 -- it must be click-through.
     expect(container.style.position).toBe("fixed");
     expect(container.style.pointerEvents).toBe("none");
+    // WXT also writes the stacking layer on the shadow host. Its reset is
+    // `:host { all: initial !important }`, so the contract must be reasserted after that reset
+    // inside the same shadow stylesheet or a hostile host widget can paint above the card.
+    const shadowCss = mount.ui.shadow.querySelector("style")?.textContent ?? "";
+    expect(shadowCss).toContain("position: relative !important");
+    expect(shadowCss).toContain("z-index: 10 !important");
     mount.ui.remove();
   });
 

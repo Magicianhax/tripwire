@@ -107,6 +107,23 @@ describe("TokenLogo", () => {
 });
 
 describe("WalletLabel", () => {
+  it("links a labelled wallet to its exact Nansen address and omits links without an address", () => {
+    const address = "0x7fdafde5cfb5465924316eced2d3715494c517d1";
+    const linked = mount(<WalletLabel label="Token Millionaire" address={address} chain="base" />);
+    const link = linked.container.querySelector("a")!;
+    const url = new URL(link.href);
+    expect(url.origin).toBe("https://app.nansen.ai");
+    expect(url.pathname).toBe("/profiler");
+    expect(url.searchParams.get("address")).toBe(address);
+    expect(url.searchParams.get("chain")).toBe("base");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
+    expect(linked.container.querySelector('[role="tooltip"]')?.textContent).toContain("View on Nansen");
+    linked.root.unmount();
+    const unknown = mount(<WalletLabel label="Token Millionaire" address="" />);
+    expect(unknown.container.querySelector("a")).toBeNull();
+    unknown.root.unmount();
+  });
   it("shows Nansen's label without emoji, with the kind as data and an icon", () => {
     const { container, root } = mount(<WalletLabel label="🤓 Smart HL Perps Trader [0x25554a]" address="0x25554a00" />);
     expect(container.textContent).toBe("Smart HL Perps Trader [0x25554a]");

@@ -16,8 +16,9 @@ import type { Chain, Target } from "@tripwire/core";
  * these now says what it is.
  */
 export type TargetGap =
+  | { kind: "missing-chain"; symbol: string }
   /** The venue's destination chain is outside Tripwire's coverage. `label` names it. */
-  | { kind: "unsupported-chain"; label: string }
+  | { kind: "unsupported-chain"; label: string; symbol?: string }
   /** The destination is a chain's own coin, which has no contract to look up on Nansen. */
   | { kind: "native-asset"; symbol: string }
   /** The page names a token by symbol only (no address in the URL): resolve it and check it. */
@@ -29,6 +30,8 @@ export interface VenueAdapter {
   tier: 1 | 2;
   match(url: URL): boolean;
   readTarget(doc: Document, url: URL): Target | null;
+  /** Hide injected trading UI while the venue is choosing an asset or has no selection. */
+  shouldHide?(doc: Document, url: URL): boolean;
   /**
    * Called only when `readTarget` returned null: what the page is pointing at, if anything.
    * `{ kind: "symbol" }` asks the caller to resolve that symbol through the backend and guard

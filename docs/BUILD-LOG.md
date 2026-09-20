@@ -489,6 +489,18 @@ One tooling note: `pnpm build` (recursive, concurrent) hit a Windows libuv shutd
 - The design detector is unavailable locally, so the new design document has manual/capture review plus contrast/unit coverage, not a fresh detector count.
 - Human work remains: live unpacked checks on real sites, the 1,000-call ledger target, adding a Git remote, merge/push, demo recording, X post, and submission form.
 
+## Live Jumper stacking and Sui-name repair
+
+Closed on 2026-09-20 after testing the built extension on live `jumper.xyz`. Token detection and replay evidence were correct, but Jumper's widget painted over both compact and expanded evidence; a Sui destination also rendered the long fallback `chain 9270000000000000`, which the intentionally two-line strip clamped.
+
+- **Stacking root cause:** WXT requested evidence layer `2147483001` on the body-level `tripwire-ui` host, but its shadow stylesheet starts with `:host { all: initial !important }`. That reset beat WXT's ordinary outer inline positioning, leaving the host at computed `position: static; z-index: auto; display: inline`; Jumper's ordinary `z-index: 1110` widget therefore painted above it.
+- **Fix:** `mountReact` passes WXT's `css` option a later same-shadow `:host` rule for non-inline mounts, restoring WXT's zero-size, visible-overflow, positioned host and requested z-index. Inline strips are unchanged, pointer events remain disabled on the full-viewport container, and the existing Popover/focus architecture stays intact. An outer inline `!important` was explicitly rejected because important precedence reverses across Shadow boundaries.
+- **Sui copy:** LI.FI's current Sui ID is `9270000000000000`; the obsolete `1001` entry was replaced. Sui remains unsupported and now reads `Tripwire doesn't cover Sui`. No strip breakpoint or clamp was changed—the short correct name already fits.
+- **Regression shape:** the Jumper E2E fixture now has `position: relative; z-index: 1110`. Chromium asserts compact overlap and expanded center both resolve to `tripwire-ui`, and asserts computed host `relative / 2147483001 / block / 0px × 0px`. Unit and E2E coverage include the current Sui ID and exact copy.
+- **Captures:** `jumper-evidence-compact.png`, `jumper-evidence-expanded.png`, and `strip-jumper-sui.png` were generated and visually inspected. Evidence is fully legible above the widget in both sizes, and the Sui sentence is complete.
+
+Verification: `pnpm verify` passed (core 200, web 159, extension 436); sequential extension/web production builds passed; replay E2E passed 12 with 3 capture-only specs skipped; the capture run passed 3. Final code review returned **APPROVE** with zero findings.
+
 ## Wallet lens
 
 Commits `bb87d9d..` on `feat/cockpit-ui` (on top of `c9132e5`). Brief: `.superpowers/briefs/wallet-lens.md`. Unchanged: the origin/Host guard, blocker semantics, the popover and author-badge behaviour, anchor binding, override flow, replay tag and UNCHECKED-never-CLEAR. `DESIGN.md` and `docs/DECISIONS.md` are untouched; the ADR text is at the end of this section.

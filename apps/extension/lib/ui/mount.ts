@@ -10,7 +10,7 @@ type AppendOption = "last" | "first" | "replace" | "before" | "after" | ((anchor
 type OverlayAlignment = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
 export type MountReactOptions =
-  | { position: "inline"; anchor?: AnchorOption; append?: AppendOption }
+  | { position: "inline"; anchor?: AnchorOption; append?: AppendOption; css?: string; onRemove?: () => void }
   | { position: "overlay"; anchor?: AnchorOption; append?: AppendOption; zIndex?: number; alignment?: OverlayAlignment }
   | { position: "modal"; anchor?: AnchorOption; append?: AppendOption; zIndex?: number };
 
@@ -22,6 +22,7 @@ export type MountReactOptions =
  * shadow root itself.
  */
 export async function mountReact(ctx: ContentScriptContext, opts: MountReactOptions, node: ReactNode) {
+  if (ctx.isInvalid) throw new Error("Extension context invalidated.");
   let root: Root | undefined;
   // Set by onRemove, which WXT calls synchronously from `ui.remove()`. Guards `update()`
   // against firing after removal: a caller can still hold this mount object (e.g. a chip whose
@@ -36,6 +37,21 @@ export async function mountReact(ctx: ContentScriptContext, opts: MountReactOpti
   const ui = await createShadowRootUi(ctx, {
     name: "tripwire-ui",
     ...opts,
+    // WXT writes these values as ordinary light-DOM inline styles after mounting, but its own
+    // shadow reset is `:host { all: initial !important }`. Important declarations reverse
+    // shadow-boundary precedence, so even an outer inline `!important` cannot beat that reset.
+    // Put the overlay host contract after the reset in the same shadow stylesheet instead.
+    css:
+      opts.position === "inline"
+        ? opts.css
+        : `:host {
+            position: relative !important;
+            overflow: visible !important;
+            width: 0 !important;
+            height: 0 !important;
+            display: block !important;
+            ${opts.zIndex === undefined ? "" : `z-index: ${opts.zIndex} !important;`}
+          }`,
     onMount(container) {
       root = createRoot(container);
       root.render(node);
@@ -43,11 +59,21 @@ export async function mountReact(ctx: ContentScriptContext, opts: MountReactOpti
     },
     onRemove(mountedRoot) {
       removed = true;
+      if (opts.position === "inline") opts.onRemove?.();
       mountedRoot?.unmount();
     },
   });
 
+  if (ctx.isInvalid) {
+    ui.remove();
+    throw new Error("Extension context invalidated.");
+  }
   ui.mount();
+  const unsubscribe = ctx.onInvalidated(() => ui.remove());
+  // Removing a UI also removes its context listener; otherwise timeline scrolling
+  // would retain every former React root until this content script is invalidated.
+  const remove = ui.remove.bind(ui);
+  ui.remove = () => { unsubscribe(); remove(); };
   if (opts.position !== "inline") {
     // WXT positions a modal/overlay container `fixed; inset:0` over the whole viewport. It must
     // be click-through: only the children that opt back in (`pointer-events:auto`, e.g. the
@@ -58,7 +84,7 @@ export async function mountReact(ctx: ContentScriptContext, opts: MountReactOpti
   return {
     ui,
     update(next: ReactNode) {
-      if (removed) return; // no-op after this mount's shadow root was removed
+      if (removed || ctx.isInvalid) return; // no-op after this mount's shadow root was removed
       root?.render(next);
     },
   };

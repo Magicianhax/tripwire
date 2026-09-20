@@ -88,12 +88,31 @@ test("captures", async ({ context }) => {
   await jumper.waitForTimeout(300);
   await shot(jumper.locator(".card"), "strip-narrow");
 
-  // strip-jumper-btc: a destination outside coverage names the chain rather than failing.
+  // Jumper's widget uses a high stacking layer on the live site. Both evidence sizes must stay
+  // above it; these captures guard the compact and expanded screenshots that exposed the bug.
   await jumper.evaluate(() => (window as unknown as { setCardWidth(w: number): void }).setCardWidth(416));
+  await jumper.locator(".tw-strip-details").click();
+  const jumperEvidence = jumper.locator('.tw-pop[role="dialog"]');
+  await expect(jumperEvidence).toBeVisible();
+  await jumper.waitForTimeout(200);
+  await shot(jumper, "jumper-evidence-compact");
+  await jumperEvidence.getByRole("button", { name: "Expand card" }).click();
+  await expect(jumperEvidence).toHaveAttribute("data-size", "expanded");
+  await jumper.waitForTimeout(200);
+  await shot(jumper, "jumper-evidence-expanded");
+  await jumperEvidence.getByRole("button", { name: "Close" }).click();
+
+  // strip-jumper-btc: a destination outside coverage names the chain rather than failing.
   await jumper.goto("https://jumper.xyz/?fromChain=1&toChain=20000000000001&toToken=bitcoin");
-  await expect(jumper.locator(".tw-strip-finding")).toHaveText("Tripwire doesn't cover Bitcoin", { timeout: 20_000 });
+  await expect(jumper.locator(".tw-strip-finding")).toHaveText("No onchain data for Bitcoin", { timeout: 20_000 });
   await jumper.waitForTimeout(200);
   await shot(jumper.locator(".card"), "strip-jumper-btc");
+
+  // strip-jumper-sui: current LI.FI id resolves to a short chain name, never a 16-digit fallback.
+  await jumper.goto("https://jumper.xyz/?fromChain=1&toChain=9270000000000000&toToken=sui");
+  await expect(jumper.locator(".tw-strip-finding")).toHaveText("No onchain data for Sui", { timeout: 20_000 });
+  await jumper.waitForTimeout(200);
+  await shot(jumper.locator(".card"), "strip-jumper-sui");
   await jumper.close();
 
   // strip-uniswap-native: the default swap page, whose URL names no token at all.
@@ -101,7 +120,7 @@ test("captures", async ({ context }) => {
   await putRules(uni, { preset: "balanced" });
   await uni.setViewportSize({ width: 1280, height: 900 });
   await uni.goto("https://app.uniswap.org/swap");
-  await expect(uni.locator(".tw-strip-finding")).toHaveText("ETH is the chain's native asset — Tripwire checks tokens", { timeout: 20_000 });
+  await expect(uni.locator(".tw-strip-finding")).toHaveText("Select a network to check ETH", { timeout: 20_000 });
   await uni.waitForTimeout(200);
   await shot(uni.locator(".swap"), "strip-uniswap-native");
   await uni.close();
@@ -121,7 +140,7 @@ test("wallet lens captures", async ({ context, extensionId }) => {
   await marker.click();
   const card = page.locator('.tw-pop[role="dialog"]');
   await expect(card.locator(".tw-card-title")).toHaveText("0x7f…17d1", { timeout: 15_000 });
-  await card.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  await card.evaluate((el) => Promise.allSettled(el.getAnimations({ subtree: true }).filter(a => a.effect?.getTiming().iterations !== Infinity).map((a) => a.finished)));
   await page.waitForTimeout(300);
   await shot(card, "wallet-card-overview");
 
@@ -182,6 +201,24 @@ test("wallet lens captures", async ({ context, extensionId }) => {
     for (const response of cleanupResponses) expect(response.ok()).toBe(true);
   }
 
+  const profile = await context.newPage();
+  await profile.route("https://x.com/VitalikButerin", route => route.fulfill({ path: path.resolve("e2e/pages/x-profile.html"), contentType: "text/html" }));
+  await profile.setViewportSize({ width: 1440, height: 1000 });
+  await profile.goto("https://x.com/VitalikButerin");
+  const entityBadge = profile.getByRole("button", { name: "Nansen label for @VitalikButerin" });
+  await expect(entityBadge).toBeVisible({ timeout: 20000 });
+  await shot(profile.locator(".profile"), "x-profile-badge");
+  await entityBadge.click();
+  const entityCard = profile.locator(".tw-badge-card");
+  await expect(entityCard).toBeVisible();
+  if (await entityCard.getByRole("button", { name: "Collapse card" }).isVisible()) await entityCard.getByRole("button", { name: "Collapse card" }).click();
+  await shot(entityCard, "entity-profile-compact");
+  await entityCard.getByRole("button", { name: "Expand card" }).click();
+  await expect(entityCard).toHaveAttribute("data-size", "expanded");
+  await profile.waitForTimeout(200);
+  await shot(profile, "entity-profile-expanded");
+  await profile.close();
+
   // enable-site: the popup's per-site consent block. The popup is opened as a page, so the
   // active tab and the granted origins are stubbed to what they would be on a real site the
   // user has not enabled yet, with one other site already on the list.
@@ -229,12 +266,32 @@ test("expand and perp depth captures", async ({ context }) => {
   await page.waitForTimeout(300);
   await shot(pop, "perp-funding-venues");
 
+  await pop.getByRole("tab", { name: "Liquidations" }).click();
+  const compactLadder = pop.locator(".tw-liquidation-chart svg");
+  await expect(compactLadder).toBeVisible();
+  await expect.poll(async () => (await compactLadder.boundingBox())?.height).toBeCloseTo(240, 0);
+  await page.screenshot({ path: path.resolve("../../scratch/review/liquidation-compact.png") });
+  await pop.getByRole("tab", { name: "Positioning" }).click();
+
   // perp-expanded: the same card as the centred overlay, over the venue behind it.
   await pop.getByRole("button", { name: "Expand card" }).click();
   await expect(pop).toHaveAttribute("data-size", "expanded");
   await pop.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
   await page.waitForTimeout(400);
   await shot(page, "perp-expanded");
+
+  await pop.getByRole("tab", { name: "Liquidations" }).click();
+  const ladder = pop.locator(".tw-liquidation-chart svg");
+  await expect(ladder).toBeVisible();
+  await expect.poll(async () => (await ladder.boundingBox())?.height).toBeCloseTo(320, 0);
+  const bars = ladder.locator('g[tabindex="0"]');
+  await bars.first().focus();
+  await expect(pop.locator(".tw-liquidation-detail")).toContainText("position value");
+  if (await bars.count() > 1) {
+    await page.keyboard.press("Tab");
+    await expect(bars.nth(1)).toBeFocused();
+  }
+  await page.screenshot({ path: path.resolve("../../scratch/review/liquidation-expanded.png") });
 
   // perp-traders: the tab that costs 11 credits, with its leaderboard from the fixtures.
   await pop.getByRole("tab", { name: /Traders/ }).click();
@@ -283,5 +340,8 @@ test("expand and perp depth captures", async ({ context }) => {
   await spotCard.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
   await spot.waitForTimeout(500);
   await shot(spot, "spot-expanded");
+  await spotCard.getByRole("tab", { name: /Holders/ }).click();
+  await expect(spotCard.locator(".tw-table tbody tr")).toHaveCount(6, { timeout: 20000 });
+  await shot(spot, "spot-holders-links");
   await spot.close();
 });

@@ -5,12 +5,14 @@ import type { VenueAdapter } from "../../lib/adapters/types";
 import { depth, guard, override } from "../../lib/api";
 import type { DepthResponse, GuardResponse, SpotPanel } from "../../lib/api-types";
 import { cardSize, setCardSize, type CardSize } from "../../lib/card-size";
+import { runContentTask } from "../../lib/content-lifecycle";
 import { EVIDENCE_TAB } from "../../lib/ui/BlockScreen";
 import { fitToAnchor, liftOutOfRow } from "../../lib/ui/fit";
 import { Dock, SHEET_BELOW } from "../../lib/ui/Dock";
 import { mountIfCurrent, mountReact } from "../../lib/ui/mount";
 import { CardMessage } from "../../lib/ui/panel-parts";
 import { Panel } from "../../lib/ui/Panel";
+import { MarketsOnlyCard } from "../../lib/ui/MarketsView";
 import { Popover } from "../../lib/ui/Popover";
 import { Strip } from "../../lib/ui/Strip";
 import { BlockOverlay } from "./BlockOverlay";
@@ -90,6 +92,7 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
         }}
       >
         <Panel
+          enableMarkets={target.kind === "spot"}
           data={ok}
           error={result && !result.ok ? errorHeadline(result.status, result.error) : null}
           title={targetTitle(target)}
@@ -124,6 +127,21 @@ export async function toggleEvidence(rc: RunnerContext, adapter: VenueAdapter, t
 
 export function closeEvidenceDock(rc: RunnerContext): void {
   closeEvidence(rc);
+}
+
+async function toggleMarkets(rc:RunnerContext,symbol:string,trigger:HTMLElement|null):Promise<void> {
+  if(rc.evidenceMount){closeEvidence(rc);return;}
+  if(rc.evidenceOpening)return;
+  const opening={};const key=rc.currentKey;rc.evidenceOpening=opening;
+  let size:CardSize=cardSize("spot");
+  let mount:Awaited<ReturnType<typeof mountReact>>|null=null;
+  const node=()=> <Popover anchor={trigger} returnFocus={()=>trigger} onClose={()=>closeEvidence(rc)} size={size}
+    onToggleSize={()=>{size=size==="compact"?"expanded":"compact";setCardSize("spot",size);mount?.update(node());}}>
+    <MarketsOnlyCard symbol={symbol} onClose={()=>closeEvidence(rc)}/>
+  </Popover>;
+  mount=await mountReact(rc.ctx,{position:"modal",zIndex:EVIDENCE_Z_INDEX},node());
+  if(rc.currentKey!==key||rc.evidenceOpening!==opening){mount.ui.remove();return;}
+  rc.evidenceOpening=null;rc.evidenceMount=mount;
 }
 
 /** The neutral "Checking…" state shown between a target change and its new verdict: a LOADING
@@ -167,7 +185,7 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
         collapsed={collapsed}
         verdict={verdict}
         headline={headline}
-        onToggleCollapsed={() => void toggle()}
+        onToggleCollapsed={() => void runContentTask(rc.ctx, toggle)}
         replay={rc.replay}
         venue={adapter.id}
         size={size}
@@ -179,7 +197,8 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
       >
         {/* The card is the same one every surface uses, so it opens with skeletons here too:
             the dock chip expands into a card immediately, not after the guard call. */}
-        <Panel
+        {!target && rc.marketSymbol ? <MarketsOnlyCard symbol={rc.marketSymbol} onClose={()=>{collapsed=true;rc.mainMount?.update(node());}}/> : <Panel
+          enableMarkets={target?.kind === "spot"}
           data={panelData}
           error={panelError}
           title={targetTitle(target)}
@@ -192,7 +211,7 @@ export async function showPrimaryDock(rc: RunnerContext, adapter: VenueAdapter, 
             collapsed = true;
             rc.mainMount?.update(node());
           }}
-        />
+        />}
       </Dock>
     );
   }
@@ -232,7 +251,9 @@ export function createStripBinding(
     const anchor = liftOutOfRow(button);
     const text = unlocked ? `${headline}, unlocked for this session` : headline;
     const node = (
-      <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} venue={adapter.id} onDetails={target ? (trigger) => void toggleEvidence(rc, adapter, target, trigger) : undefined} />
+      <Strip verdict={stripVerdict(verdict)} text={text} rule={rule} replay={rc.replay} venue={adapter.id}
+        detailsLabel={target ? "Details" : "Markets"}
+        onDetails={target ? (trigger) => void runContentTask(rc.ctx, () => toggleEvidence(rc, adapter, target, trigger)) : rc.marketSymbol ? (trigger)=>void runContentTask(rc.ctx,()=>toggleMarkets(rc,rc.marketSymbol!,trigger)) : undefined} />
     );
     if (rc.mainMount) rc.mainMount.ui.remove();
     // Guards the residual A2 race: `sync()` (runner.tsx) calls this without awaiting it, so a
@@ -258,7 +279,7 @@ export function createStripBinding(
     }
   }
 
-  return { onBind, onUnbind };
+  return { onBind: (anchor: HTMLElement) => runContentTask(rc.ctx, () => onBind(anchor)), onUnbind };
 }
 
 /** Block-screen mode's bind/unbind pair. Unlike Strip, the overlay itself stays mounted across
@@ -284,8 +305,8 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
         error={overrideError}
         replay={rc.replay}
         venue={adapter.id}
-        onEvidence={(trigger) => void toggleEvidence(rc, adapter, target, trigger, EVIDENCE_TAB[target.kind])}
-        onOverride={() => void doOverride()}
+        onEvidence={(trigger) => void runContentTask(rc.ctx, () => toggleEvidence(rc, adapter, target, trigger, EVIDENCE_TAB[target.kind]))}
+        onOverride={() => void runContentTask(rc.ctx, doOverride)}
       />
     );
     if (rc.mainMount) {
@@ -324,7 +345,7 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
     rc.unlockTimers.set(
       key,
       setTimeout(() => {
-        if (rc.currentKey === key) void rc.renderResolved(adapter, target, key, data.verdict, headline, data);
+        if (rc.currentKey === key) void runContentTask(rc.ctx, () => rc.renderResolved(adapter, target, key, data.verdict, headline, data));
       }, UNLOCK_MS),
     );
     // Re-render immediately as unlocked -- swaps the overlay for a Strip without a refetch.
@@ -332,13 +353,14 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
   }
 
   function reposition(): void {
-    void renderFrame();
+    void runContentTask(rc.ctx, renderFrame);
   }
 
   async function onBind(anchor: HTMLElement): Promise<void> {
     boundAnchor = anchor;
     rc.blocker = installBlocker(anchor);
     await renderFrame();
+    if (rc.ctx.isInvalid || boundAnchor !== anchor) return;
     window.addEventListener("scroll", reposition, true);
     window.addEventListener("resize", reposition);
     rc.resizeObserver = new ResizeObserver(reposition);
@@ -359,5 +381,5 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
     rc.resizeObserver = null;
   }
 
-  return { onBind, onUnbind };
+  return { onBind: (anchor: HTMLElement) => runContentTask(rc.ctx, () => onBind(anchor)), onUnbind };
 }

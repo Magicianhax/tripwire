@@ -16,6 +16,8 @@ import { SectionProblem, Skeleton } from "./Skeleton";
 import { Tabs, type TabDef } from "./Tabs";
 import { FundingHistory, VenueTable } from "./VenueTable";
 import { WalletLabel } from "./WalletLabel";
+import { LiquidationChart } from "./LiquidationChart";
+import { usePagination } from "./DataCharts";
 
 /**
  * The perp card.
@@ -99,47 +101,6 @@ function PressureBar({ screener }: { screener: PerpPanel["screener"] }) {
         </span>
       </div>
     </div>
-  );
-}
-
-/** Vertical price axis centered on mark price ±15%. A tick per Smart Money position at its
- * liquidation_price, width scaled by position_value_usd. Positions with a null
- * liquidation_price are skipped (never crash). A dashed band marks ±3% around mark; longs are
- * mint ticks, shorts outlined in red; mark price is a white rule. */
-function LiquidationLadder({ positions, markPrice, height }: { positions: PerpPosition[] | null; markPrice: number | null; height: number }) {
-  if (!markPrice || !positions || positions.length === 0) return null;
-  const lo = markPrice * 0.85;
-  const hi = markPrice * 1.15;
-  const range = hi - lo;
-  if (range <= 0) return null;
-  const H = height;
-  const W = 400;
-
-  const ticks = positions.filter(
-    (p): p is PerpPosition & { liquidation_price: number } => p.liquidation_price !== null && p.liquidation_price >= lo && p.liquidation_price <= hi,
-  );
-  if (ticks.length === 0) return null;
-
-  const maxValue = Math.max(...ticks.map((p) => p.position_value_usd));
-  const yFor = (p: number) => H - ((p - lo) / range) * H;
-  const bandTop = yFor(Math.min(markPrice * 1.03, hi));
-  const bandBottom = yFor(Math.max(markPrice * 0.97, lo));
-
-  return (
-    <svg className="tw-ladder" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Liquidation ladder">
-      <rect className="tw-ladder-band" x={0.5} y={bandTop} width={W - 1} height={Math.max(0, bandBottom - bandTop)} />
-      <line className="tw-ladder-mark" x1={0} x2={W} y1={yFor(markPrice)} y2={yFor(markPrice)} />
-      {ticks.map((p, i) => {
-        const y = yFor(p.liquidation_price);
-        const w = maxValue > 0 ? Math.max(8, (p.position_value_usd / maxValue) * (W / 2)) : 8;
-        const x = p.side === "Long" ? W / 2 - w : W / 2;
-        return p.side === "Long" ? (
-          <rect key={i} className="tw-ladder-long" x={x} y={Math.max(0, y - 1.5)} width={w} height={3} />
-        ) : (
-          <rect key={i} className="tw-ladder-short" x={x + 0.5} y={Math.max(0.5, y - 2)} width={Math.max(0, w - 1)} height={4} />
-        );
-      })}
-    </svg>
   );
 }
 
@@ -247,38 +208,25 @@ function LiquidationsTab({ panel, depth }: { panel: PerpPanel; depth: DepthState
   const positions = panel.positions ?? [];
   const bands = liquidationBands(positions, markPrice);
   const hasTicks = positions.some((p) => p.liquidation_price !== null);
-  // Expanded shows the whole book of Smart Money positions; compact shows the biggest six.
-  const shown = [...positions]
+  // Keep all returned positions reachable without a long nested scrolling table.
+  const pagination = usePagination([...positions]
     .filter((p) => p.liquidation_price !== null)
-    .sort((a, b) => b.position_value_usd - a.position_value_usd)
-    .slice(0, rowLimit(size, 6, 20));
+    .sort((a, b) => b.position_value_usd - a.position_value_usd), 6);
+  const shown = pagination.rows;
 
   return (
     <>
       <Section title="Liquidation ladder" aside="mark ±15%">
         {markPrice && hasTicks ? (
           <>
-            <LiquidationLadder positions={panel.positions} markPrice={markPrice} height={size === "expanded" ? 320 : 180} />
-            <p className="tw-legend">
-              <span>
-                <i className="tw-key tw-key-long" aria-hidden="true" />
-                Long liq.
-              </span>
-              <span>
-                <i className="tw-key tw-key-short" aria-hidden="true" />
-                Short liq.
-              </span>
-              <span>
-                <i className="tw-key tw-key-band" aria-hidden="true" />
-                ±3% of mark
-              </span>
-            </p>
+            <LiquidationChart positions={positions} markPrice={markPrice} height={size === "expanded" ? 320 : 240} />
           </>
         ) : (
-          <Empty>No Smart Money liquidation prices near mark.</Empty>
+          <Empty>No liquidation levels available for the returned positions.</Empty>
         )}
       </Section>
 
+      <div className="tw-liquidation-summary">
       {bands ? (
         <Section title="How much liquidates near here" aside="Smart Money">
           <Readouts
@@ -289,8 +237,8 @@ function LiquidationsTab({ panel, depth }: { panel: PerpPanel; depth: DepthState
           />
           <p className="tw-note tw-meta">
             {bands[0]!.count === 0
-              ? "Nothing Smart Money holds liquidates within 3% of mark."
-              : `${bands[0]!.count} position${bands[0]!.count === 1 ? "" : "s"} would liquidate on a 3% move — ${usd(bands[0]!.longUsd)} of longs and ${usd(bands[0]!.shortUsd)} of shorts.`}
+              ? "No returned positions liquidate within 3% of mark."
+              : `${bands[0]!.count} returned position${bands[0]!.count === 1 ? "" : "s"} have liquidation levels within 3% of mark — ${usd(bands[0]!.longUsd)} of longs and ${usd(bands[0]!.shortUsd)} of shorts.`}
           </p>
         </Section>
       ) : null}
@@ -343,8 +291,10 @@ function LiquidationsTab({ panel, depth }: { panel: PerpPanel; depth: DepthState
               })}
             </tbody>
           </table>
+          {pagination.controls}
         </Section>
       ) : null}
+      </div>
       <Sources>Nansen tgm/perp-positions</Sources>
     </>
   );
@@ -490,7 +440,7 @@ function TradersTab({ depth, coin }: { depth: DepthState; coin: string }) {
 
       <SectionProblem reasons={traders.errors} />
       <Sources>
-        Nansen tgm/perp-pnl-leaderboard, tgm/perp-trades and perp-leaderboard &mdash; <span className="tw-fig">{traders.credits}</span> credits
+        Nansen tgm/perp-pnl-leaderboard, tgm/perp-trades and perp-leaderboard
       </Sources>
     </>
   );

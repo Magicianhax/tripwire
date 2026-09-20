@@ -190,15 +190,11 @@ export function PanelFooter({
   endpointCount,
   errors,
   nansenUrl,
-  depthCredits = 0,
 }: {
   /** null while the card is still loading: "0 endpoints" is noise, not information. */
   endpointCount: number | null;
   errors: string[];
   nansenUrl?: string | null;
-  /** Credits the tabs opened so far have spent, over and above the card's own load. Only shown
-   * once something has actually been spent, so a free card's footer stays quiet. */
-  depthCredits?: number;
 }) {
   return (
     <footer className="tw-card-footer">
@@ -212,11 +208,6 @@ export function PanelFooter({
             <span className="tw-fig">{endpointCount}</span> endpoint{endpointCount === 1 ? "" : "s"}
           </p>
         )}
-        {depthCredits > 0 ? (
-          <p className="tw-meta">
-            <span className="tw-fig">{depthCredits}</span> credit{depthCredits === 1 ? "" : "s"} this tab
-          </p>
-        ) : null}
       </div>
       {errors.length > 0 ? (
         <ul className="tw-errors">

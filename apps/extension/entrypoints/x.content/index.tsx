@@ -7,6 +7,7 @@ import type { ApiResult } from "../../lib/api";
 import { depth, health, personIntel, postIntel, resolve } from "../../lib/api";
 import { cardSize, setCardSize, warmCardSizes, type CardSize } from "../../lib/card-size";
 import { claimToken } from "../../lib/claimed-tokens";
+import { runContentTask } from "../../lib/content-lifecycle";
 import { createReplayFlag } from "../../lib/replay";
 import type { PersonIntelResponse, PostIntelResponse, ResolveResponse } from "../../lib/api-types";
 import { Chip } from "../../lib/ui/Chip";
@@ -14,6 +15,7 @@ import { shortAddr } from "../../lib/ui/format";
 import { mountReact } from "../../lib/ui/mount";
 import { Panel } from "../../lib/ui/Panel";
 import { Popover } from "../../lib/ui/Popover";
+import { attachMarketsOnly } from "../../lib/x/market-only";
 import { X_MATCHES } from "../../lib/venues";
 import { createBadgeController } from "../../lib/x/author-badges";
 import { createResultCache } from "../../lib/x/cache";
@@ -23,6 +25,7 @@ import { chipErrorHeadline, chipHeadline } from "../../lib/x/headline";
 import { chainForAddress, pickToken, type ChipToken } from "../../lib/x/pick";
 import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
 import { createQueue } from "../../lib/x/queue";
+import { createProfileDiscovery, parseProfile } from "../../lib/x/profile";
 
 const TWEET_SELECTOR = 'article[data-testid="tweet"]';
 const CHIP_CONCURRENCY = 4;
@@ -63,6 +66,13 @@ export default defineContentScript({
     const mounts = createMountTracker();
     // Author badges (Nansen label, linked Hyperliquid/Polymarket wallets) next to the username.
     const badges = createBadgeController({ ctx, mounts, stopHostClicks, zIndex: POPOVER_Z_INDEX });
+    const profiles = createProfileDiscovery({
+      read: () => parseProfile(document, location.pathname),
+      attach: (profile, isCurrent) => badges.attachAt(profile.owner, profile, profile.anchor, isCurrent),
+    });
+    // Polling bounds scans on X's busy timeline and catches pushState navigation plus late hydration.
+    void runContentTask(ctx, profiles.tick);
+    const profileTimer = ctx.setInterval(() => void runContentTask(ctx, profiles.tick), 2000);
 
     function getChipIntel(target: SpotTarget, timeIso: string | null): Promise<ApiResult<PostIntelResponse>> {
       const key = `${target.chain}:${target.tokenAddress}`;
@@ -90,7 +100,7 @@ export default defineContentScript({
     }
 
     async function processTweet(article: Element): Promise<void> {
-      if (processed.has(article)) return;
+      if (processed.has(article) || ctx.isInvalid) return;
       processed.add(article);
 
       const parsedTweet = parseTweet(article);
@@ -100,7 +110,7 @@ export default defineContentScript({
       const tweet: ParsedTweet = parsedTweet;
 
       // Badges are about the author, so they run for every post, token or not.
-      void badges.attach(article, tweet);
+      void runContentTask(ctx, () => badges.attach(article, tweet));
 
       const token = pickToken(tweet.tokens);
       if (!token) return;
@@ -108,10 +118,17 @@ export default defineContentScript({
       const tweetTextEl = article.querySelector('[data-testid="tweetText"]');
       if (!tweetTextEl) return;
 
+      // A cashtag names an asset search, not a chain/contract. Start with explicit market
+      // choice instead of presenting one chain's automatically selected verdict as universal.
+      if (token.kind === "cashtag") {
+        if (article.isConnected) await attachMarketsOnly({ctx,mounts,article,anchor:tweetTextEl,symbol:token.symbol,zIndex:POPOVER_Z_INDEX,stopHostClicks});
+        return;
+      }
+
       const resolved = await resolveTarget(token, tweet.text);
       if (!resolved) return;
       const replay = await getReplay();
-      if (!article.isConnected) {
+      if (!article.isConnected || ctx.isInvalid) {
         processed.delete(article); // scrolled away while resolving; retry if X re-inserts it
         return;
       }
@@ -127,14 +144,14 @@ export default defineContentScript({
       const chipMount = await mountReact(
         ctx,
         { position: "inline", anchor: tweetTextEl, append: "after" },
-        <Chip verdict={lastVerdict} symbol={symbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void panel.toggle()} />,
+        <Chip verdict={lastVerdict} symbol={symbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void runContentTask(ctx, panel.toggle)} />,
       );
       stopHostClicks(chipMount.ui.shadowHost);
       mounts.track(article, chipMount);
 
       function renderChip(): void {
         chipMount.update(
-          <Chip verdict={lastVerdict} symbol={symbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void panel.toggle()} />,
+          <Chip verdict={lastVerdict} symbol={symbol} chain={target.chain} headline={lastHeadline} expanded={expanded} replay={replay} onClick={() => void runContentTask(ctx, panel.toggle)} />,
         );
       }
 
@@ -160,7 +177,7 @@ export default defineContentScript({
           const chipButton = chipMount.ui.shadow.querySelector<HTMLButtonElement>(".tw-chip");
           // Captured here, not read inside the render closure: `token` is the resolved one this
           // chip was built from, and TS can't see that it stays non-null across the callback.
-          const cardTitle = token.kind === "cashtag" ? `$${symbol}` : symbol;
+          const cardTitle = symbol;
           let size: CardSize = cardSize("spot");
           let panelResult: ApiResult<PostIntelResponse> | null = null;
           let personResult: ApiResult<PersonIntelResponse> | null = null;
@@ -181,14 +198,15 @@ export default defineContentScript({
                   panelMount?.update(cardNode());
                 }}
                 onClose={() => {
-                  if (panel.expanded) void panel.toggle();
+                  if (panel.expanded) void runContentTask(ctx, panel.toggle);
                 }}
               >
                 <Panel
+                  enableMarkets
                   data={ok}
                   error={panelResult && !panelResult.ok ? chipErrorHeadline(panelResult.status, panelResult.error) : null}
                   title={cardTitle}
-                  onClose={() => void panel.toggle()}
+                  onClose={() => void runContentTask(ctx, panel.toggle)}
                   replay={replay}
                   person={personResult?.ok ? personResult.data : null}
                   headline={ok ? chipHeadline(ok) : undefined}
@@ -227,7 +245,8 @@ export default defineContentScript({
             postIntel(target, tweet.timeIso ?? undefined, "panel"),
             personIntel(tweet.handle, tweet.displayName, target),
           ]);
-          void panelDataPromise.then(async ([intel, person]) => {
+          void runContentTask(ctx, async () => {
+            const [intel, person] = await panelDataPromise!;
             panelResult = intel;
             personResult = person;
             // Already loaded for the badge row (one fetch per handle per page session).
@@ -264,7 +283,7 @@ export default defineContentScript({
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           io.unobserve(entry.target);
-          void processTweet(entry.target);
+          void runContentTask(ctx, () => processTweet(entry.target));
         }
       },
       { rootMargin: VIEWPORT_MARGIN },
@@ -309,6 +328,8 @@ export default defineContentScript({
       if (sweepTimer) clearTimeout(sweepTimer);
       mo.disconnect();
       io.disconnect();
+      clearInterval(profileTimer);
+      profiles.stop();
     });
   },
 });

@@ -1,6 +1,7 @@
 import { normalizeHandle } from "@tripwire/core";
 import { hyperliquidInfo } from "../hyperliquid/client";
 import { linksFor, type WalletLink } from "../links";
+import { isReplay } from "../nansen/client";
 import { ENTITY_PNL_WINDOW_DAYS, nansen, PERP_PNL_WINDOW_DAYS } from "../nansen/endpoints";
 import { matchNansenEntity } from "./person";
 import { settle } from "./util";
@@ -22,7 +23,14 @@ export type NansenBadge = {
   tags: string[];
   matchedBy: "displayName" | "handle";
   totalHoldingsUsd: number | null;
-  topHoldings: { symbol: string; chain: string; valueUsd: number }[];
+  topHoldings: { symbol: string; chain: string; valueUsd: number; tokenAddress?: string; name?: string | null; amount?: number | null }[];
+  nansenUrl?: string;
+  tokenCount?: number | null;
+  chainHoldings?: { chain: string; valueUsd: number }[];
+  holdingsTruncated?: boolean;
+  tradeCount?: number | null;
+  tradedTokenCount?: number | null;
+  topPnlTokens?: { symbol: string; chain: string; tokenAddress: string; realizedPnlUsd: number | null }[];
   realizedPnlUsd: number | null;
   winRate: number | null;
   pnlWindowDays: number;
@@ -74,6 +82,7 @@ export type PolymarketBadge = {
 
 export type AuthorBadges = {
   handle: string;
+  replay?: boolean;
   nansen?: NansenBadge;
   hyperliquid?: HyperliquidBadge;
   polymarket?: PolymarketBadge;
@@ -91,19 +100,29 @@ const linkRef = (l: WalletLink): LinkRef => ({ address: l.address, source: l.sou
 
 async function nansenBadge(match: { name: string; tags: string[]; matchedBy: "displayName" | "handle" }): Promise<NansenBadge> {
   const [balances, pnl] = await Promise.all([
-    settle(nansen.entityBalances(match.name), (d) => d.data ?? []),
+    settle(nansen.entityBalances(match.name), (d) => d),
     settle(nansen.entityPnlSummary(match.name), (d) => d),
   ]);
-  const rows = (balances.value ?? []).filter((r) => (r.value_usd ?? 0) > 0);
+  const returnedRows = balances.value?.data ?? [];
+  const rows = returnedRows.filter((r) => (num(r.value_usd) ?? 0) > 0);
+  const chainValues = new Map<string, number>();
+  for (const row of rows) chainValues.set(row.chain, (chainValues.get(row.chain) ?? 0) + (num(row.value_usd) ?? 0));
   return {
     entity: match.name,
     tags: match.tags,
     matchedBy: match.matchedBy,
+    nansenUrl: `https://app.nansen.ai/profiler?chain=all&entity=${encodeURIComponent(match.name)}&tab=overview`,
+    tokenCount: balances.value ? rows.length : null,
+    chainHoldings: [...chainValues].map(([chain, valueUsd]) => ({ chain, valueUsd })).sort((a, b) => b.valueUsd - a.valueUsd),
+    holdingsTruncated: balances.value?.pagination?.is_last_page === false || (balances.value?.pagination === undefined && returnedRows.length >= 200),
     totalHoldingsUsd: balances.value ? rows.reduce((s, r) => s + (r.value_usd ?? 0), 0) : null,
     topHoldings: rows
       .sort((a, b) => (b.value_usd ?? 0) - (a.value_usd ?? 0))
-      .slice(0, 3)
-      .map((r) => ({ symbol: r.token_symbol, chain: r.chain, valueUsd: r.value_usd ?? 0 })),
+      .slice(0, 20)
+      .map((r) => ({ symbol: r.token_symbol, chain: r.chain, valueUsd: r.value_usd ?? 0, tokenAddress: r.token_address, name: r.token_name ?? null, amount: num(r.token_amount) })),
+    tradeCount: num(pnl.value?.traded_times),
+    tradedTokenCount: num(pnl.value?.traded_token_count),
+    topPnlTokens: (pnl.value?.top5_tokens ?? []).slice(0, 5).map((r) => ({ symbol: r.token_symbol, chain: r.chain, tokenAddress: r.token_address, realizedPnlUsd: num(r.realized_pnl) })),
     realizedPnlUsd: num(pnl.value?.realized_pnl_usd),
     winRate: num(pnl.value?.win_rate),
     pnlWindowDays: ENTITY_PNL_WINDOW_DAYS,
@@ -216,7 +235,7 @@ export async function polymarketProfile(addressInput: string): Promise<Omit<Poly
 const polymarketBadge = async (link: WalletLink): Promise<PolymarketBadge> => ({ link: linkRef(link), ...(await polymarketProfile(link.address)) });
 
 export async function buildAuthorBadges(input: { handle: string; displayName: string }): Promise<AuthorBadges> {
-  const out: AuthorBadges = { handle: normalizeHandle(input.handle), errors: [] };
+  const out: AuthorBadges = { handle: normalizeHandle(input.handle), replay: isReplay(), errors: [] };
   const links = linksFor(input.handle);
   const hl = links.find((l) => l.venue === "hyperliquid");
   const pm = links.find((l) => l.venue === "polymarket");

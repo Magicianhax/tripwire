@@ -2,7 +2,8 @@ import { depthCostLabel, provenWinnerSplit, type DepthSection } from "@tripwire/
 import { BookOpen } from "lucide-react";
 import type { HitDto, OutcomeBook, PredictionPanel } from "../api-types";
 import { rowLimit, useCardSize } from "./card-size";
-import { shortAddr, timeAgo, usd } from "./format";
+import { timeAgo, usd } from "./format";
+import { WalletLabel } from "./WalletLabel";
 import { Icon } from "./icons";
 import { Empty, HitList, Section } from "./panel-parts";
 import { EMPTY_DEPTH, type DepthState } from "./PerpBody";
@@ -77,7 +78,7 @@ function HoldersTab({ panel }: { panel: PredictionPanel }) {
         <tbody>
           {holders.map((h) => (
             <tr key={h.key}>
-              <td className="tw-mono">{shortAddr(h.address)}</td>
+              <td><WalletLabel address={h.address} label={null} chain="polygon" /></td>
               <td>{h.side}</td>
               <td className="tw-fig tw-num">{h.position_size.toLocaleString()}</td>
               <td className="tw-fig tw-num">{h.avg_entry_price === null ? "—" : `${(h.avg_entry_price * 100).toFixed(1)}¢`}</td>

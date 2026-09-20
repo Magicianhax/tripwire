@@ -1,8 +1,9 @@
-import { capMarkers, MAX_WALLET_MARKERS, walletKey, type WalletRef } from "@tripwire/core";
+import { MAX_WALLET_MARKERS, walletKey, type WalletRef } from "@tripwire/core";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
 import { walletLabels, walletLens, type ApiResult } from "../api";
 import type { WalletLensResponse } from "../api-types";
 import { cardSize, setCardSize, type CardSize } from "../card-size";
+import { runContentTask } from "../content-lifecycle";
 import { rememberWallet } from "../recent-wallets";
 import { mountReact } from "../ui/mount";
 import { Popover } from "../ui/Popover";
@@ -11,6 +12,7 @@ import { WalletMarker } from "../ui/WalletMarker";
 import { createResultCache } from "../x/cache";
 import { createQueue } from "../x/queue";
 import { createScanState, removeSlot, scanForWallets, type WalletHit } from "./scan";
+import { capWalletMarkers } from "./marker-budget";
 
 type Mount = Awaited<ReturnType<typeof mountReact>>;
 type Marker = WalletHit & { mount: Mount };
@@ -54,7 +56,7 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
 
   function drawMarker(key: string): void {
     const marker = find(key);
-    marker?.mount.update(<WalletMarker ref={marker.ref} open={open?.key === key} onClick={() => void toggle(key)} />);
+    marker?.mount.update(<WalletMarker ref={marker.ref} presentation={marker.presentation} open={open?.key === key} onClick={() => void runContentTask(ctx, () => toggle(key))} />);
   }
 
   function closeCard(): void {
@@ -181,7 +183,10 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
     if (skip) for (const marker of markers.slice()) if (skip(marker.ref)) retire(marker);
     for (const hit of scanForWallets(root, { state, skip, limit: MAX_WALLET_MARKERS })) {
       if (!hit.slot.isConnected) continue;
-      const mount = await mountReact(ctx, { position: "inline", anchor: hit.slot, append: "last" }, <></>);
+      const mount = await mountReact(ctx, {
+        position: "inline", anchor: hit.slot, append: "last",
+        css: ":host { display: inline-flex !important; vertical-align: middle !important; pointer-events: auto !important; }",
+      }, <></>);
       // Inline-flex on the host keeps the marker on the host's own text baseline, so the line
       // it sits in never grows and the page never gains a scrollbar.
       mount.ui.shadowHost.style.display = "inline-flex";
@@ -190,7 +195,7 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
       markers.push({ ...hit, mount });
       drawMarker(hit.key);
     }
-    for (const marker of capMarkers(markers, MAX_WALLET_MARKERS).drop) retire(marker);
+    for (const marker of capWalletMarkers(markers, MAX_WALLET_MARKERS).drop) retire(marker);
   }
 
   function destroy(): void {

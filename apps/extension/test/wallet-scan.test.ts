@@ -12,6 +12,17 @@ beforeEach(() => {
 });
 
 describe("scanForWallets", () => {
+  it("places a Polymarket stretched-link marker beside the visible name, outside clipping and links", () => {
+    document.body.innerHTML = `<ul><li><a href="https://polymarket.com/profile/${EVM}"><span class="sr-only">SPCEXBUYER</span></a><div style="pointer-events:none"><div id="names" style="display:flex"><div id="clip" style="overflow:hidden"><p>SPCEXBUYER</p></div><a href="https://x.com/example">X</a></div></div></li></ul>`;
+    const [hit] = scan();
+    expect(hit!.presentation).toBe("profile");
+    expect(hit!.slot.parentElement!.id).toBe("names");
+    expect(hit!.slot.previousElementSibling!.id).toBe("clip");
+    expect(hit!.slot.closest("a")).toBeNull();
+    expect(hit!.slot.style.pointerEvents).toBe("auto");
+    expect(document.querySelector("li")!.children).toHaveLength(2);
+  });
+
   it("marks an address in running text without changing what the page reads", () => {
     document.body.innerHTML = `<p id="post">ape into ${EVM} now</p>`;
     const hits = scan();

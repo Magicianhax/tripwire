@@ -45,10 +45,14 @@ export function verdictHeadline(verdict: Verdict): string {
  * could not place. Only a page with nothing selected at all gets the old line.
  */
 export function gapHeadline(gap: TargetGap | null | undefined): string {
-  if (!gap) return "Tripwire couldn't check this: no target on this page";
+  if (!gap) return "Select a token to see its onchain activity";
   switch (gap.kind) {
+    case "missing-chain":
+      return `Select a network to check ${gap.symbol}`;
     case "unsupported-chain":
-      return `Tripwire doesn't cover ${gap.label}`;
+      return /^chain \d+$/.test(gap.label)
+        ? `No onchain data for ${gap.symbol ?? "this token"} on this network`
+        : `No onchain data for ${gap.symbol ? `${gap.symbol} on ` : ""}${gap.label}`;
     case "native-asset":
       return `${gap.symbol} is the chain's native asset — Tripwire checks tokens`;
     case "symbol":
@@ -59,7 +63,7 @@ export function gapHeadline(gap: TargetGap | null | undefined): string {
 /** A gap's identity, so the change-detection loop treats two different gaps as two states. */
 export function gapKey(gap: TargetGap | null | undefined): string {
   if (!gap) return "";
-  return gap.kind === "symbol" ? `symbol:${gap.symbol}:${gap.chainHint ?? ""}` : `${gap.kind}:${"label" in gap ? gap.label : gap.symbol}`;
+  return gap.kind === "symbol" ? `symbol:${gap.symbol}:${gap.chainHint ?? ""}` : gap.kind === "unsupported-chain" ? `${gap.kind}:${gap.label}:${gap.symbol ?? ""}` : `${gap.kind}:${gap.symbol}`;
 }
 
 export function targetTitle(target: Target | null): string {

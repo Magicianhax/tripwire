@@ -1,5 +1,5 @@
 import { classify, cleanLabel, isEvmAddress, nansenWalletUrl, type Chain, type LabelKind } from "@tripwire/core";
-import { PremiumDisabled } from "../nansen/client";
+import { isReplay, PremiumDisabled } from "../nansen/client";
 import { nansen, WALLET_PNL_WINDOW_DAYS, type AddressBalanceRow } from "../nansen/endpoints";
 import { replayResolution, resolveEns, resolveSns } from "../wallet/names";
 import { hyperliquidProfile, polymarketProfile, type HyperliquidBadge, type PolymarketBadge } from "./badges";
@@ -19,7 +19,7 @@ import { settle } from "./util";
  * all — see `walletLabels`.
  */
 
-export const HOLDINGS_SHOWN = 6;
+export const HOLDINGS_SHOWN = 20;
 
 export type WalletHolding = {
   symbol: string;
@@ -38,6 +38,8 @@ export type WalletPortfolio = {
   /** Every chain the wallet holds value on, most valuable first. */
   chains: string[];
   tokenCount: number;
+  chainHoldings: { chain: string; valueUsd: number }[];
+  holdingsTruncated: boolean;
 };
 
 export type WalletPnl = {
@@ -47,11 +49,14 @@ export type WalletPnl = {
   tradeCount: number | null;
   tokenCount: number | null;
   windowDays: number;
+  topPnlTokens: { symbol: string; chain: string; tokenAddress: string; realizedPnlUsd: number | null }[];
 };
 
 export type WalletLens = {
   /** Exactly what the user clicked, so the card can say "vitalik.eth" and not just an address. */
   input: string;
+  /** Replay fixtures are demonstration data, not holdings belonging to the requested address. */
+  sampleData: boolean;
   resolved: boolean;
   address: string | null;
   chainGuess: Chain | null;
@@ -79,6 +84,7 @@ const num = (v: unknown): number | null => {
 
 const unresolved = (input: string, message: string): WalletLens => ({
   input,
+  sampleData: isReplay(),
   resolved: false,
   address: null,
   chainGuess: null,
@@ -113,13 +119,15 @@ export async function resolveWalletQuery(query: string): Promise<Resolution | { 
 const isKnownChain = (chain: string): chain is Chain =>
   (["solana", "ethereum", "base", "arbitrum", "bnb", "polygon", "optimism", "avalanche"] as string[]).includes(chain);
 
-function portfolioOf(rows: AddressBalanceRow[]): WalletPortfolio {
+function portfolioOf(rows: AddressBalanceRow[], truncated: boolean): WalletPortfolio {
   const held = rows.filter((r) => (r.value_usd ?? 0) > 0).sort((a, b) => (b.value_usd ?? 0) - (a.value_usd ?? 0));
   const byChain = new Map<string, number>();
   for (const r of held) byChain.set(r.chain, (byChain.get(r.chain) ?? 0) + (r.value_usd ?? 0));
   return {
     totalUsd: held.reduce((s, r) => s + (r.value_usd ?? 0), 0),
     tokenCount: held.length,
+    chainHoldings: [...byChain].map(([chain, valueUsd]) => ({ chain, valueUsd })).sort((a, b) => b.valueUsd - a.valueUsd),
+    holdingsTruncated: truncated,
     chains: [...byChain.entries()].sort((a, b) => b[1] - a[1]).map(([chain]) => chain),
     holdings: held.slice(0, HOLDINGS_SHOWN).map((r) => ({
       symbol: r.token_symbol,
@@ -135,11 +143,12 @@ function portfolioOf(rows: AddressBalanceRow[]): WalletPortfolio {
 /**
  * `search/general` on the address. Free, and usually empty: Nansen's search indexes entity
  * names and tokens, not raw addresses (measured — `total_results: 0` for the fixture wallet).
- * It is still worth asking, because an address that *is* a known entity comes back named, and
- * the alternative label source costs 100 credits.
+ * A named search result is usable only if it also identifies the exact requested address.
+ * A name-only entity match is not proof of wallet ownership. The paid label source costs
+ * 100 credits and is deliberately outside this path.
  */
-function labelOf(entities: { name: string; tags: string[] }[] | undefined): WalletLabel | null {
-  const match = entities?.[0];
+export function walletLabelOf(address: string, entities: { name: string; tags: string[]; address?: string }[] | undefined): WalletLabel | null {
+  const match = entities?.find((entity) => entity.address && (isEvmAddress(address) ? entity.address.toLowerCase() === address.toLowerCase() : entity.address === address));
   if (!match) return null;
   const clean = cleanLabel(match.name);
   return { text: clean.text || match.name, kind: clean.kind, tags: match.tags ?? [] };
@@ -153,7 +162,7 @@ export async function buildWalletLens(input: { query: string; chainHint?: Chain 
   const evm = kind === "evm";
 
   const [balances, pnl, search, hl, pm] = await Promise.all([
-    settle(nansen.addressBalances(address), (d) => d.data ?? []),
+    settle(nansen.addressBalances(address), (d) => d),
     settle(nansen.addressPnlSummary(address), (d) => d),
     settle(nansen.searchGeneral(address, "any", 5), (d) => d),
     // Hyperliquid's own public API only: free, and the account is EVM-keyed.
@@ -161,7 +170,8 @@ export async function buildWalletLens(input: { query: string; chainHint?: Chain 
     evm ? attempt(() => polymarketProfile(address)) : Promise.resolve({ value: null, error: null }),
   ]);
 
-  const portfolio = balances.value ? portfolioOf(balances.value) : null;
+  const rows = balances.value?.data ?? [];
+  const portfolio = balances.value ? portfolioOf(rows, balances.value.pagination?.is_last_page === false || (balances.value.pagination === undefined && rows.length >= 200)) : null;
   const chainGuess: Chain | null =
     kind === "solana"
       ? "solana"
@@ -185,11 +195,12 @@ export async function buildWalletLens(input: { query: string; chainHint?: Chain 
 
   return {
     input: input.query,
+    sampleData: isReplay(),
     resolved: true,
     address,
     chainGuess,
     name,
-    label: labelOf(search.value?.entities),
+    label: walletLabelOf(address, search.value?.entities),
     portfolio,
     pnl: pnl.value
       ? {
@@ -199,6 +210,7 @@ export async function buildWalletLens(input: { query: string; chainHint?: Chain 
           tradeCount: num(pnl.value.traded_times),
           tokenCount: num(pnl.value.traded_token_count),
           windowDays: WALLET_PNL_WINDOW_DAYS,
+          topPnlTokens: (pnl.value.top5_tokens ?? []).slice(0, 5).map((row) => ({ symbol: row.token_symbol, chain: row.chain, tokenAddress: row.token_address, realizedPnlUsd: num(row.realized_pnl) })),
         }
       : null,
     hyperliquid,

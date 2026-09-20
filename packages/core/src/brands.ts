@@ -48,7 +48,7 @@ export const VENUE_LOGOS: Record<VenueId, BrandLogo> = {
   birdeye: { name: "Birdeye", file: "logos/birdeye.png" },
 };
 
-export const CHAIN_LOGOS: Record<Chain, BrandLogo> = {
+export const CHAIN_LOGOS: Partial<Record<Chain, BrandLogo>> = {
   solana: { name: "Solana", file: "logos/chain-solana.svg" },
   ethereum: { name: "Ethereum", file: "logos/chain-ethereum.svg" },
   base: { name: "Base", file: "logos/chain-base.svg" },
@@ -84,5 +84,5 @@ export function venueLogo(id: string): BrandLogo | null {
 }
 
 export function chainLogo(chain: string): BrandLogo | null {
-  return Object.hasOwn(CHAIN_LOGOS, chain) ? CHAIN_LOGOS[chain as Chain] : null;
+  return CHAIN_LOGOS[chain as Chain] ?? null;
 }

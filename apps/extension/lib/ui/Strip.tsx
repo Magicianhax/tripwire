@@ -13,6 +13,7 @@ export type StripProps = {
   rule?: string | null;
   /** Opens the evidence card, anchored to the Details button it receives. */
   onDetails?: (trigger: HTMLElement) => void;
+  detailsLabel?: string;
   replay?: boolean;
   /** Adapter id: the venue's logo leads the strip. */
   venue?: string;
@@ -20,7 +21,7 @@ export type StripProps = {
 
 /** 32px pill above the anchor for CAUTION, UNCHECKED and CLEAR: the venue logo, the verdict
  * pill, the finding, its rule clause, and Details. LOADING shows a spinner and "Checking…". */
-export function Strip({ verdict, text, rule, onDetails, replay, venue }: StripProps) {
+export function Strip({ verdict, text, rule, onDetails, detailsLabel = "Details", replay, venue }: StripProps) {
   return (
     <div className="tw-strip" data-verdict={verdict} role="status">
       <VenueLogo venue={venue} size={16} />
@@ -34,7 +35,7 @@ export function Strip({ verdict, text, rule, onDetails, replay, venue }: StripPr
       <ReplayBadge replay={replay} />
       {onDetails ? (
         <button type="button" className="tw-strip-details" aria-haspopup="dialog" onClick={(e) => onDetails(e.currentTarget)}>
-          Details
+          {detailsLabel}
           <Icon icon={ChevronRight} size={14} />
         </button>
       ) : null}

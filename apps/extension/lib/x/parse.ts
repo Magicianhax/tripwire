@@ -45,13 +45,12 @@ function nameText(container: Element, handle: string): string {
 
 /**
  * Pure DOM-in, data-out tweet parser. Reads only textContent/attributes (never innerHTML).
- * Returns null when the tweet has no tweetText or no resolvable status id.
+ * Returns null when the tweet has no resolvable status id. Media-only posts still have authors.
  */
 export function parseTweet(article: Element): ParsedTweet | null {
   const tweetTextEl = Array.from(article.querySelectorAll('[data-testid="tweetText"]')).find((el) =>
     belongsToOuter(el, article),
   );
-  if (!tweetTextEl) return null;
 
   const statusLinks = Array.from(article.querySelectorAll('a[href*="/status/"]')).filter((el) =>
     belongsToOuter(el, article),
@@ -84,10 +83,10 @@ export function parseTweet(article: Element): ParsedTweet | null {
   const timeEl = Array.from(article.querySelectorAll("time[datetime]")).find((el) => belongsToOuter(el, article));
   const timeIso = timeEl?.getAttribute("datetime") ?? null;
 
-  const text = (tweetTextEl.textContent ?? "").trim();
+  const text = (tweetTextEl?.textContent ?? "").trim();
   const tokens = extractTokens(text);
 
-  for (const a of tweetTextEl.querySelectorAll('a[href^="/search?q=%24"]')) {
+  for (const a of tweetTextEl?.querySelectorAll('a[href^="/search?q=%24"]') ?? []) {
     const href = a.getAttribute("href") ?? "";
     const match = href.match(CASHTAG_LINK_RE);
     if (!match?.[1]) continue;

@@ -53,6 +53,13 @@ export type TokenRef = {
 
 export type ResolveResponse = { best: TokenRef | null; candidates: TokenRef[] };
 
+export type Market = {
+  id: string; kind: "spot" | "perp"; chain: string; symbol: string; name: string; address: string;
+  priceUsd: number | null; volume24hUsd: number | null; marketCapUsd: number | null;
+  match: "exact" | "related"; detailTarget: Target | null; nansenUrl: string;
+};
+export type MarketCatalog = { symbol: string; markets: Market[]; errors: string[]; replay: boolean };
+
 export type HitDto = {
   ruleId: string;
   action: "warn" | "block";
@@ -285,7 +292,14 @@ export type NansenBadge = {
   tags: string[];
   matchedBy: "displayName" | "handle";
   totalHoldingsUsd: number | null;
-  topHoldings: { symbol: string; chain: string; valueUsd: number }[];
+  topHoldings: { symbol: string; chain: string; valueUsd: number; tokenAddress?: string; name?: string | null; amount?: number | null }[];
+  nansenUrl?: string;
+  tokenCount?: number | null;
+  chainHoldings?: { chain: string; valueUsd: number }[];
+  holdingsTruncated?: boolean;
+  tradeCount?: number | null;
+  tradedTokenCount?: number | null;
+  topPnlTokens?: { symbol: string; chain: string; tokenAddress: string; realizedPnlUsd: number | null }[];
   realizedPnlUsd: number | null;
   winRate: number | null;
   pnlWindowDays: number;
@@ -344,6 +358,7 @@ export type PolymarketBadge = {
 
 export type AuthorBadgesResponse = {
   handle: string;
+  replay?: boolean;
   nansen?: NansenBadge;
   hyperliquid?: HyperliquidBadge;
   polymarket?: PolymarketBadge;
@@ -366,9 +381,10 @@ export type WalletHolding = {
   valueUsd: number;
 };
 
-export type WalletPortfolio = { totalUsd: number; holdings: WalletHolding[]; chains: string[]; tokenCount: number };
+export type WalletPortfolio = { totalUsd: number; holdings: WalletHolding[]; chains: string[]; tokenCount: number; chainHoldings?: {chain:string;valueUsd:number}[]; holdingsTruncated?:boolean };
 
 export type WalletPnl = {
+  topPnlTokens?: { symbol:string;chain:string;tokenAddress:string;realizedPnlUsd:number|null }[];
   realizedPnlUsd: number | null;
   realizedPnlPercent: number | null;
   winRate: number | null;
@@ -385,6 +401,7 @@ export type WalletHyperliquid = Omit<HyperliquidBadge, "link">;
 export type WalletPolymarket = Omit<PolymarketBadge, "link">;
 
 export type WalletLensResponse = {
+  sampleData?: boolean;
   input: string;
   resolved: boolean;
   address: string | null;

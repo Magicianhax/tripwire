@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { NANSEN_LOGO, venueLogo, type WalletRef } from "@tripwire/core";
+import { NANSEN_LOGO, nansenTokenUrl, venueLogo, type WalletRef } from "@tripwire/core";
 import { CircleAlert, Coins, Wallet } from "lucide-react";
 import type { WalletLensResponse } from "../api-types";
 import { pct, usd } from "./format";
@@ -11,6 +11,9 @@ import { LoadingAnnouncement, SkeletonSection } from "./Skeleton";
 import { Tabs, type TabDef } from "./Tabs";
 import { HyperliquidBody, PolymarketBody } from "./VenueBody";
 import { refLabel } from "./WalletMarker";
+import { NansenRowLink } from "./NansenRowLink";
+import { Segmented } from "./Segmented";
+import { AllocationChart, PnlChart, usePagination } from "./DataCharts";
 
 export const PREMIUM_LABEL_CREDITS = 100;
 
@@ -24,9 +27,18 @@ export function walletTitle(lens: WalletLensResponse | null, ref: WalletRef): st
 }
 
 function Overview({ lens, onLoadLabels }: { lens: WalletLensResponse; onLoadLabels: (() => void) | null }) {
-  const holdings = lens.portfolio?.holdings ?? [];
+  const [view, setView] = useState<"summary" | "holdings" | "performance">("summary");
+  const allHoldings = lens.portfolio?.holdings ?? [];
+  const allocation = allHoldings.map(h=>({label:h.symbol,value:h.valueUsd}));
+  const unlisted = (lens.portfolio?.totalUsd ?? 0) - allHoldings.reduce((sum,h)=>sum+h.valueUsd,0);
+  if (unlisted > 0) allocation.push({label:"Other balances",value:unlisted});
+  const pagination = usePagination(allHoldings, 5);
+  const holdings = pagination.rows;
   return (
-    <>
+    <div className="tw-detail">
+      <Segmented label="Wallet details" value={view} onChange={setView} options={[{value:"summary",label:"Summary"},{value:"holdings",label:"Holdings"},{value:"performance",label:"Performance"}]} />
+      {lens.sampleData ? <p className="tw-empty">Recorded sample data. These figures do not describe this wallet.</p> : null}
+      {view === "summary" ? <div className="tw-profile-summary">
       {lens.label ? (
         <p className="tw-person">
           <Icon icon={LABEL_KIND_ICON[lens.label.kind]} size={16} />
@@ -36,7 +48,7 @@ function Overview({ lens, onLoadLabels }: { lens: WalletLensResponse; onLoadLabe
         </p>
       ) : (
         <p className="tw-empty">
-          No Nansen label came back for this wallet from the free search.
+          No public label returned. Open Nansen for the full profile.
           {onLoadLabels ? (
             <>
               {" "}
@@ -50,12 +62,15 @@ function Overview({ lens, onLoadLabels }: { lens: WalletLensResponse; onLoadLabe
       )}
       <Readouts
         items={[
-          { label: "Portfolio", value: usd(lens.portfolio?.totalUsd ?? null) },
+          { label: lens.portfolio?.holdingsTruncated ? "Reported portfolio" : "Portfolio", value: usd(lens.portfolio?.totalUsd ?? null) },
           { label: `Realized PnL ${lens.pnl?.windowDays ?? 90}d`, value: usd(lens.pnl?.realizedPnlUsd, true), sign: sign(lens.pnl?.realizedPnlUsd) },
           { label: "Win rate", value: rate(lens.pnl?.winRate) },
           { label: "Trades", value: lens.pnl?.tradeCount === null || lens.pnl?.tradeCount === undefined ? "—" : String(lens.pnl.tradeCount) },
         ]}
       />
+      <Section title="Portfolio allocation" aside="Returned balances"><AllocationChart label="Current reported portfolio composition" rows={allocation}/></Section>
+      </div> : null}
+      {view === "holdings" ? <>
       <Section title="Top holdings" aside={lens.portfolio ? `${lens.portfolio.tokenCount} tokens` : undefined}>
         {holdings.length === 0 ? (
           <Empty>Nansen reports no token balances for this wallet.</Empty>
@@ -67,15 +82,28 @@ function Overview({ lens, onLoadLabels }: { lens: WalletLensResponse; onLoadLabe
                   <TokenLogo symbol={h.symbol} size={20} chain={h.chain} tokenAddress={h.tokenAddress} />
                   <span className="tw-row-name">{h.symbol}</span>
                   <ChainLogo chain={h.chain} size={14} />
+                  <NansenRowLink href={nansenTokenUrl(h.chain, h.tokenAddress)} subject={`${h.symbol} on ${h.chain}`} />
                 </span>
                 <span className="tw-fig">{usd(h.valueUsd)}</span>
               </li>
             ))}
           </ul>
         )}
+        {pagination.controls}
       </Section>
-      <Sources>Nansen Profiler balances and PnL summary</Sources>
-    </>
+      </> : null}
+      {view === "performance" ? <>
+        <Readouts items={[
+          {label:`Realized PnL ${lens.pnl?.windowDays ?? 90}d`,value:usd(lens.pnl?.realizedPnlUsd,true),sign:sign(lens.pnl?.realizedPnlUsd)},
+          {label:"Win rate",value:rate(lens.pnl?.winRate)},
+          {label:"Trades",value:lens.pnl?.tradeCount == null ? "—" : String(lens.pnl.tradeCount)},
+          {label:"Tokens traded",value:lens.pnl?.tokenCount == null ? "—" : String(lens.pnl.tokenCount)},
+        ]}/>
+        <Section title="Top realized PnL" aside={`${lens.pnl?.windowDays ?? 90} days`}>
+          {lens.pnl?.topPnlTokens?.length ? <PnlChart rows={lens.pnl.topPnlTokens.map(t=>({label:t.symbol,value:t.realizedPnlUsd,href:nansenTokenUrl(t.chain,t.tokenAddress)}))}/> : <Empty>No token-level performance returned for this period.</Empty>}
+        </Section>
+      </> : null}
+    </div>
   );
 }
 
@@ -96,8 +124,7 @@ export type WalletCardProps = {
  *
  * Tabs appear only for venues that answered — a wallet that has never touched Polymarket gets
  * no Polymarket tab, and one that has, but has nothing open, gets the tab with its own empty
- * state. The footer names every source and the credits the answer cost, because the user is
- * spending their own Nansen quota by opening it.
+ * state. The footer names the data sources; credit usage is tracked in the dashboard.
  */
 export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, replay }: WalletCardProps) {
   const pop = useContext(PopoverContext);
@@ -183,14 +210,9 @@ export function WalletCard({ walletRef, lens, error, onClose, onLoadLabels, repl
           <p className="tw-meta tw-powered">
             Powered by <BrandMark logo={NANSEN_LOGO} size={14} /> <span className="tw-powered-name">Nansen</span>
           </p>
-          {lens?.resolved ? (
-            <p className="tw-meta">
-              <span className="tw-fig">{lens.credits}</span> credit{lens.credits === 1 ? "" : "s"}
-            </p>
-          ) : null}
         </div>
         <p className="tw-sources tw-meta">
-          {lens?.sources.length ? `Data: ${lens.sources.join(" · ")} · ` : ""}Sent through your local backend to Nansen · Cached locally
+          {lens?.sources.length ? lens.sources.join(" · ") : "Nansen Profiler"}
         </p>
         <Problems errors={lens?.errors ?? []} />
       </footer>

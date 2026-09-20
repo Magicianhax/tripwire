@@ -1,11 +1,17 @@
 import { useState } from "react";
-import { venueLogo, WALLET_VENUES, type WalletVenue } from "@tripwire/core";
+import { nansenWalletUrl, venueLogo, WALLET_VENUES, type WalletVenue } from "@tripwire/core";
 import { ExternalLink, Link2, Link2Off } from "lucide-react";
 import type { BadgeLink } from "../api-types";
 import { shortAddr } from "./format";
 import { Icon } from "./icons";
 import { BrandMark } from "./Logo";
 import { parseLinkAddress } from "../x/link-form";
+import { NansenRowLink } from "./NansenRowLink";
+import { isContextInvalidated } from "../content-lifecycle";
+
+const linkFailure = (error: unknown) => isContextInvalidated(error)
+  ? "Extension updated. Refresh this page."
+  : "Couldn’t update the wallet link. Try again.";
 
 const VENUE_NAME: Record<WalletVenue, string> = { hyperliquid: "Hyperliquid", polymarket: "Polymarket" };
 
@@ -16,10 +22,11 @@ export function LinkStatus({ venue, link, onUnlink }: { venue: WalletVenue; link
   return (
     <p className="tw-link-status">
       <span className="tw-mono">{shortAddr(link.address)}</span>
+      <NansenRowLink href={nansenWalletUrl(link.address)} subject={shortAddr(link.address)} />
       {link.source === "user" ? (
         <>
           <span className="tw-meta">Linked by you</span>
-          <button type="button" className="tw-link-action" onClick={() => void onUnlink(venue).then(setError)}>
+          <button type="button" className="tw-link-action" onClick={async () => { try { setError(await onUnlink(venue)); } catch (error) { setError(linkFailure(error)); } }}>
             <Icon icon={Link2Off} size={14} />
             Unlink
           </button>
@@ -69,13 +76,15 @@ export function LinkWallet({
       return;
     }
     setSaving(true);
-    const failure = await onSave(venue, parsed.address);
-    setSaving(false);
-    setError(failure);
-    if (!failure) {
-      setAddress("");
-      setForm(null);
-    }
+    try {
+      const failure = await onSave(venue, parsed.address);
+      setError(failure);
+      if (!failure) {
+        setAddress("");
+        setForm(null);
+      }
+    } catch (error) { setError(linkFailure(error)); }
+    finally { setSaving(false); }
   }
 
   if (form === null) {

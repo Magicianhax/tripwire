@@ -214,9 +214,35 @@ describe("BadgeCard", () => {
     const panel = container.querySelectorAll('[role="tabpanel"]')[0]!;
     expect(panel.textContent).toContain("Vitalik Buterin");
     expect(panel.textContent).toContain("Public Figure");
-    expect(panel.textContent).toContain("ETH");
     expect(panel.textContent).toContain("53%");
+    act(() => ([...container.querySelectorAll<HTMLButtonElement>('[role="radio"]')].find(b=>b.textContent==="Holdings")!).click());
+    expect(panel.textContent).toContain("ETH");
     root.unmount();
+  });
+
+  it("shows entity depth, the full profile link, replay context, and more than three holdings", () => {
+    const rich: AuthorBadgesResponse = { handle: "VitalikButerin", errors: [], replay: true, nansen: {
+      ...badges.nansen!, tokenCount: 42, tradeCount: 2763, tradedTokenCount: 70,
+      chainHoldings: [{ chain: "ethereum", valueUsd: 590_000_000 }, { chain: "base", valueUsd: 1000 }],
+      holdingsTruncated: true,
+      topHoldings: Array.from({ length: 12 }, (_, i) => ({ symbol: `TOKEN${i}`, chain: "ethereum", tokenAddress: `address${i}`, valueUsd: 1000 - i })),
+      topPnlTokens: [{ symbol: "ETH", chain: "ethereum", tokenAddress: "eth", realizedPnlUsd: 9594232 }],
+    } };
+    const { container, root } = mountNode(<BadgeCard handle="VitalikButerin" displayName="vitalik.eth" badges={rich} initial="nansen" onClose={() => {}} onSave={noop} onUnlink={noop} />);
+    expect(container.textContent).toContain("Portfolio by chain");
+    expect(container.textContent).toContain("Reported holdings");
+    expect(container.querySelector(".tw-replay-badge")).not.toBeNull();
+    expect(container.querySelector(".tw-nansen-link")?.getAttribute("href")).toBe("https://app.nansen.ai/profiler?chain=all&entity=Vitalik%20Buterin&tab=overview");
+    act(() => ([...container.querySelectorAll<HTMLButtonElement>('[role="radio"]')].find(b=>b.textContent==="Performance")!).click());
+    expect(container.textContent).toContain("2,763");
+    expect(container.textContent).toContain("Top tokens by realized PnL");
+    act(() => ([...container.querySelectorAll<HTMLButtonElement>('[role="radio"]')].find(b=>b.textContent==="Holdings")!).click());
+    expect(container.querySelectorAll(".tw-holding-rows li")).toHaveLength(5);
+    act(() => (container.querySelector('[aria-label="Next page"]') as HTMLButtonElement).click());
+    expect(container.querySelectorAll(".tw-holding-rows li")).toHaveLength(5);
+    expect(container.textContent).toContain("TOKEN5");
+    expect(container.querySelector(".tw-card-footer")?.textContent).not.toContain("credits");
+    act(() => root.unmount());
   });
 
   it("Hyperliquid tab: account value, a position with its side, and the data sources", () => {

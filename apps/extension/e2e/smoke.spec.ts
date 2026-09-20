@@ -1,9 +1,80 @@
 import type { APIRequestContext, Page } from "@playwright/test";
+import path from "node:path";
 import { PRESETS } from "../../../packages/core/src/rules/presets";
 import { TRIPWIRE_EXTENSION_ID } from "../../../packages/core/src/constants";
 import { BACKEND, BONK, expect, LENS_WALLET, test, WBTC_BASE, WIF } from "./fixtures";
 
 const EXTENSION_ORIGIN = `chrome-extension://${TRIPWIRE_EXTENSION_ID}`;
+
+test("@smoke Jumper: native ETH is checked under Nansen's same-chain identifier", async ({ context, request }) => {
+  await setPreset(request, "balanced");
+  const targets: { chain: string; tokenAddress: string }[] = [];
+  await context.route(`${BACKEND}/api/guard`, async route => {
+    targets.push(route.request().postDataJSON().target);
+    await route.continue();
+  });
+  const page = await context.newPage();
+  await page.goto(`https://jumper.xyz/?toChain=42161&toToken=0x${"0".repeat(40)}`);
+  await expect(page.locator(".tw-strip")).toHaveAttribute("data-verdict", "CLEAR", { timeout: 20000 });
+  await page.locator(".tw-strip-details").click();
+  await expect(page.locator(".tw-card-symbol")).toBeVisible();
+  expect(targets.length).toBeGreaterThanOrEqual(2);
+  for (const target of targets) expect(target).toMatchObject({chain:"arbitrum",tokenAddress:`0x${"e".repeat(40)}`});
+});
+
+test("@smoke Dexscreener: resolves the base token and keeps its dock within the viewport", async ({ context, request }) => {
+  await setPreset(request, "balanced");
+  const mint = "tipp4C4Jnpft26HC9VXNjUPidojZqxXf8nzKvrKf5BS";
+  let resolved = false;
+  await context.route(`${BACKEND}/api/resolve-pair`, async route => {
+    expect(route.request().postDataJSON()).toEqual({chain:"solana",pairAddress:"cjieb7fumhefmaefjaxqjnkvxnmvabm3dhhp8rtgbeg1"});
+    resolved = true;
+    await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({target:{kind:"spot",chain:"solana",tokenAddress:mint,symbol:"TIPPED"}})});
+  });
+  const page = await context.newPage();
+  await page.setViewportSize({width:1280,height:900});
+  await page.goto("https://dexscreener.com/solana/cjieb7fumhefmaefjaxqjnkvxnmvabm3dhhp8rtgbeg1");
+  const dock = page.locator(".tw-dock-chip");
+  await expect(dock).toHaveAttribute("data-verdict","CLEAR",{timeout:20000});
+  expect(resolved).toBe(true);
+  const box=(await dock.boundingBox())!;
+  expect(box.width).toBeLessThanOrEqual(320);
+  expect(box.x+box.width).toBeLessThanOrEqual(1280);
+  await dock.click();
+  await expect(page.locator(".tw-addr-text")).toHaveText("tipp…f5BS");
+});
+
+test("@smoke X: profile badge works without tweets and opens the full entity summary", async ({ context }) => {
+  const page = await context.newPage();
+  await page.route("https://x.com/VitalikButerin", route => route.fulfill({ path: path.resolve("e2e/pages/x-profile.html"), contentType: "text/html" }));
+  await page.goto("https://x.com/VitalikButerin");
+  const header = page.locator('.identity');
+  const badge = header.getByRole("button", { name: "Nansen label for @VitalikButerin" });
+  await expect(badge).toBeVisible({ timeout: 20000 });
+  const check = (await header.getByRole("button", { name: "Verified account" }).boundingBox())!;
+  const badgeBox = (await badge.boundingBox())!;
+  expect(badgeBox.x - check.x - check.width).toBeCloseTo(4, 0);
+  await badge.hover();
+  const tooltip = header.locator('[role="tooltip"]');
+  await expect(tooltip).toBeVisible();
+  expect(await tooltip.evaluate(el => el.matches(":popover-open"))).toBe(true);
+  const tipBox = (await tooltip.boundingBox())!;
+  expect(tipBox.y + tipBox.height).toBeLessThan(badgeBox.y);
+  expect(tipBox.x).toBeGreaterThanOrEqual(8);
+  await badge.click();
+  const card = page.locator(".tw-badge-card");
+  await expect(card).toBeVisible();
+  await expect(card.getByRole("heading", { name: "Portfolio by chain" })).toBeVisible();
+  await card.getByRole("radio", { name: "Performance", exact: true }).click();
+  await expect(card).toContainText("Tokens traded");
+  await expect(card.locator(".tw-nansen-link")).toHaveAttribute("href", /entity=Vitalik(%20|\+)Buterin/);
+  await expect(card.locator(".tw-replay-badge")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(card).toHaveCount(0);
+  // Same-document account navigation must remove the old profile's badge and listeners.
+  await page.evaluate(() => history.pushState({}, "", "/weatherfan"));
+  await expect(header.locator(".tw-badge")).toHaveCount(0, { timeout: 6000 });
+});
 
 /** Sets the rules preset the way the popup does: a PUT carrying the pinned extension Origin. */
 async function setPreset(request: APIRequestContext, preset: "balanced" | "paranoid") {
@@ -96,7 +167,7 @@ test("@smoke X: the chip opens a floating evidence card on <body>, beside the ch
 
   // Focus lands on the heading; evidence tabs are keyboard operable.
   await expect(card.locator("h2")).toBeFocused();
-  await expect(card.getByRole("tab")).toHaveText(["Flow", "Wallets", "Risk"]);
+  await expect(card.getByRole("tab")).toHaveText(["Markets", "Flow", "Wallets", "Risk"]);
   await card.getByRole("tab", { name: "Flow" }).focus();
   await page.keyboard.press("ArrowRight");
   await expect(card.getByRole("tab", { name: "Wallets" })).toHaveAttribute("aria-selected", "true");
@@ -236,6 +307,10 @@ test("@smoke X: author badges appear next to the username and open the badge car
   await expect(linked.locator(".tw-badge")).toHaveCount(2, { timeout: 15_000 });
   const labeled = page.locator("article", { hasText: "@VitalikButerin" });
   await expect(labeled.locator(".tw-badge")).toHaveCount(1);
+  const verifiedBox = (await labeled.locator('svg[aria-label="Verified account"]').boundingBox())!;
+  const nansenBox = (await labeled.locator('.tw-badge[data-venue="nansen"]').boundingBox())!;
+  expect(nansenBox.x - (verifiedBox.x + verifiedBox.width)).toBeCloseTo(4, 0);
+  expect(Math.abs(nansenBox.y + nansenBox.height / 2 - (verifiedBox.y + verifiedBox.height / 2))).toBeLessThanOrEqual(1);
   await expect(page.locator("article", { hasText: "@weatherfan" }).locator(".tw-badge")).toHaveCount(0);
 
   // The badges sit inside X's username row, and the post keeps its height.
@@ -246,6 +321,10 @@ test("@smoke X: author badges appear next to the username and open the badge car
   expect(inHeader).toEqual({ inUserName: true, after: "/degenalpha" });
 
   const hlBadge = linked.locator('.tw-badge[data-venue="hyperliquid"]');
+  await hlBadge.hover();
+  const rowHint = linked.locator('[role="tooltip"]').filter({ hasText: "Hyperliquid account for @degenalpha" });
+  await expect(rowHint).toBeVisible();
+  expect(await rowHint.evaluate(el=>el.matches(":popover-open"))).toBe(true);
   await hlBadge.click();
   const card = page.locator('.tw-pop[role="dialog"] .tw-badge-card');
   await expect(card).toBeVisible();
@@ -369,6 +448,61 @@ test("@smoke Jumper: the strip fits its card at any width and never scrolls the 
   // The full sentence stays reachable even when the pill truncates it.
   const finding = strip.locator(".tw-strip-finding");
   expect(await finding.getAttribute("title")).toBe(await finding.textContent());
+
+  // The picker replaces the trade form without changing the selected token URL.
+  // Neither the strip nor its dock fallback should obstruct choosing another asset.
+  await page.evaluate(() => {
+    const picker = document.createElement("div");
+    picker.id = "widget-token-picker";
+    const search = document.createElement("input");
+    search.placeholder = "Search by token or address";
+    picker.append(search);
+    document.body.append(picker);
+  });
+  await expect(strip).toHaveCount(0);
+  await expect(page.locator(".tw-dock-chip")).toHaveCount(0);
+  await page.locator("#widget-token-picker").evaluate(el=>el.remove());
+  await expect(strip).toBeVisible();
+
+  // Jumper's widget owns a high stacking layer. Expanded evidence must still be the topmost
+  // surface at their overlap; an internal card z-index cannot escape a reset shadow host.
+  await strip.getByRole("button", { name: "Details" }).click();
+  const evidence = page.locator('.tw-pop[role="dialog"]');
+  await expect(evidence).toBeVisible();
+  const compactLayer = await evidence.evaluate((el) => {
+    const host = (el.getRootNode() as ShadowRoot).host;
+    const widget = document.querySelector(".card")!;
+    const cardBox = el.getBoundingClientRect();
+    const widgetBox = widget.getBoundingClientRect();
+    const overlap = {
+      left: Math.max(cardBox.left, widgetBox.left),
+      top: Math.max(cardBox.top, widgetBox.top),
+      right: Math.min(cardBox.right, widgetBox.right),
+      bottom: Math.min(cardBox.bottom, widgetBox.bottom),
+    };
+    const overlaps = overlap.right > overlap.left && overlap.bottom > overlap.top;
+    const topmost = overlaps ? document.elementFromPoint((overlap.left + overlap.right) / 2, (overlap.top + overlap.bottom) / 2) : null;
+    const style = getComputedStyle(host);
+    return {
+      overlaps,
+      topLayer: el.parentElement?.matches(":popover-open"),
+      topmost: topmost?.tagName.toLowerCase() ?? null,
+      host: { position: style.position, zIndex: style.zIndex, display: style.display, width: style.width, height: style.height },
+    };
+  });
+  expect(compactLayer).toEqual({
+    overlaps: true,
+    topLayer: true,
+    topmost: "tripwire-ui",
+    host: { position: "relative", zIndex: "2147483001", display: "block", width: "0px", height: "0px" },
+  });
+  await evidence.getByRole("button", { name: "Expand card" }).click();
+  await expect(evidence).toHaveAttribute("data-size", "expanded");
+  const topAtCenter = await evidence.evaluate((el) => {
+    const box = el.getBoundingClientRect();
+    return document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)?.tagName.toLowerCase();
+  });
+  expect(topAtCenter).toBe("tripwire-ui");
   expect(consoleErrors).toEqual([]);
 });
 
@@ -410,7 +544,7 @@ test("@smoke Wallet lens: markers appear where a wallet was shared, and the card
   await expect(card).toBeVisible();
   await expect(card.locator(".tw-card-title")).toHaveText("0x7f…17d1", { timeout: 15_000 });
   await expect(card.getByRole("tab", { name: "Overview" })).toBeVisible();
-  await expect(card.locator(".tw-card-footer")).toContainText("credits");
+  await expect(card.locator(".tw-card-footer")).not.toContainText("credits");
 
   // Hyperliquid shows the recorded position, and Polymarket its own tab.
   await card.getByRole("tab", { name: "Hyperliquid" }).click();
@@ -440,14 +574,20 @@ test("@smoke Strips say what is actually wrong, and wrap rather than clip", asyn
   // 1. A destination outside coverage names the chain instead of reporting a failure.
   await page.goto("https://jumper.xyz/?fromChain=1&toChain=20000000000001&toToken=bitcoin");
   const strip = page.locator(".tw-strip");
-  await expect(strip.locator(".tw-strip-finding")).toHaveText("Tripwire doesn't cover Bitcoin", { timeout: 20_000 });
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("No onchain data for Bitcoin", { timeout: 20_000 });
   await expect(strip).toHaveAttribute("data-verdict", "UNCHECKED");
   // Never a block: the Swap button still works.
   await expect(page.locator(".tw-block")).toHaveCount(0);
 
+  // 2. Jumper's current Sui chain id is long; name it instead of clamping a numeric fallback.
+  await page.goto("https://jumper.xyz/?fromChain=1&toChain=9270000000000000&toToken=sui");
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("No onchain data for Sui", { timeout: 20_000 });
+  await expect(strip).toHaveAttribute("data-verdict", "UNCHECKED");
+  await expect(page.locator(".tw-block")).toHaveCount(0);
+
   // 3. Uniswap's default page names no token in its URL; the Buy selector says ETH.
   await page.goto("https://app.uniswap.org/swap");
-  await expect(strip.locator(".tw-strip-finding")).toHaveText("ETH is the chain's native asset — Tripwire checks tokens", { timeout: 20_000 });
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("Select a network to check ETH", { timeout: 20_000 });
   await expect(strip).toHaveAttribute("data-verdict", "UNCHECKED");
 
   // 3b. That reason is long, and it wraps to two lines instead of being cut off mid-word.
@@ -465,15 +605,14 @@ test("@smoke Strips say what is actually wrong, and wrap rather than clip", asyn
   expect(wrap.clamp).toBe("2");
   expect(wrap.whiteSpace).toBe("normal");
   expect(wrap.title).toBe(wrap.text);
-  expect(wrap.text.length, "the reason is long enough that one line could not hold it").toBeGreaterThan(50);
-  expect(wrap.lines, "the reason uses both lines rather than being clipped to one").toBe(2);
+  expect(wrap.lines, "the concise reason fits within the strip").toBeLessThanOrEqual(2);
   expect(wrap.clippedSideways, "the reason wraps rather than running off the side").toBe(false);
   // And the host page still never scrolls sideways because of us.
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
 
-  // 4. Pick a real token in the same form and it is checked, with no URL change at all.
+  // 4. Changing a ticker without selecting a network must not choose another chain.
   await page.evaluate(() => (window as unknown as { setBuyToken(s: string): void }).setBuyToken("WIF"));
-  await expect(strip.locator(".tw-strip-finding")).not.toHaveText(/native asset/, { timeout: 20_000 });
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("Select a network to check WIF", { timeout: 20_000 });
   await expect(page).toHaveURL("https://app.uniswap.org/swap");
 
   expect(consoleErrors).toEqual([]);
@@ -570,8 +709,8 @@ test("@smoke the perp card expands, and its Traders tab loads from fixtures", as
   const leaderboard = pop.locator('[role="tabpanel"]:not([hidden]) table').first();
   await expect(leaderboard.locator("tbody tr").first()).toBeVisible({ timeout: 20_000 });
   expect(await leaderboard.locator("tbody tr").count()).toBeGreaterThan(4);
-  // The footer says what the tab cost.
-  await expect(pop.locator(".tw-card-footer")).toContainText("11 credits this tab");
+  // Usage accounting belongs to the dashboard, not the floating card.
+  await expect(pop.locator(".tw-card-footer")).not.toContainText("credits");
 
   // Collapse returns the card to its anchor rather than closing it.
   await pop.getByRole("button", { name: "Collapse card" }).click();

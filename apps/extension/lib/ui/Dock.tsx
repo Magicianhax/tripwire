@@ -38,7 +38,7 @@ export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", chi
 
   if (verdict === "LOADING") {
     return (
-      <div className="tw-chip tw-dock-chip" data-verdict="LOADING" role="status">
+      <div className="tw-chip tw-dock-chip" data-verdict="LOADING" data-venue={venue} role="status">
         <VenueLogo venue={venue} size={16} />
         <Icon icon={LoaderCircle} size={16} className="tw-spin tw-spinner" />
         <span className="tw-chip-value">Checking…</span>
@@ -55,6 +55,7 @@ export function Dock({ collapsed, onToggleCollapsed, verdict, headline = "", chi
         type="button"
         className="tw-chip tw-dock-chip"
         data-verdict={verdict}
+        data-venue={venue}
         onClick={onToggleCollapsed}
         aria-expanded={!collapsed}
         aria-haspopup="dialog"

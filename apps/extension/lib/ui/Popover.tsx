@@ -76,6 +76,7 @@ export function Popover({
 }: PopoverProps) {
   const headingId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const layerRef = useRef<HTMLDivElement>(null);
   const expanded = size === "expanded";
   const reasonRef = useRef<PopoverCloseReason | null>(null);
   const focusInside = useRef(false);
@@ -88,6 +89,18 @@ export function Popover({
     if (reasonRef.current) return; // already closing
     reasonRef.current = reason;
     onCloseRef.current(reason);
+  }, []);
+
+  // Native top-layer placement escapes host transforms, clipping, and arbitrarily high
+  // stacking contexts. Keep our existing anchor geometry and dismissal/focus contract.
+  useLayoutEffect(() => {
+    const layer = layerRef.current;
+    if (!layer || typeof layer.showPopover !== "function") return;
+    try { layer.showPopover(); }
+    catch { layer.removeAttribute("popover"); }
+    return () => {
+      if (layer.isConnected && layer.matches(":popover-open")) layer.hidePopover();
+    };
   }, []);
 
   const reposition = useCallback(() => {
@@ -158,7 +171,7 @@ export function Popover({
     window.addEventListener("scroll", schedule, { capture: true, passive: true });
     window.addEventListener("resize", schedule);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
-    if (rootRef.current) observer?.observe(rootRef.current.firstElementChild ?? rootRef.current);
+    if (rootRef.current) observer?.observe(rootRef.current);
     return () => {
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule, { capture: true });
@@ -265,7 +278,7 @@ export function Popover({
       const first = stops[0]!;
       const last = stops[stops.length - 1]!;
       const active = deepActiveElement();
-      const inside = active instanceof HTMLElement && root.contains(active);
+      const inside = active !== null && root.contains(active);
       if (!inside) {
         event.preventDefault();
         (event.shiftKey ? last : first).focus({ preventScroll: true });
@@ -307,11 +320,11 @@ export function Popover({
   );
 
   return (
-    <>
+    <div ref={layerRef} className="tw-pop-layer" popover={typeof HTMLElement !== "undefined" && "showPopover" in HTMLElement.prototype ? "manual" : undefined}>
       {expanded ? (
         <div className="tw-pop-backdrop" aria-hidden="true" />
       ) : null}
       {card}
-    </>
+    </div>
   );
 }

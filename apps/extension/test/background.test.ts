@@ -38,7 +38,7 @@ describe("createBridge", () => {
       const fetchImpl = vi.fn(async () => image("image/jpeg"));
       const bridge = createBridge({ fetchImpl, getBackendUrl: () => "http://127.0.0.1:3000" });
       const result = await bridge.handle({ type: "tokenLogo", chain: "solana", address: SOL });
-      expect(fetchImpl).toHaveBeenCalledWith(`http://127.0.0.1:3000/api/token-logo?chain=solana&address=${SOL}`, expect.anything());
+      expect(fetchImpl).toHaveBeenCalledWith(`http://127.0.0.1:3000/api/token-logo?chain=solana&address=${SOL}&v=2`, expect.anything());
       expect(result).toEqual({ ok: true, status: 200, json: { dataUrl: "data:image/jpeg;base64,iVBORw==" } });
     });
 

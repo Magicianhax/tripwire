@@ -6,6 +6,7 @@ import { health } from "../../lib/api";
 import { findAdapter } from "../../lib/adapters/registry";
 import { claimToken, isTokenClaimed } from "../../lib/claimed-tokens";
 import { warmCardSizes } from "../../lib/card-size";
+import { runContentTask } from "../../lib/content-lifecycle";
 import { createReplayFlag } from "../../lib/replay";
 import { BUILTIN_MATCHES } from "../../lib/permissions";
 import { createWalletLens } from "../../lib/wallet/lens";
@@ -36,6 +37,7 @@ export default defineContentScript({
     // render: a card has to mount in the same frame as the click, and storage is asynchronous.
     void warmCardSizes();
     const replay = await createReplayFlag(health)();
+    if (ctx.isInvalid) return;
 
     // A venue's own target token is a contract, not somebody's wallet: the strip, dock or block
     // screen is already saying everything there is to say about it.
@@ -51,14 +53,14 @@ export default defineContentScript({
 
     /** Scanning waits for an idle moment: a wallet marker is never worth a dropped frame. */
     function scheduleScan(): void {
-      if (pending) return;
+      if (pending || ctx.isInvalid) return;
       pending = true;
       const run = () => {
         pending = false;
-        void lens.scan(document.body);
+        void runContentTask(ctx, () => lens.scan(document.body));
       };
-      if (typeof requestIdleCallback === "function") requestIdleCallback(run, { timeout: 2_000 });
-      else setTimeout(run, 200);
+      if (typeof requestIdleCallback === "function") ctx.requestIdleCallback(run, { timeout: 2_000 });
+      else ctx.setTimeout(run, 200);
     }
 
     scheduleScan();

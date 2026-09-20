@@ -7,6 +7,7 @@ export const CHAINS = [
   "polygon",
   "optimism",
   "avalanche",
+  "robinhood",
 ] as const;
 export type Chain = (typeof CHAINS)[number];
 

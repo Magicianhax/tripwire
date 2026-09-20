@@ -112,6 +112,23 @@ describe("recent wallets", () => {
 });
 
 describe("WalletMarker", () => {
+  it("provides a larger profile marker and stops host row navigation on inspection", () => {
+    const onClick = vi.fn();
+    const hostClick = vi.fn();
+    const { container } = mountNode(<WalletMarker ref={{kind:"evm",query:EVM}} presentation="profile" open={false} onClick={onClick} />);
+    const hostRow = document.createElement("div");
+    document.body.appendChild(hostRow);
+    hostRow.appendChild(container);
+    hostRow.addEventListener("click", hostClick);
+    const button = container.querySelector("button")!;
+    const event = new MouseEvent("click", {bubbles:true,cancelable:true});
+    act(() => { button.dispatchEvent(event); });
+    expect(button.dataset.presentation).toBe("profile");
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(hostClick).not.toHaveBeenCalled();
+    expect(event.defaultPrevented).toBe(true);
+  });
+
   it("names the wallet it belongs to, and says whether its card is open", () => {
     const { container } = mountNode(<WalletMarker ref={{ kind: "evm", query: EVM }} open={false} onClick={() => {}} />);
     const button = container.querySelector("button")!;
@@ -185,9 +202,9 @@ describe("WalletCard", () => {
     expect(panel.textContent).toContain("$2,299.4");
   });
 
-  it("names the credits the answer cost and where it came from", () => {
+  it("names the sources without displaying credit usage", () => {
     const { container } = mountNode(<WalletCard walletRef={ref} lens={lens({ sources: ["Nansen Profiler", "Hyperliquid public API"] })} error={null} onClose={() => {}} />);
-    expect(container.textContent).toContain("5 credits");
+    expect(container.querySelector(".tw-card-footer")?.textContent).not.toContain("credits");
     expect(container.textContent).toContain("Hyperliquid public API");
     expect(container.textContent).toContain("Powered by");
   });

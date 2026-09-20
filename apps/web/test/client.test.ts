@@ -71,7 +71,7 @@ describe("nansenPost", () => {
 
   it("throws NansenError without leaking the key", async () => {
     mockFetch(new Response("bad", { status: 500 }));
-    await expect(call()).rejects.toThrow(/failed \(500\)/);
+    await expect(call()).rejects.toThrow(/service temporarily unavailable/);
     await call().catch((e: Error) => expect(e.message).not.toContain("test-key"));
   });
 

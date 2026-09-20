@@ -61,7 +61,13 @@ export const BADGE_TTL = 10 * MIN;
 
 type Paged<T> = { data: T[]; pagination?: { is_last_page: boolean } };
 
-export type EntityPnlSummary = { realized_pnl_usd: number | null; win_rate: number | null; traded_times?: number | null };
+export type EntityPnlSummary = {
+  realized_pnl_usd: number | null;
+  win_rate: number | null;
+  traded_times?: number | null;
+  traded_token_count?: number | null;
+  top5_tokens?: { token_symbol: string; chain: string; token_address: string; realized_pnl: number | null }[] | null;
+};
 export type PerpPnlSummary = { realized_pnl_usd: number | null; win_rate: number | null; closed_trade_count?: number | null };
 export type PmAddressSummary = {
   total_pnl_usd: number | null;
@@ -104,6 +110,7 @@ export type AddressPnlSummary = {
   win_rate: number | null;
   traded_times?: number | null;
   traded_token_count?: number | null;
+  top5_tokens?: { token_symbol: string; chain: string; token_address: string; realized_pnl: number | null }[] | null;
 };
 export type AddressLabelsResponse = { labels?: string[] | null; entity?: string | null } | Record<string, unknown>;
 
@@ -181,7 +188,7 @@ export const nansen = {
     }>({ name: `search_${result_type}`, path: "search/general", body: { search_query, result_type, limit }, ttlMs: 24 * HOUR }),
 
   entityBalances: (entity_name: string) =>
-    nansenPost<Paged<{ chain: string; token_address: string; token_symbol: string; value_usd: number | null }>>({
+    nansenPost<Paged<AddressBalanceRow>>({
       name: "entityBalances",
       path: "profiler/address/current-balance",
       body: { entity_name, chain: "all", hide_spam_token: true, pagination: { page: 1, per_page: 200 } },

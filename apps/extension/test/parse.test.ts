@@ -77,14 +77,14 @@ describe("parseTweet", () => {
     expect(parsed?.displayName).not.toContain("@ansem");
   });
 
-  it("returns null when there is no tweetText", () => {
+  it("keeps media-only post authors without inventing text or tokens", () => {
     document.body.innerHTML = `
       <article data-testid="tweet">
         <div data-testid="User-Name"><div><a href="/x"><span>X</span></a></div></div>
         <a href="/x/status/1"><time datetime="2026-01-01T00:00:00.000Z">now</time></a>
       </article>`;
     const article = document.body.querySelector('article[data-testid="tweet"]')!;
-    expect(parseTweet(article)).toBeNull();
+    expect(parseTweet(article)).toMatchObject({ handle: "x", displayName: "X", text: "", tokens: { cashtags: [], addresses: [] } });
   });
 
   it("returns null when there is no status id", () => {

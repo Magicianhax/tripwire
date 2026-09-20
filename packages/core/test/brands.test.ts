@@ -3,11 +3,12 @@ import { CHAIN_LOGOS, chainLogo, NANSEN_LOGO, VENUE_LOGOS, venueLogo, VENUE_IDS 
 import { CHAINS } from "../src/types";
 
 describe("brand logos", () => {
-  it("has a bundled mark for every chain", () => {
-    for (const chain of CHAINS) {
+  it("uses only verified bundled chain marks and falls back for newly supported chains", () => {
+    for (const chain of Object.keys(CHAIN_LOGOS)) {
       expect(chainLogo(chain)?.file).toMatch(/^logos\/chain-[a-z]+\.svg$/);
+      expect(CHAINS).toContain(chain);
     }
-    expect(Object.keys(CHAIN_LOGOS).sort()).toEqual([...CHAINS].sort());
+    expect(chainLogo("robinhood")).toBeNull();
   });
 
   it("has a bundled mark for every venue adapter id", () => {

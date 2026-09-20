@@ -9,6 +9,7 @@ import { toResult, type ApiResult } from "./api-result";
 import type { BridgeResponse } from "./bridge";
 import type {
   AuthorBadgesResponse,
+  MarketCatalog,
   DepthResponse,
   GuardResponse,
   LinkResponse,
@@ -46,6 +47,15 @@ export async function health(): Promise<ApiResult<HealthResponse>> {
 
 export function resolve(symbol: string, chainHint?: Chain): Promise<ApiResult<ResolveResponse>> {
   return call("POST", "/api/resolve", chainHint ? { symbol, chainHint } : { symbol });
+}
+
+export function markets(symbol: string): Promise<ApiResult<MarketCatalog>> {
+  return call("POST", "/api/markets", { symbol });
+}
+
+/** Resolve a Dexscreener pool to its exact base token through the local backend. */
+export function resolvePair(chain: Chain, pairAddress: string): Promise<ApiResult<{ target: SpotTarget | null }>> {
+  return call("POST", "/api/resolve-pair", { chain, pairAddress });
 }
 
 export function postIntel(

@@ -411,7 +411,7 @@ describe("PerpBody liquidation ladder", () => {
     }).not.toThrow();
 
     const { container, root } = mountNode(<PerpBody panel={panel} />);
-    const rects = container.querySelectorAll(".tw-ladder rect");
+    const rects = container.querySelectorAll(".tw-liquidation-chart rect");
     // Band rect + exactly one tick rect (the null-liquidation_price position is skipped).
     expect(rects.length).toBe(2);
 

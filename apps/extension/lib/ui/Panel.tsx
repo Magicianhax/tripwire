@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { nansenTokenUrl, VERDICT_TIMEFRAME, type DepthSection, type Target, type Verdict, type ViewTimeframe } from "@tripwire/core";
-import type { DepthResponse, GuardResponse, PerpPanel, PersonIntelResponse, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
+import type { DepthResponse, GuardResponse, Market, PerpPanel, PersonIntelResponse, PostIntelResponse, PredictionPanel, SpotPanel } from "../api-types";
 import { BadgeCheck } from "lucide-react";
 import { CardSizeContext } from "./card-size";
 import { CountInText } from "./CountIn";
@@ -12,12 +12,15 @@ import { PopoverContext } from "./Popover";
 import { PredictionBody } from "./PredictionBody";
 import { LoadingAnnouncement, SkeletonSection } from "./Skeleton";
 import { SpotBody, type TimeframeState } from "./SpotBody";
+import { MarketsView, MarketEvidence } from "./MarketsView";
 
 /** Loads one or more depth sections. Injected rather than imported so the card stays testable
  * without a background bridge. */
 export type DepthLoader = (sections: DepthSection[]) => Promise<{ ok: true; data: DepthResponse } | { ok: false; error: string }>;
 
 export type PanelProps = {
+  enableMarkets?: boolean;
+  navigation?: ReactNode;
   /**
    * The evidence, once it arrives. `null` is the card's first frame: the header is drawn from
    * what the click already knew and every section shows a skeleton. It is never a failure state
@@ -208,7 +211,11 @@ export function Panel({
   onDepth,
   author,
   onTimeframe,
+  enableMarkets = false,
+  navigation,
 }: PanelProps) {
+  const [marketChoice, setMarketChoice] = useState<Market | null>(null);
+  const [marketHome, setMarketHome] = useState(false);
   const cardRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const pop = useContext(PopoverContext);
@@ -272,6 +279,12 @@ export function Panel({
   const timeframe: TimeframeState | undefined = onTimeframe
     ? { value: view?.timeframe ?? shownSpot?.viewTimeframe ?? VERDICT_TIMEFRAME, onChange: changeTimeframe, pending }
     : undefined;
+  const marketSymbol = (cardTarget?.kind === "spot" ? cardTarget.symbol : undefined) ?? shownSpot?.token?.symbol ?? title.replace(/^\$/, "");
+  const query = marketSymbol.replace(/^\$/, "").trim();
+  const hasMarkets = enableMarkets && spot && /^[A-Za-z0-9][A-Za-z0-9.-]{0,39}$/.test(query);
+  const markets = hasMarkets ? (active: boolean) => <MarketsView symbol={query} active={active}
+    selectedId={cardTarget?.kind === "spot" ? `${cardTarget.chain}:${cardTarget.chain === "solana" ? cardTarget.tokenAddress : cardTarget.tokenAddress.toLowerCase()}` : undefined}
+    onExplore={setMarketChoice}/> : undefined;
 
   let body: ReactNode;
   if (error) body = <p className="tw-card-message tw-dock-error">{error}</p>;
@@ -281,7 +294,7 @@ export function Panel({
   else if ("target" in data && data.target.kind === "prediction")
     body = <PredictionBody panel={data.panel as PredictionPanel} hits={data.hits} initialTab={initialTab} depth={depth} onNeedSections={requestSections} />;
   else
-    body = <SpotBody panel={shownSpot!} hits={data.hits} signals={data.signals} initialTab={initialTab} timeframe={timeframe} depth={depth} onNeedSections={requestSections} />;
+    body = <SpotBody panel={shownSpot!} hits={data.hits} signals={data.signals} initialTab={marketHome ? "markets" : initialTab} timeframe={timeframe} depth={depth} onNeedSections={requestSections} markets={markets} />;
 
   const top = data?.hits[0];
   const finding = data === null ? null : top ? hitFinding(top) : headline || defaultFinding(data.verdict);
@@ -294,6 +307,8 @@ export function Panel({
   const since = postTimeIso ? { iso: postTimeIso } : checkedAtIso ? { iso: checkedAtIso, prefix: "checked" } : null;
   const nansenUrl = spot && cardChain && cardAddress ? nansenTokenUrl(cardChain, cardAddress) : null;
   const verdict: Verdict | "LOADING" = error ? "UNCHECKED" : (data?.verdict ?? "LOADING");
+
+  if (marketChoice) return <MarketEvidence key={marketChoice.id} market={marketChoice} onClose={onClose} replay={replay} onBack={()=>{setMarketHome(true);setMarketChoice(null);}}/>;
 
   return (
     <CardSizeContext.Provider value={size}>
@@ -311,6 +326,8 @@ export function Panel({
           showToken={spot}
         />
         <div className="tw-card-scroll" ref={scrollRef}>
+          {navigation}
+          {enableMarkets && cardChain ? <p className="tw-market-scope">Spot · {cardChain} · Evidence for the selected contract</p> : null}
           {finding === null ? (
             // The finding's own line, reserved so the body below it never shifts down when the
             // sentence lands.
@@ -334,7 +351,6 @@ export function Panel({
           endpointCount={data === null ? null : endpointCount(data)}
           errors={data?.panel.errors ?? []}
           nansenUrl={nansenUrl}
-          depthCredits={depth.data?.credits ?? 0}
         />
       </section>
     </CardSizeContext.Provider>

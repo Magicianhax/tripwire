@@ -5,6 +5,8 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { TRIPWIRE_EXTENSION_ID } from "@tripwire/core";
 import { resetDb } from "@/lib/db";
 import { _resetClientState } from "@/lib/nansen/client";
+import { nansen } from "@/lib/nansen/endpoints";
+import { matchNansenEntity } from "@/lib/intel/person";
 import { _resetHyperliquidState, hyperliquidInfo, HyperliquidError } from "@/lib/hyperliquid/client";
 import { DELETE as linksDELETE, GET as linksGET, OPTIONS as linksOPTIONS, PUT as linksPUT } from "@/app/api/links/route";
 import { POST as badgesPOST } from "@/app/api/author-badges/route";
@@ -101,6 +103,7 @@ describe("/api/author-badges (replay)", () => {
   beforeEach(freshDb);
   afterEach(() => {
     delete process.env.TRIPWIRE_HL_FIXTURES;
+    vi.restoreAllMocks();
   });
   afterAll(() => {
     delete process.env.TRIPWIRE_REPLAY;
@@ -113,15 +116,24 @@ describe("/api/author-badges (replay)", () => {
   };
   const link = (handle: string, venue: string, address: string) => linksPUT(req("/api/links", { method: "PUT", body: { handle, venue, address } }));
 
-  it("Nansen badge on an exact entity match: holdings, top 3, realized PnL and win rate", async () => {
+  it("Nansen badge exposes returned holdings, chain allocation and recorded PnL details", async () => {
     const { status, body } = await badges("VitalikButerin", "Vitalik Buterin");
     expect(status).toBe(200);
     expect(body.hyperliquid).toBeUndefined();
     expect(body.polymarket).toBeUndefined();
     expect(body.nansen).toMatchObject({ entity: "Vitalik Buterin", tags: ["Public Figure", "Co-Founder"], matchedBy: "displayName", pnlWindowDays: 90 });
     expect(body.nansen.totalHoldingsUsd).toBeGreaterThan(595_000_000);
-    expect(body.nansen.topHoldings).toHaveLength(3);
-    expect(body.nansen.topHoldings[0]).toMatchObject({ symbol: "ETH", chain: "ethereum" });
+    expect(body.replay).toBe(true);
+    expect(body.nansen.topHoldings).toHaveLength(20);
+    expect(body.nansen.topHoldings[0]).toMatchObject({ symbol: "ETH", chain: "ethereum", name: "Ethereum", amount: 244584.61998465977 });
+    expect(body.nansen.nansenUrl).toBe("https://app.nansen.ai/profiler?chain=all&entity=Vitalik%20Buterin&tab=overview");
+    expect(body.nansen.holdingsTruncated).toBe(true);
+    expect(body.nansen.tokenCount).toBeGreaterThanOrEqual(20);
+    expect(body.nansen.chainHoldings.reduce((sum: number, row: { valueUsd: number }) => sum + row.valueUsd, 0)).toBeCloseTo(body.nansen.totalHoldingsUsd, 3);
+    expect(body.nansen.tradeCount).toBe(2763);
+    expect(body.nansen.tradedTokenCount).toBe(70);
+    expect(body.nansen.topPnlTokens).toHaveLength(4);
+    expect(body.nansen.topPnlTokens[0]).toMatchObject({ symbol: "ETH", chain: "ethereum", realizedPnlUsd: 9594232.510037098 });
     expect(body.nansen.realizedPnlUsd).toBeCloseTo(9594142.06, 1);
     expect(body.nansen.winRate).toBeCloseTo(0.5286, 3);
   });
@@ -129,12 +141,26 @@ describe("/api/author-badges (replay)", () => {
   it("no badges for an unlabeled, unlinked account", async () => {
     const { status, body } = await badges("weatherfan", "Weather Fan");
     expect(status).toBe(200);
-    expect(body).toEqual({ handle: "weatherfan", errors: [] });
+    expect(body).toEqual({ handle: "weatherfan", replay: true, errors: [] });
   });
 
   it("near-miss names never match (no fuzzy entity match)", async () => {
     const { body } = await badges("vitalik_fan", "Vitalik Buterin Fan");
     expect(body.nansen).toBeUndefined();
+  });
+
+  it("matches exact non-ENS entities through a name or handle and rejects near names", async () => {
+    vi.spyOn(nansen, "searchGeneral").mockResolvedValue({ data: { entities: [{ name: "ZachXBT", tags: ["Public Figure"] }], tokens: [] }, cached: false, stale: false, storedAt: Date.now(), creditsUsed: 0 });
+    expect(await matchNansenEntity({ handle: "zachxbt", displayName: "ZachXBT" })).toEqual({ name: "ZachXBT", tags: ["Public Figure"], matchedBy: "displayName" });
+    expect(await matchNansenEntity({ handle: "zachxbt", displayName: "On-chain investigator" })).toMatchObject({ name: "ZachXBT", matchedBy: "handle" });
+    expect(await matchNansenEntity({ handle: "zachxbt_fan", displayName: "ZachXBT Fan" })).toBeNull();
+  });
+
+  it("keeps unavailable balance and PnL values null rather than reporting zeros", async () => {
+    vi.spyOn(nansen, "entityBalances").mockRejectedValue(new Error("Balances unavailable"));
+    vi.spyOn(nansen, "entityPnlSummary").mockRejectedValue(new Error("PnL unavailable"));
+    const { body } = await badges("VitalikButerin", "Vitalik Buterin");
+    expect(body.nansen).toMatchObject({ totalHoldingsUsd: null, tokenCount: null, topHoldings: [], chainHoldings: [], realizedPnlUsd: null, tradeCount: null, tradedTokenCount: null, topPnlTokens: [], errors: ["Balances unavailable", "PnL unavailable"] });
   });
 
   it("Hyperliquid badge for a linked handle: account, positions, last 10 fills, Nansen perp PnL", async () => {

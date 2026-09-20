@@ -1,3 +1,4 @@
+import { useState, type ReactNode } from "react";
 import {
   depthCostLabel,
   NETFLOW_TILE_TIMEFRAME,
@@ -20,6 +21,7 @@ import { Segmented } from "./Segmented";
 import { SectionProblem, Skeleton as LoadingBlock } from "./Skeleton";
 import { Tabs, type TabDef } from "./Tabs";
 import { WalletLabel } from "./WalletLabel";
+import { AllocationChart, usePagination } from "./DataCharts";
 
 const TIMEFRAME_OPTIONS = VIEW_TIMEFRAMES.map((value) => ({ value, label: value }));
 
@@ -280,6 +282,7 @@ function RiskTab({ panel, hits }: { panel: SpotPanel; hits: HitDto[] }) {
  * its own tab, that tab only exists in the expanded view, and the price is printed on it.
  */
 function HoldersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
+  const pagination = usePagination(depth.data?.spotHolders?.holders ?? [], 6);
   const size = useCardSize();
   const holders = depth.data?.spotHolders;
   const loading = depth.loading.includes("spotHolders");
@@ -295,11 +298,12 @@ function HoldersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
     );
   }
   if (!holders) return <Empty>Open this tab to load who holds {symbol}.</Empty>;
-  const rows = (holders.holders ?? []).slice(0, rowLimit(size, 10, 20));
+  const rows = pagination.rows;
   if (rows.length === 0) return <Empty>Nansen returned no holder list for this token.</Empty>;
 
   return (
-    <>
+    <div className="tw-detail tw-detail-columns">
+      <div>
       {holders.top10SharePct !== null ? (
         <Section title="Concentration">
           <p className="tw-note">
@@ -307,7 +311,12 @@ function HoldersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
           </p>
         </Section>
       ) : null}
-      <Section title="Top holders" aside={`${rows.length} of ${(holders.holders ?? []).length}`}>
+      <Section title="Holder distribution" aside="Returned wallets">
+        <AllocationChart label="Share of the returned holders' value" rows={(holders.holders ?? []).map((h,i)=>({label:h.label || `Holder ${i+1}`,value:h.valueUsd ?? 0}))} />
+        <p className="tw-meta">Relative value within this holder list, not total token supply.</p>
+      </Section>
+      </div>
+      <Section title="Top holders" aside={`${(holders.holders ?? []).length} wallets`}>
         <table className="tw-table">
           <thead>
             <tr>
@@ -338,9 +347,10 @@ function HoldersTab({ panel, depth }: { panel: SpotPanel; depth: DepthState }) {
             ))}
           </tbody>
         </table>
+        {pagination.controls}
       </Section>
       <SectionProblem reasons={holders.errors} />
-    </>
+    </div>
   );
 }
 
@@ -379,6 +389,7 @@ export function SpotBody({
   timeframe,
   depth = EMPTY_DEPTH,
   onNeedSections,
+  markets,
 }: {
   panel: SpotPanel;
   hits?: HitDto[];
@@ -387,14 +398,19 @@ export function SpotBody({
   timeframe?: TimeframeState;
   depth?: DepthState;
   onNeedSections?: (sections: DepthSection[]) => void;
+  markets?: (active: boolean) => ReactNode;
 }) {
   const expanded = useCardSize() === "expanded";
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const tabs = spotTabs(panel, hits, signals, timeframe, depth, expanded);
+  if (markets) tabs.unshift({ id: "markets", label: "Markets", content: markets(activeTab === "markets") });
   return (
     <Tabs
       label="Evidence"
-      tabs={spotTabs(panel, hits, signals, timeframe, depth, expanded)}
-      initial={initialTab}
+      tabs={tabs}
+      initial={initialTab ?? "flow"}
       onSelect={(id) => {
+        setActiveTab(id);
         const sections = SPOT_TAB_SECTIONS[id];
         if (sections && sections.length > 0) onNeedSections?.(sections);
       }}

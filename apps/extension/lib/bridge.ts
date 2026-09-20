@@ -80,7 +80,7 @@ export function createBridge({ fetchImpl, getBackendUrl }: BridgeDeps): { handle
     }
     try {
       const backendUrl = await getBackendUrl();
-      const res = await fetchImpl(`${backendUrl}/api/token-logo?chain=${chain}&address=${address}`, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+      const res = await fetchImpl(`${backendUrl}/api/token-logo?chain=${chain}&address=${address}&v=2`, { signal: AbortSignal.timeout(TIMEOUT_MS) });
       const type = res.headers.get("content-type") ?? "";
       if (!res.ok || !type.startsWith("image/")) return { ok: false, status: res.status, json: null };
       const bytes = new Uint8Array(await res.arrayBuffer());

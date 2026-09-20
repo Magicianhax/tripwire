@@ -337,19 +337,28 @@ describe("expanding the card", () => {
     anchored.root.unmount();
   });
 
-  it("shows more of the same data, not different data", () => {
+  it("keeps all positions reachable through compact pages in both sizes", () => {
     const countRows = (size: "compact" | "expanded") => {
       const { container, root } = mountNode(
         <Popover anchor={null} onClose={() => {}} size={size} onToggleSize={() => {}}>
           <Panel data={perpGuard(20)} title="ETH" onClose={() => {}} initialTab="liquidations" />
         </Popover>,
       );
-      const rows = container.querySelectorAll('[role="tabpanel"]:not([hidden]) .tw-table tbody tr').length;
+      const pane=container.querySelector('[role="tabpanel"]:not([hidden])')!;
+      const rows = pane.querySelectorAll('.tw-table tbody tr').length;
+      const seen=new Set<string>();
+      for (;;) {
+        for(const row of pane.querySelectorAll('.tw-table tbody tr'))seen.add(row.textContent??"");
+        const next=pane.querySelector<HTMLButtonElement>('[aria-label="Next page"]');
+        if(!next||next.disabled)break;
+        act(()=>next.click());
+      }
+      expect(seen.size).toBe(20);
       root.unmount();
       return rows;
     };
     expect(countRows("compact")).toBe(6);
-    expect(countRows("expanded")).toBe(20);
+    expect(countRows("expanded")).toBe(6);
   });
 
   it("gives the expanded spot card a Holders tab, and the compact one none", () => {
