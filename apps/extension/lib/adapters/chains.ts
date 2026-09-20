@@ -274,6 +274,23 @@ export function isCoveredChainSlug(raw: string): boolean {
   return COVERED_CHAIN_SLUGS.has(key) || EVM_CHAIN_IDS[Number(key)] !== undefined;
 }
 
+/** A chain Tripwire covers, spelled the way a sentence should spell it. */
+const CHAIN_DISPLAY_NAMES: Record<Chain, string> = {
+  solana: "Solana",
+  ethereum: "Ethereum",
+  base: "Base",
+  arbitrum: "Arbitrum",
+  optimism: "Optimism",
+  bnb: "BNB Chain",
+  polygon: "Polygon",
+  avalanche: "Avalanche",
+  robinhood: "Robinhood Chain",
+};
+
+export function chainName(chain: Chain): string {
+  return CHAIN_DISPLAY_NAMES[chain];
+}
+
 /** A chain's name for the strip: the one Tripwire knows, else "chain <id>". */
 export function chainLabel(id: string): string {
   const named = OTHER_CHAIN_NAMES[id] ?? OTHER_CHAIN_SLUGS[id.trim().toLowerCase()];

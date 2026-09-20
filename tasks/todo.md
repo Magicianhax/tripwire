@@ -260,3 +260,47 @@ Open for the human:
 - Ruling: 11px becomes a documented DESIGN.md type step (label-sm 0.6875rem) and #4a3e00 (ink-on-yellow muted) + #2A2A2A (border-neutral) become tokens; #f4f4f4 replaced by #EDEDED — documents real usage ≥11px floor — costs a DESIGN.md edit.
 - Ruling: CAUTION strip and weaken-confirm row use a full 1.5px yellow border per DESIGN.md instead of a 4px side border — spec fidelity over detector exception — costs nothing.
 - Parked: /history override sentences use current thresholds (rows store rule ids only) — Ruling: acceptable for v1; store thresholds per row later — costs historical accuracy of wording.
+
+## Round 1.4.9 — Uniswap UI-selected token (wrong instruction)
+
+Reported: swap form with Sell=ETH, Buy=GIZA on Base reads "UNCHECKED — Select a network to
+check GIZA". The user has selected the network; the instruction is a confident falsehood.
+
+- [x] 1. Diagnose against the live DOM (Playwright, read-only, no wallet)
+- [x] 2. Save the capture to apps/extension/test/fixtures/venues/
+- [x] 3. Failing tests first (adapter, gap copy, runner)
+- [x] 4. Read the chain from the Buy token's badge when the URL lacks it
+- [x] 5. Honest copy for every remaining unknown-chain case
+- [x] 6. Audit the other venues' gap copy for the same pattern
+- [x] 7. pnpm verify, both builds, verify:e2e on 3231
+- [x] 8. Recapture strip-uniswap-native.png + new strip-uniswap-ui-selected.png
+- [x] 9. docs/BUILD-LOG.md section
+
+### Review
+
+Root cause was NOT a delayed URL write. Uniswap never writes `chain`/`outputCurrency` for a
+picker-chosen token, and the Buy token's chain exists only inside its badge's own
+`data-testid="network-logo-<chainId>"` — no `data-chain-id`, `alt=""`, no `title`, no
+`aria-label`, which is what the old reader scanned. There is no page-level network selector to
+fall back to, so the order is badge -> URL, not badge -> selector -> URL.
+
+Second defect found while fixing the first: `index.tsx` turned ANY chainless symbol gap into
+`missing-chain` ("Select a network to check X"), so Jumper had the same wrong instruction. After
+this round no adapter produces `missing-chain` at all; the kind survives as evidence-gated.
+
+Third defect found: with the chain now known, an ambiguous resolve would have printed "Tripwire
+couldn't find GIZA on Nansen" while holding several GIZA rows. Added `ambiguous-symbol`.
+
+Verified: pnpm verify (core 313 / web 320 / extension 853, 0 failed), both builds, 33 e2e passed
+on port 3231, both captures regenerated and opened. 0 Nansen credits (2 free search/general
+probes on a throwaway server at 3232; port 3000 untouched).
+
+Rulings made on your behalf:
+- Ruling: the badge wins over the URL `chain` param ONLY when the URL names no `outputCurrency` —
+  `chain` and `outputCurrency` are written together and describe the same token, so a stale badge
+  must never re-chain the URL's address — costs the badge being ignored on a URL-driven page,
+  where it agrees anyway.
+- Ruling: the token-picker's `tokens-network-filter-trigger` is NOT read as the form's network —
+  it is a modal search filter, not page state — costs nothing; reading it would be a guess.
+- Ruling: `missing-chain` is kept in the union with no producer rather than deleted — a venue with
+  a readable, provably-empty network control can earn it back — costs one dead branch.

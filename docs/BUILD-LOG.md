@@ -2566,3 +2566,147 @@ card open, the compact Polymarket card's first screen, the jumper block inside i
   and two controls share the row: a long question reads "Will the price of Bitcoin be above…". The
   full sentence is in the heading's `title` and in the expanded card. Giving the heading its own
   row in the compact header is a layout decision for the next round.
+
+---
+
+# Uniswap UI-selected token (Round 1.4.9)
+
+Reported: `app.uniswap.org/swap` with Sell = ETH and Buy = **GIZA on Base** — the token button
+visibly wearing a Base badge — read **"UNCHECKED — Select a network to check GIZA"**. The user's
+words: "this does not make sense at all i have selected giza on base to swap already." Same class
+as Round 1.4.3: a confident instruction to do something already done.
+
+## What the live DOM actually gave us
+
+Read read-only with Playwright on 2026-09-20 (no wallet, no trade). Captured to
+`apps/extension/test/fixtures/venues/uniswap-ui-selected.json`, reconstructed as
+`…/uniswap-ui-selected.html`.
+
+- **The URL never updates.** Not on a delay — at all. After choosing GIZA through the picker the
+  address stayed `https://app.uniswap.org/swap` with no `chain` and no `outputCurrency`, watched
+  in 500 ms frames for 3.5 s and again later. Requirement 4's premise (a delayed URL write the
+  runner should re-read on) does not hold for Uniswap; there is nothing to wait for, so no
+  settle-re-read was added for it. The DOM-settle case is covered instead (below).
+- **The chain is carried only in a test id.** The badge on the Buy button is
+  `data-testid="network-logo-8453"`. It has **no `data-chain-id`**, its `<img>` carries
+  **`alt=""`**, and there is **no `title` and no `aria-label`** — which is exactly why the old
+  reader (`[data-chain-id], img[alt], [title]`) came back empty and the strip fell through to the
+  symbol-only branch. Page-wide, `[data-chain-id]` matches **0 elements**.
+- **The Sell row wears its own badge.** Sell ETH = `network-logo-1` beside Buy GIZA =
+  `network-logo-8453`, so a page-wide scan sees two chains at once. The read must stay scoped to
+  `[data-testid="choose-output-token"]`.
+- **There is no page-level network selector.** The only network control is
+  `tokens-network-filter-trigger` (`all-networks-logo` when unfiltered), which exists *only* inside
+  the open token-picker modal and is a search filter, not the form's state. Reading it as the
+  form's chain would be a guess, so it is not read. The chain lives exclusively on token badges —
+  which is why the requested "badge → network selector → URL" order is implemented as
+  **badge → URL**, with the middle step recorded as absent rather than invented.
+- **The default swap page has an empty Buy slot.** Sell = ETH, Buy = "Select token", no logo, no
+  badge. The old `strip-uniswap-native` copy ("Select a network to check ETH") was wrong twice:
+  ETH was the *Sell* side, and the page was showing a network.
+- Picker rows use `token-option-<chainId>-<SYMBOL>` with the same badge; GIZA returned entries on
+  chains 1, 8453, 42161 and 137.
+
+## Fallback order implemented
+
+`readTarget` keeps **URL `chain` first**: Uniswap writes `chain` and `outputCurrency` together, so
+they describe the same token, and a badge left over from the previously selected token would
+re-chain the URL's address to a different token entirely. The badge fills in only when the URL
+names a contract without a chain.
+
+`readGap` (the DOM-fallback path, where the URL says nothing) reads, in order:
+
+1. **URL `chain` param** — if present and unmappable → `unsupported-chain` (unchanged rule).
+2. **The Buy token's chain badge** (`network-logo-<id>`, scoped to the Buy row) → `Chain`. An id
+   outside coverage → `unsupported-chain` naming it, **never** a defaulted chain and never a
+   "pick a network".
+3. **The older label signal** (`data-chain-id` / `img[alt]` / `[title]`), kept for the Robinhood
+   Chain text label Uniswap writes as words rather than as a numeric badge.
+
+With a chain in hand the symbol goes to `/api/resolve` with its `chainHint`, exactly as before. A
+chain is still never inferred from the fact that a symbol resolves on one.
+
+**Proof on the real thing:** the shipped reader, run against the live page, returns
+`{kind:"symbol", symbol:"GIZA", chainHint:"base"}`; a live `POST /api/resolve`
+`{symbol:"GIZA", chainHint:"base"}` returns exactly one candidate,
+`base 0x590830dfdf9a3f68afcdde2694773debdf267774` — the same contract the Uniswap picker offered
+under the Base badge. `{chainHint:"ethereum"}` returns a *different* row, which is why the hint
+matters. Cost: 0 credits (`search/general` is free); the day's ledger was unchanged at 381.
+
+## Copy: an instruction is only correct if the user has not already done it
+
+`TargetGap` gained three kinds and `missing-chain` gained a precondition.
+
+| Situation | Before | Now |
+|---|---|---|
+| Buy token on a badge-named chain we cover | "Select a network to check GIZA" | a real verdict for GIZA on Base |
+| Badge names a chain we don't cover | "Select a network to check GIZA" | "No onchain data for GIZA on Unichain" |
+| Chain known, Nansen has the symbol there more than once | "Tripwire couldn't find GIZA on Nansen" | "More than one GIZA on Base — Tripwire can't tell which" |
+| Chain known, Nansen genuinely has nothing | "Tripwire couldn't find GIZA on Nansen" | unchanged — it is true |
+| Row half-drawn (logo up, badge not yet) | "Select a network to check GIZA" | neutral LOADING strip, "Checking…" |
+| No chain signal anywhere | "Select a network to check GIZA" | "Tripwire can't tell which network GIZA is on" |
+| Nothing in the Buy slot | "Select a network to check ETH" | "Select a token to see its onchain activity" |
+| Venue's network control provably empty | "Select a network to check X" | unchanged — the only instruction left, and it now requires positive evidence |
+
+**Venue audit.** `index.tsx` used to convert *any* chainless `symbol` gap into `missing-chain`,
+which is where Jumper's `{kind:"symbol", symbol}` (no `toChain` in the URL) also produced the wrong
+instruction. That blanket conversion is gone, replaced by `chainlessGap()` → `unknown-chain`, so
+every venue now states Tripwire's limit instead of instructing the user. After this round **no
+adapter produces `missing-chain`**: the kind and its sentence stay in the union, documented as
+requiring positive evidence of an unset control, so a future adapter that can prove it may use it.
+The other gap sentences (`unsupported-chain`, `native-asset`) were already statements about the
+page rather than instructions and are unchanged.
+
+A `pending` gap is routed by the runner to the existing neutral LOADING strip (`showChecking`)
+rather than being dressed as an UNCHECKED verdict — a half-drawn row has nothing settled to be
+unchecked about, and the next tick produces a different `gapKey`, which re-reads the row.
+
+## Code
+
+- `lib/adapters/uniswap.ts`: `outputBadgeChainId()` (Buy-scoped, returns the id as the page spells
+  it so "chain we don't cover" stays distinct from "no chain"), `outputChainFromLabels()` (the old
+  reader, kept), a documented `outputChain()` precedence, and a rewritten `readGap`.
+- `lib/adapters/types.ts`: `unknown-chain`, `pending`, `ambiguous-symbol`; `missing-chain`
+  documented as evidence-gated.
+- `lib/adapters/chains.ts`: `chainName()` for sentence-cased covered chains.
+- `entrypoints/venues.content/resolve-target.ts` (new): `chainlessGap()`, `resolvedFrom()`,
+  `isTarget()` — the two decisions pulled out of the content script's `main()` so they are testable.
+- `entrypoints/venues.content/format.ts`: the new sentences and `gapKey` for the new kinds.
+- `entrypoints/venues.content/runner.tsx`: `pending` → LOADING strip.
+- `e2e/pages/uniswap.html`: made faithful to the live page (badges by test id, empty Buy slot by
+  default); `setBuyToken(symbol, chainId)` and `setBuyTokenWithoutBadge(symbol)`.
+
+Unchanged: `textContent`/attributes only, no `innerHTML` in extension source, backend-only fetches,
+desktop only, and the anchor-fit / lift-out-of-row / block-geometry clamp from the last round —
+both captures show the strip above the trade button, wrapping to two lines.
+
+## Tests
+
+New: `test/venue-uniswap-ui-selected.test.ts` (11, on the captured fixture: badge read, Buy-vs-Sell
+scoping, uncovered badge chain, unknown numeric id, settling, no-logo, URL-authoritative pairing,
+badge-fills-a-chainless-URL, distinct gap keys, empty Buy slot) and
+`test/venue-symbol-resolution.test.ts` (7, the `/api/resolve` outcomes including the live
+GIZA-on-Base row). Two `runner.test.tsx` cases for the LOADING routing. Two `venue-gaps.test.ts`
+assertions moved from `missing-chain` to `unknown-chain` with the reason recorded. Four new e2e
+steps in "Strips say what is actually wrong": UI-selected token, uncovered badge chain, mid-render,
+and the corrected default page.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 313, web 320, extension 853** passed, 0 failed.
+- `pnpm build`: extension (wxt, chrome-mv3) OK; web (Next 16.3.5) OK.
+- `TRIPWIRE_E2E_PORT=3231 pnpm verify:e2e`: **33 passed, 5 skipped** (capture-only specs), 0 failed.
+- Captures regenerated at port 3231 and opened: `strip-uniswap-native` (now "Select a token to see
+  its onchain activity") and `strip-uniswap-ui-selected` (new).
+- 0 Nansen credits spent (2 free `search/general` probes; the replay backend served the e2e).
+- Port 3000 was never touched; the one live probe ran on a throwaway server on 3232, since stopped.
+
+## Deferred
+
+- `test/popup-layout.test.tsx` flaked once again in the loaded parallel run and passed alone and on
+  the full re-run — the same flake already recorded above, not investigated here.
+- The `ambiguous-symbol` line is the honest answer but not yet an actionable one. The strip does
+  offer "Markets", which lists the candidates; a future round could let the user pick the contract
+  from there and guard it directly.
+- `missing-chain` now has no producer. A venue with a real, readable network selector (Jumper's
+  destination-chain control is the likely first) could earn it back with a live capture.

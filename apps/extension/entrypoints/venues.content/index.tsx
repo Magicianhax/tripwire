@@ -12,6 +12,7 @@ import { createReplayFlag } from "../../lib/replay";
 import { TIER1_MATCHES, TIER2_MATCHES } from "../../lib/venues";
 import { createResultCache } from "../../lib/x/cache";
 import { LOCATE_MESSAGE } from "./locate";
+import { chainlessGap, isTarget, resolvedFrom } from "./resolve-target";
 import { createGuardRunner, gapKey, keyFor } from "./runner";
 
 const DOM_DEBOUNCE_MS = 400;
@@ -86,13 +87,17 @@ export default defineContentScript({
         // read off the swap form is resolved through the backend and guarded like any other
         // token; a native coin or an uncovered chain is the answer itself.
         let gap: TargetGap | null = target ? null : (adapter.readGap?.(document, url) ?? null);
-        if (gap?.kind === "symbol" && !gap.chainHint) gap = { kind: "missing-chain", symbol: gap.symbol };
-        if (!target && gap?.kind === "symbol") {
+        if (gap) gap = chainlessGap(gap);
+        if (!target && gap?.kind === "symbol" && gap.chainHint) {
           const resolved = await resolveSymbol(gap.symbol, gap.chainHint);
           if (ctx.isInvalid || location.href !== url.href) return;
-          if (resolved) {
+          if (isTarget(resolved)) {
             target = resolved;
             gap = null;
+          } else if (resolved) {
+            // Nansen knows the symbol on that chain more than once. Say so; "couldn't find it"
+            // would be a confident falsehood about data we are holding (Round 1.4.9).
+            gap = resolved;
           }
         }
         if (adapter.shouldHide?.(document, new URL(location.href))) return;
@@ -119,14 +124,10 @@ export default defineContentScript({
       }
     }
 
-    /** A symbol the venue named, turned into the token Nansen knows, or null. */
-    async function resolveSymbol(symbol: string, chainHint?: Chain): Promise<Target | null> {
-      if (!chainHint) return null;
-      const result = await symbols.get(`${symbol}|${chainHint ?? ""}`, () => resolve(symbol, chainHint));
-      if (!result.ok || !result.data.best) return null;
-      const best = result.data.best;
-      if (best.chain !== chainHint) return null;
-      return { kind: "spot", chain: best.chain, tokenAddress: best.tokenAddress, symbol: best.symbol };
+    /** A symbol the venue named, turned into the token Nansen knows — or, when Nansen knows it
+     * more than once on that chain, the gap that says exactly that. See `./resolve-target.ts`. */
+    async function resolveSymbol(symbol: string, chainHint: Chain): Promise<Target | TargetGap | null> {
+      return resolvedFrom(symbol, chainHint, await symbols.get(`${symbol}|${chainHint}`, () => resolve(symbol, chainHint)));
     }
 
     void runContentTask(ctx, check);

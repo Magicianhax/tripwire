@@ -16,13 +16,41 @@ import type { Chain, Target } from "@tripwire/core";
  * these now says what it is.
  */
 export type TargetGap =
+  /**
+   * The venue's own network control is EMPTY — the user really has not picked one. This is the
+   * only gap that instructs, and an instruction is only correct when the user has not already
+   * followed it, so an adapter may return this kind only on positive evidence of an unset
+   * control. The absence of a chain signal is not that evidence: use `unknown-chain`.
+   *
+   * Round 1.4.9: this was returned for a Uniswap swap form whose Buy button was wearing a Base
+   * badge, because the badge kept its chain id somewhere the reader wasn't looking. "Select a
+   * network to check GIZA", on a page that says Base.
+   */
   | { kind: "missing-chain"; symbol: string }
   /** The venue's destination chain is outside Tripwire's coverage. `label` names it. */
   | { kind: "unsupported-chain"; label: string; symbol?: string }
   /** The destination is a chain's own coin, which has no contract to look up on Nansen. */
   | { kind: "native-asset"; symbol: string }
   /** The page names a token by symbol only (no address in the URL): resolve it and check it. */
-  | { kind: "symbol"; symbol: string; chainHint?: Chain };
+  | { kind: "symbol"; symbol: string; chainHint?: Chain }
+  /**
+   * The page names a token but nothing on it names that token's chain. A statement about
+   * Tripwire, not an instruction to the user: we cannot tell, and we will not guess a chain
+   * just because the symbol happens to resolve on one.
+   */
+  | { kind: "unknown-chain"; symbol: string }
+  /**
+   * The venue is mid-render — the row is visibly half-drawn — so anything said about it now
+   * would be about a page that no longer exists a tick later. Rendered as the neutral
+   * "Checking…" state, never as a verdict.
+   */
+  | { kind: "pending"; symbol: string }
+  /**
+   * The chain is known and Nansen knows the symbol on it more than once. "Couldn't find it"
+   * would be false; picking the busiest would be a guess about which contract the user
+   * selected. Naming the ambiguity is the only honest answer.
+   */
+  | { kind: "ambiguous-symbol"; symbol: string; chain: Chain };
 
 /**
  * Where on a venue page the eye already is, best first. The runner mounts the verdict to the

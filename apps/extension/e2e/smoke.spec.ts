@@ -690,9 +690,12 @@ test("@smoke Strips say what is actually wrong, and wrap rather than clip", asyn
   await expect(strip).toHaveAttribute("data-verdict", "UNCHECKED");
   await expect(page.locator(".tw-block")).toHaveCount(0);
 
-  // 3. Uniswap's default page names no token in its URL; the Buy selector says ETH.
+  // 3. Uniswap's default page names no token in its URL, and its Buy slot is empty — so the
+  // answer is about the token, not the network. (Round 1.4.9: this used to read "Select a
+  // network to check ETH", which was wrong twice over — ETH was the Sell side, and the page
+  // was showing a network.)
   await page.goto("https://app.uniswap.org/swap");
-  await expect(strip.locator(".tw-strip-finding")).toHaveText("Select a network to check ETH", { timeout: 20_000 });
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("Select a token to see its onchain activity", { timeout: 20_000 });
   await expect(strip).toHaveAttribute("data-verdict", "UNCHECKED");
 
   // 3b. That reason is long, and it wraps to two lines instead of being cut off mid-word.
@@ -715,10 +718,32 @@ test("@smoke Strips say what is actually wrong, and wrap rather than clip", asyn
   // And the host page still never scrolls sideways because of us.
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
 
-  // 4. Changing a ticker without selecting a network must not choose another chain.
+  // 4. A ticker with no chain anywhere on the page must not be guarded on a guessed chain —
+  // and must not be turned into an instruction either. Tripwire states its own limit.
   await page.evaluate(() => (window as unknown as { setBuyToken(s: string): void }).setBuyToken("WIF"));
-  await expect(strip.locator(".tw-strip-finding")).toHaveText("Select a network to check WIF", { timeout: 20_000 });
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("Tripwire can't tell which network WIF is on", { timeout: 20_000 });
   await expect(page).toHaveURL("https://app.uniswap.org/swap");
+
+  // 5. Round 1.4.9, the reported defect: a token chosen through the picker writes NOTHING to
+  // the URL, and the only place its chain exists is the badge's own test id. Reading it turns a
+  // wrong instruction into a real lookup on the chain the page is showing. (Replay's search
+  // fixture holds two WIF contracts on Robinhood Chain, so the honest answer here is the
+  // ambiguity — never "couldn't find WIF", which the data would contradict.)
+  await page.evaluate(() => (window as unknown as { setBuyToken(s: string, c: number): void }).setBuyToken("WIF", 4663));
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("More than one WIF on Robinhood Chain — Tripwire can't tell which", { timeout: 20_000 });
+  await expect(strip).toHaveAttribute("data-verdict", "UNCHECKED");
+  await expect(page).toHaveURL("https://app.uniswap.org/swap");
+  await expect(page.locator(".tw-block")).toHaveCount(0);
+
+  // 6. A badge naming a chain Tripwire has no data for is a coverage answer, not a prompt.
+  await page.evaluate(() => (window as unknown as { setBuyToken(s: string, c: number): void }).setBuyToken("UNI", 130));
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("No onchain data for UNI on Unichain", { timeout: 20_000 });
+
+  // 7. Mid-render — label up, badge not yet — is neutral "Checking…", never a verdict about a
+  // row that is still being drawn.
+  await page.evaluate(() => (window as unknown as { setBuyTokenWithoutBadge(s: string): void }).setBuyTokenWithoutBadge("PEPE"));
+  await expect(strip.locator(".tw-strip-finding")).toHaveText("Checking…", { timeout: 20_000 });
+  await expect(strip).toHaveAttribute("data-verdict", "LOADING");
 
   expect(consoleErrors).toEqual([]);
 });

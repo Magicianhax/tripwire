@@ -173,3 +173,25 @@ describe("guardHeadline", () => {
     expect(guardHeadline({ verdict: "UNCHECKED", hits: [] })).toBe("Tripwire couldn't check this: no data");
   });
 });
+
+describe("a page that is still settling (Round 1.4.9)", () => {
+  it("shows the neutral Checking… strip, never an UNCHECKED verdict about a half-drawn row", async () => {
+    const runner = createGuardRunner(fakeCtx());
+    await act(async () => {
+      await runner.render(adapter, null, "jupiter:null|pending:GIZA", { kind: "pending", symbol: "GIZA" });
+    });
+    expect(tripwireText()).toContain("Checking…");
+    expect(tripwireText()).not.toContain("Unchecked");
+    expect(guardMock).not.toHaveBeenCalled();
+    runner.dispose();
+  });
+
+  it("still states a settled gap as an UNCHECKED verdict", async () => {
+    const runner = createGuardRunner(fakeCtx());
+    await act(async () => {
+      await runner.render(adapter, null, "jupiter:null|unknown-chain:GIZA", { kind: "unknown-chain", symbol: "GIZA" });
+    });
+    expect(tripwireText()).toContain("Tripwire can't tell which network GIZA is on");
+    runner.dispose();
+  });
+});

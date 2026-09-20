@@ -7,7 +7,13 @@
       /* The swap card as app.uniswap.org draws it, reduced to the parts Tripwire touches: the
          Sell and Buy token selectors (both div[role=button], as on the real page) and the
          primary action. The reported defect was the default page, which names no token in the
-         URL at all — so this stub deliberately has no query parameters. */
+         URL at all — so this stub deliberately has no query parameters.
+
+         Round 1.4.9 made it faithful to what the live page actually shows (captured read-only
+         on 2026-09-20, see test/fixtures/venues/uniswap-ui-selected.json): each token button
+         carries a chain badge whose ONLY machine-readable chain signal is its own test id,
+         `data-testid="network-logo-<evm chain id>"`, and the default page has NOTHING in the
+         Buy slot — Sell = ETH on chain 1, Buy = "Select token" with no logo and no badge. */
       body { font-family: system-ui, sans-serif; margin: 0; background: #131313; color: #f9f9f9; }
       header { display: flex; gap: 16px; align-items: center; padding: 12px 20px; }
       main { display: flex; justify-content: center; padding-top: 160px; }
@@ -15,6 +21,8 @@
       .field { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-radius: 20px; background: #1b1b1b; }
       .field .side { color: #9b9b9b; font-size: 13px; }
       .token { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: #2f2f2f; font-weight: 600; }
+      .logo { position: relative; display: inline-block; width: 28px; height: 28px; border-radius: 999px; background: #4a4a4a; }
+      .badge { position: absolute; right: -3px; bottom: -2px; width: 14px; height: 14px; border-radius: 999px; background: #0052ff; }
       [data-testid="review-swap"] {
         height: 56px;
         margin-top: 8px;
@@ -37,19 +45,36 @@
       <div class="swap">
         <div class="field" role="button">
           <span class="side">Sell</span>
-          <span class="token" role="button" data-testid="choose-input-token">WETH</span>
+          <span class="token" role="button" data-testid="choose-input-token">
+            <span class="logo" data-testid="token-logo"><span class="badge" data-testid="network-logo-1"></span></span>
+            <span data-testid="choose-input-token-label">ETH</span>
+          </span>
         </div>
         <div class="field" role="button">
           <span class="side">Buy</span>
-          <span class="token" role="button" data-testid="choose-output-token">ETH</span>
+          <span class="token" role="button" data-testid="choose-output-token">
+            <span data-testid="choose-output-token-label">Select token</span>
+          </span>
         </div>
         <button type="button" data-testid="review-swap">Get started</button>
       </div>
     </main>
     <script>
-      // The e2e drives the Buy selector the way the venue's own token picker would.
-      window.setBuyToken = (symbol) => {
-        document.querySelector('[data-testid="choose-output-token"]').textContent = symbol;
+      // The e2e drives the Buy selector the way the venue's own token picker would: the label,
+      // the token logo and the chain badge all arrive together, and the URL is never touched —
+      // which is exactly what app.uniswap.org does for a picker-chosen token.
+      window.setBuyToken = (symbol, chainId) => {
+        const button = document.querySelector('[data-testid="choose-output-token"]');
+        const label = `<span data-testid="choose-output-token-label">${symbol}</span>`;
+        button.innerHTML =
+          chainId === undefined
+            ? label
+            : `<span class="logo" data-testid="token-logo"><span class="badge" data-testid="network-logo-${chainId}"></span></span>${label}`;
+      };
+      // The same row mid-render: the logo container is up, its badge has not arrived yet.
+      window.setBuyTokenWithoutBadge = (symbol) => {
+        document.querySelector('[data-testid="choose-output-token"]').innerHTML =
+          `<span class="logo" data-testid="token-logo"></span><span data-testid="choose-output-token-label">${symbol}</span>`;
       };
     </script>
   </body>

@@ -157,6 +157,14 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     // while the new check is in flight.
     teardownMain();
 
+    // The venue is mid-render, so there is nothing settled to be UNCHECKED about yet. The
+    // neutral LOADING strip is the honest frame; the next tick reads a finished row and
+    // produces a different key, which brings us back here with a real answer (Round 1.4.9).
+    if (!target && gap?.kind === "pending") {
+      await showChecking(rc, adapter, key, findPlacement(adapter));
+      return;
+    }
+
     let verdict: Verdict = "UNCHECKED";
     // No target is not automatically a failure: the adapter says whether the page points at a
     // chain outside coverage, at a chain's own coin, or at nothing at all.

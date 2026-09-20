@@ -22,10 +22,38 @@ const TOKEN_INFO_SELECTOR = '[data-testid="token-info-container"]';
  */
 const EXPLORE_TOKEN_PATH_RE = /^\/explore\/tokens\/([^/?#]+)\/([^/?#]+)/;
 
-/** Only output-side metadata counts; the global network picker may describe the Sell side. */
-function outputChain(doc: Document, url: URL): Chain | undefined {
-  const param = url.searchParams.get("chain");
-  if (param) return UNISWAP_CHAIN_NAMES[param.toLowerCase()] ?? EVM_CHAIN_IDS[Number(param)];
+/**
+ * The token image inside a token button, and the chain badge pinned to its corner. Read live on
+ * 2026-09-20 (`test/fixtures/venues/uniswap-ui-selected.json`): the badge's ONLY machine-readable
+ * chain signal is its own test id, `data-testid="network-logo-<evm chain id>"`. It has no
+ * `data-chain-id`, its `<img>` carries `alt=""`, and there is no `title` or `aria-label` — the
+ * three attributes the previous reader scanned, which is why a Base badge read as no chain at all.
+ */
+const TOKEN_LOGO_SELECTOR = '[data-testid="token-logo"]';
+const NETWORK_BADGE_SELECTOR = '[data-testid^="network-logo-"]';
+const NETWORK_BADGE_RE = /^network-logo-(\d+)$/;
+
+/**
+ * The EVM chain id on the Buy token's badge, as the page spells it — NOT mapped to a `Chain`,
+ * because "the page named a chain we don't cover" and "the page named no chain" must stay
+ * distinguishable: the first is a coverage answer, the second is silence. Scoped to the Buy row
+ * because the Sell row wears its own badge (live: Sell ETH = `network-logo-1` beside Buy GIZA =
+ * `network-logo-8453`), so a page-wide scan would see two chains at once.
+ */
+function outputBadgeChainId(doc: Document): string | null {
+  const output = doc.querySelector(OUTPUT_TOKEN_SELECTOR);
+  if (!output) return null;
+  const ids = new Set<string>();
+  for (const el of output.querySelectorAll(NETWORK_BADGE_SELECTOR)) {
+    const id = NETWORK_BADGE_RE.exec(el.getAttribute("data-testid") ?? "")?.[1];
+    if (id) ids.add(id);
+  }
+  return ids.size === 1 ? [...ids][0]! : null;
+}
+
+/** The older label-based signal, kept for the Robinhood-style chain names Uniswap writes as
+ * text rather than as a numeric badge. Only output-side metadata counts. */
+function outputChainFromLabels(doc: Document): Chain | undefined {
   const output = doc.querySelector(OUTPUT_TOKEN_SELECTOR);
   if (!output) return undefined;
   const found = new Set<Chain>();
@@ -39,6 +67,21 @@ function outputChain(doc: Document, url: URL): Chain | undefined {
     }
   }
   return found.size === 1 ? [...found][0] : undefined;
+}
+
+/**
+ * The Buy side's chain. The `chain` param comes first on purpose: Uniswap writes `chain` and
+ * `outputCurrency` together, so they describe the same token, whereas a badge left over from the
+ * previously selected token would re-chain the URL's address to a contract that is a different
+ * token entirely. When the URL says nothing — the UI-selection case, which is every
+ * picker-chosen token — the badge is the page's own answer and is believed.
+ */
+function outputChain(doc: Document, url: URL): Chain | undefined {
+  const param = url.searchParams.get("chain");
+  if (param) return UNISWAP_CHAIN_NAMES[param.toLowerCase()] ?? EVM_CHAIN_IDS[Number(param)];
+  const badge = outputBadgeChainId(doc);
+  if (badge) return EVM_CHAIN_IDS[Number(badge)];
+  return outputChainFromLabels(doc);
 }
 
 export const uniswapAdapter: VenueAdapter = {
@@ -72,25 +115,35 @@ export const uniswapAdapter: VenueAdapter = {
     const explore = EXPLORE_TOKEN_PATH_RE.exec(url.pathname);
     if (explore) return uncoveredChainGap(explore[1]);
 
+    const output = doc.querySelector(OUTPUT_TOKEN_SELECTOR);
+    const symbol = readTokenSymbol(output);
     const chainParam = url.searchParams.get("chain");
+    const badge = outputBadgeChainId(doc);
     const chain = outputChain(doc, url);
-    if (chainParam && !chain) {
-      const symbol = readTokenSymbol(doc.querySelector(OUTPUT_TOKEN_SELECTOR));
-      return { kind: "unsupported-chain", label: chainLabel(chainParam), ...(symbol ? {symbol} : {}) };
-    }
+
+    // The page NAMES a chain — in the URL or on the Buy badge — and it is one Tripwire has no
+    // data for. That is an answer about coverage. It is never "pick a network": the user picked
+    // one, and it is right there on the button.
+    const named = chainParam ?? badge;
+    if (named && !chain) return { kind: "unsupported-chain", label: chainLabel(named), ...(symbol ? { symbol } : {}) };
 
     const address = url.searchParams.get("outputCurrency");
     if (address) {
-      if (!chain) return { kind: "missing-chain", symbol: readTokenSymbol(doc.querySelector(OUTPUT_TOKEN_SELECTOR)) ?? "this token" };
+      if (!chain) return { kind: "unknown-chain", symbol: symbol ?? "this token" };
       // A real address that yielded no target is the native-ETH sentinel; anything else with a
       // chain we support already became a target.
       return isNativeEvm(address) ? { kind: "native-asset", symbol: "ETH" } : null;
     }
 
-    const symbol = readTokenSymbol(doc.querySelector(OUTPUT_TOKEN_SELECTOR));
     if (!symbol) return null;
-    if (!chain) return { kind: "missing-chain", symbol };
-    if (isNativeSymbol(symbol, chain ?? null)) return { kind: "native-asset", symbol };
+    if (!chain) {
+      // The logo container is mounted but its badge has not arrived: a half-drawn row, not a
+      // chainless one. The next tick will have it, so say the one thing that is true now.
+      // No logo at all means the row's shape is not one we know — we cannot tell, and we say so
+      // rather than instructing the user to do something they may already have done.
+      return output?.querySelector(TOKEN_LOGO_SELECTOR) ? { kind: "pending", symbol } : { kind: "unknown-chain", symbol };
+    }
+    if (isNativeSymbol(symbol, chain)) return { kind: "native-asset", symbol };
     return { kind: "symbol", symbol, chainHint: chain };
   },
   anchor(doc) {

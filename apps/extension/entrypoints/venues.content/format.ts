@@ -1,4 +1,5 @@
 import type { Target, Verdict } from "@tripwire/core";
+import { chainName } from "../../lib/adapters/chains";
 import type { TargetGap } from "../../lib/adapters/types";
 import { shortAddr } from "../../lib/ui/format";
 
@@ -47,6 +48,9 @@ export function verdictHeadline(verdict: Verdict): string {
 export function gapHeadline(gap: TargetGap | null | undefined): string {
   if (!gap) return "Select a token to see its onchain activity";
   switch (gap.kind) {
+    // The only line here that tells the user to do something, and so the only one that can be
+    // wrong about them. It is reachable only from positive evidence that the venue's network
+    // control is empty (see TargetGap): not knowing the chain is `unknown-chain`, not this.
     case "missing-chain":
       return `Select a network to check ${gap.symbol}`;
     case "unsupported-chain":
@@ -57,13 +61,22 @@ export function gapHeadline(gap: TargetGap | null | undefined): string {
       return `${gap.symbol} is the chain's native asset — Tripwire checks tokens`;
     case "symbol":
       return `Tripwire couldn't find ${gap.symbol} on Nansen`;
+    case "ambiguous-symbol":
+      return `More than one ${gap.symbol} on ${chainName(gap.chain)} — Tripwire can't tell which`;
+    case "unknown-chain":
+      return `Tripwire can't tell which network ${gap.symbol} is on`;
+    case "pending":
+      return "Checking what this page is showing…";
   }
 }
 
 /** A gap's identity, so the change-detection loop treats two different gaps as two states. */
 export function gapKey(gap: TargetGap | null | undefined): string {
   if (!gap) return "";
-  return gap.kind === "symbol" ? `symbol:${gap.symbol}:${gap.chainHint ?? ""}` : gap.kind === "unsupported-chain" ? `${gap.kind}:${gap.label}:${gap.symbol ?? ""}` : `${gap.kind}:${gap.symbol}`;
+  if (gap.kind === "symbol") return `symbol:${gap.symbol}:${gap.chainHint ?? ""}`;
+  if (gap.kind === "unsupported-chain") return `${gap.kind}:${gap.label}:${gap.symbol ?? ""}`;
+  if (gap.kind === "ambiguous-symbol") return `${gap.kind}:${gap.symbol}:${gap.chain}`;
+  return `${gap.kind}:${gap.symbol}`;
 }
 
 export function targetTitle(target: Target | null): string {

@@ -127,14 +127,23 @@ test("captures", async ({ context }) => {
   await shot(jumper.locator(".card"), "strip-jumper-sui");
   await jumper.close();
 
-  // strip-uniswap-native: the default swap page, whose URL names no token at all.
+  // strip-uniswap-native: the default swap page, whose URL names no token at all and whose Buy
+  // slot is empty. The answer is about the token, because that is what is missing.
   const uni = await context.newPage();
   await putRules(uni, { preset: "balanced" });
   await uni.setViewportSize({ width: 1280, height: 900 });
   await uni.goto("https://app.uniswap.org/swap");
-  await expect(uni.locator(".tw-strip-finding")).toHaveText("Select a network to check ETH", { timeout: 20_000 });
+  await expect(uni.locator(".tw-strip-finding")).toHaveText("Select a token to see its onchain activity", { timeout: 20_000 });
   await uni.waitForTimeout(200);
   await shot(uni.locator(".swap"), "strip-uniswap-native");
+
+  // strip-uniswap-ui-selected (Round 1.4.9): a token chosen through Uniswap's own picker, which
+  // writes nothing to the URL. The chain comes off the Buy button's badge, so the strip answers
+  // about that chain instead of telling the user to select the network they are looking at.
+  await uni.evaluate(() => (window as unknown as { setBuyToken(s: string, c: number): void }).setBuyToken("WIF", 4663));
+  await expect(uni.locator(".tw-strip-finding")).toHaveText("More than one WIF on Robinhood Chain — Tripwire can't tell which", { timeout: 20_000 });
+  await uni.waitForTimeout(200);
+  await shot(uni.locator(".swap"), "strip-uniswap-ui-selected");
   await uni.close();
 });
 

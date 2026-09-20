@@ -120,7 +120,10 @@ describe("uniswap: the swap form, when the URL says nothing", () => {
 
   it("reads the Buy token off the form when the URL has no params", () => {
     // The fixture's Buy selector reads DEGEN; the Sell side reads "Select token" and is ignored.
-    expect(gapOf(uniswapAdapter, doc(), "https://app.uniswap.org/swap")).toEqual({ kind: "missing-chain", symbol: "DEGEN" });
+    // Nothing here names a chain, and this capture's Buy row has no logo to carry a badge, so
+    // the honest answer is that Tripwire cannot tell — not "select a network", which would be
+    // an instruction about a page we have not actually read (Round 1.4.9).
+    expect(gapOf(uniswapAdapter, doc(), "https://app.uniswap.org/swap")).toEqual({ kind: "unknown-chain", symbol: "DEGEN" });
   });
 
   it("takes the chain from the URL when it is there, as a hint for the lookup", () => {
@@ -138,7 +141,9 @@ describe("uniswap: the swap form, when the URL says nothing", () => {
     expect(uniswapAdapter.readTarget(d, new URL(`https://app.uniswap.org/swap?outputCurrency=${DEGEN_BASE}`))).toEqual({ kind: "spot", chain: "robinhood", tokenAddress: DEGEN_BASE });
     image.remove();
     d.querySelector('[data-testid="choose-input-token"]')!.append(image);
-    expect(gapOf(uniswapAdapter, d, "https://app.uniswap.org/swap")).toEqual({ kind: "missing-chain", symbol: "SPCX" });
+    // Moved to the Sell row, the label stops counting — and the Buy row is then chainless, which
+    // Tripwire states about itself rather than turning into an instruction.
+    expect(gapOf(uniswapAdapter, d, "https://app.uniswap.org/swap")).toEqual({ kind: "unknown-chain", symbol: "SPCX" });
   });
 
   it("preserves the exact Robinhood contract selected in the URL", () => {
