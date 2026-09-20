@@ -296,30 +296,44 @@ test("wallet lens captures", async ({ context, extensionId }) => {
   await shot(profile, "entity-profile-expanded");
   await profile.close();
 
-  // enable-site: the popup's per-site consent block. The popup is opened as a page, so the
-  // active tab and the granted origins are stubbed to what they would be on a real site the
-  // user has not enabled yet, with one other site already on the list.
+  // The three popup tabs at the width Chrome gives them. The popup is opened as a page, so the
+  // active tab and the granted origins are stubbed to what they would be on a real site the user
+  // has not enabled yet, with one other site already on the list.
   const popup = await context.newPage();
   await popup.addInitScript(() => {
     const chrome = (globalThis as unknown as { chrome: Record<string, unknown> }).chrome;
     const tabs = chrome.tabs as { query: unknown };
-    tabs.query = async () => [{ url: "https://app.pendle.finance/trade/dashboard", active: true }];
+    tabs.query = async () => [{ id: 1, url: "https://app.pendle.finance/trade/dashboard", active: true }];
     const permissions = chrome.permissions as { getAll: unknown };
     permissions.getAll = async () => ({ origins: ["http://127.0.0.1:3000/*", "https://debank.com/*"], permissions: [] });
   });
-  await popup.setViewportSize({ width: 420, height: 1100 });
+  // The popup sizes itself; the viewport only has to be large enough to hold it whole.
+  await popup.setViewportSize({ width: 420, height: 560 });
   await popup.goto(`chrome-extension://${extensionId}/popup.html`);
   // Two wallets already inspected, so the recent list is in the shot rather than absent.
   await popup.evaluate(async (seen) => {
     await (globalThis as unknown as { chrome: { storage: { local: { set(v: object): Promise<void> } } } }).chrome.storage.local.set({ recentWallets: seen });
   }, [
     { query: "vitalik.eth", address: "0x7fdafde5cfb5465924316eced2d3715494c517d1", label: "vitalik.eth", chain: "ethereum", seenAt: Date.now() },
-    { query: "0x7fdafde5cfb5465924316eced2d3715494c517d1", address: "0x7fdafde5cfb5465924316eced2d3715494c517d1", label: "0x7f…17d1", chain: "arbitrum", seenAt: Date.now() - 60_000 },
+    { query: "0x7fdafde5cfb5465924316eced2d3715494c517d1", address: "0x7fdafde5cfb5465924316eced2d3715494c517d1", label: null, chain: "arbitrum", seenAt: Date.now() - 60_000 },
   ]);
   await popup.reload();
-  await expect(popup.locator(".tw-lens")).toBeVisible({ timeout: 15_000 });
-  await popup.waitForTimeout(300);
-  await shot(popup.locator(".tw-lens"), "enable-site");
+  await expect(popup.locator(".tw-popup")).toBeVisible({ timeout: 15_000 });
+  await expect(popup.locator(".tw-status")).not.toHaveText(/Checking/);
+
+  for (const [tab, name] of [
+    ["Protection", "popup-protection"],
+    ["Sites", "popup-sites"],
+    ["Wallets", "popup-wallets"],
+  ] as const) {
+    await popup.getByRole("tab", { name: tab }).click();
+    await expect(popup.getByRole("tab", { name: tab })).toHaveAttribute("aria-selected", "true");
+    await popup.locator(".tw-tabpanel:not([hidden])").evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+    // The user's report was "a big scroll": the popup is a fixed box on every tab.
+    const scrolls = await popup.evaluate(() => document.documentElement.scrollHeight > document.documentElement.clientHeight || document.body.scrollHeight > document.body.clientHeight);
+    expect(scrolls, `${name} scrolls the page`).toBe(false);
+    await shot(popup.locator(".tw-popup"), name);
+  }
   await popup.close();
 });
 

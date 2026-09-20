@@ -125,8 +125,15 @@ test("@smoke extension loads with the pinned ID and its popup reaches the backen
   const popup = await context.newPage();
   await popup.goto(`chrome-extension://${extensionId}/popup.html`);
   // health() -> runtime.sendMessage -> background bridge -> backend -> sendResponse (A3).
-  await expect(popup.locator(".tw-status")).toHaveText(/Backend connected|No Nansen key/);
+  await expect(popup.locator(".tw-status")).toHaveText(/Connected ·|No Nansen key/);
   await expect(popup.locator(".tw-status")).not.toHaveText(/offline/i);
+  // The redesign's own promise: a fixed box, whatever tab is showing (no page scroll).
+  for (const tab of ["Protection", "Sites", "Wallets"]) {
+    await popup.getByRole("tab", { name: tab }).click();
+    await expect(popup.getByRole("tab", { name: tab })).toHaveAttribute("aria-selected", "true");
+    const scrolls = await popup.evaluate(() => document.documentElement.scrollHeight > document.documentElement.clientHeight);
+    expect(scrolls, `the ${tab} tab scrolls the popup`).toBe(false);
+  }
   expect(consoleErrors).toEqual([]);
 });
 
