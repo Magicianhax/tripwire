@@ -29,8 +29,17 @@ export const UNISWAP_CHAIN_NAMES: Record<string, Chain> = {
   avalanche: "avalanche",
 };
 
-/** Birdeye's `chain` query-param names -> Chain (accepts both "bnb" and the more common
- * "bsc" spelling some Birdeye links use). */
+/** PancakeSwap's `chain` param. Its own spelling is `bsc`, which `UNISWAP_CHAIN_NAMES` has no
+ * reason to carry — so pancakeswap gets its own map rather than aliasing bsc into Uniswap's,
+ * the way birdeye and dexscreener already do. Case is normalised at the call site. */
+export const PANCAKESWAP_CHAIN_NAMES: Record<string, Chain> = {
+  ...UNISWAP_CHAIN_NAMES,
+  bsc: "bnb",
+};
+
+/** Birdeye's `chain` names -> Chain. Since Birdeye's 308 to `/<chain>/token/<addr>` these are
+ * path segments rather than a query param (accepts both "bnb" and the more common "bsc"
+ * spelling some Birdeye links use). */
 export const BIRDEYE_CHAIN_NAMES: Record<string, Chain> = {
   solana: "solana",
   ethereum: "ethereum",
@@ -134,9 +143,140 @@ export const OTHER_CHAIN_NAMES: Record<string, string> = {
   "728126428": "Tron",
 };
 
+/**
+ * The same answer as `OTHER_CHAIN_NAMES`, for the venues that write a chain's NAME in the URL
+ * rather than its EVM id: Dexscreener and Birdeye path segments, gmgn's short segments,
+ * PancakeSwap's `chain` param. Checked against Dexscreener's live chain rail (2026-09-20) so a
+ * routine "this pool is on Sui" reads as coverage rather than as the generic shrug.
+ *
+ * Only chains Tripwire does NOT cover belong here; a slug for a covered chain lives in that
+ * venue's own name map and resolves to a target.
+ */
+export const OTHER_CHAIN_SLUGS: Record<string, string> = {
+  // Non-EVM
+  sui: "Sui",
+  aptos: "Aptos",
+  ton: "TON",
+  tron: "Tron",
+  bitcoin: "Bitcoin",
+  near: "NEAR",
+  cardano: "Cardano",
+  osmosis: "Osmosis",
+  injective: "Injective",
+  starknet: "Starknet",
+  stellar: "Stellar",
+  algorand: "Algorand",
+  hedera: "Hedera",
+  icp: "Internet Computer",
+  // EVM and EVM-adjacent chains Nansen's token endpoints do not cover
+  hyperliquid: "Hyperliquid",
+  hyperevm: "HyperEVM",
+  berachain: "Berachain",
+  sonic: "Sonic",
+  monad: "Monad",
+  linea: "Linea",
+  scroll: "Scroll",
+  blast: "Blast",
+  mantle: "Mantle",
+  zksync: "zkSync Era",
+  zksyncera: "zkSync Era",
+  gnosis: "Gnosis",
+  celo: "Celo",
+  fantom: "Fantom",
+  sonicbeta: "Sonic",
+  metis: "Metis",
+  mode: "Mode",
+  opbnb: "opBNB",
+  unichain: "Unichain",
+  worldchain: "World Chain",
+  sei: "Sei",
+  seiv2: "Sei",
+  taiko: "Taiko",
+  zora: "Zora",
+  lisk: "Lisk",
+  soneium: "Soneium",
+  ink: "Ink",
+  abstract: "Abstract",
+  cronos: "Cronos",
+  cronoszkevm: "Cronos zkEVM",
+  moonbeam: "Moonbeam",
+  moonriver: "Moonriver",
+  kava: "Kava",
+  kaia: "Kaia",
+  klaytn: "Kaia",
+  pulsechain: "PulseChain",
+  arbitrumnova: "Arbitrum Nova",
+  polygonzkevm: "Polygon zkEVM",
+  bob: "BOB",
+  corn: "Corn",
+  plume: "Plume",
+  story: "Story",
+  katana: "Katana",
+  flow: "Flow EVM",
+  flowevm: "Flow EVM",
+  filecoin: "Filecoin EVM",
+  rootstock: "Rootstock",
+  velas: "Velas",
+  telos: "Telos",
+  energi: "Energi",
+  oasissapphire: "Oasis Sapphire",
+  core: "Core",
+  zetachain: "ZetaChain",
+  apechain: "ApeChain",
+  degenchain: "Degen Chain",
+  shape: "Shape",
+  swellchain: "Swellchain",
+  fraxtal: "Fraxtal",
+  bitlayer: "Bitlayer",
+  merlinchain: "Merlin",
+  xlayer: "X Layer",
+  bounce: "Bounce",
+  etherlink: "Etherlink",
+  gravity: "Gravity",
+  sanko: "Sanko",
+  wemix: "WEMIX",
+  iotex: "IoTeX",
+  neonevm: "Neon EVM",
+  eclipse: "Eclipse",
+  solanadevnet: "Solana devnet",
+  // The remainder of Dexscreener's live rail, read from dexscreener.com on 2026-09-20.
+  arc: "Arc",
+  beam: "Beam",
+  conflux: "Conflux",
+  flare: "Flare",
+  fuse: "Fuse",
+  manta: "Manta",
+  megaeth: "MegaETH",
+  movement: "Movement",
+  multiversx: "MultiversX",
+  plasma: "Plasma",
+  polkadot: "Polkadot",
+  stable: "Stable",
+  stacks: "Stacks",
+  stepnetwork: "Step Network",
+  xrpl: "XRPL",
+};
+
+/** Every chain-name spelling that resolves to a chain Tripwire DOES cover, across the venue
+ * maps. Used only to stop a coverage line being printed about a chain we in fact cover. */
+const COVERED_CHAIN_SLUGS = new Set<string>([
+  ...Object.keys(UNISWAP_CHAIN_NAMES),
+  ...Object.keys(PANCAKESWAP_CHAIN_NAMES),
+  ...Object.keys(BIRDEYE_CHAIN_NAMES),
+  ...Object.keys(GMGN_CHAIN_SEGMENTS),
+  "solana",
+  "sol",
+]);
+
+/** True when a venue's own chain spelling names a chain Tripwire covers. */
+export function isCoveredChainSlug(raw: string): boolean {
+  const key = raw.trim().toLowerCase();
+  return COVERED_CHAIN_SLUGS.has(key) || EVM_CHAIN_IDS[Number(key)] !== undefined;
+}
+
 /** A chain's name for the strip: the one Tripwire knows, else "chain <id>". */
 export function chainLabel(id: string): string {
-  const named = OTHER_CHAIN_NAMES[id];
+  const named = OTHER_CHAIN_NAMES[id] ?? OTHER_CHAIN_SLUGS[id.trim().toLowerCase()];
   if (named) return named;
   const supported = EVM_CHAIN_IDS[Number(id)];
   if (supported) return supported.charAt(0).toUpperCase() + supported.slice(1);
@@ -170,9 +310,47 @@ export function isNativeSymbol(symbol: string, chain?: Chain | null): boolean {
 const PLACEHOLDER_RE = /^(select(\s+(a\s+)?token)?|choose(\s+(a\s+)?token)?|token|\.\.\.|—|-)?$/i;
 const SYMBOL_RE = /^[A-Za-z][A-Za-z0-9._$-]{0,19}$/;
 
-export function readTokenSymbol(el: Element | null | undefined): string | null {
-  const text = (el?.textContent ?? "").trim();
-  if (!text || PLACEHOLDER_RE.test(text)) return null;
-  const first = text.split(/\s+/)[0]!;
+/** The first word of one piece of text, as a symbol, or null when it is a placeholder or not
+ * symbol-shaped. */
+function symbolFrom(text: string): string | null {
+  const trimmed = text.trim();
+  if (!trimmed || PLACEHOLDER_RE.test(trimmed)) return null;
+  const first = trimmed.split(/\s+/)[0]!;
   return SYMBOL_RE.test(first) ? first.toUpperCase() : null;
+}
+
+/**
+ * The text of every deepest element under `el` — the leaves, in document order. `textContent`
+ * on the selector itself concatenates them with no separator, which is how an MUI avatar's
+ * one-letter monogram in front of a label turned DEGEN into `DDEGEN` and sent Tripwire looking
+ * for a token that does not exist. Reading the leaves keeps them apart.
+ *
+ * Deliberately not `innerText`: it forces layout on every tick of the venue loop, and
+ * happy-dom does not implement it, so the tests could not see what shipped.
+ */
+function leafTexts(el: Element): string[] {
+  if (typeof el.querySelectorAll !== "function") return [];
+  const out: string[] = [];
+  for (const node of el.querySelectorAll("*")) {
+    if (node.childElementCount > 0) continue;
+    const text = (node.textContent ?? "").trim();
+    if (text) out.push(text);
+  }
+  return out;
+}
+
+export function readTokenSymbol(el: Element | null | undefined): string | null {
+  if (!el) return null;
+  const leaves = leafTexts(el);
+  const whole = (el.textContent ?? "").trim();
+  const candidates = leaves.length > 0 ? leaves : whole ? [whole] : [];
+  if (candidates.length === 0) return null;
+  // A monogram avatar is exactly one character, and a one-letter leaf beside a longer one is
+  // never the ticker. A genuinely one-character symbol standing alone is still read.
+  const named = candidates.filter((text) => text.split(/\s+/)[0]!.length > 1);
+  for (const text of named.length > 0 ? named : candidates) {
+    const symbol = symbolFrom(text);
+    if (symbol) return symbol;
+  }
+  return null;
 }

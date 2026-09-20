@@ -868,3 +868,109 @@ Three of these came out of opening the captures, not out of reading the diff.
 **A settled prediction market is shown, not refused — and costs nothing.** `judge()` resolves a closed market and carries its state; the card renders its holders and trades labelled historical, and `predictionSignals` returns `null`, so the verdict is UNCHECKED. A chip on a settled market returns before any Nansen call (0 credits instead of 15), because the side comparison those credits buy cannot exist once the market has settled. Refusing outright would have thrown away the only honest thing left to show; scoring it would have asserted something about a decision nobody can still make.
 
 **The prediction card's proven-winner record is settled money only, and win rate is rendered but never ruled on.** `realized_pnl_usd` from the 1-credit `address-summary` replaces a sum of `total_pnl_usd` over every `pnl-by-address` row including the open position in the market being judged (measured: $14,337.53 against $16,815.68 on the recorded wallet). The verdict mapping is unchanged. `win_rate` ships as a rendered fact and as nothing else: the recorded wallet is +$13.8K lifetime at a 12.2% win rate across 558 markets, so a carried-over `> 0.5` threshold would classify one of the sample's largest winners as a loser. Deriving that threshold — and re-measuring whether 50/70 still hold under the new record — is a measurement run, specified in `docs/CALIBRATION.md` §8.
+
+---
+
+# Round 1.4 — pages that rendered nothing, and the one-click hole
+
+Branch `feat/cockpit-ui`. Nine items, all shipped. Net credit effect is **negative**: 1.4.1 stops a recurring 6-credit spend on a market that does not exist, and every other item turns a page that answered nothing into one that answers.
+
+## 1.4.1 — Hyperliquid spot pairs stop burning perp credits
+
+`COIN_PATH_RE` (`apps/extension/lib/adapters/hyperliquid.ts:16`) is now anchored to a **single** path segment, and a second, deliberately loose `TRADE_PATH_RE` (`:8`) keeps `match()` firing so a spot page still gets an adapter — without one it would get no answer at all rather than a coverage answer. `/trade/PURR/USDC` and `/trade/@107` both return a null target, so `perp-screener` (1) plus `tgm/perp-positions` (5) are no longer spent per coin per 2 minutes on a perp market that does not exist.
+
+`readGap` (`:120`) names the venue: **"No onchain data for PURR on Hyperliquid spot"**.
+
+**Deviation from the brief, stated:** the brief pointed at `OTHER_CHAIN_NAMES["999"] = "HyperEVM"`. These pages are HyperCore spot, which is not HyperEVM — labelling one as the other would trade a silent waste for a confident error, which is the failure class this round exists to remove. The label is `Hyperliquid spot` (`:23`). A spot **index** (`@107`) carries no ticker, so the line names no symbol rather than inventing one.
+
+*Tests:* `test/venue-round-1-4.test.ts` "1.4.1" — six cases including `/trade/ETH` unchanged, the adapter still matching a spot pair, and the HIP-3 `xyz:TSLA` ruling untouched.
+
+## 1.4.2 — Birdeye
+
+`birdeye.so/token/<mint>?chain=solana` answers **308** to `/<chain>/token/<mint>` and drops the param, so the old `TOKEN_PATH_RE` matched nothing and every Birdeye token page resolved to null. `CHAIN_TOKEN_PATH_RE` (`birdeye.ts:12`) reads the chain out of the path segment, which is now the only chain signal. The pre-308 form is **not** kept: it would only be reachable by defaulting a chain, which the `pancakeswap.ts` ruling forbids. An unmapped slug goes to `readGap` (`:30`).
+
+*Tests:* `adapters.test.ts` "tier 2: birdeye" (4 cases) and `venue-round-1-4.test.ts` "1.4.2".
+
+## 1.4.3 — Uniswap `/explore/tokens/<chain>/<address>`
+
+`EXPLORE_TOKEN_PATH_RE` (`uniswap.ts:19`) reads the chain and the exact contract out of the path, and `readGap` (`:65-69`) short-circuits to the coverage answer before the swap form's symbol branch can ever run. The card no longer says **"Select a network to check DEGEN"** on a URL that literally reads `base/0x4ed4…`.
+
+**Decision on the strip, as the brief asked.** No explore-specific gate. Gating the display would not have saved a credit: the spend follows from resolving a target, not from which display renders it, and the runner already falls back to the Dock whenever `anchor()` finds nothing. Withholding the strip where the page *does* carry Uniswap's own `review-swap` button would have left a real trade button unblocked to save nothing.
+
+*Tests:* `venue-round-1-4.test.ts` "1.4.3", including an explicit assertion that the headline never reads "Select a network".
+
+## 1.4.4 — `jup.ag/tokens/<mint>`
+
+`TOKEN_PATH_RE` (`jupiter.ts:12`) is in `match()` and `readTarget`, so Jupiter's canonical token page resolves. `jup.ag/*` was already a tier-1 match, so **no manifest change**.
+
+**Deferred, as the brief required:** no blocker. `anchor()` (`jupiter.ts:66`) returns null on `/tokens/*`, because `formAnchor()` finding the right button there is unverified and a block screen over the wrong control is worse than no block. `VenueAdapter.anchor` gained an optional `url` (`types.ts`), passed by the runner (`runner.tsx:99,120,202`) — so this is a stated page rule, not a `doc.location` sniff. The page gets the Dock and the full card. Promotion waits on a capture in `test/fixtures/venues/`.
+
+*Tests:* `venue-round-1-4.test.ts` "1.4.4", including that `/swap` still anchors.
+
+## 1.4.5 — 1inch moved · **MV3 HOST PERMISSION CHANGE**
+
+> **`https://1inch.com/*` is a new host permission.** It is added to `TIER2_MATCHES` (`lib/venues.ts:19`), which `wxt.config.ts` feeds into both `content_scripts.matches` and `web_accessible_resources.matches`. Verified in the built `manifest.json`. **This re-prompts every installed user and triggers a Chrome Web Store re-review.** It is the only permission change in this round, and the reason 1.4.5 is M rather than S.
+
+`app.1inch.io` **stays** in the match list and stays parsed: the 301 means that host's content script sees a redirect, not a page, so removing it buys nothing and breaks live deep links. `oneinch.ts:14` matches both hosts; `parseDst` (`:32`) reads the current `?dst=<chainId>:<address>` form and `parseHashSwap` (`:18`) keeps the legacy hash route.
+
+**`dst=501:<base58>` is treated as unverified and says nothing.** 501 is not in `EVM_CHAIN_IDS`, and "no onchain data on this network" would be *false* if 501 is Solana, which Tripwire covers. `uncoveredChainGap` is called without the numeric fallback (`:58`), so 1inch stays silent there. Matcha and CoW, which are EVM-only, do get the fallback.
+
+*Tests:* `venue-round-1-4.test.ts` "1.4.5", including an assertion on the match list itself so the permission cannot be dropped silently.
+
+## 1.4.6 — PancakeSwap `?chain=bsc`
+
+PancakeSwap gets **its own map**, `PANCAKESWAP_CHAIN_NAMES` (`chains.ts:35`), spread from Uniswap's plus the `bsc -> bnb` alias, and the param is now lowercased (`pancakeswap.ts:24`). Its home chain resolved to nothing before this. Taking the other option — aliasing `bsc` into `UNISWAP_CHAIN_NAMES` — would have put a spelling Uniswap never writes into Uniswap's own vocabulary; birdeye and dexscreener already own their maps.
+
+*Tests:* `venue-round-1-4.test.ts` "1.4.6" covers **both** call sites, including that `app.uniswap.org/swap?chain=bsc` still yields null.
+
+## 1.4.7 — `DDEGEN`
+
+`readTokenSymbol` (`chains.ts:342`) walks the deepest text leaves instead of reading `textContent`, which concatenates an MUI avatar's one-letter monogram onto the ticker. A leaf whose first word is a single character is skipped while a longer leaf exists (a monogram is always one letter); a genuinely one-character symbol standing alone is still read. Placeholders are skipped leaf by leaf, so `Select token` beside `DEGEN` now reads `DEGEN`. **Not `innerText`:** it forces layout on every tick of the venue loop and happy-dom does not implement it, so the tests could not see what shipped. The fix is in the shared helper, so **all seven call sites** (`jumper.ts:13,24,50,58`, `uniswap.ts:57,62,68`) get it at once; the fake `{ textContent }` element `jupiter.ts:62` passes is handled by a `querySelectorAll` capability check.
+
+`test/fixtures/venues/jumper.html`'s Receive selector is now the real nested shape (avatar leaf + ticker leaf), so the fixture reproduces the bug — its `textContent` still reads `DDEGEN` and the adapter now reads `DEGEN`. `venue-gaps.test.ts:105` flipped with it.
+
+*Tests:* `venue-round-1-4.test.ts` "1.4.7" (5 cases, including the Uniswap call site with a nested selector) plus the updated `venue-gaps.test.ts`.
+
+## 1.4.8 — tier-2 adapters get `readGap`
+
+New shared helper `uncoveredChainGap` (`lib/adapters/gap.ts:23`), wired into **birdeye**, **dexscreener** (`:41`), **gmgn** (`:30`), **pancakeswap** (`:28`), **matcha** (`:25`) and **cow** (`:29`) — the six whose URL names a chain. Two rules keep the line honest:
+
+- **A slug for a chain Tripwire covers is never a coverage answer.** `isCoveredChainSlug` (`chains.ts:268`) unions every venue map, so `pancakeswap.finance/?chain=solana` stays quiet instead of announcing that Tripwire has no Solana data.
+- **A chain we cannot name is silence, not a claim.** The `chain <id>` fallback is opt-in per venue (`numericIdsAreEvm`), granted to matcha and cow because an unrecognised id there is certainly an EVM chain, and withheld from 1inch for the reason in 1.4.5.
+
+`OTHER_CHAIN_SLUGS` (`chains.ts:155`) was **checked against Dexscreener's live chain rail**, read from dexscreener.com on 2026-09-20: 64 chains, 9 of them already covered. All uncovered slugs are now named (arc, beam, conflux, flare, flowevm, fuse, manta, megaeth, movement, multiversx, plasma, polkadot, stable, stacks, stepnetwork and xrpl were added after the read). `chainLabel` consults the slug map too, so one vocabulary serves every venue — which is why `uniswap?chain=zksync` now reads "zkSync Era" rather than "zksync".
+
+**Found while wiring gmgn:** `gmgn.ai/tron/token/<tron address>` fell through to `scanPathForAddress`, and a Tron address is valid base58 — so the dock answered with a **Solana** target for it. `gmgn.ts:24` now returns null when the path names a chain outside coverage, before the scan can guess.
+
+Not served, per the brief: axiom, photon, bullx (no chain signal), raydium (Solana-only), aerodrome (Base-only).
+
+*Tests:* `venue-round-1-4.test.ts` "1.4.8" (7 cases), including a regression guard that asserts every slug on the recorded live rail is either covered or named.
+
+## 1.4.9 — pump.fun quick-buy chips (M)
+
+`blockedExtras(doc)` on `VenueAdapter` (`types.ts`), implemented by pump.fun (`pumpfun.ts:72`) as every visible, enabled button whose **`aria-label`** matches `Quick buy|Quick sell`. The enclosing `[role=group][aria-label="Quick buy"]` is deliberately not used: a container listener would swallow clicks on anything else that lands inside it and break `blocker.ts`'s own "friction on the button itself" contract. `anchor()` still excludes the chips — they are not the form's primary action.
+
+`createElementSetBinding` (`anchor-binding.ts:73`) is `createAnchorBinding`'s contract for a **set**: each element bound once, each re-synced on `isConnected`, `unbindAll()` on teardown. `createBlockBinding` (`displays.tsx:300-317`) owns one, installs a separate `installBlocker` per chip, and exposes `syncExtras`; the runner stores it (`runner-state.ts:46`, `runner.tsx:125`) and calls it from `resyncAnchor()` (`:200`), which is the same per-tick path the trade button's own rebind rides. The extras are bound only while the anchor is bound — a block session, not the page — so a verdict change or a target change releases them with everything else.
+
+**The block screen now covers what it blocks.** `computeBlockRect` takes `extraRects` and unions them with the anchor before its existing grow-upward logic (`overlay.ts:19,36`). On the recorded pump.fun geometry the chips sit at y=442 and y=473, *below* a primary at y=390 — so a block that only grew upward left three one-click trades visible and looking clickable underneath it. Capture: `.impeccable/review/block-pumpfun-quick-buy.png`.
+
+**Bug found and fixed during the e2e run:** the first cut did `{ ...anchorRect }` to copy the anchor's rect. A live `DOMRect` keeps its values in prototype accessors, so the spread yielded `{}`, every bound went NaN and the block rendered at the page's top-left corner at its natural size. `overlay.test.ts` now has a `DOMRect`-specific regression case; the unit tests had all passed on plain objects.
+
+`/explore` is **not** covered, per the brief (24 mints x 13 credits): `pumpfunAdapter.match` is still `/coin/<mint>` only.
+
+*Tests:* `venue-round-1-4.test.ts` "1.4.9" (3 cases), `anchor-binding.test.ts` "createElementSetBinding" (5 cases, including that a bound chip's click never reaches the venue while an unrelated button's does), `overlay.test.ts` (4 cases). E2E: `e2e/pumpfun-block.spec.ts` — with a rule firing, a real pointer click and a dispatched click at a chip are both intercepted, the block rect covers the quick-sell row, the primary stays blocked, an unrelated button still works, and after an SPA re-render of the chip row the new nodes are bound again. The rebind rides the runner's MutationObserver tick, so the spec polls for it rather than asserting on the next frame — the same latency the trade button's own rebind has always had, now stated.
+
+## Verification
+
+- `pnpm verify`: typecheck clean; **core 255, web 230, extension 621** tests passed (621 from 599 before the round).
+- `pnpm -F web build` and `pnpm -F extension build`: both OK.
+- `TRIPWIRE_E2E_PORT=3218 pnpm verify:e2e`: **19 passed, 4 capture-only specs skipped** (18 passed before the round). Port 3000 is held by a server this session did not start and was never touched.
+- Captures: `TRIPWIRE_CAPTURE=1 TRIPWIRE_E2E_PORT=3218 ... captures` — 4 passed, plus the new `block-pumpfun-quick-buy`. Opened `strip-jumper-sui`, `strip-uniswap-native`, `block-evidence` and `block-pumpfun-quick-buy`; the first three are unchanged, which is the expected result — no capture's page carries a nested token selector or an extra blocked control.
+- No UI copy is new in this round: every gap line is the copy already written at `venues.content/format.ts:52-55`.
+
+## Notes for the next round
+
+- **`jup.ag/tokens/<mint>` needs a capture** before `installBlocker` can be wired there. It is the only half of 1.4 deliberately left undone.
+- **The swap page's native-coin gap is ordered before its chain gap.** `uniswap.ts:80` returns `missing-chain` for a selected native ETH with no chain in the URL, so the strip reads "Select a network to check ETH" and only says "ETH is the chain's native asset" once a network is picked. Pre-existing, outside 1.4's list, one line to reorder.
+- **`VenueAdapter.anchor` now takes an optional `url`.** Any adapter that needs a per-page anchor rule can state it without reading `doc.location`.
+- **`blockedExtras` is general.** Any venue with a one-click trade control beside its form can implement it and inherit the blocker, the re-sync and the block geometry.

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { DepthSection, Target, Verdict, ViewTimeframe } from "@tripwire/core";
+import { createElementSetBinding } from "../../lib/adapters/anchor-binding";
 import { installBlocker } from "../../lib/adapters/blocker";
 import type { VenueAdapter } from "../../lib/adapters/types";
 import { depth, guard, override } from "../../lib/api";
@@ -149,7 +150,7 @@ async function toggleMarkets(rc:RunnerContext,symbol:string,trigger:HTMLElement|
  * installs a blocker. Dropped (not stored) if the page moved on, or something else already
  * mounted, while the shadow root was being created. */
 export async function showChecking(rc: RunnerContext, adapter: VenueAdapter, key: string): Promise<void> {
-  const found = adapter.tier === 1 ? (adapter.anchor?.(document) ?? null) : null;
+  const found = adapter.tier === 1 ? (adapter.anchor?.(document, new URL(location.href)) ?? null) : null;
   // The strip goes above the whole action row, not beside the button inside it.
   const anchor = found ? liftOutOfRow(found) : null;
   const mount = anchor
@@ -293,11 +294,30 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
   let overridePending = false;
   let overrideError: string | null = null;
 
+  // Other one-click trade controls on the page (pump.fun's quick-buy chips): each gets its own
+  // blocker and the same isConnected re-sync the anchor gets, and the block screen is sized to
+  // cover them. Bound only while the anchor is bound -- a block session, not the page.
+  const extraBlockers = new Map<HTMLElement, { release(): void }>();
+  const extras = createElementSetBinding({
+    find: () => (boundAnchor ? (adapter.blockedExtras?.(document) ?? []) : []),
+    onBind: (el) => extraBlockers.set(el, installBlocker(el)),
+    onUnbind: (el) => {
+      extraBlockers.get(el)?.release();
+      extraBlockers.delete(el);
+    },
+  });
+
+  /** Re-syncs the extra blocked controls, re-drawing the block only when the set changed. */
+  function syncExtras(): void {
+    if (extras.sync()) void runContentTask(rc.ctx, renderFrame);
+  }
+
   async function renderFrame(): Promise<void> {
     if (!boundAnchor) return;
     const node = (
       <BlockOverlay
         anchorRect={boundAnchor.getBoundingClientRect()}
+        extraRects={extras.elements.map((el) => el.getBoundingClientRect())}
         kind={target.kind}
         hits={data.hits}
         phrase={phrase}
@@ -359,6 +379,7 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
   async function onBind(anchor: HTMLElement): Promise<void> {
     boundAnchor = anchor;
     rc.blocker = installBlocker(anchor);
+    extras.sync();
     await renderFrame();
     if (rc.ctx.isInvalid || boundAnchor !== anchor) return;
     window.addEventListener("scroll", reposition, true);
@@ -373,6 +394,8 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
 
   function onUnbind(): void {
     boundAnchor = null;
+    // The extras belong to this block session: when the trade button goes, so do they.
+    extras.unbindAll();
     rc.blocker?.release();
     rc.blocker = null;
     rc.repositionCleanup?.();
@@ -381,5 +404,5 @@ export function createBlockBinding(rc: RunnerContext, adapter: VenueAdapter, tar
     rc.resizeObserver = null;
   }
 
-  return { onBind: (anchor: HTMLElement) => runContentTask(rc.ctx, () => onBind(anchor)), onUnbind };
+  return { onBind: (anchor: HTMLElement) => runContentTask(rc.ctx, () => onBind(anchor)), onUnbind, syncExtras };
 }

@@ -40,6 +40,10 @@ export type RunnerContext = {
   resizeObserver: ResizeObserver | null;
   repositionCleanup: (() => void) | null;
   anchorBinding: AnchorBinding | null;
+  /** Block-screen mode only: re-syncs the extra one-click controls blocked alongside the
+   * anchor (pump.fun's quick-buy chips), which the venue's SPA re-renders independently of
+   * the trade button. Set by `createBlockBinding`, called every tick by `resyncAnchor()`. */
+  syncExtras: (() => void) | null;
   activeSession: ActiveSession | null;
   /** What `activeSession` is currently showing ("dock" includes the tier-1 no-anchor
    * fallback). `null` when there's no active tier-1 session (tier 2, or nothing rendered

@@ -1,6 +1,7 @@
 import type { Target } from "@tripwire/core";
 import { evmTarget, EVM_CHAIN_IDS } from "./chains";
-import { OVERRIDE_PHRASES, type VenueAdapter } from "./types";
+import { uncoveredChainGap } from "./gap";
+import { OVERRIDE_PHRASES, type TargetGap, type VenueAdapter } from "./types";
 
 /** `#/<chainId>/swap/<sell>/<buy>`. */
 function parseHashSwap(hash: string): { chainId: string; buy: string } | null {
@@ -24,6 +25,10 @@ export const cowAdapter: VenueAdapter = {
     const chain = EVM_CHAIN_IDS[Number(parsed.chainId)];
     if (!chain) return null;
     return evmTarget(chain, parsed.buy);
+  },
+  /** CoW Swap is EVM-only: see matcha.ts for why the numeric fallback is safe here. */
+  readGap(_doc, url): TargetGap | null {
+    return uncoveredChainGap(parseHashSwap(url.hash)?.chainId, { numericIdsAreEvm: true });
   },
   overridePhrase: OVERRIDE_PHRASES.spot,
 };

@@ -188,12 +188,30 @@ describe("tier 2: dexscreener", () => {
 });
 
 describe("tier 2: birdeye", () => {
-  it("reads /token/<addr>?chain=solana -> spot solana", () => {
-    expect(read(birdeyeAdapter, `https://birdeye.so/token/${SOL_MINT}?chain=solana`)).toEqual({
+  // Birdeye 308s `/token/<addr>?chain=solana` to `/<chain>/token/<addr>` and drops the param,
+  // so the path segment is the only chain signal left (Round 1.4.2).
+  it("reads /<chain>/token/<addr> -> spot solana", () => {
+    expect(read(birdeyeAdapter, `https://birdeye.so/solana/token/${SOL_MINT}`)).toEqual({
       kind: "spot",
       chain: "solana",
       tokenAddress: SOL_MINT,
     });
+  });
+
+  it("reads an EVM chain out of the path segment", () => {
+    expect(read(birdeyeAdapter, `https://birdeye.so/bsc/token/${EVM_ADDR}`)).toEqual({
+      kind: "spot",
+      chain: "bnb",
+      tokenAddress: EVM_ADDR,
+    });
+  });
+
+  it("an unmapped chain slug is null, never a defaulted chain", () => {
+    expect(read(birdeyeAdapter, `https://birdeye.so/sui/token/${EVM_ADDR}`)).toBeNull();
+  });
+
+  it("the pre-308 path carries no chain and yields nothing", () => {
+    expect(read(birdeyeAdapter, `https://birdeye.so/token/${SOL_MINT}?chain=solana`)).toBeNull();
   });
 });
 

@@ -1,8 +1,24 @@
 import type { Target } from "@tripwire/core";
+import { readTokenSymbol } from "./chains";
 import { closestWithin, findButtons, isSelected, isToggleLike, leavesWithText } from "./dom";
-import { OVERRIDE_PHRASES, type VenueAdapter } from "./types";
+import { OVERRIDE_PHRASES, type TargetGap, type VenueAdapter } from "./types";
 
-const COIN_PATH_RE = /^\/trade\/([^/]+)/;
+/** Any trade page, for `match()`: a spot pair still needs an adapter, or the page gets no
+ * answer at all instead of a coverage answer. */
+const TRADE_PATH_RE = /^\/trade\/([^/?#]+)(\/([^/?#]+))?\/?$/;
+/**
+ * A PERP market: exactly one path segment. `/trade/ETH` is the ETH perp; `/trade/PURR/USDC`
+ * is a Hyperliquid **spot** pair and `/trade/@107` is a spot index, neither of which exists in
+ * the perp universe. The old unanchored `/^\/trade\/([^/]+)/` read `PURR` out of the pair and
+ * spent `perp-screener` (1) plus `tgm/perp-positions` (5) = 6 credits per coin per 2 minutes
+ * asking about a market that does not exist.
+ */
+const COIN_PATH_RE = /^\/trade\/([^/?#]+)\/?$/;
+/** Hyperliquid writes spot markets as `@<index>` in the URL (`/trade/@107`). */
+const SPOT_INDEX_RE = /^@\d+$/;
+/** The spot venue behind these pages. Not HyperEVM: that is the EVM chain beside it, and
+ * naming the wrong one would be its own confident error. */
+const HL_SPOT_LABEL = "Hyperliquid spot";
 const ANCHOR_RE = /^(buy|sell|long|short|place order)/i;
 // Side-toggle labels: "Long", "Buy", or "Buy / Long" style (whole first word).
 const TOGGLE_LONG_WORD_RE = /^(buy|long)\b/i;
@@ -84,16 +100,32 @@ export const hyperliquidAdapter: VenueAdapter = {
   id: "hyperliquid",
   tier: 1,
   match(url) {
-    return url.hostname === "app.hyperliquid.xyz" && COIN_PATH_RE.test(url.pathname);
+    return url.hostname === "app.hyperliquid.xyz" && TRADE_PATH_RE.test(url.pathname);
   },
   readTarget(doc, url): Target | null {
     const match = COIN_PATH_RE.exec(url.pathname);
     const coin = match?.[1] ? decodeURIComponent(match[1]) : null;
-    if (!coin) return null;
+    if (!coin) return null; // a spot pair: no perp market, and no perp credits spent on it
     // Non-crypto HIP-3 markets are namespaced "xyz:TSLA" -- ruling: skip (null target).
     if (coin.includes(":")) return null;
+    if (SPOT_INDEX_RE.test(coin)) return null; // `/trade/@107` is a spot index, not a perp
     const side = detectSide(doc);
     return side ? { kind: "perp", coin, side } : { kind: "perp", coin };
+  },
+  /**
+   * The spot half of Hyperliquid. Nansen's perp data is the perp universe, and Tripwire has no
+   * HyperCore spot coverage, so the honest answer names the venue instead of pricing a market
+   * that does not exist.
+   */
+  readGap(_doc, url): TargetGap | null {
+    const match = TRADE_PATH_RE.exec(url.pathname);
+    if (!match) return null;
+    const base = match[1] ? decodeURIComponent(match[1]) : "";
+    const quote = match[3];
+    if (!quote && !SPOT_INDEX_RE.test(base)) return null; // a perp page, or a HIP-3 namespace
+    // `@107` is an index into Hyperliquid's spot universe, not a ticker: say nothing about it.
+    const symbol = quote && !SPOT_INDEX_RE.test(base) ? readTokenSymbol({ textContent: base } as Element) : null;
+    return { kind: "unsupported-chain", label: HL_SPOT_LABEL, ...(symbol ? { symbol } : {}) };
   },
   anchor(doc) {
     return findSubmit(doc);

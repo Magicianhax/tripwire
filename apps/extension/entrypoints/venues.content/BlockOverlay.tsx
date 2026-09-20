@@ -7,6 +7,9 @@ import { BlockScreen } from "../../lib/ui/BlockScreen";
 export type BlockOverlayProps = {
   /** The anchor button's bounding rect; the block covers it and grows upward to fit. */
   anchorRect: Rect;
+  /** Other blocked controls' rects (pump.fun's quick-buy chips). The block is sized to cover
+   * them too, so nothing it intercepts is left looking clickable. */
+  extraRects?: Rect[];
   kind: TargetKind;
   hits: HitDto[];
   phrase: string;
@@ -32,11 +35,11 @@ export type BlockOverlayProps = {
  * makes the shadow-root container `position:fixed; inset:0`; `mountReact` sets that container
  * to `pointer-events:none` too, so only the block rectangle below is ever hit-testable.
  */
-export function BlockOverlay({ anchorRect, kind, hits, phrase, onEvidence, onOverride, pending = false, error = null, replay, venue }: BlockOverlayProps) {
+export function BlockOverlay({ anchorRect, extraRects, kind, hits, phrase, onEvidence, onOverride, pending = false, error = null, replay, venue }: BlockOverlayProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState(0);
   const [, remeasure] = useReducer((n: number) => n + 1, 0);
-  const rect = computeBlockRect(anchorRect, undefined, contentHeight, { width: window.innerWidth });
+  const rect = computeBlockRect(anchorRect, undefined, contentHeight, { width: window.innerWidth }, extraRects);
 
   // Content can change height without a re-render (the packaged fonts finish loading after the
   // first measure, so fallback-font wrapping left a dead band): re-measure when any part of

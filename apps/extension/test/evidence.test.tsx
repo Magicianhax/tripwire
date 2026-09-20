@@ -34,6 +34,7 @@ function rcFor(): RunnerContext {
     resizeObserver: null,
     repositionCleanup: null,
     anchorBinding: null,
+    syncExtras: null,
     activeSession: null,
     currentDisplay: null,
     currentKey: "k1",

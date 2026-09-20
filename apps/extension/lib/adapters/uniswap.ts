@@ -1,6 +1,7 @@
 import { isEvmAddress, type Chain, type Target } from "@tripwire/core";
 import { chainLabel, evmTarget, EVM_CHAIN_IDS, isNativeEvm, isNativeSymbol, readTokenSymbol, UNISWAP_CHAIN_NAMES } from "./chains";
 import { findButton, isVisible } from "./dom";
+import { uncoveredChainGap } from "./gap";
 import { OVERRIDE_PHRASES, type TargetGap, type VenueAdapter } from "./types";
 
 const ANCHOR_RE = /^swap$/i;
@@ -8,6 +9,14 @@ const REVIEW_SELECTOR = '[data-testid="review-swap"]';
 /** The Buy field's token selector. Scoped to the output side on purpose: the Sell selector
  * (`choose-input-token`) is what the user is spending, which Tripwire has no verdict about. */
 const OUTPUT_TOKEN_SELECTOR = '[data-testid="choose-output-token"]';
+/**
+ * `/explore/tokens/<chain>/<address>` — Uniswap's own token page, which names the chain AND
+ * the exact contract in the path. `readTarget` read only `?outputCurrency=`, so `readGap` fell
+ * through to the symbol branch and the card said "Select a network to check DEGEN" on a URL
+ * that literally reads `base/0x4ed4…`. A confident instruction to do something the user has
+ * already done is worse than saying nothing.
+ */
+const EXPLORE_TOKEN_PATH_RE = /^\/explore\/tokens\/([^/?#]+)\/([^/?#]+)/;
 
 /** Only output-side metadata counts; the global network picker may describe the Sell side. */
 function outputChain(doc: Document, url: URL): Chain | undefined {
@@ -35,6 +44,12 @@ export const uniswapAdapter: VenueAdapter = {
     return url.hostname === "app.uniswap.org";
   },
   readTarget(doc, url): Target | null {
+    const explore = EXPLORE_TOKEN_PATH_RE.exec(url.pathname);
+    if (explore) {
+      const chain = UNISWAP_CHAIN_NAMES[explore[1]!.toLowerCase()];
+      return chain ? evmTarget(chain, explore[2]!) : null;
+    }
+
     const address = url.searchParams.get("outputCurrency");
     if (!address) return null;
     const chain = outputChain(doc, url);
@@ -48,6 +63,11 @@ export const uniswapAdapter: VenueAdapter = {
    * is selected, otherwise the symbol for the caller to resolve through Nansen.
    */
   readGap(doc, url): TargetGap | null {
+    // An explore page carries its own chain; the only reason it produced no target is that the
+    // chain is outside coverage. It must never reach the swap form's "pick a network" branch.
+    const explore = EXPLORE_TOKEN_PATH_RE.exec(url.pathname);
+    if (explore) return uncoveredChainGap(explore[1]);
+
     const chainParam = url.searchParams.get("chain");
     const chain = outputChain(doc, url);
     if (chainParam && !chain) {

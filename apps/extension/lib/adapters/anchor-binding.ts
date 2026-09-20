@@ -50,3 +50,59 @@ export function createAnchorBinding({ find, onBind, onUnbind }: AnchorBindingOpt
     },
   };
 }
+
+export type ElementSetBindingOptions = {
+  find: () => HTMLElement[];
+  onBind: (element: HTMLElement) => void;
+  onUnbind: (element: HTMLElement) => void;
+};
+
+/**
+ * The same contract as `createAnchorBinding`, for a SET of elements rather than one: pump.fun's
+ * quick-buy chips, which are three separate one-click trades beside the primary button.
+ *
+ * Each element is bound individually — never a shared container, which would swallow clicks on
+ * anything else inside it and break the blocker's own "friction on the button itself" rule —
+ * and each gets the same `isConnected` re-sync the anchor gets, because pump.fun's SPA
+ * re-renders the chips without changing the traded token.
+ *
+ * - An element already bound and still connected -> untouched.
+ * - A newly returned, connected element -> `onBind`.
+ * - An element no longer returned, or no longer connected -> `onUnbind`.
+ */
+export function createElementSetBinding({ find, onBind, onUnbind }: ElementSetBindingOptions) {
+  let current = new Set<HTMLElement>();
+
+  function sync(): boolean {
+    const found = new Set(find().filter((el) => el.isConnected));
+    let changed = false;
+
+    for (const el of current) {
+      if (found.has(el) && el.isConnected) continue;
+      onUnbind(el);
+      current.delete(el);
+      changed = true;
+    }
+    for (const el of found) {
+      if (current.has(el)) continue;
+      current.add(el);
+      onBind(el);
+      changed = true;
+    }
+    return changed;
+  }
+
+  /** Force-unbinds everything regardless of what `find()` would now return (teardown). */
+  function unbindAll(): void {
+    for (const el of current) onUnbind(el);
+    current = new Set();
+  }
+
+  return {
+    sync,
+    unbindAll,
+    get elements(): HTMLElement[] {
+      return [...current];
+    },
+  };
+}

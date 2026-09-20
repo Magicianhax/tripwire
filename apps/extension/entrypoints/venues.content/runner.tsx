@@ -12,6 +12,15 @@ import { isUnlocked, type RunnerContext } from "./runner-state";
 
 export { gapKey, keyFor } from "./format";
 
+/** The page URL the adapters read, re-read each time: a venue SPA navigates under the runner. */
+function pageUrl(): URL | undefined {
+  try {
+    return new URL(location.href);
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * Owns every mounted UI element and blocking listener for the current venue page: at most one
  * "primary" display (BlockScreen overlay, inline Strip, or a primary Dock) plus an optional
@@ -33,6 +42,7 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     resizeObserver: null,
     repositionCleanup: null,
     anchorBinding: null,
+    syncExtras: null,
     activeSession: null,
     currentDisplay: null,
     currentKey: null,
@@ -49,6 +59,7 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     // screen, removes the mount for a strip) before the generic cleanup below.
     rc.anchorBinding?.unbind();
     rc.anchorBinding = null;
+    rc.syncExtras = null;
     // Defensive/idempotent: a block session's onUnbind already clears these; dock/strip modes
     // never set them. Never leaves a stale blocker or observer behind either way.
     rc.blocker?.release();
@@ -85,7 +96,7 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     if (rc.currentKey !== key) return; // superseded
 
     const unlocked = target ? isUnlocked(rc, key) : false;
-    const anchorPresent = adapter.tier === 1 && (adapter.anchor?.(document) ?? null) != null;
+    const anchorPresent = adapter.tier === 1 && (adapter.anchor?.(document, pageUrl()) ?? null) != null;
     const decision = decideDisplay({ tier: adapter.tier, verdict, anchorPresent, unlocked });
 
     if (adapter.tier !== 1) {
@@ -106,12 +117,13 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
       return;
     }
 
-    const find = () => adapter.anchor?.(document) ?? null;
-    const { onBind, onUnbind } =
+    const find = () => adapter.anchor?.(document, pageUrl()) ?? null;
+    const binding =
       decision === "block" && target && chipData
         ? createBlockBinding(rc, adapter, target, chipData, headline, key)
         : createStripBinding(rc, adapter, target, verdict, headline, unlocked, chipData?.hits[0] ? hitRuleClause(chipData.hits[0]) : null);
-    rc.anchorBinding = createAnchorBinding({ find, onBind, onUnbind });
+    rc.syncExtras = "syncExtras" in binding ? (binding.syncExtras as () => void) : null;
+    rc.anchorBinding = createAnchorBinding({ find, onBind: binding.onBind, onUnbind: binding.onUnbind });
     rc.anchorBinding.sync();
   }
 
@@ -184,8 +196,10 @@ export function createGuardRunner(ctx: ContentScriptContext, getReplay: () => Pr
     if (rc.anchorBinding) {
       rc.anchorBinding.sync();
       anchorPresent = rc.anchorBinding.anchor != null;
+      // The chips re-render on their own; the anchor node can stay put while they are replaced.
+      if (anchorPresent) rc.syncExtras?.();
     } else {
-      anchorPresent = (adapter.anchor?.(document) ?? null) != null;
+      anchorPresent = (adapter.anchor?.(document, pageUrl()) ?? null) != null;
     }
 
     const decision = decideDisplay({ tier: adapter.tier, verdict, anchorPresent, unlocked });

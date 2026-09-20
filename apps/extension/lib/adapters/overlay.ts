@@ -15,12 +15,33 @@ const VIEWPORT_MARGIN = 16;
  * anchor), centred on the anchor and clamped 16px inside the viewport, without ever leaving
  * part of the anchor uncovered: a narrow trade button no longer leaves its host card's edges
  * showing around the block. */
+/** The smallest rect covering all of `rects`. */
+function union(rects: Rect[]): Rect {
+  const top = Math.min(...rects.map((r) => r.top));
+  const left = Math.min(...rects.map((r) => r.left));
+  const bottom = Math.max(...rects.map((r) => r.top + r.height));
+  const right = Math.max(...rects.map((r) => r.left + r.width));
+  return { top, left, width: right - left, height: bottom - top };
+}
+
 export function computeBlockRect(
   anchorRect: { top: number; left: number; width: number; height: number },
   minHeight = MIN_BLOCK_HEIGHT,
   contentHeight = 0,
   viewport?: { width: number },
+  /** Other elements blocked in the same session (pump.fun's quick-buy chips). The block screen
+   * covers everything it blocks: a chip left visible below the block reads as still clickable,
+   * which is the exact impression this round exists to remove. */
+  extraRects: Rect[] = [],
 ): Rect {
+  // Read field by field, never `{ ...anchorRect }`: a live `DOMRect` keeps its values in
+  // prototype accessors, so spreading one yields `{}` and the whole union goes NaN.
+  if (extraRects.length > 0) {
+    anchorRect = union([
+      { top: anchorRect.top, left: anchorRect.left, width: anchorRect.width, height: anchorRect.height },
+      ...extraRects,
+    ]);
+  }
   const height = Math.ceil(Math.max(anchorRect.height, minHeight, contentHeight));
   const growth = height - anchorRect.height;
   const top = anchorRect.top - growth;

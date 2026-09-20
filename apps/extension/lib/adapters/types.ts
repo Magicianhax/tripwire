@@ -39,8 +39,17 @@ export interface VenueAdapter {
    */
   readGap?(doc: Document, url: URL): TargetGap | null;
   /** Tier 1 only: the trade/swap/buy button to block. Tier 2 adapters omit this — they're
-   * dock-only (URL-derived target, no DOM interaction, nothing to block). */
-  anchor?(doc: Document): HTMLElement | null;
+   * dock-only (URL-derived target, no DOM interaction, nothing to block). `url` lets an
+   * adapter withhold an anchor on a page of its own host whose trade form is uncaptured. */
+  anchor?(doc: Document, url?: URL): HTMLElement | null;
+  /**
+   * Extra one-click trade controls on the same page that must be blocked alongside `anchor`
+   * — pump.fun's quick-buy chips, which place a trade with a single click and are correctly
+   * excluded from anchor selection. Each is bound individually (never a shared container,
+   * which would swallow unrelated clicks) and re-synced like the anchor, and the block screen
+   * is sized to cover them.
+   */
+  blockedExtras?(doc: Document): HTMLElement[];
   /** The exact phrase the user must type into BlockScreen's override input, keyed by the
    * target kind this adapter produces: spot -> "I AM EXIT LIQUIDITY", perp -> "I AM THE
    * LIQUIDITY", prediction -> "I KNOW BETTER". */

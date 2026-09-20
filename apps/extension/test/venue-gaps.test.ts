@@ -103,8 +103,9 @@ describe("jumper: a destination outside coverage", () => {
   });
 
   it("reads the Receive selector when the URL names no token", () => {
-    // The fixture's widget has DDEGEN on the Receive side and nothing on the From side.
-    expect(gapOf(jumperAdapter, load("jumper"), "https://jumper.xyz/?toChain=8453")).toEqual({ kind: "symbol", symbol: "DDEGEN", chainHint: "base" });
+    // The fixture's Receive selector is an MUI avatar monogram leaf ("D") in front of the
+    // ticker leaf ("DEGEN"). textContent glues them into DDEGEN (Round 1.4.7).
+    expect(gapOf(jumperAdapter, load("jumper"), "https://jumper.xyz/?toChain=8453")).toEqual({ kind: "symbol", symbol: "DEGEN", chainHint: "base" });
   });
 });
 
@@ -169,8 +170,8 @@ describe("uniswap: the swap form, when the URL says nothing", () => {
 
   it("names a chain it does not cover", () => {
     const gap=gapOf(uniswapAdapter, doc(), "https://app.uniswap.org/swap?chain=zksync");
-    expect(gap).toEqual({kind:"unsupported-chain",label:"zksync",symbol:"DEGEN"});
-    expect(gapHeadline(gap)).toBe("No onchain data for DEGEN on zksync");
+    expect(gap).toEqual({kind:"unsupported-chain",label:"zkSync Era",symbol:"DEGEN"});
+    expect(gapHeadline(gap)).toBe("No onchain data for DEGEN on zkSync Era");
   });
 });
 

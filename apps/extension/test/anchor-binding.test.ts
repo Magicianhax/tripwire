@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, expect, it, vi } from "vitest";
-import { createAnchorBinding } from "../lib/adapters/anchor-binding";
+import { createAnchorBinding, createElementSetBinding } from "../lib/adapters/anchor-binding";
 import { installBlocker } from "../lib/adapters/blocker";
 
 describe("createAnchorBinding", () => {
@@ -158,5 +158,96 @@ describe("createAnchorBinding", () => {
     // A further sync() re-finds and re-binds (unbind() doesn't permanently disable the binding).
     binding.sync();
     expect(binding.anchor).toBe(anchor);
+  });
+});
+
+describe("createElementSetBinding: the extra one-click controls (Round 1.4.9)", () => {
+  const chip = (label: string) => {
+    const el = document.createElement("button");
+    el.setAttribute("aria-label", label);
+    document.body.appendChild(el);
+    return el;
+  };
+
+  it("binds every element once, and re-syncing a stable set is a no-op", () => {
+    document.body.innerHTML = "";
+    const chips = [chip("Quick buy $25"), chip("Quick buy $100")];
+    const onBind = vi.fn();
+    const onUnbind = vi.fn();
+    const binding = createElementSetBinding({ find: () => chips, onBind, onUnbind });
+
+    expect(binding.sync()).toBe(true);
+    expect(onBind.mock.calls.map((c) => c[0])).toEqual(chips);
+    expect(binding.sync()).toBe(false);
+    expect(onBind).toHaveBeenCalledTimes(2);
+    expect(onUnbind).not.toHaveBeenCalled();
+  });
+
+  it("re-binds the set an SPA re-render replaced, releasing the detached nodes", () => {
+    document.body.innerHTML = "";
+    let live = [chip("Quick buy $25")];
+    const onBind = vi.fn();
+    const onUnbind = vi.fn();
+    const binding = createElementSetBinding({ find: () => live, onBind, onUnbind });
+    binding.sync();
+    const [stale] = live;
+
+    stale!.remove();
+    live = [chip("Quick buy $25"), chip("Quick buy $100")];
+    expect(binding.sync()).toBe(true);
+
+    expect(onUnbind).toHaveBeenCalledWith(stale);
+    expect(binding.elements).toEqual(live);
+  });
+
+  it("drops an element the venue removed without replacing", () => {
+    document.body.innerHTML = "";
+    const chips = [chip("Quick buy $25"), chip("Quick buy $100")];
+    const onUnbind = vi.fn();
+    const binding = createElementSetBinding({ find: () => chips.filter((el) => el.isConnected), onBind: () => {}, onUnbind });
+    binding.sync();
+
+    chips[1]!.remove();
+    binding.sync();
+
+    expect(onUnbind).toHaveBeenCalledTimes(1);
+    expect(binding.elements).toEqual([chips[0]]);
+  });
+
+  it("unbindAll() releases everything on teardown", () => {
+    document.body.innerHTML = "";
+    const chips = [chip("Quick buy $25"), chip("Quick buy $100")];
+    const onUnbind = vi.fn();
+    const binding = createElementSetBinding({ find: () => chips, onBind: () => {}, onUnbind });
+    binding.sync();
+
+    binding.unbindAll();
+
+    expect(onUnbind).toHaveBeenCalledTimes(2);
+    expect(binding.elements).toEqual([]);
+  });
+
+  it("a bound chip's click never reaches the venue, and an unrelated button's does", () => {
+    document.body.innerHTML = "";
+    const chips = [chip("Quick buy $25")];
+    const unrelated = document.createElement("button");
+    document.body.appendChild(unrelated);
+    let traded = 0;
+    let shared = 0;
+    chips[0]!.addEventListener("click", () => (traded += 1));
+    unrelated.addEventListener("click", () => (shared += 1));
+
+    const blockers = new Map<HTMLElement, { release(): void }>();
+    const binding = createElementSetBinding({
+      find: () => chips,
+      onBind: (el) => blockers.set(el, installBlocker(el)),
+      onUnbind: (el) => blockers.get(el)?.release(),
+    });
+    binding.sync();
+
+    chips[0]!.click();
+    unrelated.click();
+    expect(traded).toBe(0);
+    expect(shared).toBe(1);
   });
 });

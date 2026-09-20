@@ -21,7 +21,8 @@ function isTabOrToggle(btn: HTMLButtonElement): boolean {
   return role === "tab" || role === "radio" || btn.hasAttribute("aria-selected") || btn.hasAttribute("aria-checked");
 }
 
-const isQuickAmount = (btn: HTMLButtonElement) => /^quick (buy|sell)\b/i.test(btn.getAttribute("aria-label") ?? "");
+const QUICK_AMOUNT_RE = /^quick (buy|sell)\b/i;
+const isQuickAmount = (btn: HTMLButtonElement) => QUICK_AMOUNT_RE.test(btn.getAttribute("aria-label") ?? "");
 
 /** The live trade panel: a rendered Buy|Sell tablist, up to a few levels below the section that
  * also holds the amount input; its primary is the last matching non-tab, non-quick-amount button. */
@@ -56,6 +57,25 @@ export const pumpfunAdapter: VenueAdapter = {
     if (place.length) return place[place.length - 1]!;
     const buy = findButtons(doc, BUY_RE, (btn) => notTradeForm(btn) || isTabOrToggle(btn) || !hasNearbyInput(btn));
     return buy[buy.length - 1] ?? null;
+  },
+  /**
+   * `Quick buy $25 / $100 / $250` and `Quick sell 25 / 50 / 100%` place a trade in **one
+   * click** when a wallet is connected (recorded verbatim in `docs/VENUE-CHECK.md`). They are
+   * rightly excluded from `anchor()` — they are not the trade form's primary action — but
+   * that left the block screen walkable around in a single click on the one venue where
+   * impulse buying actually happens.
+   *
+   * Selected by `aria-label`, which pump.fun writes on each chip, so each one is bound on its
+   * own. The enclosing `[role=group][aria-label="Quick buy"]` is deliberately NOT used: a
+   * container listener would swallow clicks on anything else that lands inside it.
+   */
+  blockedExtras(doc) {
+    const out: HTMLElement[] = [];
+    for (const btn of doc.querySelectorAll("button")) {
+      if (btn.disabled || !isQuickAmount(btn) || !isVisible(btn)) continue;
+      out.push(btn);
+    }
+    return out;
   },
   overridePhrase: OVERRIDE_PHRASES.spot,
 };

@@ -1,5 +1,6 @@
 import { isEvmAddress, type Chain, type Target } from "@tripwire/core";
-import { OVERRIDE_PHRASES, type VenueAdapter } from "./types";
+import { uncoveredChainGap } from "./gap";
+import { OVERRIDE_PHRASES, type TargetGap, type VenueAdapter } from "./types";
 
 /** Dexscreener routes are provider-specific, not Birdeye's supported-chain list. */
 const DEXSCREENER_CHAIN_NAMES: Record<string, Chain> = {
@@ -31,6 +32,14 @@ export const dexscreenerAdapter: VenueAdapter = {
   },
   readTarget(_doc, _url): Target | null {
     return null;
+  },
+  /**
+   * Dexscreener's chain rail is 60-odd chains wide and most of them are outside Tripwire's
+   * coverage, so "Sui" is the answer to a Sui pool — not the shrug the dock printed before.
+   * A covered chain returns null here and resolves through the pair lookup in the runner.
+   */
+  readGap(_doc, url): TargetGap | null {
+    return uncoveredChainGap(url.pathname.split("/").filter(Boolean)[0]);
   },
   overridePhrase: OVERRIDE_PHRASES.spot,
 };
