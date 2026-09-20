@@ -627,7 +627,17 @@ function WinRateCell({ address, state, onLoad }: { address: string | null; state
       </td>
     );
   }
-  if (typeof state === "string") return <td className="tw-num tw-meta">{state}</td>;
+  // A failure is not an answer, so it does not end the row: the reason stays on screen and the
+  // press comes back with its price on it. Caching the error string used to make a failed row
+  // dead until the card was closed and reopened (M-5).
+  if (typeof state === "string") {
+    return (
+      <td className="tw-num">
+        <PricedButton label="Win rate for this trader, again" credits={1} pending={false} onClick={onLoad} priceOnly />
+        <span className="tw-meta tw-winrate-of">{state}</span>
+      </td>
+    );
+  }
   if (state.winRate === null) {
     return (
       <td className="tw-num tw-meta">
@@ -653,7 +663,11 @@ function TradersTab({ depth, coin }: { depth: DepthState; coin: string }) {
   const [rates, setRates] = useState<Record<string, PerpWinRateResponse | "pending" | string>>({});
 
   async function loadWinRate(address: string) {
-    if (rates[address]) return;
+    // An answer already bought is never bought twice, and a request in flight is not doubled.
+    // A stored *error* is neither: it is retryable, and the press that retries it prints its
+    // price again (M-5).
+    const current = rates[address];
+    if (current === "pending" || (current !== undefined && typeof current !== "string")) return;
     setRates((prev) => ({ ...prev, [address]: "pending" }));
     const result = await perpWinRate(address);
     setRates((prev) => ({

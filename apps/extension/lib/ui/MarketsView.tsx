@@ -9,7 +9,7 @@ import { Empty, Section, CardHeader, Readouts } from "./panel-parts";
 import { NansenRowLink } from "./NansenRowLink";
 import { Segmented } from "./Segmented";
 import { Panel, type DepthLoader } from "./Panel";
-import { chainGroups, screenerKey, SCREENER_MAX_CHAINS, type ViewTimeframe } from "@tripwire/core";
+import { chainGroups, MAX_ENRICH_GROUPS, screenerKey, SCREENER_MAX_CHAINS, type ViewTimeframe } from "@tripwire/core";
 import { PopoverContext } from "./Popover";
 
 const marketName = (market: Market) => `${market.kind === "perp" ? "Perps" : "Spot"} · ${market.chain}`;
@@ -18,8 +18,9 @@ const marketAge = (days: number | null) => days === null ? "—" : days < 365 ? 
 const marketChange = (pct: number | null) => pct === null ? "—" : `${pct > 0 ? "+" : ""}${pct.toFixed(Math.abs(pct) < 1 && pct !== 0 ? 2 : 1)}%`;
 
 /** The catalog is free. This is the one thing in it that is not, so the press states its price
- * first and the price is counted from the catalog's own chains, never guessed (Round 1.6.2). */
-const MAX_ENRICH_GROUPS = 5;
+ * first and the price is counted from the catalog's own chains, never guessed (Round 1.6.2).
+ * `MAX_ENRICH_GROUPS` comes from core, which is what the backend charges against: the printed
+ * price and the charged price were two independent constants until M-4. */
 function enrichmentPrice(markets: Market[]): { credits: number; chains: number } {
   const groups = chainGroups(markets.map((m) => m.chain), SCREENER_MAX_CHAINS).slice(0, MAX_ENRICH_GROUPS);
   return { credits: groups.length, chains: groups.flat().length };

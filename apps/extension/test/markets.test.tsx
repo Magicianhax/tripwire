@@ -3,6 +3,7 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { MarketCatalog } from "../lib/api-types";
+import { MAX_ENRICH_GROUPS, SCREENER_MAX_CHAINS } from "@tripwire/core";
 const mocks=vi.hoisted(()=>({markets:vi.fn()}));
 vi.mock("../lib/api",()=>({markets:mocks.markets}));
 import { MarketsView } from "../lib/ui/MarketsView";
@@ -33,6 +34,21 @@ describe("market comparison",()=>{
     expect(new URL(link.getAttribute("href")!).searchParams.get("tokenAddress")).toBe("zec.omft.near");
     const button=[...el.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent==="Explore perps")!;
     act(()=>button.click());expect(explore).toHaveBeenCalledWith(catalog.markets[0]);
+    act(()=>root.unmount());
+  });
+
+  // M-4: the price the button prints and the price the backend charges must be one constant.
+  it("prices the enrichment press with core's cap, not a copy of it",async()=>{
+    const many:MarketCatalog={symbol:"ZEC",errors:[],replay:false,markets:Array.from({length:40},(_,i)=>(
+      {id:`c${i}:0xabc`,kind:"spot" as const,chain:`chain-${i}`,symbol:"ZEC",name:"Zcash",address:"0xabc",priceUsd:1,volume24hUsd:1,marketCapUsd:null,match:"exact" as const,detailTarget:null,nansenUrl:"https://app.nansen.ai/token-god-mode"}
+    ))};
+    mocks.markets.mockResolvedValue({ok:true,status:200,data:many});
+    const el=document.createElement("div");document.body.append(el);const root=createRoot(el);
+    await act(async()=>root.render(<MarketsView symbol="ZEC" active onExplore={()=>{}}/>));
+    const button=[...el.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent?.includes("Add token age"))!;
+    // 40 chains is far past the cap; the catalog may only ever cost the cap, which is core's.
+    expect(button.textContent).toContain(`(${MAX_ENRICH_GROUPS} credits)`);
+    expect(el.textContent).toContain(`these ${MAX_ENRICH_GROUPS*SCREENER_MAX_CHAINS} chains`);
     act(()=>root.unmount());
   });
 });

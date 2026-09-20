@@ -268,10 +268,14 @@ function MarketPicker({ panel }: { panel: PredictionPanel }) {
       title={panel.market ? "Other markets in this event" : "Markets in this event"}
       aside={capped ? `${options.length} of ${total} by 24h volume` : `${options.length}`}
     >
+      {/* M-2: the second sentence used to name "the market this page has selected" in both
+          branches, including the one that exists *because* the page has selected none. */}
       <p className="tw-note tw-meta">
-        Tripwire checks the market this page has selected, so these are not checked and this
-        card’s verdict does not change. Opening one checks it on its own page. Prices are
-        Polymarket’s cached snapshot{capped ? `, and the ${total - options.length} lowest-volume markets of this event are not listed` : ""}.
+        {panel.market
+          ? "Tripwire checks the market this page has selected, so these are not checked and this card’s verdict does not change."
+          : "This page hasn’t selected one market, so none of these is checked and this card carries no verdict for them."}{" "}
+        Opening one checks it on its own page. Prices are Polymarket’s cached snapshot
+        {capped ? `, and the ${total - options.length} lowest-volume markets of this event are not listed` : ""}.
       </p>
       <div className="tw-market-options">
         {page.rows.map((o) => (
@@ -380,7 +384,10 @@ function WinnersTab({ panel, hits }: { panel: PredictionPanel; hits: HitDto[] })
                     // "Yes side" reads right for a Yes/No market and "Ravens side" does not, so
                     // a named outcome is just its name.
                     ...sides.byOutcome.map((v, i) => ({ label: yesNo ? `${outcomeName(outcomes, i)} side` : outcomeName(outcomes, i), value: usd(v) })),
-                    { label: "Other sides", value: sides.unmatchedUsd ? usd(sides.unmatchedUsd) : DASH },
+                    // `usd` already dashes a null. A measured zero is known — no sampled money
+                    // sits outside the listed outcomes — and printing it as "—" claimed the
+                    // opposite (M-1). This is the same call the Yes/No branch below makes.
+                    { label: "Other sides", value: usd(sides.unmatchedUsd) },
                     { label: "Top 10 share", value: sides.top10SharePct === null ? DASH : `${sides.top10SharePct.toFixed(0)}%` },
                   ]
                 : [

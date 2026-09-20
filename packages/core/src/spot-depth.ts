@@ -159,6 +159,18 @@ export function balanceChangePct(change: number | null | undefined, balance: num
 export const SCREENER_MAX_CHAINS = 5;
 
 /**
+ * The most groups one press will ever buy, so the catalog can never quietly become a five-credit
+ * view of a free one. A catalog spanning more chains than this enriches the first
+ * `MAX_ENRICH_GROUPS × SCREENER_MAX_CHAINS` chains and says so; the rest keep the free snapshot's
+ * three figures, the same degradation as a row the screener has no answer for.
+ *
+ * It lives here because both sides of the boundary need the same number: the backend charges it
+ * and the card prints it before the press. It was declared twice (M-4), so the printed price and
+ * the charged price were two independent constants.
+ */
+export const MAX_ENRICH_GROUPS = 5;
+
+/**
  * The catalog's chains, split into the groups that will actually be bought.
  *
  * The price of enriching a catalog is the number of groups, not the number of rows, so the card

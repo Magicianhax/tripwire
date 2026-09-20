@@ -372,16 +372,22 @@ export async function crossVenueFunding(coin: string, hlPreloaded?: { market: Hl
    * `predictedFundings` does, for every venue it tracks, in one cached 234-coin answer. Only
    * the Hyperliquid row reads it — Binance, Bybit and OKX each publish their own timestamp, and
    * a venue's own payload is closer to the source than another venue's view of it.
+   *
+   * Started, not awaited (M-7): awaiting it here made it a serial round trip at the head of the
+   * build, delaying every other venue's request by its latency. Only the Hyperliquid row needs
+   * it, so only that row waits for it, and it flies alongside the rest.
    */
-  const predicted = await hlPredictedFunding(coin).catch(() => null);
+  const predicted = hlPredictedFunding(coin).catch(() => null);
 
   const hlSymbol = perpVenueSymbol("hyperliquid", coin);
   if (hlSymbol === null) unmapped.push("hyperliquid");
-  else if (hlPreloaded) jobs.push(Promise.resolve(hlVenueQuote(hlPreloaded.market, hlSymbol, hlPreloaded.error, predicted)));
-  else
+  else if (hlPreloaded) {
+    const preloaded = hlPreloaded;
+    jobs.push(predicted.then((p) => hlVenueQuote(preloaded.market, hlSymbol, preloaded.error, p)));
+  } else
     jobs.push(
       hlMarket(hlSymbol).then(
-        (m) => hlVenueQuote(m, hlSymbol, m ? null : `Hyperliquid has no ${hlSymbol} market`, predicted),
+        async (m) => hlVenueQuote(m, hlSymbol, m ? null : `Hyperliquid has no ${hlSymbol} market`, await predicted),
         (e: unknown) => unavailable("hyperliquid", hlSymbol, e instanceof Error ? e.message : String(e)),
       ),
     );

@@ -372,6 +372,27 @@ describe("2.5.7 a trader's win rate is one click on one row", () => {
     expect(shown(c).textContent).toContain("585,166 closed · 30d");
   });
 
+  // M-5: the failure used to be cached in the same map as an answer, so a row that failed once
+  // was dead until the card was closed and reopened.
+  it("keeps the failure on screen and offers the press again, at its price", async () => {
+    perpWinRate.mockResolvedValueOnce({ ok: false, status: 500, error: "Nansen is unavailable." });
+    const c = expanded(<PerpBody panel={panelOf()} initialTab="traders" depth={depth} />);
+    await act(async () => void winRateButton(c).dispatchEvent(new MouseEvent("click", { bubbles: true })));
+    expect(shown(c).textContent).toContain("Nansen is unavailable.");
+
+    const retry = winRateButton(c);
+    expect(retry).toBeTruthy();
+    expect(retry.textContent).toContain("1 credit");
+    perpWinRate.mockResolvedValueOnce({
+      ok: true,
+      data: { address: "0xa", winRate: 0.5, closedTrades: 4, winningTrades: 2, realizedPnlUsd: 1, realizedPnlPct: 1, tradedCoinCount: 1, windowDays: 30, credits: 1, error: null },
+    });
+    await act(async () => void retry.dispatchEvent(new MouseEvent("click", { bubbles: true })));
+    expect(perpWinRate).toHaveBeenCalledTimes(2);
+    expect(shown(c).textContent).toContain("50.0%");
+    expect(shown(c).textContent).not.toContain("Nansen is unavailable.");
+  });
+
   it("says so when Nansen has no win rate for the trader, rather than printing 0%", async () => {
     perpWinRate.mockResolvedValue({
       ok: true,

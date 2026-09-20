@@ -1,4 +1,4 @@
-import { chainGroups, fractionToPct, screenerKey, SCREENER_MAX_CHAINS, TargetSchema, type Target } from "@tripwire/core";
+import { chainGroups, fractionToPct, MAX_ENRICH_GROUPS, screenerKey, SCREENER_MAX_CHAINS, TargetSchema, type Target } from "@tripwire/core";
 import { z } from "zod";
 import { isReplay } from "../nansen/client";
 import { nansen, type TokenScreenerRow } from "../nansen/endpoints";
@@ -64,13 +64,8 @@ export function marketRows(symbol: string, rows: unknown[]): Market[] {
 
 // ---- Round 1.6.2: the batched token-screener enrichment ---------------------------------------
 
-/**
- * The most groups one press will ever buy, so the catalog can never quietly become a five-credit
- * view of a free one. A catalog spanning more chains than this enriches the first
- * `MAX_ENRICH_GROUPS × SCREENER_MAX_CHAINS` chains and says so; the rest keep today's three
- * figures, which is the same degradation as a row the screener has no answer for.
- */
-export const MAX_ENRICH_GROUPS = 5;
+/** Re-exported from core, where the card reads the same number to price the press (M-4). */
+export { MAX_ENRICH_GROUPS };
 
 export const MarketEnrichRequestSchema = z.object({
   markets: z

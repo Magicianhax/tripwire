@@ -195,6 +195,16 @@ describe("2.2 — proven winners by outcome", () => {
     expect(shown(c).textContent).toContain("Select BAL or NO on the page");
   });
 
+  // M-1: zero is a measurement. "—" is the absence of one, and they are different claims.
+  it("prints a measured zero on Other sides rather than an unknown dash", () => {
+    const c = render(<PredictionBody panel={panelOf()} initialTab="winners" />);
+    const tiles = [...shown(c).querySelectorAll(".tw-readouts dt")].map((d, i) => [d.textContent, [...shown(c).querySelectorAll(".tw-readouts dd")][i]?.textContent]);
+    const other = tiles.find(([label]) => label === "Other sides")!;
+    // The fixture's holders all sit on a listed outcome, so the unmatched total is a real zero.
+    expect(other[1]).not.toBe("—");
+    expect(other[1]).toContain("$0");
+  });
+
   it("proven-winner money on a side the market does not list is reported, not folded in", () => {
     const stray = [...HOLDERS, holder("Draw", 1_000, 0.5, "0xccc", 5)];
     const c = render(<PredictionBody panel={panelOf({ holders: stray, sides: sideTotals(stray, BAL_NO) })} initialTab="winners" />);
@@ -238,6 +248,16 @@ describe("2.2 — the event picker", () => {
     expect(note).toContain("Tripwire checks the market this page has selected");
     expect(note).toContain("this card’s verdict does not change");
     expect(note).toContain("Polymarket’s cached snapshot");
+  });
+
+  // M-2: the ambiguous-event branch exists because the page selected nothing, so it cannot
+  // explain itself by naming "the market this page has selected".
+  it("does not claim a selected market on the branch where nothing is selected", () => {
+    const c = render(<PredictionBody panel={panelOf({ market: null, holders: null, sides: null, options: OPTIONS, optionsTotal: OPTIONS.length, eventSlug: "an-event", outcomeIndex: null, targetOutcome: null })} />);
+    const note = c.querySelector(".tw-note")!.textContent!;
+    expect(note).not.toContain("the market this page has selected");
+    expect(note).toContain("hasn’t selected one market");
+    expect(note).toContain("Opening one checks it on its own page");
   });
 
   it("paginates rather than dropping rows, and never draws a 329-row wall", () => {
