@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { TokenBag, TokenSource } from "../lib/x/parse";
-import { chainForAddress, pickTokens } from "../lib/x/pick";
+import { chainForAddress, checksOnSight, pickTokens } from "../lib/x/pick";
 
 const SOL_CA = { chain: "solana" as const, address: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm" };
 const EVM_CA = { chain: "evm" as const, address: "0x6982508145454ce325ddbe47a25d4ec3d2311933" };
@@ -34,6 +34,33 @@ describe("pickTokens", () => {
 
   it("returns nothing for a post with neither", () => {
     expect(pickTokens(body({ cashtags: [], addresses: [] }))).toEqual([]);
+  });
+});
+
+/**
+ * I-3: the only thing on X that spends without a click is a first chip that checks itself on
+ * scroll-into-view, so what earns that is the whole credit rule.
+ */
+describe("checksOnSight", () => {
+  const picked = (origin: "post" | "quote" | "card" | "image") => ({ token: { kind: "cashtag" as const, symbol: "WIF" }, origin, handle: null, text: "" });
+
+  it("is true only for a token the author typed in the post's own body", () => {
+    expect(checksOnSight(picked("post"))).toBe(true);
+  });
+
+  it("is false for a quote, a link preview and an image description", () => {
+    // A post that merely links to a token page has that contract in its preview (the parser
+    // strips `https://`), and checking it on sight would be five credits for someone else's page.
+    expect(checksOnSight(picked("quote"))).toBe(false);
+    expect(checksOnSight(picked("card"))).toBe(false);
+    expect(checksOnSight(picked("image"))).toBe(false);
+  });
+
+  it("agrees with what pickTokens reads out of a link-preview-only post", () => {
+    const sources: TokenSource[] = [
+      { origin: "card", handle: null, text: "https://dexscreener.com/solana/x", tokens: { cashtags: [], addresses: [SOL_CA] } },
+    ];
+    expect(checksOnSight(pickTokens(sources)[0]!)).toBe(false);
   });
 });
 

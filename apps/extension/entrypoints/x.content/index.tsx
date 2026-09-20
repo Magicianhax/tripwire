@@ -22,7 +22,7 @@ import { createResultCache } from "../../lib/x/cache";
 import { createMountTracker } from "../../lib/x/mounts";
 import { createPanelToggle } from "../../lib/x/panel-toggle";
 import { alsoMentioned, chipErrorHeadline, chipHeadline, originPrefix, sourceNote } from "../../lib/x/headline";
-import { chainForAddress, pickTokens, type ChipToken, type PickedToken } from "../../lib/x/pick";
+import { chainForAddress, checksOnSight, pickTokens, type ChipToken, type PickedToken } from "../../lib/x/pick";
 import { parseTweet, type ParsedTweet } from "../../lib/x/parse";
 import { chipAnchor } from "../../lib/x/anchor";
 import { createQueue } from "../../lib/x/queue";
@@ -165,7 +165,9 @@ export default defineContentScript({
       const anchor = chipAnchor(article, first.origin);
       if (!anchor) return;
 
-      const host = await attachTokenChip(article, tweet, first, anchor.el, anchor.append, true, picks.length > 1);
+      // The credit rule, stated once in `lib/x/pick.ts`: the first chip checks itself on sight
+      // only when the author typed the token in the post's own body (I-3).
+      const host = await attachTokenChip(article, tweet, first, anchor.el, anchor.append, checksOnSight(first), picks.length > 1);
       const second = picks[1];
       if (!second || !host) return;
       // The second chip costs nothing until it is opened, and it is not even built until the
@@ -181,9 +183,10 @@ export default defineContentScript({
      * One token's chip, and the card it opens. Returns the chip's shadow host so the next
      * token's chip can be appended after it rather than ahead of it.
      *
-     * `eager` is the credit decision. The first chip pays for its own `postIntel("chip")` check
-     * on sight, as it always has. A second chip does not: it mounts as an explicit unchecked
-     * affordance and spends only when the reader opens it.
+     * `eager` is the credit decision, and it has exactly one rule: **a chip is checked on sight
+     * only when it is the post's first token and the author typed it in the post's own body.**
+     * A second chip, and any token read out of a quote, a link preview or an image description,
+     * mounts as an explicit unchecked affordance and spends only when the reader opens it.
      */
     async function attachTokenChip(
       article: Element,

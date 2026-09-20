@@ -23,6 +23,19 @@ export const MAX_CHIPS = 2;
  * least to most removed from what the author actually typed. */
 const ORIGIN_RANK: Record<TokenOrigin, number> = { post: 0, quote: 1, card: 2, image: 3 };
 
+/**
+ * Whether a post's **first** chip pays for its own check the moment the post scrolls into view —
+ * the only thing on X that spends without a click, so this is the whole credit rule (I-3).
+ *
+ * True only for the author's own words. A quoted post, a link preview and an image description
+ * are all tokens the author never typed: the parser strips `https://`, so a post that merely
+ * links to a dexscreener or birdeye token page has that contract in its preview, and checking it
+ * on sight spends five credits reading somebody else's page. Those chips mount UNCHECKED, say
+ * where the token came from, and spend when the reader opens them — the same deal the second
+ * chip has always had.
+ */
+export const checksOnSight = (picked: PickedToken): boolean => picked.origin === "post";
+
 const keyOf = (token: ChipToken): string =>
   token.kind === "address" ? `address:${token.address.address.toLowerCase()}` : `cashtag:${token.symbol.toUpperCase()}`;
 

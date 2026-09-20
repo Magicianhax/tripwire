@@ -30,17 +30,22 @@ test("X: quoted, previewed and second tokens are checked, placed and attributed"
   // 1. The outer post has no text element at all. The old anchor would have found the quoted
   // post's one; the chip must sit after the quote wrapper, still inside the outer article.
   const quoted = posts.nth(0).locator(".tw-chip");
-  await expect(quoted).toHaveAttribute("data-verdict", /CLEAR|CAUTION|BLOCK|UNCHECKED/, { timeout: 20000 });
   await expect(quoted).toContainText("Quoted post");
   expect(
     await page.evaluate(() => document.querySelector("#q1-wrapper")?.nextElementSibling?.tagName),
   ).toBe("TRIPWIRE-UI");
+  // I-3: the author never typed this token, so the chip does not check it on sight.
+  await expect(quoted).toHaveAttribute("data-verdict", "UNCHECKED");
+  await expect(quoted).toContainText("open to check");
+  expect(checked.some((c) => c === `chip:${WIF}`)).toBe(false);
 
-  // The card says whose words put this token on it, naming the quoted account, not the poster.
+  // Opening it is the spend, and the card says whose words put this token on it, naming the
+  // quoted account, not the poster.
   await quoted.click();
   const card = page.locator(".tw-card-author");
   await expect(card).toContainText("comes from the quoted post by @innerposter");
   await expect(card).toContainText("not from @quotefan's own words");
+  await expect.poll(() => checked.filter((c) => c.endsWith(WIF)), { timeout: 20000 }).toEqual([`panel:${WIF}`]);
   await page.keyboard.press("Escape");
 
   // 2. Two contracts in one body: two chips, and only the first one was paid for.
@@ -61,15 +66,25 @@ test("X: quoted, previewed and second tokens are checked, placed and attributed"
   await expect(second).not.toHaveAttribute("data-verdict", "LOADING");
   await page.keyboard.press("Escape");
 
-  // 3. A post whose own words name nothing: the contract comes from the link preview.
+  // 3. A post whose own words name nothing: the contract comes from the link preview. Scrolling
+  // past it buys nothing — a post that merely links to a token page is not a post about that
+  // token, and a full check on scroll-into-view would be five credits for someone else's page
+  // (I-3). The click is the spend, and it is the card's own call, not a second chip-mode one.
   const preview = posts.nth(2).locator(".tw-chip");
-  await expect(preview).toHaveAttribute("data-verdict", /CLEAR|CAUTION|BLOCK|UNCHECKED/, { timeout: 20000 });
   await expect(preview).toContainText("Link preview");
-  expect(checked).toContain(`chip:${USDT}`);
+  await expect(preview).toHaveAttribute("data-verdict", "UNCHECKED");
+  await expect(preview).toContainText("open to check");
+  expect(checked.some((c) => c === `chip:${USDT}`)).toBe(false);
+  await preview.click();
+  await expect(page.locator(".tw-pop")).toBeVisible();
+  await expect.poll(() => checked.filter((c) => c.endsWith(USDT)), { timeout: 20000 }).toEqual([`panel:${USDT}`]);
+  await expect(preview).not.toContainText("open to check", { timeout: 20000 });
+  await page.keyboard.press("Escape");
 
-  // Four chips on three posts, and none of them widened the page (non-negotiable #5).
+  // Four chips on three posts, and none of them widened the page (non-negotiable #5). The only
+  // thing this page checked without being clicked is the one contract an author actually typed.
   await expect(page.locator(".tw-chip")).toHaveCount(4);
-  expect(checked.filter((c) => c.startsWith("chip:")).sort()).toEqual([`chip:${BONK}`, `chip:${USDT}`, `chip:${WIF}`].sort());
+  expect(checked.filter((c) => c.startsWith("chip:"))).toEqual([`chip:${BONK}`]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
