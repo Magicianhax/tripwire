@@ -8,8 +8,9 @@
 export const TRIPWIRE_EXTENSION_ID = "hocgbioagcfmdpgcnfgnneopohjfkeoj";
 
 /**
- * The Nansen Meridian Buildathon's API-call allowance. The ledger page and the popup's counter
- * tile both print progress toward it, and a printed cap that drifts from the measured one is the
- * same defect as a printed price that drifts from the charged one.
+ * The first usage milestone the ledger counts toward, so "is this thing actually being used
+ * against live Nansen data?" has a number rather than an impression. A printed milestone that
+ * drifts from the measured count is the same defect as a printed price that drifts from the
+ * charged one, so the ledger reads both from here.
  */
-export const BUILDATHON_CALL_CAP = 1000;
+export const LEDGER_CALL_MILESTONE = 1000;

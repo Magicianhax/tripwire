@@ -8,7 +8,7 @@ related_targets: ["apps/web/app","apps/extension/entrypoints"]
 # Tripwire overlay UI + local pages (Operate)
 
 Scope: extension UI kit (chip, floating popover card, block screen, strip, dock, popup, author badges) and the local web pages (/, /rules, /ledger, /history).
-Audience/job: a trader mid-scroll on X or mid-swap on a DEX needs a verdict in one glance and the evidence one click away; Nansen buildathon judges must see it as a native extension of Nansen's product.
+Audience/job: a trader mid-scroll on X or mid-swap on a DEX needs a verdict in one glance and the evidence one click away; it must read as a native extension of Nansen's product, not a third-party skin over it.
 Constraints: overlays sit on dark third-party pages; never block on missing data; floating popovers (never inline expansion), wide cards (440px clamp).
 User feedback history: rejected black/white Hazard (inline panels, clamped cards); rejected deep navy/purple Glass Cockpit as AI slop; pinned: "match Nansen", proper logos for everything, icons instead of emojis, readable text colours.
 

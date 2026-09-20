@@ -3,8 +3,6 @@
 Nansen onchain intelligence at the moment of decision: on the post that shills a token and on
 the button that buys it.
 
-Built for the Nansen Meridian Buildathon.
-
 ## What it looks like
 
 Unmodified captures from the loaded extension on live public pages (details and source URLs in
@@ -16,8 +14,6 @@ the rotating gallery on the product page at `http://127.0.0.1:3000`.
 | **Uniswap — the block screen.** A real drawdown rule fired on GIZA/Base; the Swap button is covered until you type `I AM EXIT LIQUIDITY`. <br><img src="apps/web/public/showcase/exit-liquidity.jpg" alt="Tripwire's exit-liquidity block screen over Uniswap's swap button" width="440"> | **Hyperliquid — perp positioning.** Smart Money long/short split, funding and open interest normalized across five venues, liquidation bands. <br><img src="apps/web/public/showcase/hyperliquid.jpg" alt="Tripwire's perp positioning card above Hyperliquid's order form" width="440"> |
 | **X — author badge.** A Nansen entity match beside the profile name opens holdings, tags and realized PnL. <br><img src="apps/web/public/showcase/x-profile.jpg" alt="Tripwire's Nansen entity card beside a profile name on X" width="440"> | **Jumper — evidence beside the swap.** The token card sits next to the widget, sized to its anchor. <br><img src="apps/web/public/showcase/jumper.jpg" alt="Tripwire's token evidence card alongside Jumper's swap form" width="440"> |
 | **Polymarket — the wallet lens.** Any address on the page opens that wallet's Nansen, Hyperliquid and Polymarket record. <br><img src="apps/web/public/showcase/polymarket.jpg" alt="Tripwire's wallet card opened from Polymarket's leaderboard" width="440"> | **DEX Screener — the docked verdict.** A tier-2 venue gets the verdict chip and the same evidence card, never a block. <br><img src="apps/web/public/showcase/dexscreener.jpg" alt="Tripwire's token flow card beside a DEX Screener chart" width="440"> |
-
-Demo video: (link added at submission)
 
 ## What it does
 
@@ -184,11 +180,11 @@ scripts/                record-fixtures.mjs and the other fixture recorders
 assets/, apps/web/public/showcase/   brand source art and the product-page screenshots
 ```
 
-## Nansen usage and the 1,000-call ledger
+## Credits, caching and the ledger
 
 Every Nansen call is logged (endpoint, status, credits, latency) to the local `ledger` table
-and shown at `/ledger` — the buildathon's evidence of real, repeated Nansen integration, not
-a handful of demo calls.
+and shown at `/ledger`, so the cost of running Tripwire is a number you can read rather than a
+surprise on an invoice.
 
 Each endpoint wrapper in `apps/web/lib/nansen/endpoints.ts` sets its own cache TTL, so repeat
 checks on the same token/coin/market don't re-spend credits inside the window. Dated request

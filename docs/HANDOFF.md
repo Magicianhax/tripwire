@@ -62,12 +62,12 @@ Written 2026-09-18 and refreshed by the Codex takeover on 2026-09-19 so another 
 
 ## What Tripwire is
 
-A Chrome MV3 extension plus a local Next.js backend, built for the Nansen Meridian Buildathon (submissions close 2026-09-27). It puts Nansen onchain intelligence where trading decisions happen:
+A Chrome MV3 extension plus a local Next.js backend. It puts Nansen onchain intelligence where trading decisions happen:
 
 - **On X:** a verdict chip under any post that mentions a token; clicking it opens a floating card (Flow / Wallets / Risk) with who bought and sold since the post. Author badges sit next to the username (Nansen entity, and Hyperliquid/Polymarket for linked wallets).
 - **On venues:** Jupiter, pump.fun, Uniswap, Jumper, Hyperliquid, Polymarket get a verdict strip above the trade button, and a block screen over the button when the user's rules fire (typed phrase to override). Twelve more venues get a docked card.
 - **Anywhere:** the wallet lens marks addresses, ENS names and profile links on the page and opens a wallet card (holdings, PnL, Hyperliquid positions, Polymarket activity). Non-venue sites need a per-site permission granted from the popup.
-- **Local pages:** `/` status, `/rules` editor, `/ledger` (Nansen call count toward the buildathon's 1,000-call rule), `/history`.
+- **Local pages:** `/` product page and status, `/rules` editor, `/ledger` (Nansen calls, credits and their cost), `/history`.
 
 Product brief: `PRODUCT.md`. Architecture: `docs/ARCHITECTURE.md`. Decisions: `docs/DECISIONS.md` (ADR-0001..0012).
 
@@ -130,15 +130,14 @@ The per-round build reports and feature briefs that drove this work are kept out
 
 ## What is left
 
-1. **Done (2026-09-20):** the working tree was verified (859 tests, both builds) and committed; `master` is fast-forwarded to the branch. No remote is configured, so nothing can be pushed yet.
-2. Run a manual load-unpacked pass on live x.com, jup.ag, app.hyperliquid.xyz, and polymarket.com. Automated replay E2E is green, but venue DOMs are the volatile boundary.
-3. Re-run `impeccable detect apps/extension apps/web packages/core` against the regenerated `DESIGN.md` (ADR-0013); older counts were measured against the retired document.
-4. **Buildathon submission:** see `docs/SUBMISSION.md` — ledger at 616 calls (1,000 needed), demo shot list, X post draft, form requirements. Needs a GitHub remote.
-5. **Known gaps:** `.sol` names don't resolve (no working free resolver); the curated wallet list ships empty; Polymarket open positions lack size/price fields from Nansen; `profiler/labels` (100 credits) has no fixture; lightweight-charts is loaded eagerly (~52KB gzip); calibration thresholds rest on a single day's sample; `predictedFundings` is not surfaced.
+1. Run a manual load-unpacked pass on live x.com, jup.ag, app.hyperliquid.xyz and polymarket.com. Automated replay E2E is green, but venue DOMs are the volatile boundary and the only one that breaks without warning.
+2. Re-run `impeccable detect apps/extension apps/web packages/core` against the regenerated `DESIGN.md` (ADR-0013); older counts were measured against the retired document.
+3. **Chrome Web Store listing:** `CHROMEWEBSTORE.md` is the draft — icons and the transparent mark exist, store screenshots at 1280×800 still need selecting, and the loopback-host justification needs writing before any submission.
+4. **Known gaps:** `.sol` names don't resolve (no working free resolver); the curated wallet list ships empty; Polymarket open positions lack size/price fields from Nansen; `profiler/labels` (100 credits) has no fixture; lightweight-charts is loaded eagerly (~52KB gzip); calibration thresholds rest on a single day's sample; `predictedFundings` is not surfaced.
 
-## Latest verification (2026-09-20)
+## Latest verification (2026-09-21)
 
-- `pnpm verify`: typecheck clean; core 200, web 159, extension 436 tests passed.
+- `pnpm verify`: typecheck clean; core 314, web 355, extension 854 tests passed.
 - Sequential production builds and desktop replay E2E: 12 passed, 3 capture-only specs skipped.
 - Capture run: 3 passed; compact/expanded Jumper evidence and the Sui strip were regenerated and visually inspected alongside the existing set.
 - `git diff --check`: clean.
