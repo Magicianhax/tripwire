@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/lockup-dark.png">
-    <img src="assets/brand/lockup-light.png" alt="Tripwire, powered by Nansen" width="560">
-  </picture>
+  <img src="assets/brand/lockup.png" alt="Tripwire, powered by Nansen" width="560">
 </p>
 
 <p align="center">

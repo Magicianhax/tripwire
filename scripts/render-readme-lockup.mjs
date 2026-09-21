@@ -1,6 +1,8 @@
-// Renders the README header lockup ("Tripwire | Powered by Nansen") as two transparent PNGs, one
-// for GitHub's dark theme and one for light, using the bundled Sora/Inter fonts and the logos in
-// apps/web/public/logos. Re-run after changing either mark:
+// Renders the README header lockup ("Tripwire | Powered by Nansen") as one PNG on its own dark
+// brand panel, using the bundled Sora/Inter fonts and the logos in apps/web/public/logos. One
+// panel rather than light/dark variants: GitHub's <picture> follows the OS colour scheme, not the
+// GitHub theme, so a transparent dark-mode variant rendered white-on-white for anyone with a dark
+// OS and a light GitHub. Re-run after changing either mark:
 //   node scripts/render-readme-lockup.mjs
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -23,7 +25,7 @@ const html = (ink, muted, rule) => `<!doctype html><html><head><style>
 @font-face { font-family: Sora; font-weight: 600; src: url(${url(`${fonts}/sora/files/sora-latin-600-normal.woff2`)}); }
 @font-face { font-family: Inter; font-weight: 500; src: url(${url(`${fonts}/inter/files/inter-latin-500-normal.woff2`)}); }
 html, body { margin: 0; background: transparent; }
-.lockup { display: inline-flex; align-items: center; gap: 36px; padding: 24px 32px; }
+.lockup { display: inline-flex; align-items: center; gap: 40px; padding: 40px 56px; background: #06080B; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); }
 .brand { display: flex; align-items: center; gap: 16px; }
 .brand img { height: 64px; width: auto; display: block; }
 .word { font: 700 52px/1 Sora; letter-spacing: -0.02em; color: ${ink}; }
@@ -42,13 +44,8 @@ html, body { margin: 0; background: transparent; }
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ deviceScaleFactor: 2 });
-for (const [name, ink, muted, rule] of [
-  ["lockup-dark.png", "#FFFFFF", "rgba(255,255,255,0.6)", "rgba(255,255,255,0.18)"],
-  ["lockup-light.png", "#0B1016", "rgba(11,16,22,0.6)", "rgba(11,16,22,0.18)"],
-]) {
-  await page.setContent(html(ink, muted, rule), { waitUntil: "networkidle" });
-  await page.evaluate(() => document.fonts.ready);
-  await page.locator(".lockup").screenshot({ path: path.join(root, "assets/brand", name), omitBackground: true });
-  console.log(`assets/brand/${name}`);
-}
+await page.setContent(html("#FFFFFF", "rgba(255,255,255,0.6)", "rgba(255,255,255,0.16)"), { waitUntil: "networkidle" });
+await page.evaluate(() => document.fonts.ready);
+await page.locator(".lockup").screenshot({ path: path.join(root, "assets/brand/lockup.png"), omitBackground: true });
+console.log("assets/brand/lockup.png");
 await browser.close();
