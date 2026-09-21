@@ -1,3 +1,4 @@
+import { SELF_HOST_INSTALL } from "@/lib/db";
 import { getRules, recentChecks, recentOverrides, recentSettingsChanges } from "@/lib/store";
 import { Time } from "../_components/Time";
 import { VerdictChip } from "../_components/VerdictChip";
@@ -20,10 +21,10 @@ function RuleLines({ lines }: { lines: string[] }) {
 }
 
 export default function HistoryPage() {
-  const overrides = recentOverrides(50);
-  const changes = recentSettingsChanges(50);
-  const checks = recentChecks(50);
-  const currentRules = getRules().rules;
+  const overrides = recentOverrides(SELF_HOST_INSTALL, 50);
+  const changes = recentSettingsChanges(SELF_HOST_INSTALL, 50);
+  const checks = recentChecks(SELF_HOST_INSTALL, 50);
+  const currentRules = getRules(SELF_HOST_INSTALL).rules;
 
   return (
     <>

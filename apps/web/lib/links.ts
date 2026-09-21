@@ -33,29 +33,33 @@ function merge(user: WalletLink[], cur: WalletLink[]): WalletLink[] {
   return [...user, ...cur.filter((l) => !taken.has(`${l.handle}|${l.venue}`))];
 }
 
-export function listLinks(): WalletLink[] {
-  const rows = getDb().prepare("SELECT handle, venue, address, source, created_at FROM wallet_links WHERE source = 'user' ORDER BY created_at DESC").all() as Row[];
+export function listLinks(install: string): WalletLink[] {
+  const rows = getDb()
+    .prepare("SELECT handle, venue, address, source, created_at FROM wallet_links WHERE install = ? AND source = 'user' ORDER BY created_at DESC")
+    .all(install) as Row[];
   return merge(rows.map(fromRow), curated());
 }
 
-export function linksFor(handle: string): WalletLink[] {
+export function linksFor(install: string, handle: string): WalletLink[] {
   const h = normalizeHandle(handle);
-  const rows = getDb().prepare("SELECT handle, venue, address, source, created_at FROM wallet_links WHERE handle = ? AND source = 'user'").all(h) as Row[];
+  const rows = getDb()
+    .prepare("SELECT handle, venue, address, source, created_at FROM wallet_links WHERE install = ? AND handle = ? AND source = 'user'")
+    .all(install, h) as Row[];
   return merge(rows.map(fromRow), curated(h));
 }
 
 /** Inputs are already normalized by WalletLinkSchema. */
-export function upsertUserLink(link: { handle: string; venue: WalletVenue; address: string }): WalletLink {
+export function upsertUserLink(install: string, link: { handle: string; venue: WalletVenue; address: string }): WalletLink {
   const now = Date.now();
   getDb()
     .prepare(
-      "INSERT INTO wallet_links (handle, venue, address, source, created_at) VALUES (?, ?, ?, 'user', ?) ON CONFLICT(handle, venue) DO UPDATE SET address = excluded.address, source = 'user', created_at = excluded.created_at",
+      "INSERT INTO wallet_links (install, handle, venue, address, source, created_at) VALUES (?, ?, ?, ?, 'user', ?) ON CONFLICT(install, handle, venue) DO UPDATE SET address = excluded.address, source = 'user', created_at = excluded.created_at",
     )
-    .run(link.handle, link.venue, link.address, now);
+    .run(install, link.handle, link.venue, link.address, now);
   return { ...link, source: "user", sourceUrl: null, createdAt: now };
 }
 
-export function deleteUserLink(handle: string, venue: WalletVenue): boolean {
-  const res = getDb().prepare("DELETE FROM wallet_links WHERE handle = ? AND venue = ? AND source = 'user'").run(handle, venue);
+export function deleteUserLink(install: string, handle: string, venue: WalletVenue): boolean {
+  const res = getDb().prepare("DELETE FROM wallet_links WHERE install = ? AND handle = ? AND venue = ? AND source = 'user'").run(install, handle, venue);
   return Number(res.changes) > 0;
 }

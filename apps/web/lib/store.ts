@@ -37,8 +37,8 @@ export function dropUnknownSignalRules(rules: unknown[]): { rules: Rule[]; dropp
 
 /** The saved rules, validated: a corrupt or hand-edited row falls back to the balanced preset
  * rather than feeding malformed rules into evaluate(). */
-export function getRules(): RulesState {
-  const row = getDb().prepare("SELECT value FROM settings WHERE key = 'rules'").get() as { value: string } | undefined;
+export function getRules(install: string): RulesState {
+  const row = getDb().prepare("SELECT value FROM settings WHERE install = ? AND key = 'rules'").get(install) as { value: string } | undefined;
   if (!row) return DEFAULT_RULES();
   let raw: unknown;
   try {
@@ -64,33 +64,33 @@ export function _resetRuleMigrationWarning() {
   warnedAboutDroppedRules = false;
 }
 
-export function setRules(state: RulesState) {
-  getDb().prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('rules', ?)").run(JSON.stringify(state));
+export function setRules(install: string, state: RulesState) {
+  getDb().prepare("INSERT OR REPLACE INTO settings (install, key, value) VALUES (?, 'rules', ?)").run(install, JSON.stringify(state));
 }
 
-export function recordCheck(venue: string, target: Target, verdict: Verdict, signals: Signal[]) {
+export function recordCheck(install: string, venue: string, target: Target, verdict: Verdict, signals: Signal[]) {
   const compact = signals.map((s) => ({ id: s.id, value: s.value }));
   getDb()
-    .prepare("INSERT INTO checks (ts, venue, target, verdict, signals) VALUES (?, ?, ?, ?, ?)")
-    .run(Date.now(), venue, JSON.stringify(target), verdict, JSON.stringify(compact));
+    .prepare("INSERT INTO checks (install, ts, venue, target, verdict, signals) VALUES (?, ?, ?, ?, ?, ?)")
+    .run(install, Date.now(), venue, JSON.stringify(target), verdict, JSON.stringify(compact));
 }
 
-export function recordOverride(venue: string, target: Target, verdict: Verdict, ruleIds: string[]) {
+export function recordOverride(install: string, venue: string, target: Target, verdict: Verdict, ruleIds: string[]) {
   getDb()
-    .prepare("INSERT INTO overrides (ts, venue, target, verdict, rule_ids) VALUES (?, ?, ?, ?, ?)")
-    .run(Date.now(), venue, JSON.stringify(target), verdict, JSON.stringify(ruleIds));
+    .prepare("INSERT INTO overrides (install, ts, venue, target, verdict, rule_ids) VALUES (?, ?, ?, ?, ?, ?)")
+    .run(install, Date.now(), venue, JSON.stringify(target), verdict, JSON.stringify(ruleIds));
 }
 
 /** A rules change that lowered protection (weaker preset, or a block rule disabled, downgraded
  * or loosened). Logged next to overrides so /history shows every way a block was removed. */
-export function recordSettingsChange(fromPreset: RulesState["preset"], toPreset: RulesState["preset"], ruleIds: string[]) {
+export function recordSettingsChange(install: string, fromPreset: RulesState["preset"], toPreset: RulesState["preset"], ruleIds: string[]) {
   getDb()
-    .prepare("INSERT INTO settings_changes (ts, from_preset, to_preset, rule_ids) VALUES (?, ?, ?, ?)")
-    .run(Date.now(), fromPreset, toPreset, JSON.stringify(ruleIds));
+    .prepare("INSERT INTO settings_changes (install, ts, from_preset, to_preset, rule_ids) VALUES (?, ?, ?, ?, ?)")
+    .run(install, Date.now(), fromPreset, toPreset, JSON.stringify(ruleIds));
 }
 
-export function recentSettingsChanges(limit = 50) {
-  return getDb().prepare("SELECT ts, from_preset, to_preset, rule_ids FROM settings_changes ORDER BY id DESC LIMIT ?").all(limit) as {
+export function recentSettingsChanges(install: string, limit = 50) {
+  return getDb().prepare("SELECT ts, from_preset, to_preset, rule_ids FROM settings_changes WHERE install = ? ORDER BY id DESC LIMIT ?").all(install, limit) as {
     ts: number;
     from_preset: RulesState["preset"];
     to_preset: RulesState["preset"];
@@ -140,8 +140,8 @@ export function ledgerSummary(): LedgerSummary {
   };
 }
 
-export function recentChecks(limit = 50) {
-  return getDb().prepare("SELECT ts, venue, target, verdict, signals FROM checks ORDER BY id DESC LIMIT ?").all(limit) as {
+export function recentChecks(install: string, limit = 50) {
+  return getDb().prepare("SELECT ts, venue, target, verdict, signals FROM checks WHERE install = ? ORDER BY id DESC LIMIT ?").all(install, limit) as {
     ts: number;
     venue: string;
     target: string;
@@ -150,8 +150,8 @@ export function recentChecks(limit = 50) {
   }[];
 }
 
-export function recentOverrides(limit = 50) {
-  return getDb().prepare("SELECT ts, venue, target, verdict, rule_ids FROM overrides ORDER BY id DESC LIMIT ?").all(limit) as {
+export function recentOverrides(install: string, limit = 50) {
+  return getDb().prepare("SELECT ts, venue, target, verdict, rule_ids FROM overrides WHERE install = ? ORDER BY id DESC LIMIT ?").all(install, limit) as {
     ts: number;
     venue: string;
     target: string;

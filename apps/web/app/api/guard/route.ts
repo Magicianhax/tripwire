@@ -1,5 +1,5 @@
 import { evaluate, GuardBodySchema, type Signal, type Target, type ViewTimeframe } from "@tripwire/core";
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { uncheckedHeadline } from "@/lib/headline";
 import { toHits } from "@/lib/hits";
 import { buildPerpIntel } from "@/lib/intel/perp";
@@ -23,12 +23,12 @@ function buildIntel(
   return buildPredictionIntel(target, mode);
 }
 
-export const POST = route(GuardBodySchema, async (_req, body) => {
+export const POST = installRoute(GuardBodySchema, async (_req, body, install) => {
   const { target, venue, mode, timeframe } = body;
   const { signals, panel, headline } = await buildIntel(target, mode, timeframe);
-  const { preset, rules } = getRules();
+  const { preset, rules } = getRules(install);
   const { verdict, hits, unavailable } = evaluate(rules, signals, target.kind);
-  recordCheck(venue, target, verdict, signals);
+  recordCheck(install, venue, target, verdict, signals);
   // Why an UNCHECKED target couldn't be checked ("Nansen credit cap reached", "Pick a market").
   const reason = uncheckedHeadline(verdict, panel.errors, headline ?? null);
   return { target, verdict, headline: reason, hits: toHits(hits), unavailable, signals, panel, rulesPreset: preset };

@@ -1,12 +1,12 @@
 import { OverrideRequestSchema } from "@tripwire/core";
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { recordOverride } from "@/lib/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const OPTIONS = preflight;
 
-export const POST = route(OverrideRequestSchema, async (_req, body) => {
-  recordOverride(body.venue, body.target, body.verdict, body.ruleIds);
+export const POST = installRoute(OverrideRequestSchema, async (_req, body, install) => {
+  recordOverride(install, body.venue, body.target, body.verdict, body.ruleIds);
   return { ok: true };
 });

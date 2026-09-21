@@ -325,9 +325,9 @@ export async function polymarketProfile(addressInput: string): Promise<Omit<Poly
 
 const polymarketBadge = async (link: WalletLink): Promise<PolymarketBadge> => ({ link: linkRef(link), ...(await polymarketProfile(link.address)) });
 
-export async function buildAuthorBadges(input: { handle: string; displayName: string }): Promise<AuthorBadges> {
+export async function buildAuthorBadges(install: string, input: { handle: string; displayName: string }): Promise<AuthorBadges> {
   const out: AuthorBadges = { handle: normalizeHandle(input.handle), replay: isReplay(), errors: [] };
-  const links = linksFor(input.handle);
+  const links = linksFor(install, input.handle);
   const hl = links.find((l) => l.venue === "hyperliquid");
   const pm = links.find((l) => l.venue === "polymarket");
 

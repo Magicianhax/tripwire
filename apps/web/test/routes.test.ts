@@ -270,19 +270,19 @@ describe("/api/rules", () => {
 
   it("logs a weaker preset or loosened block rule as a settings change, but not a stronger one", async () => {
     await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "paranoid" } }));
-    const before = recentSettingsChanges().length;
+    const before = recentSettingsChanges("self").length;
     await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "degen" } }));
-    const afterDowngrade = recentSettingsChanges();
+    const afterDowngrade = recentSettingsChanges("self");
     expect(afterDowngrade.length).toBe(before + 1);
     expect(afterDowngrade[0]).toMatchObject({ from_preset: "paranoid", to_preset: "degen" });
     expect(JSON.parse(afterDowngrade[0]!.rule_ids)).toContain("spot-distribution");
 
     await rulesPUT(req("/api/rules", { method: "PUT", body: { preset: "balanced" } }));
-    expect(recentSettingsChanges().length).toBe(before + 1);
+    expect(recentSettingsChanges("self").length).toBe(before + 1);
 
     const looser = PRESETS.balanced.map((r) => (r.id === "spot-exit-deep" ? { ...r, threshold: -90 } : r));
     await rulesPUT(req("/api/rules", { method: "PUT", body: { rules: looser } }));
-    const afterLoosen = recentSettingsChanges();
+    const afterLoosen = recentSettingsChanges("self");
     expect(afterLoosen.length).toBe(before + 2);
     expect(JSON.parse(afterLoosen[0]!.rule_ids)).toEqual(["spot-exit-deep"]);
   });
@@ -331,7 +331,7 @@ describe("/api/override", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.ok).toBe(true);
-    const overrides = recentOverrides(5);
+    const overrides = recentOverrides("self", 5);
     expect(overrides[0]?.verdict).toBe("TRIPWIRE");
     expect(JSON.parse(overrides[0]!.rule_ids)).toEqual(["spot-exit"]);
   });

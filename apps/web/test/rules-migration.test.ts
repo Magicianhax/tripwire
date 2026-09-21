@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { PRESETS, GuardBodySchema, PostIntelRequestSchema, type Rule } from "@tripwire/core";
-import { getDb, resetDb } from "@/lib/db";
+import { getDb, resetDb, SELF_HOST_INSTALL } from "@/lib/db";
 import { _resetRuleMigrationWarning, dropUnknownSignalRules, getRules, setRules } from "@/lib/store";
 
 beforeAll(() => {
@@ -37,12 +37,12 @@ describe("stored rules that name a removed signal", () => {
   it("a rule set that still has something usable loads, minus the dead rules, and logs once", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     try {
-      getDb().prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('rules', ?)").run(JSON.stringify({ preset: "custom", rules: LEGACY }));
-      const first = getRules();
+      getDb().prepare("INSERT OR REPLACE INTO settings (install, key, value) VALUES ('self', 'rules', ?)").run(JSON.stringify({ preset: "custom", rules: LEGACY }));
+      const first = getRules(SELF_HOST_INSTALL);
       expect(first.preset).toBe("custom");
       expect(first.rules.map((r) => r.signal)).toEqual(["sm_opposite_side_pct"]);
-      getRules();
-      getRules();
+      getRules(SELF_HOST_INSTALL);
+      getRules(SELF_HOST_INSTALL);
       expect(warn).toHaveBeenCalledTimes(1);
       expect(String(warn.mock.calls[0]?.[0])).toMatch(/dropped 3 saved rule/);
     } finally {
@@ -54,9 +54,9 @@ describe("stored rules that name a removed signal", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     try {
       getDb()
-        .prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('rules', ?)")
+        .prepare("INSERT OR REPLACE INTO settings (install, key, value) VALUES ('self', 'rules', ?)")
         .run(JSON.stringify({ preset: "custom", rules: LEGACY.filter((r) => r.kind === "spot") }));
-      const state = getRules();
+      const state = getRules(SELF_HOST_INSTALL);
       expect(state.preset).toBe("balanced");
       expect(state.rules).toEqual(PRESETS.balanced);
     } finally {
@@ -65,13 +65,13 @@ describe("stored rules that name a removed signal", () => {
   });
 
   it("a rule set saved by this build round-trips untouched", () => {
-    setRules({ preset: "paranoid", rules: PRESETS.paranoid });
-    expect(getRules().rules.map((r: Rule) => r.id)).toEqual(PRESETS.paranoid.map((r) => r.id));
+    setRules(SELF_HOST_INSTALL, { preset: "paranoid", rules: PRESETS.paranoid });
+    expect(getRules(SELF_HOST_INSTALL).rules.map((r: Rule) => r.id)).toEqual(PRESETS.paranoid.map((r) => r.id));
   });
 
   it("unreadable JSON still falls back rather than throwing", () => {
-    getDb().prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('rules', ?)").run("{not json");
-    expect(getRules().preset).toBe("balanced");
+    getDb().prepare("INSERT OR REPLACE INTO settings (install, key, value) VALUES ('self', 'rules', ?)").run("{not json");
+    expect(getRules(SELF_HOST_INSTALL).preset).toBe("balanced");
   });
 });
 
