@@ -60,7 +60,19 @@ account; it never signs, sends or intercepts a transaction, and never connects t
 the Nansen API key never reaches the extension; and it never talks to a third party from your
 browser — every request, including token logos, goes through the backend on your own machine.
 
-## Quick start (under 10 minutes)
+## Install
+
+Load the extension and you are done: it talks to the hosted backend at
+`https://tripwire.magician.wtf`, which holds the Nansen key and pays for the credits. No server,
+no key, no settings. Each install gets a generous free daily allowance; past it, the popup offers
+to use your own Nansen key, which stays in your browser and is never stored by Tripwire.
+
+Running the hosted backend yourself: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+
+## Self-host (under 10 minutes)
+
+Everything runs on your machine with your own key. In the popup, open settings and choose
+"Advanced: self-hosted backend".
 
 **Prerequisites:** Node >= 22.13, pnpm >= 9, Chrome, a Nansen API key
 (https://app.nansen.ai/api).
@@ -290,7 +302,11 @@ every `.env*.local`. The durable decisions live in `docs/DECISIONS.md` and the c
 
 - **Key handling:** `NANSEN_API_KEY` is read only by `apps/web/lib/nansen/key.ts`, used only
   as the `apikey` header to `api.nansen.ai`, and never sent to the extension, logged, or
-  written to a fixture.
+  written to a fixture. A key a user supplies for themselves stays in their browser, is sent per
+  request, and is never stored by the backend (ADR-0014).
+- **Hosted identity:** on the hosted backend each install presents a random token; rules,
+  history and wallet links are scoped to it and invisible to every other install. There are no
+  accounts. The shared response cache holds Nansen market data only, never anything personal.
 - **Origin allowlist:** `apps/web/lib/origin.ts` only serves the local pages
   (`http://127.0.0.1:3000`, `http://localhost:3000`) and the Tripwire extension itself. The
   extension ID is pinned by the public `key` in `apps/extension/wxt.config.ts`

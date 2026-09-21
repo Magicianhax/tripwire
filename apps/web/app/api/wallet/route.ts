@@ -1,9 +1,9 @@
 import { WalletQuerySchema } from "@tripwire/core";
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { buildWalletLens } from "@/lib/intel/wallet";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const OPTIONS = preflight;
 
-export const POST = route(WalletQuerySchema, async (_req, body) => buildWalletLens(body));
+export const POST = installRoute(WalletQuerySchema, async (_req, body) => buildWalletLens(body));

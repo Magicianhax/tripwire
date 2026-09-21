@@ -1,5 +1,5 @@
 import { depthCost, DepthRequestSchema, VERDICT_TIMEFRAME, type DepthSection, type Target } from "@tripwire/core";
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import {
   perpChartSection,
   perpMarketSection,
@@ -106,4 +106,4 @@ async function build(target: Target, sections: DepthSection[], timeframe: string
   return out;
 }
 
-export const POST = route(DepthRequestSchema, async (_req, body) => build(body.target, body.sections, body.timeframe ?? VERDICT_TIMEFRAME));
+export const POST = installRoute(DepthRequestSchema, async (_req, body) => build(body.target, body.sections, body.timeframe ?? VERDICT_TIMEFRAME));

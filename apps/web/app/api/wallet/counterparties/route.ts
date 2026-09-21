@@ -1,4 +1,4 @@
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { buildWalletCounterparties } from "@/lib/intel/wallet";
 import { WalletCounterpartiesRequestSchema } from "../schemas";
 
@@ -12,4 +12,4 @@ export const OPTIONS = preflight;
  * The second five-credit call a wallet card can make. It mirrors `/api/wallet/labels` exactly:
  * a button that prints the price, nothing on card open, nothing on a view change.
  */
-export const POST = route(WalletCounterpartiesRequestSchema, async (_req, body) => buildWalletCounterparties(body.address));
+export const POST = installRoute(WalletCounterpartiesRequestSchema, async (_req, body) => buildWalletCounterparties(body.address));

@@ -1,5 +1,5 @@
 import { PerpWinRateRequestSchema } from "@tripwire/core";
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { buildPerpWinRate } from "@/lib/intel/perp";
 
 export const runtime = "nodejs";
@@ -13,4 +13,4 @@ export const OPTIONS = preflight;
  * An explicit click on one row, never a hover: the expanded card lists twelve traders, and a
  * hover trigger is twelve credits from one careless mouse pass across the table.
  */
-export const POST = route(PerpWinRateRequestSchema, async (_req, body) => buildPerpWinRate(body.address));
+export const POST = installRoute(PerpWinRateRequestSchema, async (_req, body) => buildPerpWinRate(body.address));

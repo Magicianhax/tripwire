@@ -1,4 +1,4 @@
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { buildWalletOrigin } from "@/lib/intel/wallet";
 import { WalletOriginRequestSchema } from "../schemas";
 
@@ -15,4 +15,4 @@ export const OPTIONS = preflight;
  *
  * Neither answer feeds a signal or a block, and `relation` is carried through verbatim.
  */
-export const POST = route(WalletOriginRequestSchema, async (_req, body) => buildWalletOrigin(body.address, body.chains));
+export const POST = installRoute(WalletOriginRequestSchema, async (_req, body) => buildWalletOrigin(body.address, body.chains));

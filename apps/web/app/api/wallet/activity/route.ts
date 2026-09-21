@@ -1,4 +1,4 @@
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { buildWalletActivity } from "@/lib/intel/wallet";
 import { WalletActivityRequestSchema } from "../schemas";
 
@@ -13,4 +13,4 @@ export const OPTIONS = preflight;
  * price, and only a press reaches this route — switching views is free, because the view
  * switcher is a `radiogroup` and a spend per arrow key is the same trap as a spend per hover.
  */
-export const POST = route(WalletActivityRequestSchema, async (_req, body) => buildWalletActivity(body.address));
+export const POST = installRoute(WalletActivityRequestSchema, async (_req, body) => buildWalletActivity(body.address));

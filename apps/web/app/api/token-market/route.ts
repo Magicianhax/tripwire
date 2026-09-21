@@ -1,4 +1,4 @@
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { enrichMarkets, MarketEnrichRequestSchema } from "@/lib/intel/markets";
 
 export const runtime = "nodejs";
@@ -14,4 +14,4 @@ export const OPTIONS = preflight;
  * what it costs, and the same count the button printed is returned in `credits` so the card's
  * footer can reconcile against it.
  */
-export const POST = route(MarketEnrichRequestSchema, async (_req, body) => enrichMarkets(body));
+export const POST = installRoute(MarketEnrichRequestSchema, async (_req, body) => enrichMarkets(body));

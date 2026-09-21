@@ -1,5 +1,5 @@
 import { PerpLadderRequestSchema } from "@tripwire/core";
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { perpCohortLadderSection } from "@/lib/intel/depth";
 
 export const runtime = "nodejs";
@@ -14,4 +14,4 @@ export const OPTIONS = preflight;
  * and only a press reaches this route — the same rule as the wallet card's lazy views, and the
  * reason §5's base-load decision does not block this: nothing here stacks on a card open.
  */
-export const POST = route(PerpLadderRequestSchema, async (_req, body) => perpCohortLadderSection(body.coin, body.cohort));
+export const POST = installRoute(PerpLadderRequestSchema, async (_req, body) => perpCohortLadderSection(body.coin, body.cohort));

@@ -1,5 +1,5 @@
 import { WalletDefiRequestSchema } from "@tripwire/core";
-import { preflight, route } from "@/lib/http";
+import { installRoute, preflight } from "@/lib/http";
 import { buildWalletDefi } from "@/lib/intel/wallet";
 
 export const runtime = "nodejs";
@@ -13,4 +13,4 @@ export const OPTIONS = preflight;
  * price, and only a press reaches this route — the Segmented control that switches views must
  * not spend, or an arrow-key pass across three segments would buy three answers.
  */
-export const POST = route(WalletDefiRequestSchema, async (_req, body) => buildWalletDefi(body.address, body.chain));
+export const POST = installRoute(WalletDefiRequestSchema, async (_req, body) => buildWalletDefi(body.address, body.chain));

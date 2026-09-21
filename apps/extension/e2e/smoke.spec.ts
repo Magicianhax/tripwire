@@ -186,7 +186,8 @@ test("@smoke extension loads with the pinned ID and its popup reaches the backen
   const popup = await context.newPage();
   await popup.goto(`chrome-extension://${extensionId}/popup.html`);
   // health() -> runtime.sendMessage -> background bridge -> backend -> sendResponse (A3).
-  await expect(popup.locator(".tw-status")).toHaveText(/Connected ·|No Nansen key/);
+  // The e2e backend runs in replay, which the status line calls "Sample data" (popup/status.ts).
+  await expect(popup.locator(".tw-status")).toHaveText(/^(Connected|Sample data|Data service needs setup)$/);
   await expect(popup.locator(".tw-status")).not.toHaveText(/offline/i);
   // The redesign's own promise: a fixed box, whatever tab is showing (no page scroll).
   for (const tab of ["Protection", "Sites", "Wallets"]) {
