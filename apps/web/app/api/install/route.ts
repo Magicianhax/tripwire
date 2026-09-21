@@ -7,15 +7,12 @@ export const dynamic = "force-dynamic";
 export const OPTIONS = preflight;
 
 /**
- * The client address for per-IP mint limits. Behind Fly's proxy the socket peer is the proxy, so
- * the real address is the first hop of `Fly-Client-IP` / `X-Forwarded-For`. Only trusted when
- * hosted: a self-hosted backend never mints and never needs it.
+ * The client address for per-IP mint limits: `Fly-Client-IP` only, which Fly's edge sets from the
+ * real connection. `X-Forwarded-For` is deliberately not consulted — its leftmost entry is
+ * whatever the client wrote, so trusting it would let one script claim a new address per mint.
  */
 function clientIp(headers: Headers): string | null {
-  const fly = headers.get("fly-client-ip")?.trim();
-  if (fly) return fly;
-  const xff = headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  return xff || null;
+  return headers.get("fly-client-ip")?.trim() || null;
 }
 
 /**

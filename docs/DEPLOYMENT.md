@@ -37,7 +37,10 @@ Set as secrets (`fly secrets set`, never committed):
 | `TRIPWIRE_IP_SALT` | random string salting the per-IP mint counter; the backend refuses to mint without it |
 | `TRIPWIRE_OWNER_TOKEN` | random string that opens `/ledger`; unset means nobody can |
 
-Optional: `TRIPWIRE_MINTS_PER_IP` (default 5/day), `TRIPWIRE_MINTS_PER_DAY` (default 2000/day).
+Optional: `TRIPWIRE_MINTS_PER_IP` (default 2/day), `TRIPWIRE_MINTS_PER_DAY` (default 2000/day).
+The per-IP cap reads only `Fly-Client-IP`, which Fly's edge sets; a hosted mint with no client
+address is refused. With the defaults one address can use at most 2 × 3000 = 6000 of the 20000
+global credits in a day.
 
 ## First deploy
 

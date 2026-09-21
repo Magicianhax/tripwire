@@ -106,6 +106,11 @@ describe("mintInstall", () => {
     expect(() => mintInstall("1.1.1.1")).toThrow(/TRIPWIRE_IP_SALT/);
   });
 
+  it("refuses a hosted mint with no client address instead of skipping the per-IP cap", () => {
+    process.env.TRIPWIRE_HOSTED = "1";
+    expect(() => mintInstall(null)).toThrow(MintRefused);
+  });
+
   it("issues unguessable, distinct tokens", () => {
     const a = mintInstall(null);
     const b = mintInstall(null);

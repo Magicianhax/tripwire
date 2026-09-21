@@ -16,8 +16,12 @@ import { getDb, SELF_HOST_INSTALL } from "./db";
 
 export const isHosted = () => process.env.TRIPWIRE_HOSTED === "1";
 
-/** How many installs one IP may mint per UTC day before we stop believing it is a person. */
-const mintsPerIpPerDay = () => Number(process.env.TRIPWIRE_MINTS_PER_IP ?? 5);
+/**
+ * How many installs one IP may mint per UTC day. An install mints once, so 2 covers a person
+ * reinstalling or a second browser; it also means one address can hold at most 2 × the
+ * per-install allowance of the global budget in a day, rather than most of it.
+ */
+const mintsPerIpPerDay = () => Number(process.env.TRIPWIRE_MINTS_PER_IP ?? 2);
 /** The ceiling on new installs per UTC day, whatever their IPs. */
 const mintsPerDay = () => Number(process.env.TRIPWIRE_MINTS_PER_DAY ?? 2000);
 
@@ -58,6 +62,9 @@ export function mintInstall(ip: string | null, now = Date.now()): string {
   const total = db.prepare("SELECT COUNT(*) AS n FROM installs WHERE created_at >= ?").get(since) as { n: number };
   if (total.n >= mintsPerDay()) throw new MintRefused("global");
 
+  // Hosted, an address we cannot determine is refused rather than waved past the per-IP cap:
+  // skipping the counter would make "no address" the easiest way to mint without limit.
+  if (!ip && isHosted()) throw new MintRefused("ip");
   const bucket = ip ? ipBucket(ip) : null;
   if (bucket) {
     const mine = db.prepare("SELECT COUNT(*) AS n FROM install_mints WHERE ip_bucket = ? AND day = ?").get(bucket, since) as { n: number };
