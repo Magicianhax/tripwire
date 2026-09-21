@@ -7,11 +7,15 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Magicianhax/tripwire/releases/latest/download/tripwire-extension.zip"><b>Download for Chrome</b></a>
-  &nbsp;·&nbsp;
+  <a href="https://github.com/Magicianhax/tripwire/releases/latest/download/tripwire-extension.zip"><img src="assets/brand/download-chrome.png" alt="Download for Chrome" width="300"></a>
+</p>
+
+<p align="center">
   <a href="https://tripwire.magician.wtf">Website</a>
   &nbsp;·&nbsp;
   <a href="docs/REFERENCE.md">Docs</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/Magicianhax/tripwire/releases">Releases</a>
 </p>
 
 <br>

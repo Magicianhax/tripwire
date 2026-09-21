@@ -19,6 +19,9 @@ const url = (p) => `data:${MIME[path.extname(p)]};base64,${readFileSync(path.joi
 const fonts = "apps/web/node_modules/@fontsource";
 const tripwire = url("apps/web/public/logos/tripwire.png");
 const nansen = url("apps/web/public/logos/nansen.svg");
+// Drawn from the Chrome mark's geometry (three 120° segments cut by lines tangent to the centre
+// circle); identifies the browser the download is for, nothing more.
+const chrome = url("assets/brand/chrome.svg");
 
 const html = (ink, muted, rule) => `<!doctype html><html><head><style>
 @font-face { font-family: Sora; font-weight: 700; src: url(${url(`${fonts}/sora/files/sora-latin-700-normal.woff2`)}); }
@@ -48,4 +51,16 @@ await page.setContent(html("#FFFFFF", "rgba(255,255,255,0.6)", "rgba(255,255,255
 await page.evaluate(() => document.fonts.ready);
 await page.locator(".lockup").screenshot({ path: path.join(root, "assets/brand/lockup.png"), omitBackground: true });
 console.log("assets/brand/lockup.png");
+
+// The README's download button: mint like the product page's primary action, with the Chrome mark.
+await page.setContent(`<!doctype html><html><head><style>
+@font-face { font-family: Sora; font-weight: 600; src: url(${url(`${fonts}/sora/files/sora-latin-600-normal.woff2`)}); }
+html, body { margin: 0; background: transparent; }
+.button { display: inline-flex; align-items: center; gap: 14px; padding: 18px 30px 18px 22px; border-radius: 16px; background: #00FFA7; }
+.button img { width: 34px; height: 34px; display: block; filter: drop-shadow(0 0 0.5px rgba(0,0,0,0.25)); }
+.button span { font: 600 26px/1 Sora; letter-spacing: -0.01em; color: #06080B; }
+</style></head><body><div class="button"><img src="${chrome}" alt=""><span>Download for Chrome</span></div></body></html>`, { waitUntil: "networkidle" });
+await page.evaluate(() => document.fonts.ready);
+await page.locator(".button").screenshot({ path: path.join(root, "assets/brand/download-chrome.png"), omitBackground: true });
+console.log("assets/brand/download-chrome.png");
 await browser.close();
