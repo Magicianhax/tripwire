@@ -1,8 +1,9 @@
 <p align="center">
-  <img src="apps/web/public/logos/tripwire.png" alt="Tripwire" width="88">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/lockup-dark.png">
+    <img src="assets/brand/lockup-light.png" alt="Tripwire, powered by Nansen" width="560">
+  </picture>
 </p>
-
-<h1 align="center">Tripwire</h1>
 
 <p align="center">
   Onchain data on the post that shills a token, and on the button that buys it.
@@ -14,11 +15,6 @@
   <a href="https://tripwire.magician.wtf">Website</a>
   &nbsp;·&nbsp;
   <a href="docs/REFERENCE.md">Docs</a>
-</p>
-
-<p align="center">
-  <sub>Powered by</sub><br>
-  <a href="https://www.nansen.ai"><img src="apps/web/public/logos/nansen.svg" alt="Nansen" height="22"></a>
 </p>
 
 <br>
