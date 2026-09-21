@@ -3,9 +3,9 @@ import { hostAllowed } from "./lib/origin";
 
 /**
  * DNS-rebinding defence for every page and API route: a hostile site that re-points its own
- * domain at 127.0.0.1 would send its own Host header, so anything other than
- * 127.0.0.1 / localhost on the backend port is refused before routing. (Next 16's `proxy`
- * file convention, formerly `middleware`.)
+ * domain at our address would send its own Host header, so anything other than the host we
+ * serve (127.0.0.1 / localhost on the backend port, or `TRIPWIRE_HOSTED_HOST` when hosted) is
+ * refused before routing. (Next 16's `proxy` file convention, formerly `middleware`.)
  */
 export function proxy(request: NextRequest) {
   // A marketing deployment is not a shared backend. Deny private routes even when a

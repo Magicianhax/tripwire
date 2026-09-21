@@ -100,3 +100,31 @@ describe("requestAllowed", () => {
     expect(requestAllowed(headers({ host: "rebind.evil.example:3000", origin: PINNED }))).toBe(false);
   });
 });
+
+describe("hosted host and origin", () => {
+  afterEach(() => {
+    delete process.env.TRIPWIRE_HOSTED_HOST;
+  });
+
+  it("answers only the public host when hosted, and stops answering loopback", async () => {
+    const { hostAllowed, originAllowed } = await import("@/lib/origin");
+    process.env.TRIPWIRE_HOSTED_HOST = "tripwire.magician.wtf";
+    expect(hostAllowed("tripwire.magician.wtf")).toBe(true);
+    expect(hostAllowed("tripwire.magician.wtf:443")).toBe(true);
+    expect(hostAllowed("TRIPWIRE.magician.wtf")).toBe(true);
+    expect(hostAllowed("127.0.0.1:3000")).toBe(false);
+    expect(hostAllowed("evil.example")).toBe(false);
+    expect(hostAllowed("tripwire.magician.wtf.evil.example")).toBe(false);
+    expect(originAllowed("https://tripwire.magician.wtf")).toBe(true);
+    expect(originAllowed("http://tripwire.magician.wtf")).toBe(false);
+    expect(originAllowed("http://127.0.0.1:3000")).toBe(false);
+    expect(originAllowed("https://evil.example")).toBe(false);
+  });
+
+  it("keeps the pinned extension origin in both modes", async () => {
+    const { extensionOrigin, originAllowed } = await import("@/lib/origin");
+    expect(originAllowed(extensionOrigin())).toBe(true);
+    process.env.TRIPWIRE_HOSTED_HOST = "tripwire.magician.wtf";
+    expect(originAllowed(extensionOrigin())).toBe(true);
+  });
+});

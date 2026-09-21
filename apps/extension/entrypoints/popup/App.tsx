@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { presetChangeNeedsConfirm } from "@tripwire/core";
 import { browser } from "wxt/browser";
 import { getRules, health, setPreset } from "../../lib/api";
+import { BACKEND_URL_RE, DEFAULT_BACKEND_URL } from "../../lib/backend";
 import type { KeySource, RulesResponse } from "../../lib/api-types";
 import { listEnabledSites, removeSite, requestSite } from "../../lib/permissions";
 import { forgetWallets, readRecent, type RecentWallet } from "../../lib/recent-wallets";
@@ -14,8 +15,6 @@ import { SitesTab } from "./SitesTab";
 import { popupStatus } from "./status";
 import { WalletsTab } from "./WalletsTab";
 
-const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
-const BACKEND_URL_RE = /^http:\/\/(127\.0\.0\.1|localhost):\d{1,5}$/;
 
 /** Said when the active tab's content script has nothing mounted — or is not there at all.
  * Both are the same fact for the user, and neither is worth two different sentences. */
@@ -38,6 +37,10 @@ const hostOf = (origin: string) => {
  */
 export default function App() {
   const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource; replay: boolean } | { ok: false } | null>(null);
+  const [allowance, setAllowance] = useState<{ used: number; cap: number } | null>(null);
+  const [userKey, setUserKey] = useState("");
+  const [userKeySaved, setUserKeySaved] = useState(false);
+  const [installToken, setInstallToken] = useState<string | null>(null);
   // The server-confirmed rules: what "weaker" is measured against. null until loaded.
   const [rules, setRulesState] = useState<RulesResponse | null>(null);
   const [preset, setPresetState] = useState<Preset | "custom" | null>(null);
@@ -57,11 +60,18 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const stored = (await browser.storage.local.get("backendUrl")) as { backendUrl?: string };
-      const url = stored.backendUrl && stored.backendUrl.length > 0 ? stored.backendUrl : DEFAULT_BACKEND_URL;
+      const stored = (await browser.storage.local.get(["backendUrl", "nansenKey", "installTokens"])) as {
+        backendUrl?: string;
+        nansenKey?: string;
+        installTokens?: Record<string, string>;
+      };
+      const url = stored.backendUrl && BACKEND_URL_RE.test(stored.backendUrl) ? stored.backendUrl : DEFAULT_BACKEND_URL;
       if (cancelled) return;
       setBackendUrl(url);
       setBackendUrlDraft(url);
+      setUserKey(stored.nansenKey ?? "");
+      setInstallToken(stored.installTokens?.[url] ?? null);
+      setUserKeySaved(Boolean(stored.nansenKey));
     })();
     return () => {
       cancelled = true;
@@ -74,6 +84,19 @@ export default function App() {
       const result = await health();
       if (cancelled) return;
       setHealthState(result.ok ? { ok: true, keySource: result.data.keySource, replay: result.data.replay } : { ok: false });
+      // The health call is what mints the install token on first run, so the one read at open
+      // can predate it; read it again now the call has settled.
+      const { backendUrl: storedUrl, installTokens } = (await browser.storage.local.get(["backendUrl", "installTokens"])) as {
+        backendUrl?: string;
+        installTokens?: Record<string, string>;
+      };
+      if (cancelled) return;
+      const url = storedUrl && BACKEND_URL_RE.test(storedUrl) ? storedUrl : DEFAULT_BACKEND_URL;
+      setInstallToken(installTokens?.[url] ?? null);
+      // An older backend may not report an allowance; show nothing rather than a wrong number.
+      if (result.ok && Number.isFinite(result.data.creditsToday) && Number.isFinite(result.data.cap)) {
+        setAllowance({ used: result.data.creditsToday, cap: result.data.cap });
+      }
     })();
     (async () => {
       const result = await getRules();
@@ -148,6 +171,25 @@ export default function App() {
     await browser.storage.local.set({ backendUrl: next });
   }
 
+  async function resetBackendUrl() {
+    setBackendUrlError("");
+    setBackendUrl(DEFAULT_BACKEND_URL);
+    setBackendUrlDraft(DEFAULT_BACKEND_URL);
+    await browser.storage.local.remove("backendUrl");
+  }
+
+  /** The user's own key stays in this browser profile and is sent per request; never stored by
+   * the backend. An empty field removes it. */
+  async function saveUserKey() {
+    const key = userKey.trim();
+    if (key) await browser.storage.local.set({ nansenKey: key });
+    else await browser.storage.local.remove("nansenKey");
+    setUserKeySaved(Boolean(key));
+  }
+
+  const limitReached = !userKeySaved && allowance !== null && allowance.cap > 0 && allowance.used >= allowance.cap;
+  const selfHosted = backendUrl !== DEFAULT_BACKEND_URL;
+
   /**
    * "Show me where it is" — the answer for a user who cannot find the verdict on a dense page.
    * Asks the active tab's content scripts to light whatever they have mounted: the venue strip,
@@ -190,11 +232,57 @@ export default function App() {
     <div className="tw-popup">
       <PopupHead status={popupStatus(healthState)} settingsOpen={settingsOpen} onToggleSettings={() => setSettingsOpen((open) => !open)} />
 
+      {limitReached && !settingsOpen ? (
+        <div className="tw-limit" role="status">
+          <p>You've used today's free checks. They reset at midnight UTC.</p>
+          <button type="button" className="tw-link-button" onClick={() => setSettingsOpen(true)}>
+            Use your own Nansen key
+          </button>
+        </div>
+      ) : null}
+
       {settingsOpen ? (
         <div className="tw-settings">
-          <label htmlFor="tw-backend-url">Backend URL</label>
-          <input id="tw-backend-url" type="text" inputMode="url" spellCheck={false} value={backendUrlDraft} onChange={(e) => void saveBackendUrl(e.target.value)} />
-          {backendUrlError ? <p className="tw-hint">{backendUrlError}</p> : null}
+          <label htmlFor="tw-user-key">Your Nansen API key (optional)</label>
+          <div className="tw-settings-row">
+            <input
+              id="tw-user-key"
+              type="password"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="Only needed past the daily limit"
+              value={userKey}
+              onChange={(e) => {
+                setUserKey(e.target.value);
+                setUserKeySaved(false);
+              }}
+            />
+            <button type="button" className="tw-link-button" onClick={() => void saveUserKey()}>
+              {userKey.trim() ? "Save" : "Remove"}
+            </button>
+          </div>
+          <p className="tw-note">
+            {userKeySaved ? "Using your key: checks spend your Nansen credits, with no daily limit." : "Stays in this browser. Sent with each check, never stored by Tripwire."}
+          </p>
+          {allowance && !userKeySaved && !selfHosted ? (
+            <p className="tw-note">
+              {allowance.used.toLocaleString()} of {allowance.cap.toLocaleString()} free credits used today
+            </p>
+          ) : null}
+
+          <details className="tw-advanced" open={selfHosted}>
+            <summary>Advanced: self-hosted backend</summary>
+            <label htmlFor="tw-backend-url">Backend URL</label>
+            <div className="tw-settings-row">
+              <input id="tw-backend-url" type="text" inputMode="url" spellCheck={false} value={backendUrlDraft} onChange={(e) => void saveBackendUrl(e.target.value)} />
+              {selfHosted ? (
+                <button type="button" className="tw-link-button" onClick={() => void resetBackendUrl()}>
+                  Reset
+                </button>
+              ) : null}
+            </div>
+            {backendUrlError ? <p className="tw-hint">{backendUrlError}</p> : null}
+          </details>
         </div>
       ) : null}
 
@@ -234,7 +322,7 @@ export default function App() {
         ]}
       />
 
-      <PopupFoot backendUrl={backendUrl} />
+      <PopupFoot backendUrl={backendUrl} token={selfHosted ? null : installToken} />
     </div>
   );
 }

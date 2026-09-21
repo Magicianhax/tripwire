@@ -8,6 +8,13 @@
 export const TRIPWIRE_EXTENSION_ID = "hocgbioagcfmdpgcnfgnneopohjfkeoj";
 
 /**
+ * The hosted backend the extension talks to out of the box. A user never types or sees it; the
+ * popup's "Advanced — self-hosted backend" setting is the only way to point elsewhere. It is also
+ * a literal in the manifest's `host_permissions`, so changing it means an extension release.
+ */
+export const HOSTED_BACKEND_URL = "https://tripwire.magician.wtf";
+
+/**
  * The first usage milestone the ledger counts toward, so "is this thing actually being used
  * against live Nansen data?" has a number rather than an impression. A printed milestone that
  * drifts from the measured count is the same defect as a printed price that drifts from the

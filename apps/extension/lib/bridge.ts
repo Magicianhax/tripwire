@@ -34,8 +34,15 @@ export type BridgeResponse = { ok: boolean; status: number; json: unknown };
 export type BridgeDeps = {
   /** Injectable fetch (real `fetch` in the background entrypoint, a mock in tests). */
   fetchImpl: (url: string, init?: RequestInit) => Promise<Response>;
-  /** Reads the configured backend URL (falls back to http://127.0.0.1:3000 upstream). */
+  /** Reads the configured backend URL (the hosted backend unless the user chose a self-hosted one). */
   getBackendUrl: () => string | Promise<string>;
+  /**
+   * Headers identifying this install to `backendUrl` (install token, and the user's own Nansen
+   * key if they set one). Optional so tests that do not care about identity can omit it.
+   */
+  getHeaders?: (backendUrl: string) => Promise<Record<string, string>>;
+  /** Called once when the backend says it does not recognise the install, before one retry. */
+  onUnauthorized?: (backendUrl: string) => Promise<void>;
 };
 
 /** One optional sub-path, for `/api/wallet/labels`; still nothing but lowercase and hyphens. */
@@ -44,16 +51,19 @@ const TIMEOUT_MS = 25_000;
 /** Matches the backend's own cap (apps/web/lib/token-logo.ts). */
 const MAX_LOGO_BYTES = 200 * 1024;
 
-export function createBridge({ fetchImpl, getBackendUrl }: BridgeDeps): { handle(message: BridgeMessage): Promise<BridgeResponse> } {
+export function createBridge({ fetchImpl, getBackendUrl, getHeaders, onUnauthorized }: BridgeDeps): { handle(message: BridgeMessage): Promise<BridgeResponse> } {
   const inFlight = new Map<string, Promise<BridgeResponse>>();
 
-  async function doFetch(method: string, path: string, body: unknown | undefined): Promise<BridgeResponse> {
+  async function doFetch(method: string, path: string, body: unknown | undefined, retried = false): Promise<BridgeResponse> {
     let res: Response;
+    let backendUrl: string;
     try {
-      const backendUrl = await getBackendUrl();
+      backendUrl = await getBackendUrl();
+      const headers: Record<string, string> = { ...(getHeaders ? await getHeaders(backendUrl) : {}) };
+      if (body !== undefined) headers["Content-Type"] = "application/json";
       res = await fetchImpl(`${backendUrl}${path}`, {
         method,
-        headers: body !== undefined ? { "Content-Type": "application/json" } : undefined,
+        headers: Object.keys(headers).length > 0 ? headers : undefined,
         body: body !== undefined ? JSON.stringify(body) : undefined,
         signal: AbortSignal.timeout(TIMEOUT_MS),
       });
@@ -61,6 +71,12 @@ export function createBridge({ fetchImpl, getBackendUrl }: BridgeDeps): { handle
       return { ok: false, status: 0, json: { error: "backend_unreachable" } };
     }
     const json = await res.json().catch(() => null);
+    // Tokens are disposable: a backend that no longer knows this install (a wiped database, a
+    // token minted against another deployment) gets a fresh one, once, and the call is retried.
+    if (res.status === 401 && !retried && onUnauthorized && (json as { error?: unknown } | null)?.error === "install") {
+      await onUnauthorized(backendUrl);
+      return doFetch(method, path, body, true);
+    }
     return { ok: res.ok, status: res.status, json };
   }
 

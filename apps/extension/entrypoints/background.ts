@@ -1,13 +1,21 @@
 import { browser } from "wxt/browser";
 import { defineBackground } from "wxt/utils/define-background";
+import { createInstallTokens, readBackendUrl, readUserKey, type Store } from "../lib/backend";
 import { createBridge, createMessageListener } from "../lib/bridge";
 import { syncWalletScripts } from "../lib/permissions";
 
-const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
+const store: Store = {
+  get: (keys) => browser.storage.local.get(keys) as Promise<Record<string, unknown>>,
+  set: (items) => browser.storage.local.set(items),
+};
+const tokens = createInstallTokens(store, fetch);
 
-async function getBackendUrl(): Promise<string> {
-  const stored = (await browser.storage.local.get("backendUrl")) as { backendUrl?: string };
-  return stored.backendUrl && stored.backendUrl.length > 0 ? stored.backendUrl : DEFAULT_BACKEND_URL;
+async function headersFor(backendUrl: string): Promise<Record<string, string>> {
+  const [token, userKey] = await Promise.all([tokens.get(backendUrl), readUserKey(store)]);
+  const headers: Record<string, string> = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (userKey) headers["X-Nansen-Key"] = userKey;
+  return headers;
 }
 
 async function setBadge(status: number): Promise<void> {
@@ -23,7 +31,12 @@ async function setBadge(status: number): Promise<void> {
 }
 
 export default defineBackground(() => {
-  const bridge = createBridge({ fetchImpl: fetch, getBackendUrl });
+  const bridge = createBridge({
+    fetchImpl: fetch,
+    getBackendUrl: () => readBackendUrl(store),
+    getHeaders: headersFor,
+    onUnauthorized: (backendUrl) => tokens.forget(backendUrl),
+  });
 
   // Keep the wallet content script registered for exactly the sites the user has granted. This
   // runs on install, on every browser start, and whenever a permission is added or revoked —

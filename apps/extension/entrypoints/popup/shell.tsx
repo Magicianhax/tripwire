@@ -10,7 +10,7 @@ const STATUS_ICON = { connected: CircleCheck, offline: CircleX, "not-ready": Tri
 
 /** The one sentence about where inspected addresses go. It is a footnote, not a paragraph in
  * the middle of the Wallets tab, so it lives behind the footer's info icon. */
-export const PRIVACY_LINE = "Addresses you inspect go to your own local backend and then to Nansen; the recent list stays in this browser profile.";
+export const PRIVACY_LINE = "Tokens and addresses you check go to the Tripwire backend and then to Nansen; the recent list stays in this browser profile.";
 
 /** Pinned header: who this is, whether the backend is there, and the way into the one setting. */
 export function PopupHead({ status, settingsOpen, onToggleSettings }: { status: PopupStatus; settingsOpen: boolean; onToggleSettings: () => void }) {
@@ -33,8 +33,15 @@ const FOOT_LINKS = [
   { href: "/history", label: "History", icon: History },
 ] as const;
 
-/** Pinned footer: Nansen attribution, user controls, and the privacy line as a tooltip. */
-export function PopupFoot({ backendUrl }: { backendUrl: string }) {
+/**
+ * Pinned footer: Nansen attribution, user controls, and the privacy line as a tooltip.
+ *
+ * On the hosted backend the Rules and History pages have to know whose they are, so the install
+ * token rides in the URL fragment — the one part of a URL a browser never sends to the server —
+ * and the page moves it into session storage and wipes it from the address bar.
+ */
+export function PopupFoot({ backendUrl, token = null }: { backendUrl: string; token?: string | null }) {
+  const suffix = token ? `#t=${encodeURIComponent(token)}` : "";
   return (
     <footer className="tw-popup-foot">
       <span className="tw-powered">
@@ -43,7 +50,7 @@ export function PopupFoot({ backendUrl }: { backendUrl: string }) {
       </span>
       <nav className="tw-foot-links" aria-label="Local pages">
         {FOOT_LINKS.map((link) => (
-          <a key={link.href} href={`${backendUrl}${link.href}`} target="_blank" rel="noopener noreferrer">
+          <a key={link.href} href={`${backendUrl}${link.href}${suffix}`} target="_blank" rel="noopener noreferrer">
             <Icon icon={link.icon} size={14} />
             {link.label}
           </a>

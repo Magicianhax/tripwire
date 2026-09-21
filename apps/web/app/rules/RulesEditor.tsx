@@ -62,7 +62,9 @@ function ThresholdInput({ id, value, label, onChange }: { id: string; value: num
   );
 }
 
-export function RulesEditor({ initial }: { initial: RulesState }) {
+/** `authToken` is the install token on a hosted backend, where the page must say whose rules it
+ * is saving; self-hosted it is absent and the backend answers for its one user. */
+export function RulesEditor({ initial, authToken }: { initial: RulesState; authToken?: string }) {
   const [rules, setRules] = useState<Rule[]>(initial.rules);
   const [preset, setPreset] = useState<RulesState["preset"]>(initial.preset);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
@@ -86,7 +88,7 @@ export function RulesEditor({ initial }: { initial: RulesState }) {
     try {
       const res = await fetch("/api/rules", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}) },
         body: JSON.stringify(body),
       });
       if (!res.ok) {

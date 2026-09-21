@@ -29,7 +29,9 @@ export default defineConfig({
     // through Chrome's own prompt: Tripwire never requests <all_urls> at install.
     permissions: ["storage", "scripting", "activeTab"],
     optional_host_permissions: ["*://*/*"],
-    host_permissions: ["http://127.0.0.1:3000/*", "http://localhost:3000/*"],
+    // The hosted backend (HOSTED_BACKEND_URL in @tripwire/core; a literal here because the
+    // manifest is static, and changing it means a release), plus loopback for self-hosters.
+    host_permissions: ["https://tripwire.magician.wtf/*", "http://127.0.0.1:3000/*", "http://localhost:3000/*"],
     // Packaged fonts (registered once per host page by lib/ui/fonts.ts) and bundled brand logos
     // (public/logos, rendered via <img src> in the shadow UI). Only on the pages content scripts run on.
     web_accessible_resources: [

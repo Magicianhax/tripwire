@@ -42,6 +42,7 @@ vi.hoisted(() => {
 beforeEach(() => {
   document.body.innerHTML = "";
   state.sent = [];
+  state.health = { ok: true, status: 200, json: { ok: true, keySource: "nansen-cli", replay: false } };
   state.origins = ["https://debank.com/*"];
   state.granted = true;
   state.storage = {};
@@ -66,9 +67,13 @@ beforeEach(() => {
     },
     storage: {
       local: {
-        get: async (key: string) => (key in state.storage ? { [key]: state.storage[key] } : {}),
+        get: async (keys: string | string[]) =>
+          Object.fromEntries((Array.isArray(keys) ? keys : [keys]).filter((k) => k in state.storage).map((k) => [k, state.storage[k]])),
         set: async (values: Record<string, unknown>) => {
           Object.assign(state.storage, values);
+        },
+        remove: async (key: string) => {
+          delete state.storage[key];
         },
       },
     },
@@ -266,7 +271,14 @@ describe("popup shell", () => {
   it("keeps user controls reachable without linking to the internal ledger", async () => {
     const { container } = await openPopup();
     const links = [...container.querySelectorAll<HTMLAnchorElement>(".tw-popup-foot a")].map((a) => a.getAttribute("href"));
-    expect(links).toEqual(["http://127.0.0.1:3000/rules", "http://127.0.0.1:3000/history"]);
+    expect(links).toEqual(["https://tripwire.magician.wtf/rules", "https://tripwire.magician.wtf/history"]);
+  });
+
+  it("hands the hosted pages the install token in the fragment, never the query", async () => {
+    state.storage.installTokens = { "https://tripwire.magician.wtf": "tok/en+1" };
+    const { container } = await openPopup();
+    const links = [...container.querySelectorAll<HTMLAnchorElement>(".tw-popup-foot a")].map((a) => a.getAttribute("href"));
+    expect(links).toEqual(["https://tripwire.magician.wtf/rules#t=tok%2Fen%2B1", "https://tripwire.magician.wtf/history#t=tok%2Fen%2B1"]);
   });
 
   it("says the site is not enabled when the tab is somewhere Tripwire has no permission", async () => {
@@ -285,6 +297,46 @@ describe("popup shell", () => {
     state.tabUrl = "https://debank.com/profile";
     const { container } = await openPopup();
     expect(shown(container).querySelector(".tw-here")!.textContent).toContain("Wallet lens enabled here");
+  });
+
+  it("offers the user's own key only once the free daily allowance is spent", async () => {
+    state.health = { ok: true, status: 200, json: { ok: true, keySource: "env", replay: false, creditsToday: 40, cap: 3000 } };
+    let { container } = await openPopup();
+    expect(container.querySelector(".tw-limit")).toBeNull();
+
+    state.health = { ok: true, status: 200, json: { ok: true, keySource: "env", replay: false, creditsToday: 3000, cap: 3000 } };
+    ({ container } = await openPopup());
+    expect(container.querySelector(".tw-limit")!.textContent).toContain("today's free checks");
+    await click(container.querySelector<HTMLButtonElement>(".tw-limit .tw-link-button")!);
+    expect(container.querySelector("#tw-user-key")).not.toBeNull();
+  });
+
+  it("keeps the user's own key in this browser, and drops the limit banner once it is saved", async () => {
+    state.health = { ok: true, status: 200, json: { ok: true, keySource: "env", replay: false, creditsToday: 3000, cap: 3000 } };
+    const { container } = await openPopup();
+    await click(container.querySelector<HTMLButtonElement>(".tw-gear")!);
+    const input = container.querySelector<HTMLInputElement>("#tw-user-key")!;
+    expect(input.type).toBe("password");
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "  my-own-key  ");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await click(container.querySelector<HTMLButtonElement>(".tw-settings-row .tw-link-button")!);
+    expect(state.storage.nansenKey).toBe("my-own-key");
+    await click(container.querySelector<HTMLButtonElement>(".tw-gear")!);
+    expect(container.querySelector(".tw-limit")).toBeNull();
+  });
+
+  it("refuses a backend URL that is neither the hosted one nor loopback", async () => {
+    const { container } = await openPopup();
+    await click(container.querySelector<HTMLButtonElement>(".tw-gear")!);
+    const input = container.querySelector<HTMLInputElement>("#tw-backend-url")!;
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "https://evil.example");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    expect(state.storage.backendUrl).toBeUndefined();
+    expect(container.querySelector(".tw-advanced .tw-hint")).not.toBeNull();
   });
 
   it("keeps the backend URL editable, behind the settings control", async () => {
