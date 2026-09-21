@@ -6,7 +6,7 @@ WORKDIR /app
 RUN corepack enable
 # Manifests first so dependency install is cached across source-only changes. The extension's
 # manifest is copied only so the lockfile resolves; its sources never enter the image.
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages/core/package.json packages/core/
 COPY apps/web/package.json apps/web/
 COPY apps/extension/package.json apps/extension/

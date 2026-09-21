@@ -64,7 +64,7 @@ fly deploy --remote-only
 
 # 4. Domain and TLS.
 fly certs add tripwire.magician.wtf --app tripwire-magician
-#    then at your DNS provider:  CNAME  tripwire  ->  tripwire-magician.fly.dev
+#    then at your DNS provider:  A tripwire -> 66.241.125.149   and   AAAA tripwire -> 2a09:8280:1::196:5f6:0
 fly certs check tripwire.magician.wtf --app tripwire-magician
 ```
 
