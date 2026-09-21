@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { resolveInstall } from "./install";
+import { byokKey, resolveInstall } from "./install";
+import { withRequestContext } from "./request-context";
 import { BudgetExceeded, NansenError, PremiumDisabled } from "./nansen/client";
 import { originAllowed, requestAllowed } from "./origin";
 
@@ -53,7 +54,7 @@ export function route<S extends z.ZodType>(schema: S | null, fn: (req: Request, 
     } catch (e) {
       if (e instanceof Unidentified) return UNIDENTIFIED(req);
       if (e instanceof PremiumDisabled) return json(req, { error: "premium_disabled", message: e.message }, 403);
-      if (e instanceof BudgetExceeded) return json(req, { error: "budget", message: e.message }, 429);
+      if (e instanceof BudgetExceeded) return json(req, { error: "budget", scope: e.scope, message: e.message }, 429);
       if (e instanceof NansenError) return json(req, { error: "nansen", status: e.status, message: e.message }, 502);
       console.error("[tripwire]", e);
       return json(req, { error: "internal", message: e instanceof Error ? e.message : "unknown" }, 500);
@@ -78,7 +79,7 @@ export function installRoute<S extends z.ZodType>(
   return route(schema, async (req, body) => {
     const install = resolveInstall(req.headers);
     if (install === null) throw new Unidentified();
-    return fn(req, body, install);
+    return withRequestContext({ install, userKey: byokKey(req.headers) }, () => fn(req, body, install));
   });
 }
 

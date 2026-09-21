@@ -134,6 +134,9 @@ export function getDb(): DatabaseSync {
   `);
 
   addInstallColumn(db, "ledger");
+  // Whether the call spent a key the user supplied. Those credits are theirs, so neither daily
+  // ceiling counts them; the row stays so the ledger is a complete record of calls made.
+  if (!columns(db, "ledger").has("byok")) db.exec("ALTER TABLE ledger ADD COLUMN byok INTEGER NOT NULL DEFAULT 0");
   addInstallColumn(db, "checks");
   addInstallColumn(db, "overrides");
   addInstallColumn(db, "settings_changes");

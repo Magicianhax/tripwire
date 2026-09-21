@@ -1,13 +1,28 @@
 import fs from "node:fs";
 import path from "node:path";
 import { getDb } from "../db";
+import { requestContext } from "../request-context";
 import { resolveApiKey } from "./key";
 
 export const NANSEN_BASE = "https://api.nansen.ai/api/v1";
 
+export const BUDGET_MESSAGE_GLOBAL = "Daily Nansen credit cap reached";
+export const BUDGET_MESSAGE_INSTALL = "Daily Nansen allowance for this install used up";
+
+/**
+ * A spend ceiling was hit. Two scopes, because they ask different things of the user:
+ *
+ * - `install`: this install has used its own daily allowance. The user can keep going by
+ *   supplying their own Nansen key, and the message says so.
+ * - `global`: the backend's whole daily budget is gone. That is the operator's problem, not the
+ *   user's, and there is nothing for them to do but wait, so it suggests nothing.
+ *
+ * Either way the verdict path is the one that already existed: stale cache if there is any,
+ * otherwise UNCHECKED with a headline. Never a block, never CLEAR.
+ */
 export class BudgetExceeded extends Error {
-  constructor() {
-    super("Daily Nansen credit cap reached");
+  constructor(public scope: "install" | "global" = "global") {
+    super(scope === "install" ? BUDGET_MESSAGE_INSTALL : BUDGET_MESSAGE_GLOBAL);
   }
 }
 /** A premium endpoint was asked for while `NANSEN_ALLOW_PREMIUM` is off. Lives here, next to
@@ -60,12 +75,32 @@ function dayStart(now = Date.now()) {
   return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
 }
 
-export function creditsToday(): number {
-  const row = getDb().prepare("SELECT COALESCE(SUM(credits),0) AS c FROM ledger WHERE ts >= ?").get(dayStart()) as { c: number };
+/**
+ * Credits spent today on the backend's own key, which are the only credits either ceiling
+ * counts. A call made with a key the user supplied spent their credits, not ours: it is logged
+ * so the ledger stays a complete record, and excluded here.
+ */
+export function creditsToday(install?: string): number {
+  const db = getDb();
+  const row = (
+    install === undefined
+      ? db.prepare("SELECT COALESCE(SUM(credits),0) AS c FROM ledger WHERE ts >= ? AND byok = 0").get(dayStart())
+      : db.prepare("SELECT COALESCE(SUM(credits),0) AS c FROM ledger WHERE ts >= ? AND byok = 0 AND install = ?").get(dayStart(), install)
+  ) as { c: number };
   return row.c;
 }
 
-const cap = () => Number(process.env.NANSEN_DAILY_CREDIT_CAP ?? 3000);
+/**
+ * The backend's whole daily budget. `NANSEN_DAILY_CREDIT_CAP` is the pre-hosting name and stays
+ * honoured, so a self-hoster's existing setting keeps meaning what it meant.
+ */
+export const globalCap = () => Number(process.env.NANSEN_GLOBAL_DAILY_CREDITS ?? process.env.NANSEN_DAILY_CREDIT_CAP ?? 3000);
+
+/**
+ * One install's daily allowance. Defaults to the same 3000 a self-hoster gets, so a hosted user
+ * has the same experience as running it locally; the global ceiling is the real brake.
+ */
+export const installCap = () => Number(process.env.NANSEN_PER_INSTALL_DAILY_CREDITS ?? 3000);
 
 // simple token bucket: RATE requests per second
 const RATE = 10;
@@ -113,8 +148,10 @@ function writeCache(key: string, value: unknown, ttlMs: number) {
     .run(key, JSON.stringify(value), now, entry.expiresAt);
 }
 
-function logCall(endpoint: string, status: number, credits: number | null, latency: number) {
-  getDb().prepare("INSERT INTO ledger (ts, endpoint, status, credits, latency_ms) VALUES (?, ?, ?, ?, ?)").run(Date.now(), endpoint, status, credits, latency);
+function logCall(endpoint: string, status: number, credits: number | null, latency: number, install: string, byok: boolean) {
+  getDb()
+    .prepare("INSERT INTO ledger (ts, endpoint, status, credits, latency_ms, install, byok) VALUES (?, ?, ?, ?, ?, ?, ?)")
+    .run(Date.now(), endpoint, status, credits, latency, install, byok ? 1 : 0);
 }
 
 function readFixture<T>(name: string): T {
@@ -154,15 +191,29 @@ export async function nansenPost<T>(opts: CallOpts): Promise<NansenResult<T>> {
     return { data: hit.value as T, cached: true, stale: false, storedAt: hit.storedAt, creditsUsed: null };
   }
 
-  const pending = inflight.get(key);
+  const { install, userKey } = requestContext();
+  // Concurrent identical calls share one fetch, but only within the same kind of key: a call on a
+  // user's own key must not hand its failure ("your Nansen key was rejected") to a stranger, and
+  // costs nothing extra to keep separate.
+  const flightKey = userKey ? `byok|${key}` : key;
+  const pending = inflight.get(flightKey);
+  // Joining a fetch someone else already paid for is free, so it happens before any budget check.
   if (pending) return pending as Promise<NansenResult<T>>;
 
-  const p = (async (): Promise<NansenResult<T>> => {
-    if (creditsToday() >= cap()) {
+  // The budget is checked here, for this caller, and never inside the shared promise below:
+  // otherwise an over-limit user who happened to start a fetch would pass "daily limit reached"
+  // to everyone who joined it in the same instant. A user's own key spends their credits, not
+  // ours, so neither ceiling applies to it.
+  if (!userKey) {
+    const over = creditsToday() >= globalCap() ? "global" : creditsToday(install) >= installCap() ? "install" : null;
+    if (over) {
       if (hit) return { data: hit.value as T, cached: true, stale: true, storedAt: hit.storedAt, creditsUsed: null };
-      throw new BudgetExceeded();
+      throw new BudgetExceeded(over);
     }
-    const { key: apiKey } = resolveApiKey();
+  }
+
+  const p = (async (): Promise<NansenResult<T>> => {
+    const apiKey = userKey ?? resolveApiKey().key;
     if (!apiKey) throw new NansenError(401, "No Nansen API key configured (set NANSEN_API_KEY or run `nansen login`)");
 
     for (let attempt = 0; ; attempt++) {
@@ -176,7 +227,7 @@ export async function nansenPost<T>(opts: CallOpts): Promise<NansenResult<T>> {
       });
       const creditsHeader = res.headers.get("x-nansen-credits-used");
       const credits = creditsHeader === null ? null : Number(creditsHeader);
-      logCall(opts.name, res.status, Number.isFinite(credits) ? credits : null, Date.now() - started);
+      logCall(opts.name, res.status, Number.isFinite(credits) ? credits : null, Date.now() - started, install, userKey !== null);
 
       if (res.status === 429 && attempt === 0) {
         const retryAfter = Number(res.headers.get("retry-after") ?? "1");
@@ -186,7 +237,10 @@ export async function nansenPost<T>(opts: CallOpts): Promise<NansenResult<T>> {
       if (!res.ok) {
         await res.body?.cancel().catch(() => {});
         if (hit) return { data: hit.value as T, cached: true, stale: true, storedAt: hit.storedAt, creditsUsed: credits };
-        const reason = res.status === 401 || res.status === 403 ? "access denied" : res.status === 429 ? "rate limit reached" : res.status === 400 || res.status === 422 ? "request not supported" : "service temporarily unavailable";
+        // A rejected user key is theirs to fix, and "access denied" alone would read as our
+        // outage, so say whose key it was.
+        const denied = res.status === 401 || res.status === 403;
+        const reason = denied && userKey ? "your Nansen key was rejected" : denied ? "access denied" : res.status === 429 ? "rate limit reached" : res.status === 400 || res.status === 422 ? "request not supported" : "service temporarily unavailable";
         throw new NansenError(res.status, `Nansen ${opts.name}: ${reason}`);
       }
       const data = (await res.json()) as T;
@@ -195,11 +249,11 @@ export async function nansenPost<T>(opts: CallOpts): Promise<NansenResult<T>> {
     }
   })();
 
-  inflight.set(key, p as Promise<NansenResult<unknown>>);
+  inflight.set(flightKey, p as Promise<NansenResult<unknown>>);
   try {
     return await p;
   } finally {
-    inflight.delete(key);
+    inflight.delete(flightKey);
   }
 }
 
