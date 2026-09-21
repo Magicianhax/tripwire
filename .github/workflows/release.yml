@@ -1,0 +1,33 @@
+# Push a tag like v0.1.0 and this builds the extension and attaches it to a GitHub Release as
+# tripwire-extension.zip — the file the README and the product page link to via
+# /releases/latest/download/tripwire-extension.zip.
+
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  extension:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -F extension zip
+      - run: cp apps/extension/.output/*-chrome.zip tripwire-extension.zip
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" tripwire-extension.zip \
+            --title "Tripwire $GITHUB_REF_NAME" \
+            --notes "Unzip, open chrome://extensions, turn on Developer mode, click Load unpacked and pick the unzipped folder."
