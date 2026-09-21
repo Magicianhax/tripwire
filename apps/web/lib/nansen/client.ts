@@ -91,6 +91,30 @@ export function creditsToday(install?: string): number {
 }
 
 /**
+ * Credits spent today by every install minted from the same network as `install`. An install with
+ * no recorded network (self-hosted, or minted before networks were recorded) is counted alone.
+ */
+export function networkCreditsToday(install: string): number {
+  const row = getDb()
+    .prepare(
+      `SELECT COALESCE(SUM(l.credits),0) AS c FROM ledger l
+       WHERE l.ts >= ? AND l.byok = 0 AND l.install IN (
+         SELECT i.token FROM installs i
+         WHERE i.ip_bucket IS NOT NULL AND i.ip_bucket = (SELECT ip_bucket FROM installs WHERE token = ?)
+       )`,
+    )
+    .get(dayStart(), install) as { c: number };
+  return row.c;
+}
+
+/**
+ * One network's daily allowance, shared by every install minted from it: the bound that makes
+ * minting cheap to allow. Twice the per-install allowance, so two people on one Wi-Fi each get a
+ * full day, and no single address can spend more than 6000 of the 20000 global.
+ */
+export const networkCap = () => Number(process.env.NANSEN_PER_IP_DAILY_CREDITS ?? 6000);
+
+/**
  * The backend's whole daily budget. `NANSEN_DAILY_CREDIT_CAP` is the pre-hosting name and stays
  * honoured, so a self-hoster's existing setting keeps meaning what it meant.
  */
@@ -205,7 +229,12 @@ export async function nansenPost<T>(opts: CallOpts): Promise<NansenResult<T>> {
   // to everyone who joined it in the same instant. A user's own key spends their credits, not
   // ours, so neither ceiling applies to it.
   if (!userKey) {
-    const over = creditsToday() >= globalCap() ? "global" : creditsToday(install) >= installCap() ? "install" : null;
+    const over =
+      creditsToday() >= globalCap()
+        ? "global"
+        : creditsToday(install) >= installCap() || networkCreditsToday(install) >= networkCap()
+          ? "install"
+          : null;
     if (over) {
       if (hit) return { data: hit.value as T, cached: true, stale: true, storedAt: hit.storedAt, creditsUsed: null };
       throw new BudgetExceeded(over);

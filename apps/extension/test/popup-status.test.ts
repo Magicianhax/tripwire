@@ -21,6 +21,9 @@ describe("popupStatus", () => {
 
   it("offline and checking", () => {
     expect(popupStatus({ ok: false })).toEqual({ text: "Offline · check connection", state: "offline" });
+    expect(popupStatus({ ok: false, status: 0 })).toEqual({ text: "Offline · check connection", state: "offline" });
+    // Reachable but not recognising this install: never "offline".
+    expect(popupStatus({ ok: false, status: 401 })).toEqual({ text: "Couldn't register · try again later", state: "not-ready" });
     expect(popupStatus(null)).toEqual({ text: "Connecting…", state: undefined });
   });
 });

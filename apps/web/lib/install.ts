@@ -17,11 +17,12 @@ import { getDb, SELF_HOST_INSTALL } from "./db";
 export const isHosted = () => process.env.TRIPWIRE_HOSTED === "1";
 
 /**
- * How many installs one IP may mint per UTC day. An install mints once, so 2 covers a person
- * reinstalling or a second browser; it also means one address can hold at most 2 × the
- * per-install allowance of the global budget in a day, rather than most of it.
+ * How many installs one network may mint per UTC day. Generous on purpose: a household, an office
+ * behind one address, or someone reinstalling while testing all mint from one IP, and the first
+ * cut (2/day) locked real users out. Spend is what needs bounding, and it is — every install on a
+ * network shares one daily allowance (`NANSEN_PER_IP_DAILY_CREDITS`), so extra mints buy nothing.
  */
-const mintsPerIpPerDay = () => Number(process.env.TRIPWIRE_MINTS_PER_IP ?? 2);
+const mintsPerIpPerDay = () => Number(process.env.TRIPWIRE_MINTS_PER_IP ?? 20);
 /** The ceiling on new installs per UTC day, whatever their IPs. */
 const mintsPerDay = () => Number(process.env.TRIPWIRE_MINTS_PER_DAY ?? 2000);
 
@@ -72,7 +73,7 @@ export function mintInstall(ip: string | null, now = Date.now()): string {
   }
 
   const token = randomBytes(32).toString("base64url");
-  db.prepare("INSERT INTO installs (token, created_at, last_seen) VALUES (?, ?, ?)").run(token, now, now);
+  db.prepare("INSERT INTO installs (token, created_at, last_seen, ip_bucket) VALUES (?, ?, ?, ?)").run(token, now, now, bucket);
   if (bucket) db.prepare("INSERT INTO install_mints (ip_bucket, day, ts) VALUES (?, ?, ?)").run(bucket, since, now);
   return token;
 }

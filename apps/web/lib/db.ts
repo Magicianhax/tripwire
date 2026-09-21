@@ -137,6 +137,10 @@ export function getDb(): DatabaseSync {
   // Whether the call spent a key the user supplied. Those credits are theirs, so neither daily
   // ceiling counts them; the row stays so the ledger is a complete record of calls made.
   if (!columns(db, "ledger").has("byok")) db.exec("ALTER TABLE ledger ADD COLUMN byok INTEGER NOT NULL DEFAULT 0");
+  // The salted network hash an install was minted from, so every install on one network shares
+  // one daily allowance (see installCap in nansen/client.ts). Null for self-hosted and for
+  // installs minted before this column existed.
+  if (!columns(db, "installs").has("ip_bucket")) db.exec("ALTER TABLE installs ADD COLUMN ip_bucket TEXT");
   addInstallColumn(db, "checks");
   addInstallColumn(db, "overrides");
   addInstallColumn(db, "settings_changes");

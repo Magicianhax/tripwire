@@ -72,6 +72,27 @@ describe("per-install and global ceilings", () => {
   });
 });
 
+describe("the per-network allowance", () => {
+  it("is shared by every install minted from one network, and not by others", async () => {
+    process.env.TRIPWIRE_HOSTED = "1";
+    process.env.TRIPWIRE_IP_SALT = "salt";
+    process.env.NANSEN_PER_INSTALL_DAILY_CREDITS = "100";
+    process.env.NANSEN_PER_IP_DAILY_CREDITS = "10";
+    process.env.NANSEN_GLOBAL_DAILY_CREDITS = "1000";
+    const { mintInstall } = await import("@/lib/install");
+    const a = mintInstall("5.5.5.5");
+    const b = mintInstall("5.5.5.5");
+    const c = mintInstall("6.6.6.6");
+    await as(a, null, () => call({ n: 1 }));
+    await as(b, null, () => call({ n: 2 })); // network now at 10
+    await expect(as(b, null, () => call({ n: 3 }))).rejects.toMatchObject({ scope: "install" });
+    await expect(as(a, null, () => call({ n: 4 }))).rejects.toMatchObject({ scope: "install" });
+    await expect(as(c, null, () => call({ n: 5 }))).resolves.toMatchObject({ cached: false });
+    delete process.env.TRIPWIRE_HOSTED;
+    delete process.env.NANSEN_PER_IP_DAILY_CREDITS;
+  });
+});
+
 describe("a user's own key", () => {
   it("lifts both ceilings, spends their key, and is not counted against ours", async () => {
     await as("a", null, () => call({ n: 1 }));

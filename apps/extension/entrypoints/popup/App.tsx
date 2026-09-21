@@ -36,7 +36,7 @@ const hostOf = (origin: string) => {
  * already in the DOM and none of them fetches on show.
  */
 export default function App() {
-  const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource; replay: boolean } | { ok: false } | null>(null);
+  const [healthState, setHealthState] = useState<{ ok: true; keySource: KeySource; replay: boolean } | { ok: false; status: number } | null>(null);
   const [allowance, setAllowance] = useState<{ used: number; cap: number } | null>(null);
   const [userKey, setUserKey] = useState("");
   const [userKeySaved, setUserKeySaved] = useState(false);
@@ -83,7 +83,7 @@ export default function App() {
     (async () => {
       const result = await health();
       if (cancelled) return;
-      setHealthState(result.ok ? { ok: true, keySource: result.data.keySource, replay: result.data.replay } : { ok: false });
+      setHealthState(result.ok ? { ok: true, keySource: result.data.keySource, replay: result.data.replay } : { ok: false, status: result.status });
       // The health call is what mints the install token on first run, so the one read at open
       // can predate it; read it again now the call has settled.
       const { backendUrl: storedUrl, installTokens } = (await browser.storage.local.get(["backendUrl", "installTokens"])) as {
@@ -105,7 +105,7 @@ export default function App() {
         setRulesState(result.data);
         setPresetState(result.data.preset);
       } else {
-        setPresetError("Couldn't load rules. Is the backend running?");
+        setPresetError(result.status === 401 ? "Couldn't load rules: this install isn't registered yet." : result.status === 0 ? "Couldn't load rules: Tripwire is unreachable." : "Couldn't load rules.");
       }
     })();
     return () => {
