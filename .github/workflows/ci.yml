@@ -31,8 +31,10 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Two extension unit suites measure layout and contrast in real Chromium.
+      # Two extension unit suites measure layout and contrast in real Chromium, and one checks the
+      # built bundle for the content-script file the wallet lens registers, so build first.
       - run: pnpm -F extension exec playwright install --with-deps chromium
+      - run: pnpm -F extension build
       - run: pnpm verify
 
   extension:
@@ -47,10 +49,12 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm -F extension zip
+      # upload-artifact skips hidden directories, and WXT writes to .output.
+      - run: cp apps/extension/.output/*-chrome.zip tripwire-extension.zip
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: tripwire-extension
-          path: apps/extension/.output/*-chrome.zip
+          path: tripwire-extension.zip
           retention-days: 14
 
   e2e:

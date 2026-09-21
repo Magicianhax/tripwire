@@ -14,6 +14,12 @@ export const TRIPWIRE_EXTENSION_ID = "hocgbioagcfmdpgcnfgnneopohjfkeoj";
  */
 export const HOSTED_BACKEND_URL = "https://tripwire.magician.wtf";
 
+/** Where the source and the packaged extension live. `TRIPWIRE_REPOSITORY_URL` overrides it. */
+export const TRIPWIRE_REPOSITORY_URL = "https://github.com/Magicianhax/tripwire";
+
+/** The asset name release.yml attaches to every GitHub Release. */
+export const EXTENSION_RELEASE_ASSET = "tripwire-extension.zip";
+
 /**
  * The first usage milestone the ledger counts toward, so "is this thing actually being used
  * against live Nansen data?" has a number rather than an impression. A printed milestone that
