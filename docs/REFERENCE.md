@@ -118,15 +118,15 @@ URL-derived only and never blocks — no button to find, just a docked verdict c
 
 ```mermaid
 flowchart LR
-  x[x.com content script] --> bg[Extension background worker]
-  v[Venue content script + adapters] --> bg
-  bg -->|http://127.0.0.1:3000| api[Next.js API routes]
-  api --> core[@tripwire/core signals + rules]
-  api --> client[Nansen client: cache, dedupe, ledger, budget]
-  client --> db[(node:sqlite .data/tripwire.db)]
-  client --> nansen[Nansen API v1]
-  api --> gamma[Polymarket Gamma API: slug to market id]
-  pages[/rules /ledger /history pages/] --> db
+  x["x.com content script"] --> bg["Extension background worker"]
+  v["Venue content script + adapters"] --> bg
+  bg -->|"http://127.0.0.1:3000"| api["Next.js API routes"]
+  api --> core["@tripwire/core signals + rules"]
+  api --> client["Nansen client: cache, dedupe, ledger, budget"]
+  client --> db[("node:sqlite .data/tripwire.db")]
+  client --> nansen["Nansen API v1"]
+  api --> gamma["Polymarket Gamma API: slug to market id"]
+  pages["/rules /ledger /history pages"] --> db
 ```
 
 Repo layout:
