@@ -12,7 +12,7 @@ export function proxy(request: NextRequest) {
   // hosting proxy forwards a loopback Host, and never permit writes through the site.
   if (process.env.TRIPWIRE_PUBLIC_SITE === "1") {
     const path = request.nextUrl.pathname;
-    const publicPath = path === "/" || path.startsWith("/_next/static/") || path.startsWith("/logos/") || path.startsWith("/showcase/") || path === "/favicon.ico" || path === "/icon.png";
+    const publicPath = path === "/" || path.startsWith("/_next/static/") || path.startsWith("/logos/") || path.startsWith("/showcase/") || path === "/social/tripwire-og.png" || path === "/favicon.ico" || path === "/icon.png";
     if (!publicPath || !["GET", "HEAD"].includes(request.method)) {
       return new NextResponse("Not found", { status: 404 });
     }

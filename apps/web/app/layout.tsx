@@ -15,8 +15,22 @@ import { BrandMark } from "./_components/Brand";
 import { NavBar } from "./_components/NavBar";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tripwire.magician.wtf"),
   title: "Tripwire — Onchain context, where you trade",
   description: "Bring Nansen wallet, token and perp intelligence to X and the trading sites you already use. Explore Tripwire for Chrome.",
+  openGraph: {
+    type: "website",
+    siteName: "Tripwire",
+    title: "Tripwire — Onchain context, where you trade",
+    description: "A browser extension bringing Nansen wallet flows, trader positioning and your rules to X and the sites where you trade.",
+    images: [{ url: "/social/tripwire-og.png", width: 1200, height: 630, type: "image/png", alt: "Tripwire — Context before conviction. Product illustration showing price-drop and smart-money selling warnings. Powered by Nansen." }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tripwire — Onchain context, where you trade",
+    description: "Nansen wallet flows, trader positioning and your rules, right where you trade.",
+    images: [{ url: "/social/tripwire-og.png", alt: "Tripwire — Context before conviction. Product illustration showing price-drop and smart-money selling warnings. Powered by Nansen." }],
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

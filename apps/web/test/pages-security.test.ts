@@ -21,6 +21,13 @@ describe("page security headers (next.config headers())", () => {
 
 describe("standalone public product site", () => {
   beforeEach(() => vi.stubEnv("TRIPWIRE_PUBLIC_SITE", "1"));
+  it("lets social crawlers fetch the poster without opening other routes or writes", () => {
+    for (const method of ["GET", "HEAD"]) {
+      expect(proxy(new NextRequest("https://tripwire.example/social/tripwire-og.png", { method })).headers.get("x-middleware-next")).toBe("1");
+    }
+    expect(proxy(new NextRequest("https://tripwire.example/social/private.json")).status).toBe(404);
+    expect(proxy(new NextRequest("https://tripwire.example/social/tripwire-og.png", { method: "POST" })).status).toBe(404);
+  });
   it("serves only the product homepage and packaged assets", () => {
     for (const path of ["/", "/showcase/x-profile.jpg", "/?ref=extension", "/_next/static/chunks/app.js", "/logos/nansen.svg", "/logos/tripwire.png", "/favicon.ico", "/icon.png"]) {
       for (const method of ["GET", "HEAD"]) {
