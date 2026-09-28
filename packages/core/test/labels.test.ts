@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanLabel } from "../src/labels";
+import { cleanLabel, labelRowKind } from "../src/labels";
 
 describe("cleanLabel", () => {
   it("strips emoji and returns the kind the label names", () => {
@@ -43,5 +43,25 @@ describe("cleanLabel", () => {
 
   it("collapses the whitespace left behind", () => {
     expect(cleanLabel("  Big  🐳  Whale  ").text).toBe("Big Whale");
+  });
+});
+
+describe("labelRowKind (profiler/address/labels rows)", () => {
+  it("takes Nansen's own category over reading the words", () => {
+    // Recorded live for Binance 14: category says exchange, so nothing has to be inferred.
+    expect(labelRowKind({ label: "Binance", category: "exchange", kind: ["entity"] })).toBe("exchange");
+  });
+
+  it("reads the kind list when the category says nothing useful", () => {
+    expect(labelRowKind({ label: "Token Billionaire", category: "others", kind: ["token-billionaire"] })).toBe("whale");
+  });
+
+  it("falls back to the text when Nansen states neither", () => {
+    expect(labelRowKind({ label: "🤖 DEX Trading Bot", category: "others", kind: ["name"] })).toBe("bot");
+    expect(labelRowKind({ label: "Binance 14", category: "others", kind: ["name"] })).toBe("exchange");
+  });
+
+  it("is 'other' for a label that names nothing in particular", () => {
+    expect(labelRowKind({ label: "High Activity", category: "others", kind: ["high-activity"] })).toBe("other");
   });
 });

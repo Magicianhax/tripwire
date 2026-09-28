@@ -730,7 +730,19 @@ export type WalletLensResponse = {
   errors: string[];
 };
 
-export type WalletLabelsResponse = { address: string; labels: string[]; credits: number; errors: string[] };
+/** One label with what Nansen says it is, so the card types it instead of guessing from words. */
+export type WalletLabelRow = { text: string; kind: LabelKind; category: string | null };
+
+export type WalletLabelsResponse = {
+  address: string;
+  labels: string[];
+  /** Typed rows; empty when the response carried only bare strings. */
+  rows?: WalletLabelRow[];
+  /** The chain the answer is about: the endpoint answers for one chain at a time. */
+  chain?: string;
+  credits: number;
+  errors: string[];
+};
 
 // ---- The two priced perp presses (POST /api/perp/ladder, POST /api/perp/win-rate) ----
 //

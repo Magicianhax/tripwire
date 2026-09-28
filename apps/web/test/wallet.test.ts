@@ -6,7 +6,7 @@ import { TRIPWIRE_EXTENSION_ID } from "@tripwire/core";
 import { resetDb } from "@/lib/db";
 import { _resetClientState } from "@/lib/nansen/client";
 import { _forgetLogo, MAX_LOGO_BYTES, tokenLogo } from "@/lib/token-logo";
-import { extractLabels, labelFromDexTrades } from "@/lib/intel/wallet";
+import { extractLabelRows, extractLabels, labelFromDexTrades } from "@/lib/intel/wallet";
 import { POST as walletPOST } from "@/app/api/wallet/route";
 import { POST as labelsPOST } from "@/app/api/wallet/labels/route";
 import { POST as defiPOST } from "@/app/api/wallet/defi/route";
@@ -260,6 +260,27 @@ describe("POST /api/wallet/unrealized (1.5.7)", () => {
   it("keeps the address validation and the origin guard", async () => {
     expect((await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: "nope" }, origin: ORIGIN }))).status).toBe(400);
     expect((await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS }, origin: "https://evil.example.com" }))).status).toBe(403);
+  });
+});
+
+describe("extractLabelRows", () => {
+  it("keeps Nansen's category and kind so the card does not have to guess", () => {
+    const rows = extractLabelRows({
+      data: [
+        { label: "Binance", category: "exchange", kind: ["entity"] },
+        { label: "Token Billionaire", category: "others", kind: ["token-billionaire"] },
+        { label: "Binance", category: "exchange", kind: ["entity"] },
+      ],
+    });
+    expect(rows).toEqual([
+      { text: "Binance", kind: "exchange", category: "exchange" },
+      { text: "Token Billionaire", kind: "whale", category: "others" },
+    ]);
+  });
+
+  it("yields nothing for a response that carries only bare strings, which `labels` still reads", () => {
+    expect(extractLabelRows({ labels: ["Smart Trader"] })).toEqual([]);
+    expect(extractLabels({ labels: ["Smart Trader"] })).toEqual(["Smart Trader"]);
   });
 });
 

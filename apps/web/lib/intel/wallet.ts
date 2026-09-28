@@ -1,4 +1,4 @@
-import { classify, cleanLabel, isEvmAddress, nansenWalletUrl, type Chain, type LabelKind } from "@tripwire/core";
+import { classify, cleanLabel, isEvmAddress, labelRowKind, nansenWalletUrl, type Chain, type LabelKind } from "@tripwire/core";
 import { isReplay, PremiumDisabled } from "../nansen/client";
 import {
   nansen,
@@ -670,7 +670,21 @@ export const PREMIUM_LABELS_CREDITS = 100;
 
 export const premiumAllowed = () => process.env.NANSEN_ALLOW_PREMIUM === "1";
 
-export type WalletLabelsResult = { address: string; labels: string[]; credits: number; errors: string[] };
+/** One label as the card renders it: Nansen's text, and what Nansen says it is. */
+export type WalletLabelRow = { text: string; kind: LabelKind; category: string | null };
+
+export type WalletLabelsResult = {
+  address: string;
+  /** Plain text, kept for callers that only show a line. */
+  labels: string[];
+  /** The same labels with Nansen's own category/kind, so the card can type them rather than
+   * guess from the words. Empty when the response carried only bare strings. */
+  rows: WalletLabelRow[];
+  /** The chain the answer is about: `profiler/address/labels` only ever answers for one. */
+  chain: string;
+  credits: number;
+  errors: string[];
+};
 
 /**
  * `profiler/labels`, the 100-credit call. Never reached by `buildWalletLens`: only this
@@ -683,6 +697,8 @@ export async function walletLabels(address: string, chain: string): Promise<Wall
   return {
     address,
     labels: extractLabels(result.value),
+    rows: extractLabelRows(result.value),
+    chain,
     credits: PREMIUM_LABELS_CREDITS,
     errors: result.error ? [`Nansen labels: ${result.error}`] : [],
   };
@@ -698,6 +714,26 @@ export async function walletLabels(address: string, chain: string): Promise<Wall
  * labels for this address on this chain", never "this wallet is unlabelled", and the card has to
  * say the first thing.
  */
+/**
+ * The label rows with Nansen's own category and kind kept intact. Only reads the documented row
+ * shape; a response that carries bare strings yields nothing here and `labels` still has them.
+ */
+export function extractLabelRows(payload: unknown): WalletLabelRow[] {
+  const data = (payload as { data?: unknown } | null)?.data;
+  if (!Array.isArray(data)) return [];
+  const out: WalletLabelRow[] = [];
+  for (const raw of data) {
+    if (!raw || typeof raw !== "object") continue;
+    const row = raw as { label?: unknown; category?: unknown; kind?: unknown };
+    const text = typeof row.label === "string" ? row.label.trim() : "";
+    if (!text || out.some((r) => r.text === text)) continue;
+    const kinds = Array.isArray(row.kind) ? row.kind.filter((k): k is string => typeof k === "string") : null;
+    const category = typeof row.category === "string" ? row.category : null;
+    out.push({ text: cleanLabel(text).text || text, kind: labelRowKind({ label: text, category, kind: kinds }), category });
+  }
+  return out.slice(0, 20);
+}
+
 export function extractLabels(payload: unknown): string[] {
   const out: string[] = [];
   const visit = (v: unknown, depth: number) => {

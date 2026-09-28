@@ -272,7 +272,13 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
 
     loaded.set(walletKey(marker.ref), {
       ...current,
-      label: { text: result.data.labels[0]!, kind: "other", tags: result.data.labels.slice(1) },
+      // Nansen's own kind for the first row, not a guess from its words: the rows carry
+      // `category`/`kind`, and "Binance" is an exchange because Nansen says so.
+      label: {
+        text: result.data.rows?.[0]?.text ?? result.data.labels[0]!,
+        kind: result.data.rows?.[0]?.kind ?? "other",
+        tags: (result.data.rows?.length ? result.data.rows.map((r) => r.text) : result.data.labels).slice(1),
+      },
       sources: current.sources.includes("Nansen labels") ? current.sources : [...current.sources, "Nansen labels"],
       credits: current.credits + result.data.credits,
     });

@@ -24,6 +24,39 @@ const EMOJI_KINDS: [LabelKind, RegExp][] = [
   ["public-figure", /[\u{1F31F}\u{2B50}\u{1F4E2}\u{1F3A4}]/u],
 ];
 
+/**
+ * `profiler/address/labels` states a `kind` per row ("entity", "entity-tag", "name",
+ * "token-billionaire", "high-activity"), plus a `category` ("exchange", "others"). Where Nansen
+ * says what a label is, that beats reading the words: `cleanLabel` has to guess from text, and
+ * guessing is only for labels that arrive as bare strings.
+ */
+const NANSEN_CATEGORY_KINDS: Record<string, LabelKind> = {
+  exchange: "exchange",
+  fund: "fund",
+  "smart-money": "smart-trader",
+  bot: "bot",
+  "public-figure": "public-figure",
+};
+const NANSEN_KIND_KINDS: Record<string, LabelKind> = {
+  "token-billionaire": "whale",
+  "high-balance": "whale",
+  "smart-money": "smart-trader",
+};
+
+/**
+ * The kind of one `profiler/address/labels` row, from what Nansen states about it, falling back
+ * to reading the label text when it states nothing useful.
+ */
+export function labelRowKind(row: { label?: string | null; category?: string | null; kind?: string[] | null }): LabelKind {
+  const category = row.category?.trim().toLowerCase();
+  if (category && NANSEN_CATEGORY_KINDS[category]) return NANSEN_CATEGORY_KINDS[category]!;
+  for (const k of row.kind ?? []) {
+    const mapped = NANSEN_KIND_KINDS[k.trim().toLowerCase()];
+    if (mapped) return mapped;
+  }
+  return cleanLabel(row.label ?? "").kind;
+}
+
 /** A Nansen address label without its emoji, and the kind of wallet it names, e.g.
  * "🤓 Smart HL Perps Trader [0x25554a]" -> { text: "Smart HL Perps Trader [0x25554a]", kind: "smart-trader" }. */
 export function cleanLabel(label: string): { text: string; kind: LabelKind } {
