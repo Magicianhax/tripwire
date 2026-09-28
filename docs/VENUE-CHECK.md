@@ -132,3 +132,28 @@ No venue blocked automation. There was no Cloudflare challenge and no geo-block 
 - `pnpm -F extension typecheck`: clean.
 - `pnpm -F extension build`: built. The manifest matches include `https://jumper.xyz/*`.
 - `pnpm verify:e2e`: 4/4 passed.
+
+## fomo (fomo.family) — 2026-09-28, logged in
+
+Added as tier 1. Checked against the live app in Chrome with the user's own session.
+
+- **URL:** `https://fomo.family/tokens/<chain>/<address>`, taken from fomo's own route table
+  (`routes/token` → `tokens/:chain/:tokenAddress` in `assets/manifest-*.js`), not guessed.
+  `/token` and `/coin` are redirect routes; `/perp`, `/profile/:handle`, `/leaderboard` are not
+  token pages and read as no target.
+- **Chain slugs** (from its bundle): `solana`, `base`, `monad`, `bnb`, `ethereum`, `hyperliquid`,
+  `robinhood`, `arc`. Mapped: solana, base, bnb, ethereum, robinhood. `monad` and `arc` are
+  outside Tripwire's coverage and are answered as such rather than defaulted.
+- **Trade card:** one box (`border … rounded-2xl`) holding the Buy|Sell side tabs, the amount
+  input (`placeholder="0"`) and the submit. No role, test id or stable class anywhere on it, so
+  the anchor is found from the amount input upwards to the box that also holds a Buy and a Sell
+  button, then the last button labelled `Buy <symbol>` / `Sell <symbol>`.
+- **The submit is `disabled` until an amount is typed**, so the anchor deliberately accepts a
+  disabled button. Waiting for the form to be filled in would put the block after the decision.
+- **No one-click trades.** The page's other buttons are amount presets (they fill the input) and
+  `Split bottom` / `Split right`, which are layout controls. Nothing places a trade in one press,
+  so there are no `blockedExtras` to bind, unlike pump.fun.
+- **Logged out** the whole app is behind a login, so `anchor()` finds nothing and the runner
+  falls back to the docked verdict rather than blocking blind.
+- Verified live: on `/tokens/solana/5tCju…pump` the anchor resolves to "Buy swordcat", and to
+  "Sell swordcat" after pressing the Sell tab.

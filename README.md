@@ -60,7 +60,7 @@ Then in the popup: settings → **Advanced: self-hosted backend**. `pnpm dev:rep
 
 ## More
 
-- [Reference](docs/REFERENCE.md): verdict signals and rules, all 18 venues, credits and caching, security
+- [Reference](docs/REFERENCE.md): verdict signals and rules, all 19 venues, credits and caching, security
 - [Architecture](docs/ARCHITECTURE.md) · [Decisions](docs/DECISIONS.md) · [Calibration](docs/CALIBRATION.md)
 - [Deploying the hosted backend](docs/DEPLOYMENT.md)
 

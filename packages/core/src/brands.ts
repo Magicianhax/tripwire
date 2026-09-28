@@ -24,6 +24,7 @@ export const VENUE_IDS = [
   "bullx",
   "dexscreener",
   "birdeye",
+  "fomo",
 ] as const;
 export type VenueId = (typeof VENUE_IDS)[number];
 
@@ -46,6 +47,7 @@ export const VENUE_LOGOS: Record<VenueId, BrandLogo> = {
   bullx: { name: "BullX", file: "logos/bullx.png" },
   dexscreener: { name: "DEX Screener", file: "logos/dexscreener.png" },
   birdeye: { name: "Birdeye", file: "logos/birdeye.png" },
+  fomo: { name: "fomo", file: "logos/fomo.png" },
 };
 
 export const CHAIN_LOGOS: Partial<Record<Chain, BrandLogo>> = {

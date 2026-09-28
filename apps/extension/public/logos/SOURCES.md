@@ -38,6 +38,7 @@ markup). In the extension they are chrome-extension:// URLs listed in web_access
 | bullx.png | BullX | https://neo.bullx.io/icon-192x192.png | 192px PNG → 96px PNG | BullX trademark; site icon |
 | dexscreener.png | DEX Screener | https://dexscreener.com/img/apple-touch-icon.png | 180px PNG → 96px PNG | DEX Screener trademark; site icon |
 | birdeye.png | Birdeye | https://birdeye.so/favicon.ico | 128px PNG (served as .ico) → 96px PNG | Birdeye trademark; site icon |
+| fomo.png | fomo | https://fomo.family/favicon.svg | the favicon is a PNG wrapped in an SVG `<image>`; the embedded PNG extracted and scaled to 96px (an SVG carrying a data: href is rejected by the logo sanitizer, rightly) | fomo trademark; site icon |
 | chain-solana.svg | Solana | simple-icons 16.31.0 `icons/solana.svg` (source https://solana.com/branding) | SVG, monochrome, fill #9945FF (simple-icons brand hex) | Icon data CC0 (simple-icons); Solana Foundation trademark, see solana.com/branding |
 | chain-ethereum.svg | Ethereum | simple-icons 16.31.0 `icons/ethereum.svg` (source https://ethereum.org/en/assets/) | SVG, monochrome, fill #FFFFFF (brand hex #3C3C3D is unreadable on the dark ground) | Icon data CC0 (simple-icons); ethereum.org assets |
 | chain-base.svg | Base | https://github.com/base/brand-kit/blob/main/logo/TheSquare/Digital/Base_square_blue.svg | SVG, official brand kit | Base brand kit |

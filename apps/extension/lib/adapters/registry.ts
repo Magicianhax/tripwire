@@ -1,6 +1,7 @@
 import { aerodromeAdapter } from "./aerodrome";
 import { axiomAdapter } from "./axiom";
 import { birdeyeAdapter } from "./birdeye";
+import { fomoAdapter } from "./fomo";
 import { bullxAdapter } from "./bullx";
 import { cowAdapter } from "./cow";
 import { dexscreenerAdapter } from "./dexscreener";
@@ -39,6 +40,7 @@ export const ADAPTERS: VenueAdapter[] = [
   bullxAdapter,
   dexscreenerAdapter,
   birdeyeAdapter,
+  fomoAdapter,
 ];
 
 export function findAdapter(url: URL): VenueAdapter | null {

@@ -52,6 +52,20 @@ export const BIRDEYE_CHAIN_NAMES: Record<string, Chain> = {
   avalanche: "avalanche",
 };
 
+/**
+ * fomo.family's `tokens/<chain>/<addr>` path segment -> Chain. Its own slugs, taken from the
+ * route table in its bundle: solana, base, monad, bnb, ethereum, hyperliquid, robinhood, arc.
+ * `monad` and `arc` are deliberately absent — Tripwire has no coverage for them, and a missing
+ * entry is what makes the adapter say so instead of defaulting to a chain.
+ */
+export const FOMO_CHAIN_NAMES: Record<string, Chain> = {
+  solana: "solana",
+  ethereum: "ethereum",
+  base: "base",
+  bnb: "bnb",
+  robinhood: "robinhood",
+};
+
 /** gmgn.ai's leading path-segment chain hints -> Chain. */
 export const GMGN_CHAIN_SEGMENTS: Record<string, Chain> = {
   sol: "solana",

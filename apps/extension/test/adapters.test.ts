@@ -5,6 +5,7 @@ import { axiomAdapter } from "../lib/adapters/axiom";
 import { birdeyeAdapter } from "../lib/adapters/birdeye";
 import { cowAdapter } from "../lib/adapters/cow";
 import { dexscreenerAdapter } from "../lib/adapters/dexscreener";
+import { fomoAdapter } from "../lib/adapters/fomo";
 import { gmgnAdapter } from "../lib/adapters/gmgn";
 import { hyperliquidAdapter } from "../lib/adapters/hyperliquid";
 import { jumperAdapter } from "../lib/adapters/jumper";
@@ -284,5 +285,72 @@ describe("registry", () => {
 
   it("findAdapter returns null for a non-venue host", () => {
     expect(findAdapter(new URL("https://example.com/"))).toBeNull();
+  });
+});
+
+describe("tier 1: fomo", () => {
+  // fomo's own route table says `tokens/:chain/:tokenAddress` (routes/token in its bundle).
+  it("reads /tokens/<chain>/<addr> on Solana and on EVM", () => {
+    expect(read(fomoAdapter, `https://fomo.family/tokens/solana/${SOL_MINT}`)).toEqual({ kind: "spot", chain: "solana", tokenAddress: SOL_MINT });
+    expect(read(fomoAdapter, `https://fomo.family/tokens/base/${EVM_ADDR}`)).toEqual({ kind: "spot", chain: "base", tokenAddress: EVM_ADDR });
+    expect(read(fomoAdapter, `https://fomo.family/tokens/BNB/${EVM_ADDR}`)).toEqual({ kind: "spot", chain: "bnb", tokenAddress: EVM_ADDR });
+  });
+
+  it("says so for a chain Tripwire does not cover, instead of defaulting to one", () => {
+    expect(read(fomoAdapter, `https://fomo.family/tokens/monad/${EVM_ADDR}`)).toBeNull();
+    expect(fomoAdapter.readGap?.(document, new URL(`https://fomo.family/tokens/monad/${EVM_ADDR}`))).toMatchObject({ kind: "unsupported-chain" });
+    expect(read(fomoAdapter, `https://fomo.family/tokens/arc/${EVM_ADDR}`)).toBeNull();
+  });
+
+  it("ignores the pages that are not a token", () => {
+    for (const path of ["/", "/leaderboard", "/perp", "/profile/someone", "/blog/learn/what-is-fomo", "/tokens/solana"]) {
+      expect(read(fomoAdapter, `https://fomo.family${path}`)).toBeNull();
+    }
+  });
+
+  it("matches only fomo.family itself", () => {
+    expect(fomoAdapter.match(new URL("https://fomo.family/tokens/solana/x"))).toBe(true);
+    expect(fomoAdapter.match(new URL("https://fomo.family.evil.test/tokens/solana/x"))).toBe(false);
+    expect(fomoAdapter.match(new URL("https://notfomo.family/tokens/solana/x"))).toBe(false);
+  });
+});
+
+describe("tier 1: fomo anchor", () => {
+  /** The live trade card (2026-09-28, logged in): tabs, amount input and submit in one box, all
+   * Tailwind classes and no role, test id or stable class to match on. */
+  const card = (submitLabel: string, disabled = true) => `
+    <input placeholder="Search for tokens or traders..." />
+    <div class="border border-bg-tertiary rounded-2xl p-2 flex flex-col gap-2">
+      <div class="flex gap-2"><button type="button">Buy</button><button type="button">Sell</button><button type="button">Swap settings</button></div>
+      <div class="flex flex-col"><input placeholder="0" /></div>
+      <button ${disabled ? "disabled" : ""}>${submitLabel}</button>
+    </div>`;
+
+  it("anchors the submit button, even before an amount is typed", () => {
+    document.body.innerHTML = card("Buy swordcat");
+    const anchor = fomoAdapter.anchor?.(document);
+    expect(anchor?.textContent).toBe("Buy swordcat");
+    // Disabled until an amount is entered: a block that waits for the form to be filled in is a
+    // block that arrives after the decision.
+    expect((anchor as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("anchors the Sell submit the same way", () => {
+    document.body.innerHTML = card("Sell swordcat", false);
+    expect(fomoAdapter.anchor?.(document)?.textContent).toBe("Sell swordcat");
+  });
+
+  it("never anchors the Buy|Sell side tabs, which would block the way to Sell", () => {
+    document.body.innerHTML = `
+      <div class="border rounded-2xl">
+        <div class="flex gap-2"><button type="button">Buy</button><button type="button">Sell</button></div>
+        <input placeholder="0" />
+      </div>`;
+    expect(fomoAdapter.anchor?.(document)).toBeNull();
+  });
+
+  it("finds nothing when the app is behind its login, so the runner docks instead of blocking blind", () => {
+    document.body.innerHTML = `<header><button>Log in</button></header><main><button>Start trading</button></main>`;
+    expect(fomoAdapter.anchor?.(document)).toBeNull();
   });
 });

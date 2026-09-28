@@ -7,6 +7,7 @@ export const TIER1_MATCHES = [
   "https://jumper.xyz/*",
   "https://app.hyperliquid.xyz/*",
   "https://polymarket.com/*",
+  "https://fomo.family/*",
 ];
 export const TIER2_MATCHES = [
   "https://raydium.io/*",

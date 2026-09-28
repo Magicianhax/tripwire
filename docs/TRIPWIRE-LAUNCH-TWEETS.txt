@@ -1,0 +1,31 @@
+TWEET 1 — attach the demo
+
+built Tripwire, a browser extension that brings @nansen_ai data into the sites where you already research and trade: X, Hyperliquid, Uniswap, Jumper, Jupiter, DEX Screener, pump.fun and Polymarket.
+
+i wanted to stop copying addresses between tabs every time i had a question about a token or wallet.
+
+on X, click a badge beside someone’s name to explore their available Nansen profile, or open a token mention to check its markets.
+
+on DEXes, see who’s buying and selling, wallet flows, holder concentration and trader performance beside the token you’re looking at.
+
+on Hyperliquid, check perp positioning, funding and liquidation levels. on Polymarket, inspect holder positioning for the outcome you’ve selected.
+
+you can also set your own rules. when a trade triggers them, Tripwire shows the evidence and can block the trade button until you acknowledge the warning.
+
+yes, one of the overrides makes you type “I am exit liquidity.”
+
+it won’t tell you a trade is safe. it gives you more to look at before you click.
+
+recorded a walkthrough below ↓
+
+
+TWEET 2 — reply with the link
+
+anyone can install the extension and try it free. you don’t need your own Nansen API key to get started.
+
+i’ve put 125k+ Nansen credits behind it for now, so you can use my credits while they last. how long that lasts depends on usage, but there’s a decent pool to start with.
+
+you can also connect your own API key.
+
+download the extension + setup instructions:
+https://tripwire.magician.wtf/

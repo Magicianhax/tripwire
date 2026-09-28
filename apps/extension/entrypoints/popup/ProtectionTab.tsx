@@ -31,6 +31,7 @@ const VENUE_BY_HOST: Record<string, VenueId> = {
   "neo.bullx.io": "bullx",
   "dexscreener.com": "dexscreener",
   "birdeye.so": "birdeye",
+  "fomo.family": "fomo",
 };
 
 export function ProtectionTab({

@@ -1,0 +1,30 @@
+Meet Tripwire: Nansen-powered onchain intelligence, built into your browser. Choose your protection level, enable the sites you use, and bring wallet and market context into the places where you already make trading decisions.
+
+On Uniswap, Tripwire follows the selected token. When information is missing, it says unchecked. Missing data is not a green light.
+
+Choose a token with available data, and the warning becomes specific. Here, labeled wallets are selling while fresh wallets are buying. Open the evidence to compare markets, inspect the rules that fired, review holder concentration, and see trading performance. The warning shows its reasoning, not just a red badge.
+
+That same protection follows the swap on Jumper. To continue past a block, you must acknowledge it: I am exit liquidity. An override does not make the trade safe.
+
+On Dex Screener, the analysis sits beside the chart you are already watching. Expand the card to see wallet flows, price history, and buying versus selling. Then open the wallet view to inspect the largest reported buyers and sellers. This is context for the selected token on its actual chain—not a buy signal.
+
+An address becomes a starting point for investigation. Open its wallet card, then request deeper activity when needed.
+
+On Jupiter, the same evidence opens from the swap form. Clear means no configured rule fired—not guaranteed safety.
+
+Switch to a token that triggers your rules, and the block appears before you proceed. The choice remains deliberate.
+
+Perps need a different view. On Hyperliquid, Tripwire reads the market and your selected side. Compare smart-trader, whale, and public-figure positioning, alongside funding and market activity. The liquidation view shows levels for the returned positions, while the traders tab adds performance context. You can move from the warning to the underlying evidence without losing the trading screen.
+
+Change the market or direction, and the check changes with it. Opposing positioning can trigger your configured rules.
+
+The same compact check also appears on pump dot fun, right beside the token's trading controls.
+
+On Polymarket, Tripwire checks the specific market and selected outcome. Open the evidence to compare holder positioning and see which side the reported proven-winner money is backing.
+
+If positioning conflicts with your rules, Tripwire blocks the trade button. Continuing requires acknowledging, I know better. That does not make the trade safe.
+
+On X, Nansen badges connect a post's author to available entity information, including the holdings shown here.
+
+Token mentions open separate spot and perp markets, with each chain kept explicit. From the post to the trade, keep the evidence close. Tripwire, powered by Nansen.
+
