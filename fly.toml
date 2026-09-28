@@ -14,6 +14,10 @@ primary_region = "iad"
   # Same allowance a self-hoster gets; the global ceiling is the real brake on the bill.
   NANSEN_PER_INSTALL_DAILY_CREDITS = "3000"
   NANSEN_GLOBAL_DAILY_CREDITS = "20000"
+  # Lets the wallet card's 100-credit Nansen label lookup run. It is never part of a card's own
+  # load: one button, which states the price before it is pressed. At 3000 credits per install
+  # per day that is at most 30 presses each, inside the 6000-per-network and 20000 global ceilings.
+  NANSEN_ALLOW_PREMIUM = "1"
 
 # SQLite needs one writer, so exactly one machine, always on: no cold start on the first card
 # and no second machine forking the database.
