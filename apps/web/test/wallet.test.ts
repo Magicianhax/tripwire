@@ -135,7 +135,7 @@ describe("POST /api/wallet", () => {
 describe("POST /api/wallet/labels", () => {
   it("refuses without the env gate, and names the switch", async () => {
     delete process.env.NANSEN_ALLOW_PREMIUM;
-    const res = await labelsPOST(req("/api/wallet/labels", { body: { address: ADDRESS }, origin: ORIGIN }));
+    const res = await labelsPOST(req("/api/wallet/labels", { body: { address: ADDRESS, chain: "ethereum" }, origin: ORIGIN }));
     expect(res.status).toBe(403);
     const body = await res.json();
     expect(body.error).toBe("premium_disabled");
@@ -145,21 +145,23 @@ describe("POST /api/wallet/labels", () => {
 
   it("validates the address before it can cost anything", async () => {
     process.env.NANSEN_ALLOW_PREMIUM = "1";
-    const res = await labelsPOST(req("/api/wallet/labels", { body: { address: "0xdead" }, origin: ORIGIN }));
+    const res = await labelsPOST(req("/api/wallet/labels", { body: { address: "0xdead", chain: "ethereum" }, origin: ORIGIN }));
     expect(res.status).toBe(400);
     delete process.env.NANSEN_ALLOW_PREMIUM;
   });
 
   it("reports the 100-credit price with whatever labels came back", async () => {
     process.env.NANSEN_ALLOW_PREMIUM = "1";
-    const res = await labelsPOST(req("/api/wallet/labels", { body: { address: ADDRESS }, origin: ORIGIN }));
+    const res = await labelsPOST(req("/api/wallet/labels", { body: { address: ADDRESS, chain: "ethereum" }, origin: ORIGIN }));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.credits).toBe(100);
     expect(body.address).toBe(ADDRESS);
-    // No fixture exists for a 100-credit endpoint, so replay reports it as unavailable.
-    expect(body.labels).toEqual([]);
-    expect(body.errors[0]).toMatch(/profiler\/labels|addressLabels/i);
+    // Replay serves fixtures/nansen/addressLabels.json, recorded live from
+    // `profiler/address/labels` (the old `profiler/labels` path answers 404 for every address).
+    expect(body.labels).toContain("Binance");
+    expect(body.labels).toContain("CEX");
+    expect(body.errors).toEqual([]);
     delete process.env.NANSEN_ALLOW_PREMIUM;
   });
 });
@@ -208,7 +210,7 @@ describe("POST /api/wallet/defi (1.5.6 + 1.5.1)", () => {
   });
 
   it("an all-zero answer is reported as none found, not as a balance of $0", async () => {
-    const body = await (await defiPOST(req("/api/wallet/defi", { body: { address: ADDRESS }, origin: ORIGIN }))).json();
+    const body = await (await defiPOST(req("/api/wallet/defi", { body: { address: ADDRESS, chain: "ethereum" }, origin: ORIGIN }))).json();
     // The recorded response is the real one: every summary figure 0 and `protocols: []`.
     expect(body.defi.reportedNone).toBe(true);
     expect(body.defi.totalDebtsUsd).toBe(0);
@@ -221,14 +223,14 @@ describe("POST /api/wallet/defi (1.5.6 + 1.5.1)", () => {
   });
 
   it("validates the address, and keeps the origin guard, before it can cost anything", async () => {
-    expect((await defiPOST(req("/api/wallet/defi", { body: { address: "0xdead" }, origin: ORIGIN }))).status).toBe(400);
+    expect((await defiPOST(req("/api/wallet/defi", { body: { address: "0xdead", chain: "ethereum" }, origin: ORIGIN }))).status).toBe(400);
     expect((await defiPOST(req("/api/wallet/defi", { body: { address: ADDRESS }, origin: "https://evil.example.com" }))).status).toBe(403);
   });
 });
 
 describe("POST /api/wallet/unrealized (1.5.7)", () => {
   it("returns one credit's worth of per-token unrealized PnL and cost basis", async () => {
-    const res = await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS }, origin: ORIGIN }));
+    const res = await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS, chain: "ethereum" }, origin: ORIGIN }));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.credits).toBe(1);
@@ -242,13 +244,13 @@ describe("POST /api/wallet/unrealized (1.5.7)", () => {
   });
 
   it("orders by unrealized PnL, so a long-tail wallet's page is its largest rows", async () => {
-    const body = await (await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS }, origin: ORIGIN }))).json();
+    const body = await (await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS, chain: "ethereum" }, origin: ORIGIN }))).json();
     const values = body.rows.map((r: { unrealizedPnlUsd: number }) => r.unrealizedPnlUsd);
     expect(values).toEqual([...values].sort((a: number, b: number) => b - a));
   });
 
   it("nulls stay nulls, and a symbol can repeat because the rows carry no chain", async () => {
-    const body = await (await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS }, origin: ORIGIN }))).json();
+    const body = await (await unrealizedPOST(req("/api/wallet/unrealized", { body: { address: ADDRESS, chain: "ethereum" }, origin: ORIGIN }))).json();
     const bnb = body.rows.find((r: { symbol: string }) => r.symbol === "BNB");
     // A token never sold has no average sale price. That is a dash, not a zero.
     expect(bnb.avgSoldPriceUsd).toBeNull();
@@ -262,6 +264,22 @@ describe("POST /api/wallet/unrealized (1.5.7)", () => {
 });
 
 describe("extractLabels", () => {
+  it("reads the live `profiler/address/labels` rows (fixtures/nansen/addressLabels.json)", () => {
+    const recorded = {
+      pagination: { page: 1, per_page: 100, is_last_page: true },
+      data: [
+        { label: "Binance", category: "exchange", kind: ["entity"] },
+        { label: "Exchange", category: "others", kind: ["entity-tag"] },
+        { label: "Token Billionaire", category: "others", kind: ["token-billionaire"] },
+      ],
+    };
+    expect(extractLabels(recorded)).toEqual(["Binance", "Exchange", "Token Billionaire"]);
+  });
+
+  it("an empty page is no labels, not a crash: Solana answers this way", () => {
+    expect(extractLabels({ pagination: { page: 1, per_page: 100, is_last_page: true }, data: [] })).toEqual([]);
+  });
+
   it("reads labels out of the shapes profiler/labels might use", () => {
     expect(extractLabels({ labels: ["Smart Trader", "Fund"] })).toEqual(["Smart Trader", "Fund"]);
     expect(extractLabels({ data: [{ label: "Whale" }, { label: "Whale" }] })).toEqual(["Whale"]);

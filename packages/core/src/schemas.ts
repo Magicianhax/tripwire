@@ -93,7 +93,11 @@ export const WalletQuerySchema = z.object({
   chainHint: ChainSchema.optional(),
 });
 
-/** POST /api/wallet/labels: the premium, 100-credit label lookup, always on a resolved address. */
+/**
+ * POST /api/wallet/labels: the premium, 100-credit label lookup, always on a resolved address.
+ * `chain` is required by `profiler/address/labels` itself, so it is required here too rather
+ * than defaulted — a label answer about the wrong chain is worse than no answer.
+ */
 export const WalletLabelsRequestSchema = z.object({
   address: z
     .string()
@@ -101,6 +105,7 @@ export const WalletLabelsRequestSchema = z.object({
     .min(32)
     .max(64)
     .refine((s) => isEvmAddress(s) || isSolanaAddress(s), "invalid address"),
+  chain: ChainSchema,
 });
 
 const ResolvedAddressSchema = z

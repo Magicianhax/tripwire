@@ -677,9 +677,9 @@ export type WalletLabelsResult = { address: string; labels: string[]; credits: n
  * function calls it, only the labels route calls this, and the route refuses unless the
  * operator set `NANSEN_ALLOW_PREMIUM=1`.
  */
-export async function walletLabels(address: string): Promise<WalletLabelsResult> {
-  if (!premiumAllowed()) throw new PremiumDisabled("Nansen label lookup (profiler/labels)", PREMIUM_LABELS_CREDITS);
-  const result = await settle(nansen.addressLabels(address), (d) => d);
+export async function walletLabels(address: string, chain: string): Promise<WalletLabelsResult> {
+  if (!premiumAllowed()) throw new PremiumDisabled("Nansen label lookup (profiler/address/labels)", PREMIUM_LABELS_CREDITS);
+  const result = await settle(nansen.addressLabels(address, chain), (d) => d);
   return {
     address,
     labels: extractLabels(result.value),
@@ -688,8 +688,16 @@ export async function walletLabels(address: string): Promise<WalletLabelsResult>
   };
 }
 
-/** `profiler/labels` has no recorded fixture (it costs 100 credits), so its shape is read
- * defensively: any string array or `label`-ish field under the response or its `data` rows. */
+/**
+ * Rows are `{label, category, kind[]}` (fixtures/nansen/addressLabels.json, recorded live for 100
+ * credits). The walk below stays defensive anyway — one recorded address is not a schema — and
+ * still accepts the older string-array shape.
+ *
+ * Measured the same day: Solana addresses answer 200 with `data: []`, including ones that carry
+ * a visible Nansen label elsewhere in the API. So an empty answer means "Nansen returned no
+ * labels for this address on this chain", never "this wallet is unlabelled", and the card has to
+ * say the first thing.
+ */
 export function extractLabels(payload: unknown): string[] {
   const out: string[] = [];
   const visit = (v: unknown, depth: number) => {

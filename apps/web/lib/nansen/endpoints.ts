@@ -336,7 +336,14 @@ export type AddressPnlSummary = {
   /** Round 1.5.2: `realized_roi` is on every row and was dropped at the mapper. A fraction. */
   top5_tokens?: { token_symbol: string; chain: string; token_address: string; realized_pnl: number | null; realized_roi?: number | null }[] | null;
 };
-export type AddressLabelsResponse = { labels?: string[] | null; entity?: string | null } | Record<string, unknown>;
+/**
+ * One row of `profiler/address/labels`, measured live 2026-09-28 against Binance 14:
+ * `{"label":"Binance","category":"exchange","kind":["entity"]}`, alongside kinds `entity-tag`,
+ * `name`, `token-billionaire` and `high-activity`. Read defensively all the same — this is one
+ * recorded address, not the documented schema.
+ */
+export type AddressLabelRow = { label?: string | null; category?: string | null; kind?: string[] | null };
+export type AddressLabelsResponse = AddressLabelRow | Record<string, unknown>;
 
 export type PmAddressTrade = {
   timestamp: string;
@@ -518,11 +525,14 @@ export const nansen = {
    * only `POST /api/wallet/labels`, behind the `NANSEN_ALLOW_PREMIUM` gate and a button that
    * states the price, reaches it.
    */
-  addressLabels: (address: string) =>
+  addressLabels: (address: string, chain: string) =>
     nansenPost<{ data?: AddressLabelsResponse[] | null } | AddressLabelsResponse>({
       name: "addressLabels",
-      path: "profiler/labels",
-      body: { address },
+      // `profiler/labels` is gone: it answers 404 for every address, including ones Nansen
+      // demonstrably labels, so the card's Labels button had been dead. The current path is
+      // `profiler/address/labels`, and `chain` is required (measured 2026-09-28).
+      path: "profiler/address/labels",
+      body: { address, chain, pagination: { page: 1, per_page: 100 } },
       ttlMs: WALLET_LABELS_TTL,
     }),
 

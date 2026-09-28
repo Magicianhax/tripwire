@@ -132,8 +132,8 @@ export function walletLens(query: string, chainHint?: Chain): Promise<ApiResult<
 
 /** The 100-credit Nansen label lookup. Only the card's own button, which states the price,
  * calls this; the backend refuses unless NANSEN_ALLOW_PREMIUM=1. */
-export function walletLabels(address: string): Promise<ApiResult<WalletLabelsResponse>> {
-  return call("POST", "/api/wallet/labels", { address });
+export function walletLabels(address: string, chain: Chain): Promise<ApiResult<WalletLabelsResponse>> {
+  return call("POST", "/api/wallet/labels", { address, chain });
 }
 
 /**

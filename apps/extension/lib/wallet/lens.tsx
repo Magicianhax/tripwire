@@ -1,4 +1,4 @@
-import { MAX_WALLET_MARKERS, walletKey, type WalletRef } from "@tripwire/core";
+import { MAX_WALLET_MARKERS, walletKey, type Chain, type WalletRef } from "@tripwire/core";
 import type { ContentScriptContext } from "wxt/utils/content-script-context";
 import {
   walletActivity,
@@ -260,10 +260,15 @@ export function createWalletLens({ ctx, stopHostClicks, zIndex, skip, replay, pr
     const current = marker ? loaded.get(walletKey(marker.ref)) : undefined;
     if (!marker || !current?.address) return;
 
-    const result = await walletLabels(current.address);
+    // `profiler/address/labels` takes one chain and answers only about that chain, so ask about
+    // the one the wallet actually holds most value on rather than a default.
+    const chain = current.portfolio?.chains?.[0] ?? current.chainGuess ?? marker.ref.chainHint ?? "ethereum";
+    const result = await walletLabels(current.address, chain as Chain);
     if (!result.ok) throw new Error(failure(result));
     if (result.data.errors.length > 0) throw new Error(result.data.errors[0]!);
-    if (result.data.labels.length === 0) throw new Error("Nansen returned no labels for this wallet.");
+    // Measured 2026-09-28: Solana answers 200 with an empty list even for addresses Nansen labels
+    // elsewhere. "No labels on <chain>" is what was measured; "this wallet is unlabelled" is not.
+    if (result.data.labels.length === 0) throw new Error(`Nansen returned no labels for this wallet on ${chain}.`);
 
     loaded.set(walletKey(marker.ref), {
       ...current,

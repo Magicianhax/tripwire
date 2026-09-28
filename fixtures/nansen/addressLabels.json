@@ -1,0 +1,11 @@
+{
+  "pagination": { "page": 1, "per_page": 100, "is_last_page": true },
+  "data": [
+    { "label": "Binance", "category": "exchange", "kind": ["entity"] },
+    { "label": "Exchange", "category": "others", "kind": ["entity-tag"] },
+    { "label": "Token Billionaire", "category": "others", "kind": ["token-billionaire"] },
+    { "label": "Binance 14", "category": "others", "kind": ["name"] },
+    { "label": "High Activity", "category": "others", "kind": ["high-activity"] },
+    { "label": "CEX", "category": "others", "kind": ["entity-tag"] }
+  ]
+}
