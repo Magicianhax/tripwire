@@ -1,5 +1,14 @@
-/** Below this the strip drops its rule clause and lets the finding take a second line. */
-export const NARROW_WIDTH = 320;
+/**
+ * Below this the strip drops its rule clause and lets the finding take a second line.
+ *
+ * Measured in Chromium with the real CSS (test/strip-fit.test.tsx): with the rule shown, the
+ * finding gets `width - 308px`, because the logo, pill, Details and gaps are fixed and
+ * `.tw-strip-rule` is `flex-shrink: 0`. At 320 that left the finding 12px; the reported case,
+ * fomo's 346px trade card, left it 38px — a stub beside a fully-drawn "rule: < -2% of volu…".
+ * The verdict is the finding; the rule is a footnote the card repeats. 480 keeps the finding
+ * above ~170px whenever the rule is shown, and hands it the rule's 126px below that.
+ */
+export const NARROW_WIDTH = 480;
 
 /**
  * Below this there is no room for a sentence at all: after the venue logo, the verdict pill and
