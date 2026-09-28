@@ -48,6 +48,17 @@ export type SpotPanel = {
   chain: string;
   /** Name, symbol, logo and the market figures behind the header. */
   token: TokenInfo | null;
+  /**
+   * `tgm/token-information` answered, and Nansen has no token at this address.
+   *
+   * People paste wallet addresses into posts, and an address alone does not say which it is —
+   * a mint and an owner are the same 32/20 bytes. Tripwire used to check any address in a post
+   * as a token and present the result as one. This is the difference between "the token could
+   * not be checked" and "there is no token here", and only the second one means the address
+   * belongs to somebody instead of to a contract. An endpoint that *failed* says nothing, so
+   * this stays false then.
+   */
+  notAToken: boolean;
   /** The flow the verdict was computed from. Always the verdict window. */
   flow: FlowRow | null;
   flowTimeframe: string;
@@ -209,11 +220,15 @@ export async function buildSpotIntel(
   const errors = [flow.error, netflow.error, indicators.error, info.error, history.error].filter((e): e is string => !!e);
   // The one-line reason an UNCHECKED spot target could not be checked: the label of the first
   // signal that came back unavailable, which already names the endpoint and the chain.
-  const headline = signals.find((s) => s.value === null)?.label ?? null;
+  // Nansen answered and knows no token here: say that, rather than naming whichever signal
+  // happened to come back empty as a consequence.
+  const notAToken = !info.error && !info.value;
+  const headline = notAToken ? "No token at this address" : (signals.find((s) => s.value === null)?.label ?? null);
 
   const panel: SpotPanel = {
     chain,
     token,
+    notAToken,
     flow: flowRow,
     flowTimeframe: VERDICT_TIMEFRAME,
     viewFlow: flowRow,

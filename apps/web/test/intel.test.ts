@@ -211,3 +211,33 @@ describe("the indicators TTL is a day, not six hours", () => {
     }
   });
 });
+
+describe("an address that is not a token", () => {
+  /** Replay with one fixture swapped: `tgm/token-information` answering with no token, which is
+   * what Nansen returns for a wallet address someone pasted into a post. */
+  const withEmptyTokenInfo = async <T>(fn: () => Promise<T>): Promise<T> => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tw-nottoken-"));
+    for (const f of fs.readdirSync(FIXTURES)) fs.copyFileSync(path.join(FIXTURES, f), path.join(dir, f));
+    fs.writeFileSync(path.join(dir, "tokenInformation.json"), JSON.stringify({ data: null }));
+    const previous = process.env.TRIPWIRE_FIXTURES;
+    process.env.TRIPWIRE_FIXTURES = dir;
+    _resetClientState();
+    try {
+      return await fn();
+    } finally {
+      process.env.TRIPWIRE_FIXTURES = previous;
+      _resetClientState();
+    }
+  };
+
+  it("says there is no token here, instead of naming whichever signal came back empty", async () => {
+    const r = await withEmptyTokenInfo(() => buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" }));
+    expect(r.panel.notAToken).toBe(true);
+    expect(r.headline).toBe("No token at this address");
+  });
+
+  it("stays false for a token Nansen does know", async () => {
+    const r = await buildSpotIntel({ kind: "spot", chain: "solana", tokenAddress: WIF }, { mode: "chip" });
+    expect(r.panel.notAToken).toBe(false);
+  });
+});

@@ -39,6 +39,10 @@ export type RulesPreset = "degen" | "balanced" | "paranoid" | "custom";
 
 export type KeySource = "env" | "nansen-cli" | "none";
 
+/** Set when Nansen answered and has no token at the address: it is somebody's wallet, or
+ * nothing. See apps/web/lib/intel/spot.ts. */
+export type NotATokenFlag = { notAToken?: boolean };
+
 export type HealthResponse = {
   ok: true;
   keySource: KeySource;
@@ -87,6 +91,8 @@ export type SpotChart = {
 };
 
 export type SpotPanel = {
+  /** Nansen answered and has no token at this address (see apps/web/lib/intel/spot.ts). */
+  notAToken?: boolean;
   /** The token's chain (Round 2.1). Optional: an older backend does not send it, and the card
    * then simply does not offer the Solana-only Jupiter DCA button rather than guessing. */
   chain?: string | null;

@@ -30,6 +30,18 @@ export function isTokenClaimed(address: string | null | undefined): boolean {
   return address ? store().has(address.toLowerCase()) : false;
 }
 
+/**
+ * Gives a claim back.
+ *
+ * The X chip has to claim an address before it knows what it is — the claim exists to stop the
+ * wallet lens marking the same address in the same frame — so the one case it gets wrong is a
+ * wallet address pasted into a post. When the backend answers "no token here", the chip releases
+ * the address and the lens marks it on its next scan, which is what should have happened.
+ */
+export function releaseToken(address: string | null | undefined): void {
+  if (address) store().delete(address.toLowerCase());
+}
+
 /** Test helper. */
 export function _resetClaimedTokens(): void {
   store().clear();

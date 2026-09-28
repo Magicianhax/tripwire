@@ -6,7 +6,7 @@ import { defineContentScript } from "wxt/utils/define-content-script";
 import type { ApiResult } from "../../lib/api";
 import { depth, health, personIntel, postIntel, resolve } from "../../lib/api";
 import { cardSize, setCardSize, warmCardSizes, type CardSize } from "../../lib/card-size";
-import { claimToken } from "../../lib/claimed-tokens";
+import { claimToken, releaseToken } from "../../lib/claimed-tokens";
 import { runContentTask } from "../../lib/content-lifecycle";
 import { createReplayFlag } from "../../lib/replay";
 import type { PersonIntelResponse, PostIntelResponse, ResolveResponse } from "../../lib/api-types";
@@ -217,7 +217,9 @@ export default defineContentScript({
         return null;
       }
       const { target, symbol } = resolved;
-      // This address is a token, not a wallet: the wallet lens must not also mark it.
+      // Claimed before it is known to be a token, because the claim exists to stop the wallet lens
+      // marking the same address in the same frame. `standDown` below gives it back when Nansen
+      // says there is no token here.
       claimToken(target.tokenAddress);
 
       // The chip opens carrying the only name the post gave us -- the short contract address --
@@ -355,6 +357,11 @@ export default defineContentScript({
             personResult = person;
             // Already loaded for the badge row (one fetch per handle per page session).
             badgeResult = tweet.handle ? await badges.load(tweet.handle, tweet.displayName) : null;
+            if (intel.ok && intel.data.panel.notAToken) {
+              // A wallet address the reader opened: close up and let the lens have it.
+              standDown();
+              return;
+            }
             if (!intel.ok) {
               // The chip carries the failure too, and the next open retries.
               lastVerdict = "UNCHECKED";
@@ -379,9 +386,27 @@ export default defineContentScript({
         onRemoved: (m) => mounts.untrack(article, m),
       });
 
+      /**
+       * The address is somebody's wallet, not a contract: take the chip away and hand the address
+       * back to the wallet lens, which marks it on its next scan.
+       *
+       * Saying "UNCHECKED, couldn't check this token" about a pasted wallet address is a wrong
+       * answer to a question nobody asked. Removing the chip is the honest end state — the post
+       * mentions no token — and the lens is the surface that has something true to say.
+       */
+      function standDown(): void {
+        releaseToken(target.tokenAddress);
+        if (panel.expanded) panel.toggle();
+        chipMount.ui.remove();
+      }
+
       if (eager) {
         void runContentTask(ctx, async () => {
           const chipResult = await getChipIntel(target, tweet.timeIso);
+          if (chipResult.ok && chipResult.data.panel.notAToken) {
+            standDown();
+            return;
+          }
           if (chipResult.ok) {
             lastVerdict = chipResult.data.verdict;
             lastHeadline = originPrefix(origin, chipHeadline(chipResult.data));
